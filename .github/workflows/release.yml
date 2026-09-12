@@ -1,0 +1,20 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - run: go test ./...
+
+      - name: Warm Go module proxy
+        run: |
+          curl -sf "https://proxy.golang.org/github.com/inference-sh/agentprotocol/@v/${GITHUB_REF_NAME}.info" > /dev/null

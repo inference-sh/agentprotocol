@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"os"
 	"os/exec"
+	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -316,6 +318,21 @@ func runFakeAgent(script string) {
 				text = p.Prompt[0].Text
 			}
 
+			if script == "diagnostics" {
+				// An agent-initiated call this client does not implement,
+				// then a normal turn. The id-less error comes at close.
+				send(map[string]any{
+					"jsonrpc": "2.0", "id": 8001,
+					"method": "_kiro.dev/telemetry", "params": map[string]any{},
+				})
+				update(acp.SessionUpdate{
+					Kind:    acp.UpdateKindAgentMessageChunk,
+					Content: json.RawMessage(`{"type":"text","text":"done"}`),
+				})
+				reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
+				continue
+			}
+
 			if script == "permission" {
 				pendingPrompt = *msg.ID
 				send(map[string]any{
@@ -355,6 +372,15 @@ func runFakeAgent(script string) {
 			}
 
 		case msg.Method == acp.MethodSessionClose:
+			if script == "diagnostics" {
+				// kiro rejects session/close with an error carrying no id.
+				send(map[string]any{
+					"jsonrpc": "2.0",
+					"error": map[string]any{
+						"code": -32601, "message": "Method not found", "data": "session/close",
+					},
+				})
+			}
 			// A real agent finishes its end-of-session work and exits, which
 			// closes the stream and releases the shutdown grace early.
 			os.Exit(0)
@@ -372,3 +398,68 @@ func runFakeAgent(script string) {
 }
 
 var _ = exec.Command // kept for clarity about what the backend does
+
+func TestDiagnosticsReachTheCallerInsteadOfVanishing(t *testing.T) {
+	// The client stopped discarding unattributable errors in v0.2.1, but the
+	// backend then dropped them by not wiring the handler, which is the same
+	// bug one layer up. kiro answers session/close with an id-less error, so
+	// this is not hypothetical.
+	var mu sync.Mutex
+	var seen []string
+
+	b := backendRunning(t, "diagnostics")
+	b.OnDiagnostic = func(msg string) {
+		mu.Lock()
+		seen = append(seen, msg)
+		mu.Unlock()
+	}
+
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir(),
+	})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	if err := sess.Prompt(context.Background(), driver.TextInput("go")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	collect(t, sess.Events(), 4, 3*time.Second)
+	_ = sess.Close()
+
+	mu.Lock()
+	defer mu.Unlock()
+	var peerErr, unhandled bool
+	for _, m := range seen {
+		if strings.Contains(m, "unattributed error") && strings.Contains(m, "Method not found") {
+			peerErr = true
+		}
+		if strings.Contains(m, "does not implement") && strings.Contains(m, "_kiro.dev/telemetry") {
+			unhandled = true
+		}
+	}
+	if !peerErr {
+		t.Errorf("an id-less agent error never reached the caller; saw %v", seen)
+	}
+	if !unhandled {
+		t.Errorf("an unimplemented method call never reached the caller; saw %v", seen)
+	}
+}
+
+func TestDiagnosticsAreOptional(t *testing.T) {
+	// A nil hook must discard rather than crash, so a caller that does not
+	// care is not forced to supply one.
+	b := backendRunning(t, "diagnostics")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir(),
+	})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	if err := sess.Prompt(context.Background(), driver.TextInput("go")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	collect(t, sess.Events(), 4, 3*time.Second)
+	if err := sess.Close(); err != nil {
+		t.Logf("close: %v", err)
+	}
+}

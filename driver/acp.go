@@ -2,6 +2,7 @@ package driver
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"sync"
@@ -33,10 +34,32 @@ type ACPBackend struct {
 
 	// ClientVersion is reported alongside ClientName.
 	ClientVersion string
+
+	// OnDiagnostic receives protocol-level problems that did not fail the
+	// session: an error the agent could not attribute to any request, or a
+	// method this client does not implement.
+	//
+	// These deliberately do not become events. An event of type error would
+	// mark the run failed, and these are not failures; kiro rejects
+	// session/close and finishes its work perfectly well. But discarding them
+	// is how kiro's behaviour stayed invisible for months, so they are offered
+	// here instead, and the caller decides whether that means a log line, a
+	// counter, or something a person actually sees.
+	//
+	// Nil discards, which is a choice rather than an accident. Recorded and
+	// seen are not the same thing.
+	OnDiagnostic func(string)
 }
 
 // Kind implements Backend.
 func (b *ACPBackend) Kind() string { return KindACP }
+
+// diagnose reports a non-fatal protocol problem, if anyone is listening.
+func (b *ACPBackend) diagnose(msg string) {
+	if b.OnDiagnostic != nil {
+		b.OnDiagnostic(msg)
+	}
+}
 
 // Capabilities implements Backend.
 //
@@ -79,6 +102,12 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 	}, acp.ClientInfo{Name: name, Version: b.ClientVersion}, acp.Handler{
 		OnUpdate:     s.onUpdate,
 		OnPermission: s.onPermission,
+		OnPeerError: func(e *acp.Error) {
+			b.diagnose(fmt.Sprintf("agent reported an unattributed error: %s (code %d)", e.Message, e.Code))
+		},
+		OnUnhandled: func(method string, _ json.RawMessage) {
+			b.diagnose("agent called a method this client does not implement: " + method)
+		},
 	})
 	if err != nil {
 		return nil, err

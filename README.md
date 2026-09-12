@@ -1,76 +1,147 @@
 # agentprotocol
 
-The vocabulary an agent run speaks: events, run state, interrupts, lifecycle hooks, and tool contracts.
+[![Go Reference](https://pkg.go.dev/badge/github.com/inference-sh/agentprotocol.svg)](https://pkg.go.dev/github.com/inference-sh/agentprotocol)
+
+A Go library for describing what an AI agent is doing, and for driving agents that run somewhere else.
 
 ```
 go get github.com/inference-sh/agentprotocol
 ```
 
-Plain data types, no behaviour beyond state-machine rules and JSON handling. No database, no transport, no dependencies outside the standard library.
+Every agent run has the same shape no matter who built it. It starts. It streams output. It calls tools. Sometimes it needs a human to approve something. Then it finishes. This library gives that shape a set of Go types, and adds adapters for two protocols that carry it across a process or network boundary.
 
-## Why it exists
+The core has no dependencies outside the standard library.
 
-Several programs need to describe the same thing: an agent started, streamed some output, called a tool, needed a human, finished. The server that runs the loop, a conformance suite that judges other agents, and a client that drives a local harness all speak it. When each keeps its own copy the definitions drift, and the drift surfaces as a wrong status somewhere far from the change.
+## Drive a coding agent
 
-One definition, imported by everyone.
-
-## What's in it
-
-**Events.** `AgentEvent` and its payloads: run started, state changed, turn started and completed, content delta, tool started and completed, approval required and resolved, hook executed, usage updated, context compacted, error.
-
-**State.** `AgentRunState` with its legal transitions, plus `InterruptReason`, `InterruptStatus` and `InterruptResolution`.
-
-**Hooks.** `HookEvent`, `HookDecision`, and the request and response shapes a hook handler exchanges.
-
-**Tools.** `Tool` definitions, `ToolCall`, `ToolType`, and `ToolInvocationStatus` with its transition rules.
-
-## Subpackages
-
-```
-agentprotocol      the lifecycle model above — stdlib only
-├── a2a/           Agent2Agent wire types, and mapping to and from the model
-├── acp/           Agent Client Protocol: wire types and a client
-└── driver/        one contract for running an agent over any of them
-```
-
-Imports flow downward only. `a2a` and `acp` depend on the root; `driver` depends on all three. Nothing depends on a consumer, and the transport packages never talk to each other. Two adapters translating directly is how you end up writing N² translators instead of N.
-
-### a2a
-
-Wire types for [A2A](https://a2a-protocol.org) v1.0, plus total mappings between task state and run state. The mapping functions are pure, so the server answering A2A calls and a client making them share one definition. An unrecognised state maps to failed rather than working: a caller can retry a failure, but waits forever on a task nobody is advancing.
-
-### acp
-
-[ACP](https://agentclientprotocol.com) is how editors drive coding agents running as local processes. Zed, JetBrains and VS Code speak it; Claude Code, Codex, Gemini CLI and Cursor answer it.
-
-The client holds no policy. What happens when an agent asks permission, or asks to read a file, is the caller's decision, supplied as a `Handler`. A conformance suite auto-approves. A product forwards the question to a human. Defaults are conservative: no handler means cancel, never allow.
+The `acp` package speaks the [Agent Client Protocol](https://agentclientprotocol.com), which is how editors talk to coding agents running as local processes. Zed, JetBrains and VS Code extensions use it. Gemini CLI and Cursor answer it directly; Claude Code and several others answer it through a small bridge process.
 
 ```go
 proc, err := acp.Spawn(ctx, acp.ProcessConfig{
-    Command: "claude-code-acp",
-    Env:     acp.Environ("CLAUDE_CONFIG_DIR", profileDir),
-}, acp.ClientInfo{Name: "belt"}, acp.Handler{
-    OnUpdate:     func(n acp.UpdateNotification) { ... },
-    OnPermission: askAHuman,
+	Command: "claude-code-acp",
+	Dir:     "/path/to/project",
+}, acp.ClientInfo{Name: "my-app", Version: "1.0"}, acp.Handler{
+	OnUpdate: func(n acp.UpdateNotification) {
+		fmt.Print(n.Update.Text())
+	},
+	OnPermission: func(ctx context.Context, r acp.PermissionRequest) (acp.PermissionResponse, error) {
+		// The agent wants to run something. Decide however you like:
+		// prompt a user, check a policy, forward it to a web UI.
+		if id, ok := r.PickOption(acp.OptionKindAllowOnce); ok {
+			return acp.Selected(id), nil
+		}
+		return acp.Cancelled(), nil
+	},
 })
+if err != nil {
+	return err
+}
+defer proc.Wait()
+
+if _, err := proc.NewSession(ctx, "/path/to/project", nil); err != nil {
+	return err
+}
+_, err = proc.Prompt(ctx, "add a test for the parser")
 ```
 
-That `Env` line is the point: the agent is already logged in as the user, and pointing it at a profile directory selects which account it uses. No credential passes through this package.
+The client handles the protocol and nothing else. Every decision is yours, supplied as a `Handler`. Leave a field nil and the library takes the conservative option: an unanswered permission request is cancelled, never allowed, and an agent is told during the handshake that it may only ask for what you can actually answer.
+
+No credentials pass through this library. The agent authenticates itself, the way it does when a person runs it. `ProcessConfig.Env` is how you choose which account it uses, by pointing the agent at one of its own profile directories:
+
+```go
+Env: acp.Environ("CLAUDE_CONFIG_DIR", "/home/me/.claude-work")
+```
+
+## The model
+
+The root package is the vocabulary, as plain data.
+
+**Events.** `AgentEvent` carries a type, the run it belongs to, and a JSON payload. Thirteen payload types cover the run lifecycle: started, state changed, turn started and completed, content delta, tool started and completed, approval required and resolved, hook executed, usage updated, context compacted, error.
+
+```go
+ev := agentprotocol.NewEvent(agentprotocol.AgentEventToolStarted, runID, chatID,
+	agentprotocol.ToolStartedPayload{ToolName: "bash", ToolType: agentprotocol.ToolTypeCall})
+
+if p, ok := agentprotocol.PayloadAs[agentprotocol.ToolStartedPayload](ev, agentprotocol.AgentEventToolStarted); ok {
+	fmt.Println(p.ToolName)
+}
+```
+
+Payloads stay as raw JSON until asked for, so a consumer can route on type without decoding bodies it will discard, and an event written by a newer producer still survives a round trip through an older reader.
+
+**State.** `AgentRunState` is the run's lifecycle, and it knows its own legal transitions:
+
+```go
+if state.CanTransitionTo(agentprotocol.AgentRunStateCompleted) { ... }
+state.IsTerminal()
+state.IsInterrupted()
+```
+
+`ToolInvocationStatus` does the same for a single tool call. Both expose their transition rules rather than leaving each caller to rediscover them.
+
+**Interrupts.** When a run stops to wait for a person, `InterruptReason` says why, `InterruptStatus` tracks the wait, and `InterruptResolution` records the answer.
+
+**Hooks.** `HookEvent`, `HookDecision`, and the request and response shapes a lifecycle hook handler exchanges.
+
+**Tools.** `Tool` definitions, `ToolCall`, `ToolType`, and helpers for building parameter schemas.
+
+## Packages
+
+```
+agentprotocol      the model above, standard library only
+├── a2a/           Agent2Agent wire types and mappings
+├── acp/           Agent Client Protocol client
+└── driver/        one interface for running an agent over any transport
+```
+
+Imports only ever flow downward. `a2a` and `acp` depend on the root. `driver` depends on all three. The transport packages never reference each other, which is deliberate: adapters that translate directly between formats grow as the square of how many formats you support, while adapters that translate to a shared model grow linearly.
+
+### a2a
+
+Wire types for [A2A](https://a2a-protocol.org) v1.0, and total mappings between an A2A task state and a run state, both directions. The mapping functions are pure, so a server answering A2A calls and a client making them can share one definition.
+
+A state neither side recognises maps to failed rather than working. A caller can retry a failure; it waits forever on a task nobody is advancing.
 
 ### driver
 
-One `Backend` and one `Session`, so the code above never branches on which kind of agent it is talking to. Progress leaves a session exactly one way, through `Events()`. Decisions go back exactly one way, through `Resolve`.
+`Backend` opens sessions. `Session` runs one conversation. Progress leaves through a single channel of `AgentEvent`, and decisions go back through a single `Resolve` call, so code above a driver never branches on what kind of agent is underneath.
 
-`ACPBackend` is the first implementation, which is why the interface has the shape it does rather than the shape a design document would have given it.
+```go
+sess, err := backend.Open(ctx, driver.SessionConfig{RunID: id, WorkDir: dir})
+if err != nil {
+	return err
+}
+defer sess.Close()
 
-## Design rules
+go func() {
+	for ev := range sess.Events() {
+		switch ev.Type {
+		case agentprotocol.AgentEventContentDelta:
+			// stream it to a user
+		case agentprotocol.AgentEventApprovalRequired:
+			p, _ := agentprotocol.PayloadAs[agentprotocol.ApprovalRequiredPayload](ev, ev.Type)
+			// ask someone, then:
+			sess.Resolve(ctx, p.ToolInvocationID, driver.Allow())
+		}
+	}
+}()
 
-- Nothing here imports anything of ours. This package sits at the bottom.
-- State machines expose their transitions (`CanTransitionTo`) rather than leaving callers to rediscover them.
-- Mappings between vocabularies are total and written out longhand, even where both sides currently use identical strings. Only one of the two specs is ours to change, and divergence should break a test rather than produce a quietly wrong status.
-- Agent-initiated requests are always answered. A dropped request leaves the agent blocked on its own timeout, which presents as a hang far from the cause.
-- `sql.go` is optional. It implements `driver.Valuer` on the string enums so they survive a database round trip. Delete it and the package still describes the protocol completely.
+err = sess.Prompt(ctx, driver.TextInput("what changed in this repo today?"))
+```
 
-## Stability
+`ACPBackend` is the implementation that exists today. `Capabilities()` reports what a backend supports so callers can degrade rather than call something that will fail.
 
-Pre-1.0. The event and state names are in production and unlikely to move. `driver` is the newest and most likely to change as more backends arrive.
+## Notes on the design
+
+- **The core depends on nothing.** Not on a database, a web framework, a transport, or any other module. That is what lets a server, a test suite and a command line tool share it.
+- **Mappings between vocabularies are total and written out in full**, even where both sides currently use identical strings. When only one of two specifications is yours to change, the day they diverge should break a test rather than quietly produce a wrong status on the wire.
+- **Every request from an agent gets an answer**, including methods this library does not know, which receive a JSON-RPC method-not-found. Dropping a request silently leaves the agent blocked on its own timeout, which shows up as a hang a long way from the cause.
+- **`sql.go` is optional.** It implements `driver.Valuer` on the string enums so they survive a round trip through a database, because named string types are not encoded by some drivers otherwise. Nothing else in the package imports it, and deleting the file leaves the protocol fully described.
+
+## Status
+
+Pre-1.0, and versioned accordingly.
+
+The event names, run states and tool contracts are in production at [inference.sh](https://inference.sh), which is where this came from, and are unlikely to move. `driver` is the newest part and the most likely to change as more backends arrive.
+
+Issues and pull requests are welcome, particularly reports of agents whose ACP behaviour differs from what the client expects. That corner of the ecosystem is not as uniform as the specification suggests.

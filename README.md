@@ -4,9 +4,7 @@
 
 A Go library for describing what an AI agent is doing, and for driving agents that run somewhere else.
 
-```
-go get github.com/inference-sh/agentprotocol
-```
+Source-available, not open source. See [LICENSE](LICENSE).
 
 Every agent run has the same shape no matter who built it. It starts. It streams output. It calls tools. Sometimes it needs a human to approve something. Then it finishes. This library gives that shape a set of Go types, and adds adapters for two protocols that carry it across a process or network boundary.
 
@@ -144,4 +142,4 @@ Pre-1.0, and versioned accordingly.
 
 The event names, run states and tool contracts are in production at [inference.sh](https://inference.sh), which is where this came from, and are unlikely to move. `driver` is the newest part and the most likely to change as more backends arrive.
 
-Issues and pull requests are welcome, particularly reports of agents whose ACP behaviour differs from what the client expects. That corner of the ecosystem is not as uniform as the specification suggests.
+Bug reports are useful, particularly agents whose ACP behaviour differs from what this client expects. That corner of the ecosystem is less uniform than the specification suggests. Open an issue or write to hello@inference.sh.

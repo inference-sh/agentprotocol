@@ -1,0 +1,25 @@
+Copyright (c) 2026 inference.sh. All rights reserved.
+
+This source code is published for reference and for interoperability with
+inference.sh. It is not open source.
+
+No licence is granted to use, copy, modify, merge, publish, distribute,
+sublicense, or sell this software or any derivative work, except:
+
+  (a) by inference.sh and its affiliates; and
+
+  (b) to the extent necessary to build or operate software that
+      interoperates with inference.sh products and services.
+
+Reading this source, and referring to it when implementing an interoperating
+client, is permitted.
+
+For any other use, contact hello@inference.sh.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

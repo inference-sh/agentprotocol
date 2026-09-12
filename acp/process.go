@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"time"
 )
 
 // Process is an ACP agent running as a local subprocess, with a Client already
@@ -17,6 +18,11 @@ import (
 type Process struct {
 	*Client
 	cmd *exec.Cmd
+
+	// ShutdownGrace is how long Wait lets the agent finish after
+	// session/close before the stream is closed. Zero means
+	// DefaultShutdownGrace; negative means close at once.
+	ShutdownGrace time.Duration
 }
 
 // ProcessConfig describes how to launch the agent.
@@ -90,12 +96,38 @@ func Spawn(ctx context.Context, cfg ProcessConfig, info ClientInfo, h Handler) (
 	return p, nil
 }
 
-// Wait closes the session and the stream, then waits for the child to exit.
+// DefaultShutdownGrace is how long Wait gives an agent to finish its own
+// shutdown after session/close before the stream is taken away.
 //
-// An agent that exits non-zero after being asked to stop is normal, so the
-// caller gets the exit error to interpret rather than having it swallowed.
+// Agents run end-of-session work here: writing a transcript, firing Stop
+// hooks, flushing telemetry. Closing stdin immediately after session/close
+// cuts that off partway, and the symptom is a hook that mostly fires.
+const DefaultShutdownGrace = 5 * time.Second
+
+// Wait shuts the session down and waits for the child to exit.
+//
+// It sends session/close, gives the agent ShutdownGrace to finish and close
+// its own side, then closes the stream and reaps the process. An agent that
+// exits promptly is not delayed: the grace ends as soon as the stream does.
+//
+// An agent exiting non-zero after being asked to stop is common, so the exit
+// error is returned for the caller to interpret rather than swallowed.
 func (p *Process) Wait() error {
 	_ = p.CloseSession()
+
+	grace := p.ShutdownGrace
+	if grace == 0 {
+		grace = DefaultShutdownGrace
+	}
+	if grace > 0 {
+		timer := time.NewTimer(grace)
+		select {
+		case <-p.Done():
+		case <-timer.C:
+		}
+		timer.Stop()
+	}
+
 	_ = p.Close()
 	<-p.Done()
 	return p.cmd.Wait()

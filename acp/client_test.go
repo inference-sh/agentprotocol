@@ -550,3 +550,104 @@ func TestIsTurnDoneAcceptsBothSignalFields(t *testing.T) {
 		t.Error("a content chunk was treated as the end of a turn")
 	}
 }
+
+func TestIdlessErrorDoesNotCrash(t *testing.T) {
+	// kiro-cli answers a session/close notification with an error carrying no
+	// id. That is legal JSON-RPC: a peer sends a null or absent id when it
+	// cannot attribute the failure to a request. Such a message has neither an
+	// ID nor a method, so it must not be mistaken for a request to answer.
+	client, agent := newPair(t, acp.Handler{})
+	handshake(t, client, agent, "sess_1")
+
+	agent.write([]byte(`{"jsonrpc":"2.0","error":{"code":-32601,"message":"Method not found","data":"session/close"}}`))
+
+	// The read loop must still be alive afterwards.
+	done := make(chan error, 1)
+	go func() {
+		_, err := client.Call(context.Background(), "initialize", nil)
+		done <- err
+	}()
+	msg := agent.next()
+	agent.reply(*msg.ID, map[string]any{"ok": true})
+
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatalf("client died after an id-less error: %v", err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("read loop stopped after an id-less error")
+	}
+}
+
+func TestIdlessErrorReachesOnPeerError(t *testing.T) {
+	// Nothing can be replied to and no caller is waiting, so without a handler
+	// the failure is invisible. This is how it stays diagnosable.
+	got := make(chan *acp.Error, 1)
+	client, agent := newPair(t, acp.Handler{
+		OnPeerError: func(e *acp.Error) { got <- e },
+	})
+	handshake(t, client, agent, "sess_1")
+
+	agent.write([]byte(`{"jsonrpc":"2.0","error":{"code":-32601,"message":"Method not found","data":"session/close"}}`))
+
+	select {
+	case e := <-got:
+		if e.Code != -32601 || e.Message != "Method not found" {
+			t.Errorf("got %+v", e)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("unattributable error never surfaced")
+	}
+}
+
+func TestPromptGetsALongerBudgetThanProtocolCalls(t *testing.T) {
+	// A prompt's duration belongs to the model. Timing it out on a protocol
+	// budget kills work that was still progressing.
+	client, agent := newPair(t, acp.Handler{})
+	handshake(t, client, agent, "sess_1")
+
+	client.CallTimeout = 50 * time.Millisecond
+	client.PromptTimeout = 3 * time.Second
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := client.Prompt(context.Background(), "slow work")
+		done <- err
+	}()
+
+	prompt := agent.next()
+	// Longer than CallTimeout, well inside PromptTimeout.
+	time.Sleep(300 * time.Millisecond)
+	agent.reply(*prompt.ID, map[string]any{"stopReason": "end_turn"})
+
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatalf("prompt timed out on the protocol budget: %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("prompt never returned")
+	}
+}
+
+func TestProtocolCallStillUsesTheShortBudget(t *testing.T) {
+	client, agent := newPair(t, acp.Handler{})
+	client.CallTimeout = 100 * time.Millisecond
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := client.Call(context.Background(), acp.MethodInitialize, nil)
+		done <- err
+	}()
+	agent.next() // never answered
+
+	select {
+	case err := <-done:
+		if err == nil {
+			t.Error("protocol call ignored CallTimeout")
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("protocol call did not time out")
+	}
+}

@@ -11,10 +11,20 @@ import (
 	"time"
 )
 
-// DefaultCallTimeout bounds a single request that expects a reply. Agents
+// DefaultCallTimeout bounds a protocol call that expects a reply. Agents
 // occasionally accept a call and never answer; without a bound the caller
-// blocks forever.
+// blocks forever. Initialize and session/new are handshake traffic and should
+// return in well under this.
 const DefaultCallTimeout = 60 * time.Second
+
+// DefaultPromptTimeout bounds a prompt.
+//
+// It is much longer than DefaultCallTimeout because it measures something
+// different. Every other call is protocol chatter whose duration is the
+// agent's own bookkeeping, but session/prompt does not return until the model
+// has finished the turn, which for an agent running tools can be many minutes.
+// Timing a prompt out on a protocol budget kills work that was progressing.
+const DefaultPromptTimeout = 10 * time.Minute
 
 // maxLineBytes caps one JSON-RPC line. Agents inline file contents and tool
 // output into updates, so the default scanner limit is far too small.
@@ -55,6 +65,13 @@ type Handler struct {
 	// leaves the agent waiting on its own timeout, which looks like a hang
 	// and has cost us a real debugging session before.
 	OnUnhandled func(method string, params json.RawMessage)
+
+	// OnPeerError receives an error the agent reported without attributing it
+	// to any request, which JSON-RPC permits and agents do use. Nothing can be
+	// replied to and no caller is waiting, so the only alternative is to
+	// discard it; a handler here is how such failures stay visible. Nil
+	// discards them.
+	OnPeerError func(*Error)
 }
 
 // Client is one ACP conversation over a byte stream.
@@ -81,7 +98,12 @@ type Client struct {
 	done      chan struct{}
 	readErr   error
 
+	// CallTimeout bounds a protocol call. Zero means DefaultCallTimeout.
 	CallTimeout time.Duration
+
+	// PromptTimeout bounds a prompt specifically, whose duration belongs to
+	// the model rather than the protocol. Zero means DefaultPromptTimeout.
+	PromptTimeout time.Duration
 }
 
 // NewClient wires a client to a duplex stream. Nothing is sent until
@@ -90,13 +112,14 @@ func NewClient(r io.Reader, w io.WriteCloser, info ClientInfo, h Handler) *Clien
 	sc := bufio.NewScanner(r)
 	sc.Buffer(make([]byte, 0, 64<<10), maxLineBytes)
 	return &Client{
-		w:           w,
-		sc:          sc,
-		h:           h,
-		info:        info,
-		pending:     make(map[int]chan Message),
-		done:        make(chan struct{}),
-		CallTimeout: DefaultCallTimeout,
+		w:             w,
+		sc:            sc,
+		h:             h,
+		info:          info,
+		pending:       make(map[int]chan Message),
+		done:          make(chan struct{}),
+		CallTimeout:   DefaultCallTimeout,
+		PromptTimeout: DefaultPromptTimeout,
 	}
 }
 
@@ -171,7 +194,7 @@ func (c *Client) PromptBlocks(ctx context.Context, blocks []ContentBlock) (json.
 	if sid == "" {
 		return nil, errors.New("acp: prompt before session/new")
 	}
-	return c.Call(ctx, MethodSessionPrompt, PromptParams{SessionID: sid, Prompt: blocks})
+	return c.call(ctx, MethodSessionPrompt, PromptParams{SessionID: sid, Prompt: blocks}, c.promptTimeout())
 }
 
 // Cancel asks the agent to abandon the current turn, leaving the session open.
@@ -201,8 +224,26 @@ func (c *Client) Close() error {
 	return err
 }
 
-// Call sends a request and waits for its response.
+// Call sends a request and waits for its response, bounded by CallTimeout.
 func (c *Client) Call(ctx context.Context, method string, params any) (json.RawMessage, error) {
+	return c.call(ctx, method, params, c.callTimeout())
+}
+
+func (c *Client) callTimeout() time.Duration {
+	if c.CallTimeout > 0 {
+		return c.CallTimeout
+	}
+	return DefaultCallTimeout
+}
+
+func (c *Client) promptTimeout() time.Duration {
+	if c.PromptTimeout > 0 {
+		return c.PromptTimeout
+	}
+	return DefaultPromptTimeout
+}
+
+func (c *Client) call(ctx context.Context, method string, params any, budget time.Duration) (json.RawMessage, error) {
 	c.mu.Lock()
 	c.nextID++
 	id := c.nextID
@@ -220,7 +261,7 @@ func (c *Client) Call(ctx context.Context, method string, params any) (json.RawM
 		return nil, err
 	}
 
-	timer := time.NewTimer(c.CallTimeout)
+	timer := time.NewTimer(budget)
 	defer timer.Stop()
 
 	select {
@@ -232,7 +273,7 @@ func (c *Client) Call(ctx context.Context, method string, params any) (json.RawM
 	case <-ctx.Done():
 		return nil, ctx.Err()
 	case <-timer.C:
-		return nil, fmt.Errorf("acp: timeout after %s waiting for %s", c.CallTimeout, method)
+		return nil, fmt.Errorf("acp: timeout after %s waiting for %s", budget, method)
 	case <-c.done:
 		if c.readErr != nil {
 			return nil, fmt.Errorf("acp: stream ended during %s: %w", method, c.readErr)
@@ -311,6 +352,18 @@ func (c *Client) dispatch(msg Message) {
 		return
 	}
 
+	if msg.ID == nil {
+		// Neither an ID nor a method. JSON-RPC allows a peer to report a
+		// failure it cannot attribute to any request by sending an error with
+		// a null or absent id, and agents do: kiro answers a session/close
+		// notification this way. There is nobody to deliver it to and nothing
+		// to reply to, so surface it and move on.
+		if msg.Error != nil && c.h.OnPeerError != nil {
+			c.h.OnPeerError(msg.Error)
+		}
+		return
+	}
+
 	c.handleRequest(msg)
 }
 
@@ -318,6 +371,12 @@ func (c *Client) dispatch(msg Message) {
 // unanswered request leaves the agent blocked on its own timeout, which
 // presents as a hang far from the cause.
 func (c *Client) handleRequest(msg Message) {
+	if msg.ID == nil {
+		// Unreachable via dispatch, which filters this case. Kept so that a
+		// future dispatch path cannot reintroduce a panic in the read loop,
+		// which would take down the whole host process.
+		return
+	}
 	ctx := context.Background()
 	id := *msg.ID
 

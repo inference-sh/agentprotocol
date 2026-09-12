@@ -354,8 +354,13 @@ func runFakeAgent(script string) {
 				reply(pendingPrompt, map[string]any{"stopReason": "end_turn"})
 			}
 
-		case msg.Method == acp.MethodSessionClose, msg.Method == acp.MethodSessionCancel:
-			// Notifications; nothing to answer.
+		case msg.Method == acp.MethodSessionClose:
+			// A real agent finishes its end-of-session work and exits, which
+			// closes the stream and releases the shutdown grace early.
+			os.Exit(0)
+
+		case msg.Method == acp.MethodSessionCancel:
+			// Notification; nothing to answer.
 
 		default:
 			if msg.ID != nil {

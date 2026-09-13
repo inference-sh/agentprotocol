@@ -2,6 +2,7 @@ package acp_test
 
 import (
 	"context"
+	"sync"
 	"testing"
 	"time"
 
@@ -400,4 +401,58 @@ func TestLoadDistinguishesRestoredHistoryFromSetupChatter(t *testing.T) {
 			}
 		})
 	}
+}
+
+// A permission handler may take as long as a human does. It must not stop the
+// connection while it waits: on the read loop a parked request froze updates,
+// froze replies to calls in flight, and made a second permission request
+// unreachable until the first was answered.
+func TestAParkedPermissionDoesNotFreezeTheConnection(t *testing.T) {
+	release := make(chan struct{})
+	var parked sync.WaitGroup
+	parked.Add(2)
+
+	updates := make(chan acp.UpdateNotification, 4)
+	c, a := newPair(t, acp.Handler{
+		OnUpdate: func(n acp.UpdateNotification) { updates <- n },
+		OnPermission: func(_ context.Context, _ acp.PermissionRequest) (acp.PermissionResponse, error) {
+			parked.Done()
+			<-release
+			return acp.Cancelled(), nil
+		},
+	})
+	handshake(t, c, a, "sid")
+
+	ask := func(id int) {
+		a.ask(id, acp.MethodRequestPermission, map[string]any{
+			"sessionId": "sid",
+			"toolCall":  map[string]any{"toolCallId": "call_x", "title": "write"},
+			"options":   []any{map[string]any{"optionId": "no", "kind": "reject_once"}},
+		})
+	}
+
+	// Two at once. Serially dispatched, the second could not be read at all.
+	ask(9101)
+	ask(9102)
+
+	done := make(chan struct{})
+	go func() { parked.Wait(); close(done) }()
+	select {
+	case <-done:
+	case <-time.After(3 * time.Second):
+		t.Fatal("a second permission request never reached the handler while the first was parked")
+	}
+
+	// And the stream still moves while both are held.
+	a.notify(acp.MethodSessionUpdate, map[string]any{
+		"sessionId": "sid",
+		"update":    map[string]any{"sessionUpdate": "agent_message_chunk", "content": map[string]any{"text": "still working"}},
+	})
+	select {
+	case <-updates:
+	case <-time.After(3 * time.Second):
+		t.Fatal("updates stopped while a permission request was parked")
+	}
+
+	close(release)
 }

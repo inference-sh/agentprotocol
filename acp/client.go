@@ -37,15 +37,26 @@ const maxLineBytes = 8 << 20
 // the conservative default described on each field. That means a caller can
 // implement only what it cares about.
 type Handler struct {
-	// OnUpdate receives streamed progress. It must not block for long; the
-	// read loop is single-threaded and a slow handler stalls everything
-	// behind it, including responses to calls already in flight.
+	// OnUpdate receives streamed progress. It must not block for long; it runs
+	// on the read loop, because an update's order is the content's order and
+	// handing updates to goroutines would scramble a message into arbitrary
+	// pieces. A slow handler stalls everything behind it, including responses
+	// to calls already in flight.
+	//
+	// Agent-initiated requests are not subject to this — see OnPermission.
 	OnUpdate func(UpdateNotification)
 
 	// OnPermission decides whether the agent may proceed. Returning an error
 	// cancels the request. Nil cancels every request, because silently
 	// allowing an action nobody approved is the one outcome a default must
 	// never produce.
+	//
+	// Unlike OnUpdate this may block for as long as it needs to, which is the
+	// point: the answer can be a human's, arriving minutes later and from
+	// another machine. Each request is handled on its own goroutine, so
+	// waiting here does not stop updates arriving, does not stall replies to
+	// calls in flight, and does not prevent a second permission request from
+	// being raised alongside the first.
 	OnPermission func(context.Context, PermissionRequest) (PermissionResponse, error)
 
 	// OnReadTextFile serves a file the agent asked for. Nil refuses, so an
@@ -657,7 +668,17 @@ func (c *Client) dispatch(msg Message) {
 		return
 	}
 
-	c.handleRequest(msg)
+	// An agent-initiated request gets its own goroutine, because answering one
+	// can take as long as a human takes to decide. On the read loop a parked
+	// permission request freezes the whole connection: no updates arrive, no
+	// reply to any call in flight is delivered, and a second permission
+	// request cannot even be read until the first is answered — which made the
+	// driver's map of pending permissions unreachable past one entry.
+	//
+	// Responses carry the id they answer, so the agent does not care what
+	// order they come back in. Notifications stay on the read loop, where
+	// their order is the content's order and must be preserved.
+	go c.handleRequest(msg)
 }
 
 // handleRequest answers an agent-initiated request. Every path replies. An

@@ -309,11 +309,19 @@ type LoadResult struct {
 // LoadSession reopens a session the agent persisted earlier and remembers its
 // ID, the resuming counterpart to NewSession.
 //
-// The conversation comes back: the agent rebuilds its state and replays the
-// history as session/update notifications, and the next prompt continues the
-// same thread. It happens in a new process. A session somebody is driving by
-// hand in a terminal keeps its own process untouched; what transfers here is
-// the conversation, not the pipe.
+// The intent is that the conversation comes back: the agent rebuilds its state
+// and replays the history as session/update notifications, and the next prompt
+// continues the same thread. It happens in a new process. A session somebody
+// is driving by hand in a terminal keeps its own process untouched; what
+// transfers is the conversation, not the pipe.
+//
+// How much of that is true per agent is not yet established. Eleven of twelve
+// accept the call and then send updates, but nobody has checked whether those
+// updates are history or the setup notifications an agent emits on any new
+// session, and the counts seen are in the range setup chatter alone would
+// produce. Until a prompt after a load is shown to carry the earlier turn,
+// read a successful load as "the agent did not refuse", not as proof that the
+// context came with it.
 //
 // Replayed updates reach Handler.OnUpdate with Replay set, so a caller can
 // take them as history. They are delivered rather than swallowed because a

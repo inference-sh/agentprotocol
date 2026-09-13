@@ -80,10 +80,11 @@ func (b *ACPBackend) diagnose(msg string) {
 
 // Capabilities implements Backend.
 //
-// Resume is true: a session outlives the process that made it, because the
-// agent persists it and session/load brings the conversation back into a new
-// one. Measured across twelve agents, eleven resume and one refuses, so a
-// caller should offer it and handle the refusal rather than assume either way.
+// Resume is true in the sense that the call is worth making: of twelve agents,
+// eleven accept session/load into a new process and one refuses outright. What
+// has not been established is whether the accepting eleven actually restore
+// the conversation or merely open a fresh session without complaining, so a
+// caller should offer resuming and must not assume the context survived.
 // Tools is true because ACP carries MCP server declarations, which is how a
 // caller injects its own.
 func (b *ACPBackend) Capabilities() Capabilities {

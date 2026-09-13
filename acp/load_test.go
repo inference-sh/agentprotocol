@@ -53,9 +53,9 @@ func TestInitializeExposesWhatTheAgentSaidItCanDo(t *testing.T) {
 }
 
 // An agent that declares nothing reads as a zero capability set, and nothing
-// in the library may turn that into a refusal. None of the twelve agents
-// measured is silent — all twelve declare loadSession and one still fails
-// every load — so the claim predicts nothing in either direction.
+// in the library may turn that into a refusal. Every agent measured declares
+// loadSession and loads still fail for reasons the flag cannot see, so the
+// claim predicts nothing in either direction.
 func TestSilentAgentIsNotTreatedAsRefusing(t *testing.T) {
 	c, a := newPair(t, acp.Handler{})
 	initialize(t, c, a, map[string]any{"protocolVersion": 1})
@@ -161,9 +161,10 @@ func TestLoadSucceedsWhenTheAgentReplaysAndNeverAnswers(t *testing.T) {
 	}
 }
 
-// Silence is not success. gemini rejects session/load outright, and an agent
-// that neither answers nor replays must fail rather than report a session that
-// was never opened.
+// Silence is not success. An agent can reject session/load outright — it has
+// been seen for a session whose process was killed before it reached disk —
+// and an agent that neither answers nor replays must fail rather than report
+// a session that was never opened.
 func TestLoadWithNeitherAnswerNorReplayFails(t *testing.T) {
 	c, a := newPair(t, acp.Handler{})
 	c.LoadTimeout = 300 * time.Millisecond
@@ -455,4 +456,59 @@ func TestAParkedPermissionDoesNotFreezeTheConnection(t *testing.T) {
 	}
 
 	close(release)
+}
+
+// The mark must describe when the request arrived, not when its handler
+// happened to run. Because requests are handled on their own goroutine, a
+// permission raised mid-load can reach its handler after the load has already
+// finished and cleared the loading flag. Reading the flag then would report
+// DuringLoad=false for a request that plainly arrived during the replay.
+func TestDuringLoadReflectsArrivalNotHandlerTiming(t *testing.T) {
+	proceed := make(chan struct{})
+	got := make(chan bool, 1)
+	c, a := newPair(t, acp.Handler{
+		OnPermission: func(_ context.Context, r acp.PermissionRequest) (acp.PermissionResponse, error) {
+			<-proceed // do not decide until the test says the load is over
+			got <- r.DuringLoad
+			return acp.Cancelled(), nil
+		},
+	})
+	c.ReplayIdleGap = 100 * time.Millisecond
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	loadDone := make(chan struct{})
+	go func() {
+		if _, err := c.LoadSession(context.Background(), "sid", "/repo", nil); err != nil {
+			t.Errorf("load: %v", err)
+		}
+		close(loadDone)
+	}()
+
+	a.next() // the load call, never answered
+	a.notify(acp.MethodSessionUpdate, map[string]any{
+		"sessionId": "sid",
+		"update":    map[string]any{"sessionUpdate": "user_message_chunk", "content": map[string]any{"text": "earlier"}},
+	})
+	a.ask(9401, acp.MethodRequestPermission, map[string]any{
+		"sessionId": "sid",
+		"toolCall":  map[string]any{"toolCallId": "call_1", "title": "write"},
+		"options":   []any{map[string]any{"optionId": "no", "kind": "reject_once"}},
+	})
+
+	// Let the load conclude from the idle gap before the handler decides.
+	select {
+	case <-loadDone:
+	case <-time.After(3 * time.Second):
+		t.Fatal("load never concluded")
+	}
+	close(proceed)
+
+	select {
+	case during := <-got:
+		if !during {
+			t.Error("request arrived during the load but was marked DuringLoad=false; the flag tracked handler timing, not arrival")
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("permission handler never ran")
+	}
 }

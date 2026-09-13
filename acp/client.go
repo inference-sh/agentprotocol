@@ -57,6 +57,11 @@ type Handler struct {
 	// waiting here does not stop updates arriving, does not stall replies to
 	// calls in flight, and does not prevent a second permission request from
 	// being raised alongside the first.
+	//
+	// One consequence: a permission request now races the updates around it
+	// rather than being ordered among them. Text from the turn can reach
+	// OnUpdate before or after the request reaches this handler, and both are
+	// correct. Anything that assumed the serialised order is wrong.
 	OnPermission func(context.Context, PermissionRequest) (PermissionResponse, error)
 
 	// OnReadTextFile serves a file the agent asked for. Nil refuses, so an
@@ -244,9 +249,9 @@ func (c *Client) AuthMethods() []AuthMethod {
 
 // CanLoadSession reports whether the agent declared support for resuming.
 //
-// Do not branch on it. Across twelve ACP agents measured, all twelve declare
-// it and one of them refuses every load, so a false is not a refusal and a
-// true is not a promise. The claim carries no information about the outcome.
+// Do not branch on it. Every agent measured declares it, and loads still fail
+// for reasons the flag cannot see, so a false is not a refusal and a true is
+// not a promise. The claim carries no information about the outcome.
 //
 // The only reliable test is to call LoadSession and handle the error. This is
 // here so a caller can show a person what the agent said, and so the claim is
@@ -328,11 +333,10 @@ type LoadResult struct {
 	// Answered reports whether session/load returned. False means the agent
 	// attached and replayed but never answered the call.
 	//
-	// Measured across twelve agents against a mock backend, with two to six
-	// updates replayed, this was true every time. T3 Code hit the other case
-	// in production against real models, where replays are far longer, so the
-	// idle-gap path stays. Read a false as "this agent needed the fallback",
-	// not as an error.
+	// Against a mock backend with short replays every agent measured has
+	// answered. T3 Code hit the other case in production against real models,
+	// where replays are far longer, so the idle-gap path stays. Read a false
+	// as "this agent needed the fallback", not as an error.
 	Answered bool
 
 	// Elapsed is how long the load took.
@@ -348,13 +352,13 @@ type LoadResult struct {
 // is driving by hand in a terminal keeps its own process untouched; what
 // transfers is the conversation, not the pipe.
 //
-// How much of that is true per agent is not yet established. Eleven of twelve
-// accept the call and then send updates, but nobody has checked whether those
-// updates are history or the setup notifications an agent emits on any new
-// session, and the counts seen are in the range setup chatter alone would
-// produce. Until a prompt after a load is shown to carry the earlier turn,
-// read a successful load as "the agent did not refuse", not as proof that the
-// context came with it.
+// A load that returns without error proves only that the agent did not
+// refuse. Whether the conversation came with it is a separate question, and
+// LoadResult.RestoredConversation answers it: an agent that ignored the id and
+// opened a blank session sends its usual openers and no user turn, which is
+// otherwise indistinguishable from a real replay. Whether a given agent can
+// resume at all has also been seen to depend on how the previous process
+// ended and whether it had been reaped before the load was attempted.
 //
 // Replayed updates reach Handler.OnUpdate with Replay set, so a caller can
 // take them as history. They are delivered rather than swallowed because a
@@ -678,13 +682,22 @@ func (c *Client) dispatch(msg Message) {
 	// Responses carry the id they answer, so the agent does not care what
 	// order they come back in. Notifications stay on the read loop, where
 	// their order is the content's order and must be preserved.
-	go c.handleRequest(msg)
+	//
+	// duringLoad is read here, on the read loop, not inside the goroutine.
+	// The goroutine runs at an arbitrary later time, by which point a load may
+	// have finished and cleared the flag; capturing it at arrival is what
+	// makes "this request came in mid-replay" true of when it arrived rather
+	// than of when it happened to be scheduled.
+	c.mu.Lock()
+	duringLoad := c.loading
+	c.mu.Unlock()
+	go c.handleRequest(msg, duringLoad)
 }
 
 // handleRequest answers an agent-initiated request. Every path replies. An
 // unanswered request leaves the agent blocked on its own timeout, which
 // presents as a hang far from the cause.
-func (c *Client) handleRequest(msg Message) {
+func (c *Client) handleRequest(msg Message, duringLoad bool) {
 	if msg.ID == nil {
 		// Unreachable via dispatch, which filters this case. Kept so that a
 		// future dispatch path cannot reintroduce a panic in the read loop,
@@ -705,9 +718,7 @@ func (c *Client) handleRequest(msg Message) {
 			c.respondError(id, ErrCodeInvalidRequest, err.Error())
 			return
 		}
-		c.mu.Lock()
-		req.DuringLoad = c.loading
-		c.mu.Unlock()
+		req.DuringLoad = duringLoad
 		res, err := c.h.OnPermission(ctx, req)
 		if err != nil {
 			c.respond(id, Cancelled())

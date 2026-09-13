@@ -80,11 +80,12 @@ func (b *ACPBackend) diagnose(msg string) {
 
 // Capabilities implements Backend.
 //
-// Resume is true in the sense that the call is worth making: of twelve agents,
-// eleven accept session/load into a new process and one refuses outright. What
-// has not been established is whether the accepting eleven actually restore
-// the conversation or merely open a fresh session without complaining, so a
-// caller should offer resuming and must not assume the context survived.
+// Resume is true in the sense that the call is worth making: every agent
+// measured accepts session/load into a new process after a clean close. It is
+// not a guarantee. Loads have been seen to fail for the same agent depending
+// on how the previous process ended and whether it had been reaped, and a
+// load that succeeds may still have restored nothing — the diagnostic says
+// which. Offer resuming; do not assume the context survived.
 // Tools is true because ACP carries MCP server declarations, which is how a
 // caller injects its own.
 func (b *ACPBackend) Capabilities() Capabilities {

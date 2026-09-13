@@ -260,7 +260,7 @@ func TestBackendDeclaresWhatItCanDo(t *testing.T) {
 	// This assertion used to read the other way, on the reasoning that a
 	// session lives inside a process. It does not: the agent persists the
 	// session and session/load brings the conversation into a new process.
-	// Measured across twelve agents, eleven resume.
+	// Every agent measured accepts the call after a clean close.
 	if !caps.Resume {
 		t.Error("session/load resumes a persisted session; resume should be true")
 	}

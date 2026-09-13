@@ -133,10 +133,11 @@ type AgentInfo struct {
 
 // AgentCapabilities is what the agent says it can do.
 //
-// Treat it as a claim, not a contract. Measured across twelve ACP agents, all
-// twelve declare LoadSession and one of them fails every load, so this field
-// has no power to predict who will actually resume. It is worth showing a
-// person and worth recording; it is not worth branching on.
+// Treat it as a claim, not a contract. Every agent measured declares
+// LoadSession, and whether a given load succeeds has turned out to depend on
+// things the flag cannot know — how the previous process ended, whether it has
+// been reaped yet — so it has no power to predict the outcome of a call. It is
+// worth showing a person and worth recording; it is not worth branching on.
 type AgentCapabilities struct {
 	LoadSession bool `json:"loadSession"`
 }

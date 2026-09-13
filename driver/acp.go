@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/acp"
@@ -49,6 +50,22 @@ type ACPBackend struct {
 	// Nil discards, which is a choice rather than an accident. Recorded and
 	// seen are not the same thing.
 	OnDiagnostic func(string)
+
+	// EmitReplay publishes the history a resumed session replays as ordinary
+	// events, rather than discarding it.
+	//
+	// Off by default: replayed updates describe work that already happened,
+	// and a run that announces them looks like it is doing that work now.
+	// Turn it on when the caller is building the conversation from scratch
+	// and genuinely wants the history.
+	EmitReplay bool
+
+	// ReplayIdleGap is how long a resuming agent's replay must stay quiet
+	// before the session counts as rebuilt. Zero means acp's default.
+	ReplayIdleGap time.Duration
+
+	// LoadTimeout bounds a whole resume. Zero means acp's default.
+	LoadTimeout time.Duration
 }
 
 // Kind implements Backend.
@@ -63,15 +80,18 @@ func (b *ACPBackend) diagnose(msg string) {
 
 // Capabilities implements Backend.
 //
-// Resume is false because a session lives inside a process; when the process
-// goes, so does the session. Tools is true because ACP carries MCP server
-// declarations, which is how a caller injects its own.
+// Resume is true: a session outlives the process that made it, because the
+// agent persists it and session/load brings the conversation back into a new
+// one. Measured across twelve agents, eleven resume and one refuses, so a
+// caller should offer it and handle the refusal rather than assume either way.
+// Tools is true because ACP carries MCP server declarations, which is how a
+// caller injects its own.
 func (b *ACPBackend) Capabilities() Capabilities {
 	return Capabilities{
 		Steer:     false,
 		Approvals: true,
 		Interrupt: true,
-		Resume:    false,
+		Resume:    true,
 		Tools:     true,
 	}
 }
@@ -83,10 +103,11 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 	}
 
 	s := &acpSession{
-		runID:   cfg.RunID,
-		chatID:  cfg.ChatID,
-		events:  make(chan ap.AgentEvent, 64),
-		pending: make(map[string]*pendingPermission),
+		runID:      cfg.RunID,
+		chatID:     cfg.ChatID,
+		events:     make(chan ap.AgentEvent, 64),
+		pending:    make(map[string]*pendingPermission),
+		emitReplay: b.EmitReplay,
 	}
 
 	name := b.ClientName
@@ -115,12 +136,27 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 	s.proc = proc
 
 	servers := mcpServersFrom(cfg.Metadata)
-	sid, err := proc.NewSession(ctx, cfg.WorkDir, servers)
-	if err != nil {
-		_ = proc.Kill()
-		return nil, fmt.Errorf("driver: open acp session: %w", err)
+
+	if cfg.ResumeSessionID != "" {
+		proc.ReplayIdleGap = b.ReplayIdleGap
+		proc.LoadTimeout = b.LoadTimeout
+		res, err := proc.LoadSession(ctx, cfg.ResumeSessionID, cfg.WorkDir, servers)
+		if err != nil {
+			_ = proc.Kill()
+			return nil, fmt.Errorf("driver: resume acp session: %w", err)
+		}
+		s.id = cfg.ResumeSessionID
+		b.diagnose(fmt.Sprintf("resumed session %s: %d update(s) replayed in %s, agent %s",
+			cfg.ResumeSessionID, res.Replayed, res.Elapsed.Round(time.Millisecond),
+			answeredWord(res.Answered)))
+	} else {
+		sid, err := proc.NewSession(ctx, cfg.WorkDir, servers)
+		if err != nil {
+			_ = proc.Kill()
+			return nil, fmt.Errorf("driver: open acp session: %w", err)
+		}
+		s.id = sid
 	}
-	s.id = sid
 
 	s.emit(ap.NewEvent(ap.AgentEventRunStarted, s.runID, s.chatID, ap.RunStartedPayload{}))
 	return s, nil
@@ -141,8 +177,9 @@ type acpSession struct {
 	runID  string
 	chatID string
 
-	events    chan ap.AgentEvent
-	closeOnce sync.Once
+	events     chan ap.AgentEvent
+	closeOnce  sync.Once
+	emitReplay bool
 
 	mu      sync.Mutex
 	pending map[string]*pendingPermission
@@ -228,9 +265,24 @@ func (s *acpSession) failPending() {
 }
 
 func (s *acpSession) onUpdate(n acp.UpdateNotification) {
+	if n.Replay && !s.emitReplay {
+		// History from a resumed session, not progress. Emitting it would
+		// announce last week's tool calls as if they were running now, which
+		// is wrong in every display and wrong again in anything that counts
+		// tool use. The updates are still delivered to a caller that asks for
+		// them by setting EmitReplay.
+		return
+	}
 	if ev, ok := acp.EventForUpdate(n.Update, s.runID, s.chatID); ok {
 		s.emit(ev)
 	}
+}
+
+func answeredWord(answered bool) string {
+	if answered {
+		return "answered the call"
+	}
+	return "replayed and went quiet without answering"
 }
 
 // onPermission raises the agent's question as an approval-required event and

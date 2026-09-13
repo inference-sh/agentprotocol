@@ -1,0 +1,259 @@
+package acp_test
+
+import (
+	"context"
+	"testing"
+	"time"
+
+	"github.com/inference-sh/agentprotocol/acp"
+)
+
+// initialize completes only the handshake, leaving the session unopened so a
+// test can choose between session/new and session/load.
+func initialize(t *testing.T, c *acp.Client, a *fakeAgent, result map[string]any) {
+	t.Helper()
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		if _, err := c.Initialize(context.Background()); err != nil {
+			t.Errorf("initialize: %v", err)
+		}
+	}()
+	init := a.next()
+	a.reply(*init.ID, result)
+	<-done
+}
+
+func TestInitializeExposesWhatTheAgentSaidItCanDo(t *testing.T) {
+	c, a := newPair(t, acp.Handler{})
+
+	initialize(t, c, a, map[string]any{
+		"protocolVersion":   1,
+		"agentInfo":         map[string]any{"name": "kimi", "version": "3.2"},
+		"agentCapabilities": map[string]any{"loadSession": true},
+		"authMethods":       []any{map[string]any{"id": "oauth", "name": "Sign in"}},
+	})
+
+	if got := c.AgentInfo().Name; got != "kimi" {
+		t.Errorf("agent name = %q, want kimi", got)
+	}
+	if !c.CanLoadSession() {
+		t.Error("agent advertised loadSession and CanLoadSession is false")
+	}
+	methods := c.AuthMethods()
+	if len(methods) != 1 || methods[0].ID != "oauth" {
+		t.Errorf("auth methods = %+v, want one with id oauth", methods)
+	}
+	// Spawn performs the handshake itself, so a caller that used it can only
+	// reach the result through the client.
+	if c.InitializeRaw() == nil {
+		t.Error("initialize result was not kept")
+	}
+}
+
+// An agent that declares nothing must not look like one that refuses. Several
+// of the agents that resume successfully advertise no capabilities at all.
+func TestSilentAgentIsNotTreatedAsRefusing(t *testing.T) {
+	c, a := newPair(t, acp.Handler{})
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	if c.CanLoadSession() {
+		t.Error("agent said nothing; CanLoadSession should be false")
+	}
+	if c.AgentCapabilities() != (acp.AgentCapabilities{}) {
+		t.Error("capabilities should be zero when the agent declares none")
+	}
+}
+
+func TestLoadSessionReplaysHistoryAndAnswers(t *testing.T) {
+	var updates []acp.UpdateNotification
+	c, a := newPair(t, acp.Handler{
+		OnUpdate: func(n acp.UpdateNotification) { updates = append(updates, n) },
+	})
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	type outcome struct {
+		res acp.LoadResult
+		err error
+	}
+	done := make(chan outcome, 1)
+	go func() {
+		res, err := c.LoadSession(context.Background(), "ses_f647af", "/repo", nil)
+		done <- outcome{res, err}
+	}()
+
+	load := a.next()
+	if load.Method != acp.MethodSessionLoad {
+		t.Fatalf("method = %q, want %q", load.Method, acp.MethodSessionLoad)
+	}
+
+	// History first, then the answer: the order every agent that answers uses.
+	a.notify(acp.MethodSessionUpdate, map[string]any{
+		"sessionId": "ses_f647af",
+		"update":    map[string]any{"sessionUpdate": "agent_message_chunk", "content": map[string]any{"text": "earlier"}},
+	})
+	a.notify(acp.MethodSessionUpdate, map[string]any{
+		"sessionId": "ses_f647af",
+		"update":    map[string]any{"sessionUpdate": "agent_message_chunk", "content": map[string]any{"text": "reply"}},
+	})
+	a.reply(*load.ID, map[string]any{})
+
+	got := <-done
+	if got.err != nil {
+		t.Fatalf("load: %v", got.err)
+	}
+	if !got.res.Answered {
+		t.Error("agent answered the call; Answered should be true")
+	}
+	if got.res.Replayed != 2 {
+		t.Errorf("replayed = %d, want 2", got.res.Replayed)
+	}
+	if c.SessionID() != "ses_f647af" {
+		t.Errorf("session id = %q, want it remembered after a load", c.SessionID())
+	}
+	for i, n := range updates {
+		if !n.Replay {
+			t.Errorf("update %d arrived during a load and is not marked Replay", i)
+		}
+	}
+}
+
+// The behaviour that makes this worth writing: several agents attach and
+// replay without ever answering session/load. A load that only waited for the
+// reply would time out on a session that is in fact open.
+func TestLoadSucceedsWhenTheAgentReplaysAndNeverAnswers(t *testing.T) {
+	c, a := newPair(t, acp.Handler{})
+	c.ReplayIdleGap = 150 * time.Millisecond
+	c.LoadTimeout = 5 * time.Second
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	done := make(chan acp.LoadResult, 1)
+	go func() {
+		res, err := c.LoadSession(context.Background(), "20260913_1", "/repo", nil)
+		if err != nil {
+			t.Errorf("load: %v", err)
+		}
+		done <- res
+	}()
+
+	a.next() // the load call, deliberately never answered
+	a.notify(acp.MethodSessionUpdate, map[string]any{
+		"sessionId": "20260913_1",
+		"update":    map[string]any{"sessionUpdate": "agent_message_chunk", "content": map[string]any{"text": "history"}},
+	})
+
+	select {
+	case res := <-done:
+		if res.Answered {
+			t.Error("the agent never answered; Answered should be false")
+		}
+		if res.Replayed != 1 {
+			t.Errorf("replayed = %d, want 1", res.Replayed)
+		}
+		if c.SessionID() != "20260913_1" {
+			t.Errorf("session id = %q, want it remembered", c.SessionID())
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("load never concluded from replay going quiet")
+	}
+}
+
+// Silence is not success. gemini rejects session/load outright, and an agent
+// that neither answers nor replays must fail rather than report a session that
+// was never opened.
+func TestLoadWithNeitherAnswerNorReplayFails(t *testing.T) {
+	c, a := newPair(t, acp.Handler{})
+	c.LoadTimeout = 300 * time.Millisecond
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := c.LoadSession(context.Background(), "ghost", "/repo", nil)
+		done <- err
+	}()
+	a.next()
+
+	select {
+	case err := <-done:
+		if err == nil {
+			t.Fatal("load reported success with no answer and no replay")
+		}
+		if c.SessionID() != "" {
+			t.Errorf("session id = %q, want empty after a failed load", c.SessionID())
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("load did not give up")
+	}
+}
+
+func TestLoadSurfacesAnOutrightRefusal(t *testing.T) {
+	c, a := newPair(t, acp.Handler{})
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := c.LoadSession(context.Background(), "nope", "/repo", nil)
+		done <- err
+	}()
+
+	load := a.next()
+	a.replyError(*load.ID, -32603, "Internal error")
+
+	err := <-done
+	if err == nil {
+		t.Fatal("agent refused the load; want an error")
+	}
+	if c.SessionID() != "" {
+		t.Errorf("session id = %q, want empty after a refusal", c.SessionID())
+	}
+}
+
+// Updates outside a load are live, and must not be mistaken for history.
+func TestUpdatesOutsideALoadAreNotMarkedReplay(t *testing.T) {
+	seen := make(chan acp.UpdateNotification, 1)
+	c, a := newPair(t, acp.Handler{
+		OnUpdate: func(n acp.UpdateNotification) { seen <- n },
+	})
+	handshake(t, c, a, "sid")
+
+	a.notify(acp.MethodSessionUpdate, map[string]any{
+		"sessionId": "sid",
+		"update":    map[string]any{"sessionUpdate": "agent_message_chunk", "content": map[string]any{"text": "live"}},
+	})
+
+	select {
+	case n := <-seen:
+		if n.Replay {
+			t.Error("a live update was marked as replay")
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("update never arrived")
+	}
+}
+
+func TestLoadWithoutASessionIDIsRefused(t *testing.T) {
+	c, a := newPair(t, acp.Handler{})
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	if _, err := c.LoadSession(context.Background(), "", "/repo", nil); err == nil {
+		t.Fatal("want an error for an empty session id")
+	}
+}
+
+func TestAuthenticateSendsTheChosenMethod(t *testing.T) {
+	c, a := newPair(t, acp.Handler{})
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	done := make(chan error, 1)
+	go func() { done <- c.Authenticate(context.Background(), "oauth") }()
+
+	call := a.next()
+	if call.Method != acp.MethodAuthenticate {
+		t.Fatalf("method = %q, want %q", call.Method, acp.MethodAuthenticate)
+	}
+	a.reply(*call.ID, map[string]any{})
+
+	if err := <-done; err != nil {
+		t.Fatalf("authenticate: %v", err)
+	}
+}

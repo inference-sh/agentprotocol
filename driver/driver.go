@@ -124,6 +124,17 @@ type SessionConfig struct {
 	// Metadata is passed through to the backend for transport-specific
 	// settings that do not deserve a field here.
 	Metadata map[string]string
+
+	// ResumeSessionID reopens a session the agent persisted earlier instead
+	// of starting a new one. The conversation comes back with it: the agent
+	// rebuilds its state and the next prompt continues the same thread.
+	//
+	// The ID is the agent's own and is opaque. It is not ours, it is not
+	// portable between agents, and it should never be parsed.
+	//
+	// Empty starts fresh. A backend that cannot resume ignores this, which
+	// Capabilities.Resume says in advance.
+	ResumeSessionID string
 }
 
 // Input is what a caller sends into a session.

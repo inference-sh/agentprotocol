@@ -23,6 +23,7 @@ const ProtocolVersion = 1
 // Methods the client calls on the agent.
 const (
 	MethodInitialize    = "initialize"
+	MethodAuthenticate  = "authenticate"
 	MethodSessionNew    = "session/new"
 	MethodSessionLoad   = "session/load"
 	MethodSessionPrompt = "session/prompt"
@@ -108,6 +109,61 @@ type ClientCapabilities struct {
 	FileSystem         bool `json:"fs,omitempty"`
 }
 
+// InitializeResult is the agent's half of the handshake.
+//
+// Only the fields worth acting on are typed. Agents put a great deal else in
+// here and spell much of it differently, so Client.InitializeRaw keeps the
+// original for anyone who needs more than this.
+type InitializeResult struct {
+	ProtocolVersion   int               `json:"protocolVersion"`
+	AgentInfo         AgentInfo         `json:"agentInfo"`
+	AgentCapabilities AgentCapabilities `json:"agentCapabilities"`
+
+	// AuthMethods are the ways this agent will accept being authenticated.
+	// Empty means it asks for none, which is the common case for an agent the
+	// user already logged in through its own CLI.
+	AuthMethods []AuthMethod `json:"authMethods,omitempty"`
+}
+
+// AgentInfo identifies the agent on the far side.
+type AgentInfo struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
+
+// AgentCapabilities is what the agent says it can do.
+//
+// LoadSession is the one that changes a caller's behaviour: it decides whether
+// resuming is on the table at all, and asking beats discovering by failure.
+// Measured against real agents, eleven of twelve support it, so the useful
+// default when an agent says nothing is to try and handle the error.
+type AgentCapabilities struct {
+	LoadSession bool `json:"loadSession"`
+}
+
+// AuthMethod is one way an agent will accept being authenticated.
+type AuthMethod struct {
+	ID          string `json:"id"`
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+}
+
+// AuthenticateParams selects one of the agent's advertised auth methods.
+type AuthenticateParams struct {
+	MethodID string `json:"methodId"`
+}
+
+// LoadSessionParams reopens a session the agent persisted earlier.
+//
+// SessionID is the agent's own identifier and is opaque: observed shapes
+// include UUIDs, "20260913_1", "ses_f647af…" and "session_9309c0b5-…". Never
+// parse one, and never assume an ID from one agent means anything to another.
+type LoadSessionParams struct {
+	SessionID  string      `json:"sessionId"`
+	CWD        string      `json:"cwd"`
+	MCPServers []MCPServer `json:"mcpServers"`
+}
+
 // --- sessions ---
 
 // NewSessionParams opens a session rooted at a working directory.
@@ -158,6 +214,15 @@ func TextBlock(s string) ContentBlock { return ContentBlock{Type: "text", Text: 
 type UpdateNotification struct {
 	SessionID string        `json:"sessionId"`
 	Update    SessionUpdate `json:"update"`
+
+	// Replay marks an update that arrived while LoadSession was rebuilding a
+	// session, meaning it is history rather than progress.
+	//
+	// It is set by this package, never by the agent, because the agent sends
+	// replay down the same notification channel as live work and gives no
+	// sign which is which. A caller that ignores this will re-announce every
+	// tool call from an old conversation as if it were happening now.
+	Replay bool `json:"-"`
 }
 
 // SessionUpdate is the agent reporting progress. Kind discriminates; agents

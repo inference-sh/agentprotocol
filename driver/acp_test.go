@@ -257,8 +257,85 @@ func TestBackendDeclaresWhatItCanDo(t *testing.T) {
 	if !caps.Approvals {
 		t.Error("ACP carries permission requests; approvals should be true")
 	}
-	if caps.Resume {
-		t.Error("an ACP session dies with its process; resume cannot be true")
+	// This assertion used to read the other way, on the reasoning that a
+	// session lives inside a process. It does not: the agent persists the
+	// session and session/load brings the conversation into a new process.
+	// Measured across twelve agents, eleven resume.
+	if !caps.Resume {
+		t.Error("session/load resumes a persisted session; resume should be true")
+	}
+}
+
+// Resuming must not replay history as live events. A run that announced last
+// week's tool calls as happening now would be wrong in every display, and in
+// the api it would raise an approval for each one.
+func TestResumeReplaysHistoryWithoutEmittingIt(t *testing.T) {
+	for _, script := range []string{"resume", "resume-quiet"} {
+		t.Run(script, func(t *testing.T) {
+			var diags []string
+			b := backendRunning(t, script)
+			b.OnDiagnostic = func(m string) { diags = append(diags, m) }
+			b.ReplayIdleGap = 200 * time.Millisecond
+
+			sess, err := b.Open(context.Background(), driver.SessionConfig{
+				RunID:           "run-1",
+				WorkDir:         t.TempDir(),
+				ResumeSessionID: "ses_f647af",
+			})
+			if err != nil {
+				t.Fatalf("resume: %v", err)
+			}
+			defer sess.Close()
+
+			if sess.ID() != "ses_f647af" {
+				t.Errorf("session id = %q, want the one we resumed", sess.ID())
+			}
+
+			// Only run_started, never the replayed chunks.
+			select {
+			case ev := <-sess.Events():
+				if ev.Type != ap.AgentEventRunStarted {
+					t.Errorf("first event = %s, want run_started; replay leaked into the stream", ev.Type)
+				}
+			case <-time.After(3 * time.Second):
+				t.Fatal("no run_started event")
+			}
+			select {
+			case ev := <-sess.Events():
+				t.Errorf("unexpected event %s: replayed history was emitted", ev.Type)
+			case <-time.After(300 * time.Millisecond):
+			}
+
+			if len(diags) == 0 {
+				t.Error("a resume should report how much it replayed")
+			}
+		})
+	}
+}
+
+func TestResumeCanOptIntoTheHistory(t *testing.T) {
+	b := backendRunning(t, "resume")
+	b.EmitReplay = true
+
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		RunID:           "run-1",
+		WorkDir:         t.TempDir(),
+		ResumeSessionID: "ses_f647af",
+	})
+	if err != nil {
+		t.Fatalf("resume: %v", err)
+	}
+	defer sess.Close()
+
+	var kinds []ap.AgentEventType
+	deadline := time.After(3 * time.Second)
+	for len(kinds) < 3 {
+		select {
+		case ev := <-sess.Events():
+			kinds = append(kinds, ev.Type)
+		case <-deadline:
+			t.Fatalf("only saw %v; want the replayed history too", kinds)
+		}
 	}
 }
 
@@ -309,6 +386,22 @@ func runFakeAgent(script string) {
 
 		case msg.Method == acp.MethodSessionNew:
 			reply(*msg.ID, acp.NewSessionResult{SessionID: "sess_fake"})
+
+		case msg.Method == acp.MethodSessionLoad:
+			// Replay two updates, as a resuming agent does. Under the
+			// "resume-quiet" script the call is never answered, which is how
+			// most real agents behave.
+			update(acp.SessionUpdate{
+				Kind:    acp.UpdateKindAgentMessageChunk,
+				Content: json.RawMessage(`{"type":"text","text":"old question"}`),
+			})
+			update(acp.SessionUpdate{
+				Kind:    acp.UpdateKindAgentMessageChunk,
+				Content: json.RawMessage(`{"type":"text","text":"old answer"}`),
+			})
+			if script != "resume-quiet" {
+				reply(*msg.ID, map[string]any{})
+			}
 
 		case msg.Method == acp.MethodSessionPrompt:
 			var p acp.PromptParams

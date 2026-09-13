@@ -44,6 +44,16 @@ type ProcessConfig struct {
 	// vendor's binary; nothing here reads or transmits it.
 	Env []string
 
+	// AuthMethodID selects one of the agent's advertised auth methods, called
+	// between initialize and session setup.
+	//
+	// Empty skips authentication, which is right for almost every agent: the
+	// user logged in with the vendor's own CLI and the credential is already
+	// where the agent looks for it. Set this only for an agent that advertises
+	// a method and refuses to work without one — Client.AuthMethods reports
+	// what it offered.
+	AuthMethodID string
+
 	// Stderr receives the agent's diagnostics. Nil discards them. Agents are
 	// chatty here and it is usually the only clue when a launch fails, so
 	// capturing it is worth the buffer.
@@ -51,9 +61,10 @@ type ProcessConfig struct {
 }
 
 // Spawn launches the agent, starts the client's read loop, and completes the
-// ACP handshake through initialize. It does not open a session; call
-// NewSession for that, so the caller can choose the working directory and the
-// MCP servers to inject.
+// ACP handshake through initialize, then authenticate if the caller named a
+// method. It does not open a session; call NewSession for a new one or
+// LoadSession to resume one the agent persisted, so the caller can choose the
+// working directory and the MCP servers to inject.
 //
 // On any failure the child is killed before returning, so a caller that gets
 // an error has no process to clean up.
@@ -92,6 +103,13 @@ func Spawn(ctx context.Context, cfg ProcessConfig, info ClientInfo, h Handler) (
 	if _, err := p.Initialize(ctx); err != nil {
 		_ = p.Kill()
 		return nil, fmt.Errorf("acp: initialize %s: %w", cfg.Command, err)
+	}
+
+	if cfg.AuthMethodID != "" {
+		if err := p.Authenticate(ctx, cfg.AuthMethodID); err != nil {
+			_ = p.Kill()
+			return nil, fmt.Errorf("acp: authenticate %s: %w", cfg.Command, err)
+		}
 	}
 	return p, nil
 }

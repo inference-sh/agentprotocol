@@ -94,6 +94,17 @@ type Client struct {
 	pending   map[int]chan Message
 	sessionID string
 
+	initRaw json.RawMessage
+	initRes InitializeResult
+
+	// Replay bookkeeping for LoadSession. loading is held for the duration of
+	// a load; replayed counts updates seen during it and lastUpdate is when
+	// the most recent one arrived, which together are how a load detects that
+	// an agent has finished replaying without answering the call.
+	loading    bool
+	replayed   int
+	lastUpdate time.Time
+
 	closeOnce sync.Once
 	done      chan struct{}
 	readErr   error
@@ -104,6 +115,13 @@ type Client struct {
 	// PromptTimeout bounds a prompt specifically, whose duration belongs to
 	// the model rather than the protocol. Zero means DefaultPromptTimeout.
 	PromptTimeout time.Duration
+
+	// ReplayIdleGap is how long session/update must stay quiet during a load
+	// before the session counts as rebuilt. Zero means DefaultReplayIdleGap.
+	ReplayIdleGap time.Duration
+
+	// LoadTimeout bounds a whole load. Zero means DefaultLoadTimeout.
+	LoadTimeout time.Duration
 }
 
 // NewClient wires a client to a duplex stream. Nothing is sent until
@@ -159,7 +177,81 @@ func (c *Client) Initialize(ctx context.Context) (json.RawMessage, error) {
 			FileSystem:         c.h.OnReadTextFile != nil || c.h.OnWriteTextFile != nil,
 		},
 	}
-	return c.Call(ctx, MethodInitialize, params)
+	raw, err := c.Call(ctx, MethodInitialize, params)
+	if err != nil {
+		return nil, err
+	}
+
+	// A result we cannot parse is not a failed handshake. Agents put
+	// unexpected shapes in here and the fields we read are advisory, so the
+	// raw form is kept either way and the typed view is best-effort.
+	var res InitializeResult
+	_ = json.Unmarshal(raw, &res)
+
+	c.mu.Lock()
+	c.initRaw = raw
+	c.initRes = res
+	c.mu.Unlock()
+	return raw, nil
+}
+
+// InitializeRaw is the agent's unmodified handshake result, or nil before
+// Initialize has run. Spawn performs the handshake itself, so this is how a
+// caller that used Spawn reaches a result it never saw returned.
+func (c *Client) InitializeRaw() json.RawMessage {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.initRaw
+}
+
+// AgentInfo is the agent's self-description from the handshake.
+func (c *Client) AgentInfo() AgentInfo {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.initRes.AgentInfo
+}
+
+// AgentCapabilities is what the agent said it can do, zero before Initialize.
+//
+// Use it to decide whether to offer resuming rather than to gate it: an agent
+// that declares nothing may still load a session perfectly well, and the only
+// reliable test is to try. CanLoadSession exists for the decision that
+// actually matters.
+func (c *Client) AgentCapabilities() AgentCapabilities {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.initRes.AgentCapabilities
+}
+
+// AuthMethods are the ways the agent will accept being authenticated. Empty is
+// the common case: the user logged in through the vendor's own CLI and the
+// agent asks nothing of us.
+func (c *Client) AuthMethods() []AuthMethod {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.initRes.AuthMethods
+}
+
+// CanLoadSession reports whether the agent declared support for resuming.
+//
+// A false does not mean resuming will fail. Of twelve agents measured, eleven
+// resume and one refuses, and several of the eleven declare nothing at all, so
+// this is worth showing a user and not worth blocking on.
+func (c *Client) CanLoadSession() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.initRes.AgentCapabilities.LoadSession
+}
+
+// Authenticate selects one of the agent's advertised auth methods.
+//
+// Most agents advertise none, because the user logged in with the vendor's CLI
+// and the credential is already on disk where the agent expects it. Call this
+// only for an agent that asks: an unsolicited authenticate is a call the agent
+// never offered to answer.
+func (c *Client) Authenticate(ctx context.Context, methodID string) error {
+	_, err := c.Call(ctx, MethodAuthenticate, AuthenticateParams{MethodID: methodID})
+	return err
 }
 
 // NewSession opens a session rooted at cwd and remembers its ID.
@@ -179,6 +271,142 @@ func (c *Client) NewSession(ctx context.Context, cwd string, servers []MCPServer
 	c.sessionID = res.SessionID
 	c.mu.Unlock()
 	return res.SessionID, nil
+}
+
+// DefaultReplayIdleGap is how long session/update must stay quiet before a
+// load concludes that the agent has finished replaying.
+//
+// Three seconds because replay arrives in a burst and the gaps within one are
+// small, while the gap after it is unbounded. Too short ends a load mid-replay
+// and the rest of the history is then delivered as live progress.
+const DefaultReplayIdleGap = 3 * time.Second
+
+// DefaultLoadTimeout bounds a whole load: no answer and no replay within it
+// means the agent is not going to attach.
+const DefaultLoadTimeout = 60 * time.Second
+
+// LoadResult describes how a load ended, which is worth surfacing because the
+// two successful endings are not the same thing.
+type LoadResult struct {
+	// Replayed counts the updates the agent sent while rebuilding.
+	Replayed int
+
+	// Answered reports whether session/load returned. False means the agent
+	// attached and replayed but never answered the call, which is common.
+	Answered bool
+
+	// Elapsed is how long the load took.
+	Elapsed time.Duration
+}
+
+// LoadSession reopens a session the agent persisted earlier and remembers its
+// ID, the resuming counterpart to NewSession.
+//
+// The conversation comes back: the agent rebuilds its state and replays the
+// history as session/update notifications, and the next prompt continues the
+// same thread. It happens in a new process. A session somebody is driving by
+// hand in a terminal keeps its own process untouched; what transfers here is
+// the conversation, not the pipe.
+//
+// Replayed updates reach Handler.OnUpdate with Replay set, so a caller can
+// take them as history. They are delivered rather than swallowed because a
+// caller attaching to a conversation it has never seen usually wants it.
+//
+// The awkward part, and the reason this is not two lines: session/load does
+// not reliably return. Some agents answer only once replay finishes, some
+// never answer while streaming, and one refuses outright. So the call races a
+// replay-idle timer, and an agent that replays and goes quiet is treated as
+// attached even though the RPC is still outstanding.
+func (c *Client) LoadSession(ctx context.Context, sessionID, cwd string, servers []MCPServer) (LoadResult, error) {
+	if sessionID == "" {
+		return LoadResult{}, errors.New("acp: load without a session id")
+	}
+	if servers == nil {
+		servers = []MCPServer{}
+	}
+
+	c.mu.Lock()
+	c.loading = true
+	c.replayed = 0
+	c.lastUpdate = time.Time{}
+	c.mu.Unlock()
+	defer func() {
+		c.mu.Lock()
+		c.loading = false
+		c.mu.Unlock()
+	}()
+
+	params := LoadSessionParams{SessionID: sessionID, CWD: cwd, MCPServers: servers}
+	done := make(chan error, 1)
+	go func() {
+		_, err := c.Call(ctx, MethodSessionLoad, params)
+		done <- err
+	}()
+
+	start := time.Now()
+	gap := c.ReplayIdleGap
+	if gap <= 0 {
+		gap = DefaultReplayIdleGap
+	}
+	budget := c.LoadTimeout
+	if budget <= 0 {
+		budget = DefaultLoadTimeout
+	}
+
+	ticker := time.NewTicker(200 * time.Millisecond)
+	defer ticker.Stop()
+	deadline := time.NewTimer(budget)
+	defer deadline.Stop()
+
+	for {
+		select {
+		case err := <-done:
+			if err != nil {
+				return LoadResult{Replayed: c.ReplayedUpdates(), Elapsed: time.Since(start)},
+					fmt.Errorf("acp: load session %q: %w", sessionID, err)
+			}
+			c.setSessionID(sessionID)
+			return LoadResult{
+				Replayed: c.ReplayedUpdates(),
+				Answered: true,
+				Elapsed:  time.Since(start),
+			}, nil
+
+		case <-ticker.C:
+			c.mu.Lock()
+			quiet := c.replayed > 0 && !c.lastUpdate.IsZero() && time.Since(c.lastUpdate) >= gap
+			n := c.replayed
+			c.mu.Unlock()
+			if quiet {
+				c.setSessionID(sessionID)
+				return LoadResult{Replayed: n, Elapsed: time.Since(start)}, nil
+			}
+
+		case <-deadline.C:
+			return LoadResult{Replayed: c.ReplayedUpdates(), Elapsed: time.Since(start)},
+				fmt.Errorf("acp: load session %q: no answer and no replay within %s", sessionID, budget)
+
+		case <-c.done:
+			return LoadResult{Replayed: c.ReplayedUpdates(), Elapsed: time.Since(start)},
+				fmt.Errorf("acp: load session %q: agent exited", sessionID)
+
+		case <-ctx.Done():
+			return LoadResult{Replayed: c.ReplayedUpdates(), Elapsed: time.Since(start)}, ctx.Err()
+		}
+	}
+}
+
+// ReplayedUpdates is how many updates arrived during the most recent load.
+func (c *Client) ReplayedUpdates() int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.replayed
+}
+
+func (c *Client) setSessionID(id string) {
+	c.mu.Lock()
+	c.sessionID = id
+	c.mu.Unlock()
 }
 
 // Prompt sends user input. It returns when the agent answers the prompt call,
@@ -336,9 +564,21 @@ func (c *Client) dispatch(msg Message) {
 	}
 
 	if msg.Method == MethodSessionUpdate {
+		// Count it before handing it over, whether or not anyone is
+		// listening: LoadSession decides that replay has finished by watching
+		// these, and a client with no OnUpdate must still be able to load.
+		c.mu.Lock()
+		replay := c.loading
+		if replay {
+			c.replayed++
+			c.lastUpdate = time.Now()
+		}
+		c.mu.Unlock()
+
 		if c.h.OnUpdate != nil {
 			var n UpdateNotification
 			if json.Unmarshal(msg.Params, &n) == nil {
+				n.Replay = replay
 				c.h.OnUpdate(n)
 			}
 		}

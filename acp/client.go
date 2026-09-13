@@ -213,10 +213,7 @@ func (c *Client) AgentInfo() AgentInfo {
 
 // AgentCapabilities is what the agent said it can do, zero before Initialize.
 //
-// Use it to decide whether to offer resuming rather than to gate it: an agent
-// that declares nothing may still load a session perfectly well, and the only
-// reliable test is to try. CanLoadSession exists for the decision that
-// actually matters.
+// It is a claim rather than a contract. See CanLoadSession.
 func (c *Client) AgentCapabilities() AgentCapabilities {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -234,9 +231,13 @@ func (c *Client) AuthMethods() []AuthMethod {
 
 // CanLoadSession reports whether the agent declared support for resuming.
 //
-// A false does not mean resuming will fail. Of twelve agents measured, eleven
-// resume and one refuses, and several of the eleven declare nothing at all, so
-// this is worth showing a user and not worth blocking on.
+// Do not branch on it. Across twelve ACP agents measured, all twelve declare
+// it and one of them refuses every load, so a false is not a refusal and a
+// true is not a promise. The claim carries no information about the outcome.
+//
+// The only reliable test is to call LoadSession and handle the error. This is
+// here so a caller can show a person what the agent said, and so the claim is
+// on record when it turns out to be untrue.
 func (c *Client) CanLoadSession() bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -292,7 +293,13 @@ type LoadResult struct {
 	Replayed int
 
 	// Answered reports whether session/load returned. False means the agent
-	// attached and replayed but never answered the call, which is common.
+	// attached and replayed but never answered the call.
+	//
+	// Measured across twelve agents against a mock backend, with two to six
+	// updates replayed, this was true every time. T3 Code hit the other case
+	// in production against real models, where replays are far longer, so the
+	// idle-gap path stays. Read a false as "this agent needed the fallback",
+	// not as an error.
 	Answered bool
 
 	// Elapsed is how long the load took.
@@ -631,6 +638,9 @@ func (c *Client) handleRequest(msg Message) {
 			c.respondError(id, ErrCodeInvalidRequest, err.Error())
 			return
 		}
+		c.mu.Lock()
+		req.DuringLoad = c.loading
+		c.mu.Unlock()
 		res, err := c.h.OnPermission(ctx, req)
 		if err != nil {
 			c.respond(id, Cancelled())

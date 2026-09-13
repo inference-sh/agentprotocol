@@ -51,8 +51,10 @@ func TestInitializeExposesWhatTheAgentSaidItCanDo(t *testing.T) {
 	}
 }
 
-// An agent that declares nothing must not look like one that refuses. Several
-// of the agents that resume successfully advertise no capabilities at all.
+// An agent that declares nothing reads as a zero capability set, and nothing
+// in the library may turn that into a refusal. None of the twelve agents
+// measured is silent — all twelve declare loadSession and one still fails
+// every load — so the claim predicts nothing in either direction.
 func TestSilentAgentIsNotTreatedAsRefusing(t *testing.T) {
 	c, a := newPair(t, acp.Handler{})
 	initialize(t, c, a, map[string]any{"protocolVersion": 1})
@@ -255,5 +257,72 @@ func TestAuthenticateSendsTheChosenMethod(t *testing.T) {
 
 	if err := <-done; err != nil {
 		t.Fatalf("authenticate: %v", err)
+	}
+}
+
+// A permission request that arrives during a load is marked but still
+// delivered. The agent blocks on the reply, so dropping it would hang the
+// session that was just resumed.
+func TestPermissionDuringLoadIsMarkedAndStillAnswered(t *testing.T) {
+	seen := make(chan acp.PermissionRequest, 1)
+	c, a := newPair(t, acp.Handler{
+		OnPermission: func(_ context.Context, r acp.PermissionRequest) (acp.PermissionResponse, error) {
+			seen <- r
+			return acp.Cancelled(), nil
+		},
+	})
+	c.ReplayIdleGap = 150 * time.Millisecond
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	go func() {
+		if _, err := c.LoadSession(context.Background(), "sid", "/repo", nil); err != nil {
+			t.Errorf("load: %v", err)
+		}
+	}()
+
+	a.next() // the load call, never answered
+	a.notify(acp.MethodSessionUpdate, map[string]any{
+		"sessionId": "sid",
+		"update":    map[string]any{"sessionUpdate": "agent_message_chunk", "content": map[string]any{"text": "history"}},
+	})
+	a.ask(7001, acp.MethodRequestPermission, map[string]any{
+		"sessionId": "sid",
+		"toolCall":  map[string]any{"toolCallId": "call_1", "title": "write"},
+		"options":   []any{map[string]any{"optionId": "no", "kind": "reject_once"}},
+	})
+
+	select {
+	case req := <-seen:
+		if !req.DuringLoad {
+			t.Error("a permission request arriving during a load was not marked DuringLoad")
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("permission request was swallowed during the load; the agent would block forever")
+	}
+}
+
+func TestPermissionOutsideALoadIsNotMarked(t *testing.T) {
+	seen := make(chan acp.PermissionRequest, 1)
+	c, a := newPair(t, acp.Handler{
+		OnPermission: func(_ context.Context, r acp.PermissionRequest) (acp.PermissionResponse, error) {
+			seen <- r
+			return acp.Cancelled(), nil
+		},
+	})
+	handshake(t, c, a, "sid")
+
+	a.ask(7002, acp.MethodRequestPermission, map[string]any{
+		"sessionId": "sid",
+		"toolCall":  map[string]any{"toolCallId": "call_1", "title": "write"},
+		"options":   []any{map[string]any{"optionId": "no", "kind": "reject_once"}},
+	})
+
+	select {
+	case req := <-seen:
+		if req.DuringLoad {
+			t.Error("a live permission request was marked DuringLoad")
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("permission request never arrived")
 	}
 }

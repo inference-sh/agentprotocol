@@ -133,10 +133,10 @@ type AgentInfo struct {
 
 // AgentCapabilities is what the agent says it can do.
 //
-// LoadSession is the one that changes a caller's behaviour: it decides whether
-// resuming is on the table at all, and asking beats discovering by failure.
-// Measured against real agents, eleven of twelve support it, so the useful
-// default when an agent says nothing is to try and handle the error.
+// Treat it as a claim, not a contract. Measured across twelve ACP agents, all
+// twelve declare LoadSession and one of them fails every load, so this field
+// has no power to predict who will actually resume. It is worth showing a
+// person and worth recording; it is not worth branching on.
 type AgentCapabilities struct {
 	LoadSession bool `json:"loadSession"`
 }
@@ -274,6 +274,21 @@ type PermissionRequest struct {
 	SessionID string             `json:"sessionId"`
 	ToolCall  *PermissionToolRef `json:"toolCall,omitempty"`
 	Options   []PermissionOption `json:"options"`
+
+	// DuringLoad marks a request that arrived while LoadSession was rebuilding
+	// the session, set by this package and never by the agent.
+	//
+	// Deliberately not called Replay, because unlike an update this probably
+	// is not history. A notification during replay describes something that
+	// already happened; a request is the agent waiting for an answer, and an
+	// agent whose process died with a tool call parked has good reason to ask
+	// again on resume. So the honest name states when it arrived and leaves
+	// the interpretation to the caller.
+	//
+	// What it must not do is go unanswered. The agent blocks on the reply
+	// either way, so a caller that ignores these hangs the session it just
+	// resumed.
+	DuringLoad bool `json:"-"`
 }
 
 // PermissionToolRef describes what the agent wants to run.

@@ -2,6 +2,9 @@ package acp_test
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -510,5 +513,46 @@ func TestDuringLoadReflectsArrivalNotHandlerTiming(t *testing.T) {
 		}
 	case <-time.After(3 * time.Second):
 		t.Fatal("permission handler never ran")
+	}
+}
+
+// An agent's error data must survive to the error string. Gemini answers a
+// failed load with a bare "Internal error" message and the real explanation —
+// the id it could not find, where it looked — in the data field. A caller
+// that formats the error and sees only "Internal error" has been told nothing.
+func TestErrorDataReachesTheErrorString(t *testing.T) {
+	c, a := newPair(t, acp.Handler{})
+	initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := c.LoadSession(context.Background(), "6a591b0d", "/repo", nil)
+		done <- err
+	}()
+
+	load := a.next()
+	data, _ := json.Marshal(map[string]any{"jsonrpc": "2.0", "id": *load.ID, "error": map[string]any{
+		"code":    -32603,
+		"message": "Internal error",
+		"data":    map[string]any{"detail": `Invalid session identifier "6a591b0d". Use --list-sessions.`},
+	}})
+	a.write(data)
+
+	err := <-done
+	if err == nil {
+		t.Fatal("want an error")
+	}
+	if !strings.Contains(err.Error(), "list-sessions") {
+		t.Errorf("error string dropped the agent's explanation: %q", err.Error())
+	}
+
+	// And the structured error is still reachable for a caller that wants the
+	// code or the raw data rather than the string.
+	var e *acp.Error
+	if !errors.As(err, &e) {
+		t.Fatal("the *acp.Error was not preserved through the wrap")
+	}
+	if e.Code != -32603 {
+		t.Errorf("code = %d, want -32603", e.Code)
 	}
 }

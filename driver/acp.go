@@ -147,8 +147,9 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 			return nil, fmt.Errorf("driver: resume acp session: %w", err)
 		}
 		s.id = cfg.ResumeSessionID
-		b.diagnose(fmt.Sprintf("resumed session %s: %d update(s) replayed in %s, agent %s",
-			cfg.ResumeSessionID, res.Replayed, res.Elapsed.Round(time.Millisecond),
+		b.diagnose(fmt.Sprintf("resumed session %s in %s: %d update(s) replayed, %d of them conversation, %s; agent %s",
+			cfg.ResumeSessionID, res.Elapsed.Round(time.Millisecond),
+			res.Replayed, res.Conversation, restoredWord(res.RestoredConversation),
 			answeredWord(res.Answered)))
 	} else {
 		sid, err := proc.NewSession(ctx, cfg.WorkDir, servers)
@@ -277,6 +278,17 @@ func (s *acpSession) onUpdate(n acp.UpdateNotification) {
 	if ev, ok := acp.EventForUpdate(n.Update, s.runID, s.chatID); ok {
 		s.emit(ev)
 	}
+}
+
+// restoredWord reports whether the replay proved anything. An agent that
+// accepts the load and sends only its usual session openers has given us no
+// evidence it found the session at all, and that is worth saying out loud
+// rather than reporting a resume that may be a blank slate.
+func restoredWord(restored bool) string {
+	if restored {
+		return "history restored"
+	}
+	return "NO user turn replayed, so the history is unproven"
 }
 
 func answeredWord(answered bool) string {

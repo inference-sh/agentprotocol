@@ -326,3 +326,78 @@ func TestPermissionOutsideALoadIsNotMarked(t *testing.T) {
 		t.Fatal("permission request never arrived")
 	}
 }
+
+// The check that separates a real resume from a blank session with good
+// manners: a fresh session cannot replay something the user said.
+func TestLoadDistinguishesRestoredHistoryFromSetupChatter(t *testing.T) {
+	cases := []struct {
+		name     string
+		updates  []map[string]any
+		restored bool
+		convo    int
+	}{
+		{
+			name: "setup chatter only",
+			updates: []map[string]any{
+				{"sessionUpdate": "current_mode_update", "currentModeId": "default"},
+				{"sessionUpdate": "available_commands_update", "availableCommands": []any{}},
+			},
+			restored: false,
+			convo:    0,
+		},
+		{
+			name: "a real conversation",
+			updates: []map[string]any{
+				{"sessionUpdate": "current_mode_update", "currentModeId": "default"},
+				{"sessionUpdate": "user_message_chunk", "content": map[string]any{"text": "what did I ask?"}},
+				{"sessionUpdate": "agent_message_chunk", "content": map[string]any{"text": "you asked this"}},
+			},
+			restored: true,
+			convo:    2,
+		},
+		{
+			// An agent replying without the user's turn is not proof: it could
+			// be an opening banner. Counted as conversation, not as restored.
+			name: "agent speech with no user turn",
+			updates: []map[string]any{
+				{"sessionUpdate": "agent_message_chunk", "content": map[string]any{"text": "ready"}},
+			},
+			restored: false,
+			convo:    1,
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			c, a := newPair(t, acp.Handler{})
+			initialize(t, c, a, map[string]any{"protocolVersion": 1})
+
+			done := make(chan acp.LoadResult, 1)
+			go func() {
+				res, err := c.LoadSession(context.Background(), "sid", "/repo", nil)
+				if err != nil {
+					t.Errorf("load: %v", err)
+				}
+				done <- res
+			}()
+
+			load := a.next()
+			for _, u := range tc.updates {
+				a.notify(acp.MethodSessionUpdate, map[string]any{"sessionId": "sid", "update": u})
+			}
+			a.reply(*load.ID, map[string]any{})
+
+			res := <-done
+			if res.Replayed != len(tc.updates) {
+				t.Errorf("replayed = %d, want %d", res.Replayed, len(tc.updates))
+			}
+			if res.Conversation != tc.convo {
+				t.Errorf("conversation = %d, want %d", res.Conversation, tc.convo)
+			}
+			if res.RestoredConversation != tc.restored {
+				t.Errorf("RestoredConversation = %v, want %v; %d updates is not by itself evidence",
+					res.RestoredConversation, tc.restored, res.Replayed)
+			}
+		})
+	}
+}

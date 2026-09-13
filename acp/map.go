@@ -10,6 +10,7 @@ import (
 // accepts the variants observed across Claude Code, Codex, Gemini CLI, Cursor
 // and Grok rather than insisting on one spelling.
 const (
+	UpdateKindUserMessageChunk  = "user_message_chunk"
 	UpdateKindAgentMessageChunk = "agent_message_chunk"
 	UpdateKindContentChunk      = "content_chunk"
 	UpdateKindAgentThoughtChunk = "agent_thought_chunk"
@@ -18,6 +19,45 @@ const (
 	UpdateKindPlan              = "plan"
 	UpdateKindUsage             = "usage"
 )
+
+// Session update kinds that describe the session rather than the conversation.
+// An agent emits these when a session opens, whether or not anything has ever
+// been said in it.
+const (
+	UpdateKindCurrentMode       = "current_mode_update"
+	UpdateKindAvailableCommands = "available_commands_update"
+	UpdateKindConfigOptions     = "config_options_update"
+)
+
+// IsConversation reports whether an update carries something that was said or
+// done, as opposed to the session describing itself.
+//
+// The distinction matters when reading a replay. An agent opening any session
+// announces its mode and its available commands; only a session with a history
+// has messages and tool calls in it.
+func IsConversation(u SessionUpdate) bool {
+	switch u.Kind {
+	case UpdateKindUserMessageChunk,
+		UpdateKindAgentMessageChunk,
+		UpdateKindContentChunk,
+		UpdateKindAgentThoughtChunk,
+		UpdateKindToolCall,
+		UpdateKindToolCallUpdate:
+		return true
+	}
+	return false
+}
+
+// IsUserTurn reports whether an update carries something the user said.
+//
+// This is the one update a fresh session cannot produce, because on a fresh
+// session the user has not spoken yet. In a replay it is therefore proof that
+// the agent restored a real conversation rather than opening a blank session
+// and sending its usual openers — which otherwise looks identical from the
+// outside, and which at least one agent is suspected of doing.
+func IsUserTurn(u SessionUpdate) bool {
+	return u.Kind == UpdateKindUserMessageChunk
+}
 
 // turnDoneKinds are the kind or status values that mean the agent has stopped
 // working. Different agents signal this differently and some signal it in

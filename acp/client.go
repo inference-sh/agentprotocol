@@ -101,9 +101,11 @@ type Client struct {
 	// a load; replayed counts updates seen during it and lastUpdate is when
 	// the most recent one arrived, which together are how a load detects that
 	// an agent has finished replaying without answering the call.
-	loading    bool
-	replayed   int
-	lastUpdate time.Time
+	loading      bool
+	replayed     int
+	conversation int
+	userTurn     bool
+	lastUpdate   time.Time
 
 	closeOnce sync.Once
 	done      chan struct{}
@@ -289,8 +291,28 @@ const DefaultLoadTimeout = 60 * time.Second
 // LoadResult describes how a load ended, which is worth surfacing because the
 // two successful endings are not the same thing.
 type LoadResult struct {
-	// Replayed counts the updates the agent sent while rebuilding.
+	// Replayed counts every update the agent sent while rebuilding.
+	//
+	// On its own this number proves very little. An agent announces its mode
+	// and its available commands when any session opens, so a handful of
+	// updates is what opening a blank session looks like too.
 	Replayed int
+
+	// Conversation counts the replayed updates that carry something said or
+	// done — messages, thoughts, tool calls — rather than the session
+	// describing itself.
+	Conversation int
+
+	// RestoredConversation reports that the replay contained something the
+	// user said.
+	//
+	// This is the honest test of whether a load did anything. A fresh session
+	// cannot produce a user turn, because on a fresh session the user has not
+	// spoken; an agent that ignored the session id and opened a blank one
+	// would replay no user turn no matter how many updates it sent. False
+	// with a nil error means the agent accepted the call and gave back
+	// nothing that proves it found the session.
+	RestoredConversation bool
 
 	// Answered reports whether session/load returned. False means the agent
 	// attached and replayed but never answered the call.
@@ -343,6 +365,8 @@ func (c *Client) LoadSession(ctx context.Context, sessionID, cwd string, servers
 	c.mu.Lock()
 	c.loading = true
 	c.replayed = 0
+	c.conversation = 0
+	c.userTurn = false
 	c.lastUpdate = time.Time{}
 	c.mu.Unlock()
 	defer func() {
@@ -377,37 +401,43 @@ func (c *Client) LoadSession(ctx context.Context, sessionID, cwd string, servers
 		select {
 		case err := <-done:
 			if err != nil {
-				return LoadResult{Replayed: c.ReplayedUpdates(), Elapsed: time.Since(start)},
-					fmt.Errorf("acp: load session %q: %w", sessionID, err)
+				return c.loadResult(start, false), fmt.Errorf("acp: load session %q: %w", sessionID, err)
 			}
 			c.setSessionID(sessionID)
-			return LoadResult{
-				Replayed: c.ReplayedUpdates(),
-				Answered: true,
-				Elapsed:  time.Since(start),
-			}, nil
+			return c.loadResult(start, true), nil
 
 		case <-ticker.C:
 			c.mu.Lock()
 			quiet := c.replayed > 0 && !c.lastUpdate.IsZero() && time.Since(c.lastUpdate) >= gap
-			n := c.replayed
 			c.mu.Unlock()
 			if quiet {
 				c.setSessionID(sessionID)
-				return LoadResult{Replayed: n, Elapsed: time.Since(start)}, nil
+				return c.loadResult(start, false), nil
 			}
 
 		case <-deadline.C:
-			return LoadResult{Replayed: c.ReplayedUpdates(), Elapsed: time.Since(start)},
+			return c.loadResult(start, false),
 				fmt.Errorf("acp: load session %q: no answer and no replay within %s", sessionID, budget)
 
 		case <-c.done:
-			return LoadResult{Replayed: c.ReplayedUpdates(), Elapsed: time.Since(start)},
+			return c.loadResult(start, false),
 				fmt.Errorf("acp: load session %q: agent exited", sessionID)
 
 		case <-ctx.Done():
-			return LoadResult{Replayed: c.ReplayedUpdates(), Elapsed: time.Since(start)}, ctx.Err()
+			return c.loadResult(start, false), ctx.Err()
 		}
+	}
+}
+
+func (c *Client) loadResult(start time.Time, answered bool) LoadResult {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return LoadResult{
+		Replayed:             c.replayed,
+		Conversation:         c.conversation,
+		RestoredConversation: c.userTurn,
+		Answered:             answered,
+		Elapsed:              time.Since(start),
 	}
 }
 
@@ -582,20 +612,28 @@ func (c *Client) dispatch(msg Message) {
 		// Count it before handing it over, whether or not anyone is
 		// listening: LoadSession decides that replay has finished by watching
 		// these, and a client with no OnUpdate must still be able to load.
+		var n UpdateNotification
+		decoded := json.Unmarshal(msg.Params, &n) == nil
+
 		c.mu.Lock()
 		replay := c.loading
 		if replay {
 			c.replayed++
 			c.lastUpdate = time.Now()
+			if decoded {
+				if IsConversation(n.Update) {
+					c.conversation++
+				}
+				if IsUserTurn(n.Update) {
+					c.userTurn = true
+				}
+			}
 		}
 		c.mu.Unlock()
 
-		if c.h.OnUpdate != nil {
-			var n UpdateNotification
-			if json.Unmarshal(msg.Params, &n) == nil {
-				n.Replay = replay
-				c.h.OnUpdate(n)
-			}
+		if c.h.OnUpdate != nil && decoded {
+			n.Replay = replay
+			c.h.OnUpdate(n)
 		}
 		return
 	}

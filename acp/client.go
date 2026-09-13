@@ -328,6 +328,11 @@ type LoadResult struct {
 	// would replay no user turn no matter how many updates it sent. False
 	// with a nil error means the agent accepted the call and gave back
 	// nothing that proves it found the session.
+	//
+	// A true means history was found, not that the original text survived. An
+	// agent that compacted the session replays a summary, so the user turn is
+	// present but the earlier wording is gone by design. This confirms the
+	// session was real; it does not promise the model receives it verbatim.
 	RestoredConversation bool
 
 	// Answered reports whether session/load returned. False means the agent

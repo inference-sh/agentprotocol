@@ -89,10 +89,17 @@ state.IsInterrupted()
 agentprotocol      the model above, standard library only
 ├── a2a/           Agent2Agent wire types and mappings
 ├── acp/           Agent Client Protocol client
-└── driver/        one interface for running an agent over any transport
+├── driver/        one interface for running an agent over any transport
+└── harness/       the registry of coding-agent CLIs: which exist, how to find them, how to drive them
 ```
 
-Imports only ever flow downward. `a2a` and `acp` depend on the root. `driver` depends on all three. The transport packages never reference each other, which is deliberate: adapters that translate directly between formats grow as the square of how many formats you support, while adapters that translate to a shared model grow linearly.
+Imports only ever flow downward. `a2a` and `acp` depend on the root. `driver` depends on all three. `harness` depends on nothing but the standard library. The transport packages never reference each other, which is deliberate: adapters that translate directly between formats grow as the square of how many formats you support, while adapters that translate to a shared model grow linearly.
+
+### harness
+
+The registry of coding-agent CLIs — claude, codex, gemini, cursor, goose, kiro and the rest — with what each one needs to be found and driven: binary name, config and hook directories, hook file format, the mode it answers ACP in, install command, known quirks. `DetectInstalled` reports which are on a machine and where.
+
+It lives here rather than in a test suite because three things consume it at runtime: a CLI installing hooks into an agent, a daemon reporting which agents a machine hosts, and a server deciding how to launch one. One registry, or the ids drift. The conformance suite that proves it against real agents is [harness-test](https://github.com/belt-sh/harness-test).
 
 ### a2a
 

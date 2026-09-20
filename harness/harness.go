@@ -80,8 +80,15 @@ type ConfigFile struct {
 
 // Harness describes a coding agent CLI and how belt integrates with it.
 type Harness struct {
+	// Name is the stable id: what a user types, what hooks receive as
+	// AI_AGENT, what a profile stores. It never changes once published.
 	Name   string
 	Binary string // CLI binary name
+
+	// DisplayName is the product name for humans ("Claude Code"); Vendor is
+	// who makes it ("Anthropic"). Neither is ever used as a key — see names.go.
+	DisplayName string
+	Vendor      string
 
 	// Install
 	InstallCmd     []string   // command to install the CLI if missing

@@ -427,7 +427,6 @@ var All = map[string]Harness{
 		ToolCallGated:  ToolCall{Name: "shell", Args: gatedShellArgs},
 		InstallCmd:     []string{"sh", "-c", "mkdir -p $HOME/.local/bin && curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/goose-x86_64-unknown-linux-gnu.tar.bz2 | tar -xj --strip-components=0 -C $HOME/.local/bin"},
 		InstallBinDirs: []string{".local/bin"},
-		PluginManifest: ".agents/plugins/belt/plugin.json",
 		APIFormat:      OpenAI,
 		EnvVars: map[string]string{
 			"GOOSE_PROVIDER":               "mock",

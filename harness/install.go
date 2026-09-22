@@ -21,6 +21,25 @@ const GoosePluginDir = ".agents/plugins/belt"
 // once no install predating 2026-09 is in use.
 const gooseLegacyPluginDir = ".agents/plugins/belt-test"
 
+// No plugin.json is written into GoosePluginDir, deliberately.
+//
+// The registry used to carry a PluginManifest field for goose, documented as
+// "write plugin.json here on install", and nothing ever wrote one — only
+// Uninstall removed it, so uninstall deleted a file install never created.
+// Implementing it looked like the obvious fix and is the opposite of one.
+//
+// Measured on goose 1.51: goose discovers hooks and skills under
+// .agents/plugins/<name>/ by directory convention, with or without a manifest,
+// so a correct manifest buys nothing. A manifest whose component paths do not
+// start with "./", or that is not valid JSON, makes those components vanish
+// from "goose skills list" — no error, no warning, zero exit
+// (crates/goose/src/plugins/formats/open_plugins.rs). Getting it slightly
+// wrong removes belt's skills from goose with nothing to say so, and hooks
+// keep firing, so a test suite watching hooks stays green.
+//
+// Writing no manifest has neither failure mode. See the harness-test README,
+// "goose's plugin manifest is better left unwritten".
+
 // InstallScope determines where hooks are written.
 type InstallScope int
 
@@ -220,9 +239,6 @@ func Uninstall(name string, scope InstallScope) InstallResult {
 		if os.IsNotExist(result.Error) {
 			result.Error = nil
 		}
-	}
-	if h.PluginManifest != "" {
-		os.Remove(filepath.Join(home, h.PluginManifest))
 	}
 	return result
 }

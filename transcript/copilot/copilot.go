@@ -6,9 +6,9 @@
 // parentId. user.message and assistant.message rows are the conversation;
 // hook, model change and turn boundary rows stay opaque in the chain.
 //
-// Copilot also indexes sessions in ~/.copilot/session-store.db. This codec
-// writes the directory and workspace.yaml; whether Copilot lists an
-// unindexed session is the harness-test seed probe's question.
+// Copilot finds sessions through an index, ~/.copilot/session-store.db, so a
+// session it will load needs a row there too. Codec here is read-only;
+// Writer writes the files, and the sqlite module adds the index.
 package copilot
 
 import (
@@ -23,8 +23,23 @@ import (
 	"github.com/inference-sh/agentprotocol/transcript"
 )
 
-// Codec is the Copilot CLI session store.
-var Codec = transcript.JSONL{
+// Codec reads Copilot CLI sessions. It is read-only: Copilot finds sessions
+// through its index, ~/.copilot/session-store.db, and a session with no row
+// there is "not found or could not be loaded" however well-formed its files
+// are. Writing the index needs a database driver, so the codec that writes
+// lives in the sqlite module, built on Writer.
+var Codec = func() transcript.JSONL {
+	c := Writer
+	c.Encode = nil
+	c.WriteHeader = nil
+	c.After = nil
+	return c
+}()
+
+// Writer reads Copilot sessions and writes their files, events.jsonl and
+// workspace.yaml, but not the index. Alone it produces sessions Copilot will
+// not load; the sqlite module's Copilot codec wraps it and adds the index.
+var Writer = transcript.JSONL{
 	Layout: transcript.Layout{
 		Files:   files,
 		PathFor: pathFor,

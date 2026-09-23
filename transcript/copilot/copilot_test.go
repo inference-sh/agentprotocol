@@ -28,10 +28,25 @@ func TestRoundTrip(t *testing.T) {
 	}
 }
 
+// TestReadOnly: without the index, a written session is one Copilot will
+// not load, so the pure-Go codec refuses to write.
+func TestReadOnly(t *testing.T) {
+	st, err := Codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := st.Write(t.Context(), &transcript.Session{CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "hi"}}},
+	}}); err != transcript.ErrReadOnly {
+		t.Errorf("Write err = %v, want ErrReadOnly", err)
+	}
+}
+
+// The Writer tests check the file half that the sqlite module builds on.
 func TestForeign(t *testing.T) {
-	transcripttest.Foreign(t, Codec, "/tmp/some/project")
+	transcripttest.Foreign(t, Writer, "/tmp/some/project")
 	home := t.TempDir()
-	st, err := Codec.Open(home)
+	st, err := Writer.Open(home)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,5 +66,5 @@ func TestForeign(t *testing.T) {
 }
 
 func TestAppend(t *testing.T) {
-	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+	transcripttest.Append(t, Writer, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
 }

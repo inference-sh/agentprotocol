@@ -296,10 +296,13 @@ func (st *jsonlStore) pathFor(s *Session) string {
 }
 
 func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
-	foreign := len(s.Entries) == 0 || s.Entries[0].Raw == nil
-	if st.cfg.Encode == nil && foreign {
+	// A store without an encoder is read-only for every session, its own
+	// included: such a format is derived from something the agent does not
+	// read back, so rewriting even its own rows would change nothing.
+	if st.cfg.Encode == nil {
 		return "", ErrReadOnly
 	}
+	foreign := len(s.Entries) == 0 || s.Entries[0].Raw == nil
 	if s.ID == "" {
 		if st.cfg.NewID != nil {
 			s.ID = st.cfg.NewID()

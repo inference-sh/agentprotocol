@@ -14,6 +14,7 @@ import (
 	"github.com/inference-sh/agentprotocol/transcript/claude"
 	"github.com/inference-sh/agentprotocol/transcript/codex"
 	"github.com/inference-sh/agentprotocol/transcript/copilot"
+	"github.com/inference-sh/agentprotocol/transcript/cursor"
 	"github.com/inference-sh/agentprotocol/transcript/droid"
 	"github.com/inference-sh/agentprotocol/transcript/gemini"
 	"github.com/inference-sh/agentprotocol/transcript/grok"
@@ -28,6 +29,7 @@ var Codecs = map[string]transcript.Codec{
 	"claude":  claude.Codec,
 	"codex":   codex.Codec,
 	"copilot": copilot.Codec,
+	"cursor":  cursor.Codec,
 	"droid":   droid.Codec,
 	"gemini":  gemini.Codec,
 	"grok":    grok.Codec,

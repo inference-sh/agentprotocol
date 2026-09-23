@@ -63,10 +63,14 @@ codec cannot exist without a sample.
 
 ## Coverage
 
-Pure-Go codecs, one package each: claude, codex, copilot, droid, gemini,
-grok, kimi, kiro, pi, plus qwen (gemini's format) and omp (pi's format).
-Database-backed codecs in the `sqlite` module: goose, hermes, opencode, and
-kilo (kilo shares opencode's schema).
+Pure-Go codecs, one package each: claude, codex, copilot, cursor, droid,
+gemini, grok, kimi, kiro, pi, plus qwen (gemini's format) and omp (pi's
+format). Database-backed codecs in the `sqlite` module: goose, hermes,
+opencode, and kilo (kilo shares opencode's schema).
+
+cursor is read-only. Its readable transcript is derived from a blob store
+Cursor never loads back, so its `Write` returns `transcript.ErrReadOnly`. The
+same holds for any JSONL codec that sets no `Encode`.
 
 Every codec's `testdata` sample comes from one run of the agent in the
 harness-test container, not from any developer's machine, so the conformance
@@ -74,10 +78,8 @@ suite reproduces from a clean checkout. The JSONL agents are captured by
 copying the session file the run wrote. The SQLite agents write through a
 write-ahead log, so the capture waits for the flush after `session/close`
 and folds the log into the main file with `PRAGMA wal_checkpoint(TRUNCATE)`
-before copying, or the copied file is empty.
+before copying, or the copied file is empty. cursor writes its transcript
+only once its backend checkpoints the conversation, which the harness-test
+mock does from d7e0451 on.
 
-Two agents have no codec. windsurf is an IDE with no CLI and no local store.
-cursor records nothing but a turn-boundary marker when driven by the mock
-server, and its conversation store only fills on a real backend session, so
-there is no way to capture a sample from an automated run; a cursor codec
-waits on the harness mock learning to drive cursor's persistence.
+windsurf is an IDE with no CLI and no local store, so it has no codec.

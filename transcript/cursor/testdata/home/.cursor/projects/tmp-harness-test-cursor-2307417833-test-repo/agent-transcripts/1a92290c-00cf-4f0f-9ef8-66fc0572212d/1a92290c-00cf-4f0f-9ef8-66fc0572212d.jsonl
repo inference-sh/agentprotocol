@@ -1,0 +1,3 @@
+{"role":"user","message":{"content":[{"type":"text","text":"What is the project codename? Reply ONLY the codename."}]}}
+{"role":"assistant","message":{"content":[{"type":"text","text":"Hello from mock server."}]}}
+{"type":"turn_ended","status":"success"}

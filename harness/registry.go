@@ -4,6 +4,7 @@ import (
 	"github.com/inference-sh/agentprotocol/transcript/claude"
 	"github.com/inference-sh/agentprotocol/transcript/codex"
 	"github.com/inference-sh/agentprotocol/transcript/copilot"
+	"github.com/inference-sh/agentprotocol/transcript/cursor"
 	"github.com/inference-sh/agentprotocol/transcript/droid"
 	"github.com/inference-sh/agentprotocol/transcript/gemini"
 	"github.com/inference-sh/agentprotocol/transcript/grok"
@@ -652,6 +653,7 @@ var All = map[string]Harness{
 	// server/cursor.go. beforeSubmitPrompt cannot inject context; sessionStart
 	// can (additional_context).
 	"cursor": {
+		Sessions: cursor.Codec,
 		// cursor-agent installs two names for the same binary, "agent" and
 		// "cursor-agent". Detection uses the specific one: grok's installer
 		// also drops an "agent" into ~/.grok/bin, so the generic name made

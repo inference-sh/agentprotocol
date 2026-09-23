@@ -40,3 +40,27 @@ func TestDashWrappedCwd(t *testing.T) {
 func TestAppend(t *testing.T) {
 	transcripttest.Append(t, OMP, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
 }
+
+// The pi sample is one headless run of pi in the harness-test container with
+// persistence on (harness-test's transcript probe drops --no-session): a
+// system prompt whose content is a plain string, a prompt and an answer. It
+// is the session the codec once failed on, and pi and omp diverge here.
+const (
+	piCWD = "/tmp/harness-test-pi-1772181944"
+	piID  = "01a0d020-9480-751b-9f6b-19e2bdede191"
+)
+
+func TestRoundTripPi(t *testing.T) {
+	s := transcripttest.RoundTrip(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: piCWD, ID: piID})
+	msgs := s.Messages()
+	if len(msgs) != 3 || msgs[0].Role != transcript.RoleSystem || msgs[1].Role != transcript.RoleUser || msgs[2].Role != transcript.RoleAssistant {
+		t.Fatalf("messages = %+v", msgs)
+	}
+	if s.Model != "openai/gpt-4o-mini" {
+		t.Errorf("model = %q", s.Model)
+	}
+}
+
+func TestAppendPi(t *testing.T) {
+	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: piCWD, ID: piID})
+}

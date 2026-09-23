@@ -73,6 +73,8 @@ type row struct {
 	ParentID  *string         `json:"parentId,omitempty"`
 	Timestamp string          `json:"timestamp,omitempty"`
 	Message   json.RawMessage `json:"message,omitempty"`
+	ModelID   string          `json:"modelId,omitempty"`
+	Model     string          `json:"model,omitempty"`
 }
 
 type sessionHeader struct {
@@ -85,11 +87,29 @@ type sessionHeader struct {
 
 type message struct {
 	Role       string  `json:"role"`
-	Content    []block `json:"content"`
+	Content    content `json:"content"`
 	ToolCallID string  `json:"toolCallId,omitempty"`
 	ToolName   string  `json:"toolName,omitempty"`
 	IsError    bool    `json:"isError,omitempty"`
 	Timestamp  int64   `json:"timestamp,omitempty"`
+}
+
+// content is a message's content: pi writes a plain string for some rows and
+// an array of typed blocks for others. A string decodes as one text block.
+type content []block
+
+func (c *content) UnmarshalJSON(b []byte) error {
+	var text string
+	if err := json.Unmarshal(b, &text); err == nil {
+		*c = content{{Type: "text", Text: text}}
+		return nil
+	}
+	var bs []block
+	if err := json.Unmarshal(b, &bs); err != nil {
+		return err
+	}
+	*c = bs
+	return nil
 }
 
 type block struct {
@@ -170,6 +190,13 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		e.Time = t
 	}
 	if r.Type != "message" {
+		// A model_change row names the model the session runs on from
+		// there; pi calls the field modelId, omp calls it model.
+		if r.Type == "model_change" {
+			if m := r.ModelID + r.Model; m != "" {
+				s.Model = m
+			}
+		}
 		return e, true, nil
 	}
 	var m message
@@ -177,6 +204,8 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		return transcript.Entry{}, false, fmt.Errorf("row %s: message: %w", r.ID, err)
 	}
 	switch m.Role {
+	case "system":
+		e.Role = transcript.RoleSystem
 	case "user":
 		e.Role = transcript.RoleUser
 	case "assistant":

@@ -61,22 +61,36 @@ runs the shared conformance check in `transcripttest`: read it, write it,
 read it again, require the file is unchanged and the events hold a turn. A
 codec cannot exist without a sample.
 
+## Writing back
+
+A write never disturbs what it read. Entries read from a store carry their
+vendor row as `Raw`, and every writer keeps those rows exactly: a JSONL
+writer emits them unchanged, and a database writer leaves their rows in
+place, removes rows of entries the session no longer holds, and inserts only
+new entries. Rewriting a session unchanged leaves the agent's files and
+tables byte-for-byte what they were; the `sqlite` module checks this, and an
+append into the agent's own database, against every sample.
+
+New entries are written with every field the agent validates on load, taken
+from the agent's own source or from a real file it wrote. Where a value has
+no source in the session (the model an opencode message ran with, kiro's
+agent name), it is copied from the agent's latest session in the same store.
+
 ## Coverage
 
-Pure-Go codecs, one package each: claude, codex, copilot, cursor, droid,
-gemini, grok, kimi, kiro, pi, plus qwen (gemini's format) and omp (pi's
-format). Database-backed codecs in the `sqlite` module: goose, hermes,
-opencode, and kilo (kilo shares opencode's schema).
+Pure-Go codecs, one package each: claude, codex, copilot (read-only), cursor
+(read-only transcript), droid, gemini, grok, kimi, kiro, pi, omp (pi's
+format), and qwen. Database-backed codecs in the `sqlite` module: goose,
+hermes, opencode, kilo (opencode's schema), cursor's blob store, and copilot
+with its index.
 
-cursor has two codecs. Its store of record is a content-addressed blob
-database, ~/.cursor/chats/<md5 of cwd>/<id>/store.db: each message is a JSON
-blob keyed by its sha256, and a root blob lists the ids in order. The
-`sqlite` module's `Cursor` reads and writes that store, tool results
-included. From it Cursor derives a readable transcript whose writer drops
-tool results; `transcript/cursor` reads that file for callers that must stay
-driver-free, and is read-only, as is any JSONL codec that sets no `Encode`.
-`all.Open` prefers the store-of-record codec when the sqlite module is
-imported.
+Two agents need the `sqlite` module to write. Copilot finds sessions through
+its index, `session-store.db`, so a session without a row there does not
+load; `transcript/copilot` reads, and the `sqlite` module's Copilot writes the
+files and the index. Cursor never loads its readable transcript back;
+`transcript/cursor` reads it, and the `sqlite` module's Cursor reads and
+writes the blob store, tool results included. `all.Open` prefers the
+`sqlite` codec for an agent when that module is imported.
 
 Every codec's `testdata` sample comes from one run of the agent in the
 harness-test container, not from any developer's machine, so the conformance
@@ -84,8 +98,18 @@ suite reproduces from a clean checkout. The JSONL agents are captured by
 copying the session file the run wrote. The SQLite agents write through a
 write-ahead log, so the capture waits for the flush after `session/close`
 and folds the log into the main file with `PRAGMA wal_checkpoint(TRUNCATE)`
-before copying, or the copied file is empty. cursor writes its store only
+before copying; readers see the log in any case. cursor writes its store only
 once its backend checkpoints the conversation, which the harness-test mock
-does from d7e0451 on, tool turn included, with cursor's own tool names and ids, from b486703.
+does from d7e0451 on, with its own tool names and ids from b486703.
+
+Some formats hold more than one view of a conversation, and a writer has to
+fill the one the agent reads:
+
+- kimi's wire log has context rows, which it rebuilds the model's context
+  from, and transcript rows, which it shows. A session written with only the
+  transcript rows resumes and the model sees none of it.
+- kiro keeps a sidecar beside each transcript; a hand-built session gets a
+  complete one.
+- opencode validates every message and part against its schema on load.
 
 windsurf is an IDE with no CLI and no local store, so it has no codec.

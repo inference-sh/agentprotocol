@@ -1,0 +1,4 @@
+# SQLite creates these beside a database it reads.
+*.db-shm
+*.db-wal
+*.db-journal

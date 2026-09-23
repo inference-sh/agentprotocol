@@ -62,10 +62,11 @@ func (st *gooseStore) List(ctx context.Context, cwd string) ([]transcript.Info, 
 		}
 		return nil, err
 	}
-	db, err := openRO(st.path)
+	db, done, err := openRO(st.path)
 	if err != nil {
 		return nil, err
 	}
+	defer done()
 	defer db.Close()
 	q := "SELECT id, working_dir, description, updated_at FROM sessions"
 	args := []any{}
@@ -91,10 +92,11 @@ func (st *gooseStore) List(ctx context.Context, cwd string) ([]transcript.Info, 
 }
 
 func (st *gooseStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
-	db, err := openRO(st.path)
+	db, done, err := openRO(st.path)
 	if err != nil {
 		return nil, err
 	}
+	defer done()
 	defer db.Close()
 
 	s := &transcript.Session{ID: id, Agent: "goose"}
@@ -170,13 +172,15 @@ func gooseEntry(role, contentJSON string) (transcript.Entry, error) {
 	return e, nil
 }
 
+// Write persists a session. A session with an id replaces the stored
+// session of that id, which is how a session read from goose is written back.
+// A session without one gets a new id in goose's own scheme, YYYYMMDD_N with
+// N one past the highest for the day, allocated inside the write transaction
+// so it can never land on a session goose already has.
 func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
-	if s.ID == "" {
-		s.ID = time.Now().UTC().Format("20060102") + "_1"
-	}
-	now := time.Now().Unix()
-	if !s.Created.IsZero() {
-		now = s.Created.Unix()
+	now := time.Now()
+	if s.Created.IsZero() {
+		s.Created = now
 	}
 	if err := os.MkdirAll(filepath.Dir(st.path), 0o755); err != nil {
 		return "", err
@@ -194,6 +198,13 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		return "", err
 	}
 	defer tx.Rollback()
+	if s.ID == "" {
+		id, err := nextGooseID(ctx, tx, s.Created)
+		if err != nil {
+			return "", err
+		}
+		s.ID = id
+	}
 	title := s.Title
 	if title == "" {
 		if msgs := s.Messages(); len(msgs) > 0 {
@@ -213,7 +224,7 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		if err != nil {
 			return "", err
 		}
-		ts := now
+		ts := s.Created.Unix()
 		if !e.Time.IsZero() {
 			ts = e.Time.Unix()
 		}
@@ -227,6 +238,30 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		return "", err
 	}
 	return s.ID, nil
+}
+
+// nextGooseID returns the first unused YYYYMMDD_N id for a day.
+func nextGooseID(ctx context.Context, tx *sql.Tx, day time.Time) (string, error) {
+	prefix := day.UTC().Format("20060102") + "_"
+	rows, err := tx.QueryContext(ctx, "SELECT id FROM sessions WHERE id LIKE ?", prefix+"%")
+	if err != nil {
+		return "", fmt.Errorf("goose: allocate id: %w", err)
+	}
+	defer rows.Close()
+	max := 0
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return "", err
+		}
+		if n, err := strconv.Atoi(strings.TrimPrefix(id, prefix)); err == nil && n > max {
+			max = n
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return "", err
+	}
+	return prefix + strconv.Itoa(max+1), nil
 }
 
 // gooseRole maps a tool entry back to the user role goose files it under.

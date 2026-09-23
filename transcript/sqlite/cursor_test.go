@@ -116,10 +116,11 @@ func blobsOf(t *testing.T, path string) map[string][]byte {
 	if _, err := os.Stat(path); err != nil {
 		t.Fatal(err)
 	}
-	db, err := openRO(path)
+	db, done, err := openRO(path)
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer done()
 	defer db.Close()
 	rows, err := db.Query(`SELECT id, data FROM blobs`)
 	if err != nil {

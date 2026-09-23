@@ -3,7 +3,7 @@ module github.com/inference-sh/agentprotocol/transcript/sqlite
 go 1.26.7
 
 require (
-	github.com/inference-sh/agentprotocol v0.0.0
+	github.com/inference-sh/agentprotocol v0.6.0
 	modernc.org/sqlite v1.39.1
 )
 
@@ -19,5 +19,3 @@ require (
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 )
-
-replace github.com/inference-sh/agentprotocol => ../..

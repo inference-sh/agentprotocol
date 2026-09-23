@@ -80,10 +80,11 @@ func (st *openStore) List(ctx context.Context, cwd string) ([]transcript.Info, e
 		}
 		return nil, err
 	}
-	db, err := openRO(st.path)
+	db, done, err := openRO(st.path)
 	if err != nil {
 		return nil, err
 	}
+	defer done()
 	defer db.Close()
 	q := "SELECT id, directory, title, time_updated FROM session"
 	args := []any{}
@@ -110,10 +111,11 @@ func (st *openStore) List(ctx context.Context, cwd string) ([]transcript.Info, e
 }
 
 func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
-	db, err := openRO(st.path)
+	db, done, err := openRO(st.path)
 	if err != nil {
 		return nil, err
 	}
+	defer done()
 	defer db.Close()
 
 	s := &transcript.Session{ID: id}

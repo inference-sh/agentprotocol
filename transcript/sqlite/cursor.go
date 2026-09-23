@@ -156,10 +156,11 @@ func (st *cursorStore) Read(ctx context.Context, id string) (*transcript.Session
 	if err != nil {
 		return nil, err
 	}
-	db, err := openRO(filepath.Join(dir, "store.db"))
+	db, done, err := openRO(filepath.Join(dir, "store.db"))
 	if err != nil {
 		return nil, err
 	}
+	defer done()
 	defer db.Close()
 
 	var metaHex string

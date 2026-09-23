@@ -45,10 +45,11 @@ func (st *hermesStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 		}
 		return nil, err
 	}
-	db, err := openRO(st.path)
+	db, done, err := openRO(st.path)
 	if err != nil {
 		return nil, err
 	}
+	defer done()
 	defer db.Close()
 	q := "SELECT id, COALESCE(cwd, ''), COALESCE(title, ''), COALESCE(ended_at, '') FROM sessions"
 	args := []any{}
@@ -74,10 +75,11 @@ func (st *hermesStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 }
 
 func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
-	db, err := openRO(st.path)
+	db, done, err := openRO(st.path)
 	if err != nil {
 		return nil, err
 	}
+	defer done()
 	defer db.Close()
 
 	s := &transcript.Session{ID: id, Agent: "hermes"}

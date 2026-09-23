@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"testing"
+	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
 )
@@ -145,4 +146,37 @@ func countTurns(s *transcript.Session) int {
 		}
 	}
 	return n
+}
+
+// TestGooseWriteKeepsExisting reproduces the harness seed probe: goose has
+// run a turn today, so its store holds today's first session, and a
+// hand-built session is then written with no id. The write must take a new id
+// and leave goose's session intact.
+func TestGooseWriteKeepsExisting(t *testing.T) {
+	st, err := Goose.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	today := time.Now().UTC().Format("20060102") + "_1"
+	if _, err := st.Write(t.Context(), &transcript.Session{ID: today, CWD: gooseCWD, Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "goose's own turn"}}},
+	}}); err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), &transcript.Session{CWD: gooseCWD, Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "planted"}}},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if id == today {
+		t.Fatalf("the hand-built session took the id %s of goose's own session", id)
+	}
+	own, err := st.Read(t.Context(), today)
+	if err != nil {
+		t.Fatalf("goose's own session is gone: %v", err)
+	}
+	if msgs := own.Messages(); len(msgs) != 1 || msgs[0].Text() != "goose's own turn" {
+		t.Errorf("goose's own session was replaced: %+v", msgs)
+	}
 }

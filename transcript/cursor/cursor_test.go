@@ -9,20 +9,26 @@ import (
 
 // The sample is one headless run of cursor-agent in the harness-test
 // container, whose mock checkpoints the conversation the way Cursor's
-// backend does (harness-test d7e0451): a prompt and an answer.
+// backend does (harness-test 4b2d12c): a prompt, a read_file tool call and an
+// answer. Cursor's transcript writer emits no row for the tool result, so the
+// transcript holds three messages; the sqlite module's Cursor codec reads the
+// result from the blob store.
 const (
-	sampleCWD = "/tmp/harness-test-cursor-2307417833/test-repo"
-	sampleID  = "1a92290c-00cf-4f0f-9ef8-66fc0572212d"
+	sampleCWD = "/tmp/harness-test-cursor-305147681/test-repo"
+	sampleID  = "58cbecf4-11d9-4b9a-a22a-963cc72d6d16"
 )
 
 func TestRead(t *testing.T) {
 	s := transcripttest.RoundTrip(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
 	msgs := s.Messages()
-	if len(msgs) != 2 || msgs[0].Role != transcript.RoleUser || msgs[1].Role != transcript.RoleAssistant {
+	if len(msgs) != 3 || msgs[0].Role != transcript.RoleUser || msgs[1].Role != transcript.RoleAssistant || msgs[2].Role != transcript.RoleAssistant {
 		t.Fatalf("messages = %+v", msgs)
 	}
-	if msgs[1].Text() != "Hello from mock server." {
-		t.Errorf("answer = %q", msgs[1].Text())
+	if call := msgs[1].Content[0]; call.Kind != transcript.BlockToolUse || call.Name != "read_file" || string(call.Input) != `{"path":"README.md"}` {
+		t.Errorf("tool call = %+v", call)
+	}
+	if msgs[2].Text() != "Hello from mock server." {
+		t.Errorf("answer = %q", msgs[2].Text())
 	}
 }
 

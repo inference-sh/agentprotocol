@@ -68,9 +68,15 @@ gemini, grok, kimi, kiro, pi, plus qwen (gemini's format) and omp (pi's
 format). Database-backed codecs in the `sqlite` module: goose, hermes,
 opencode, and kilo (kilo shares opencode's schema).
 
-cursor is read-only. Its readable transcript is derived from a blob store
-Cursor never loads back, so its `Write` returns `transcript.ErrReadOnly`. The
-same holds for any JSONL codec that sets no `Encode`.
+cursor has two codecs. Its store of record is a content-addressed blob
+database, ~/.cursor/chats/<md5 of cwd>/<id>/store.db: each message is a JSON
+blob keyed by its sha256, and a root blob lists the ids in order. The
+`sqlite` module's `Cursor` reads and writes that store, tool results
+included. From it Cursor derives a readable transcript whose writer drops
+tool results; `transcript/cursor` reads that file for callers that must stay
+driver-free, and is read-only, as is any JSONL codec that sets no `Encode`.
+`all.Open` prefers the store-of-record codec when the sqlite module is
+imported.
 
 Every codec's `testdata` sample comes from one run of the agent in the
 harness-test container, not from any developer's machine, so the conformance
@@ -78,8 +84,8 @@ suite reproduces from a clean checkout. The JSONL agents are captured by
 copying the session file the run wrote. The SQLite agents write through a
 write-ahead log, so the capture waits for the flush after `session/close`
 and folds the log into the main file with `PRAGMA wal_checkpoint(TRUNCATE)`
-before copying, or the copied file is empty. cursor writes its transcript
-only once its backend checkpoints the conversation, which the harness-test
-mock does from d7e0451 on.
+before copying, or the copied file is empty. cursor writes its store only
+once its backend checkpoints the conversation, which the harness-test mock
+does from d7e0451 on, tool turn included from 4b2d12c.
 
 windsurf is an IDE with no CLI and no local store, so it has no codec.

@@ -8,9 +8,12 @@
 // {"type":"turn_ended"} rows at turn boundaries. This codec reads that
 // transcript.
 //
-// It is read-only. The transcript is derived from the blob store, Cursor
-// never loads it back, and some assistant text in it is redacted, so a
-// written transcript would change nothing.
+// It is read-only and lossy. Cursor's transcript writer emits text,
+// reasoning and tool calls but no row for a tool result, so results exist
+// only in the blob store; and Cursor never loads the transcript back, so a
+// written one would change nothing. The sqlite module's Cursor codec reads
+// the blob store instead, with the results, and can write it; this codec is
+// for callers that must stay free of a database driver.
 package cursor
 
 import (

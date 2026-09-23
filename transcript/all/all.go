@@ -40,13 +40,15 @@ var Codecs = map[string]transcript.Codec{
 	"qwen":    gemini.Qwen,
 }
 
-// Open binds a harness's codec to a home directory. It returns false when no
-// codec is registered for the id; the SQLite module registers the
-// driver-backed ones through transcript.Register.
+// Open binds a harness's codec to a home directory. A codec registered by
+// the sqlite module is preferred over the pure-Go one for the same agent: it
+// reads the agent's store of record, where the pure-Go codec reads a derived
+// file (cursor's transcript, which drops tool results). Open returns false
+// when no codec exists for the id.
 func Open(agent, home string) (transcript.Store, bool, error) {
-	c, ok := Codecs[agent]
+	c, ok := transcript.Registered(agent)
 	if !ok {
-		if c, ok = transcript.Registered(agent); !ok {
+		if c, ok = Codecs[agent]; !ok {
 			return nil, false, nil
 		}
 	}

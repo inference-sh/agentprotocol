@@ -49,3 +49,7 @@ func TestForeign(t *testing.T) {
 		t.Errorf("workspace.yaml:\n%s", ws)
 	}
 }
+
+func TestAppend(t *testing.T) {
+	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

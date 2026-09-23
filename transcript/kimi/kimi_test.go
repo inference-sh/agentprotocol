@@ -65,3 +65,7 @@ func TestForeign(t *testing.T) {
 		t.Errorf("index:\n%s", idx)
 	}
 }
+
+func TestAppend(t *testing.T) {
+	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

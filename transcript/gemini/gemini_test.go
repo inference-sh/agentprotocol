@@ -36,3 +36,7 @@ func TestForeign(t *testing.T) {
 	transcripttest.Foreign(t, Codec, "/tmp/some/project")
 	transcripttest.Foreign(t, Qwen, "/tmp/some/project")
 }
+
+func TestAppend(t *testing.T) {
+	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

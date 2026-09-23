@@ -198,3 +198,53 @@ func Foreign(t *testing.T, codec transcript.Codec, cwd string) {
 func normalize(b []byte) []byte {
 	return bytes.TrimRight(b, "\n")
 }
+
+// Append checks the other way a session reaches an agent: read one the agent
+// wrote, add a user turn and an answer, write it, and read it back. The new
+// messages must be the last two on the active branch, which for a store that
+// keeps a tree means they were linked to the conversation they continue.
+func Append(t *testing.T, codec transcript.Codec, sample Sample) {
+	t.Helper()
+	ctx := context.Background()
+	src, err := codec.Open(sample.Home)
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	s, err := src.Read(ctx, sample.ID)
+	if err != nil {
+		t.Fatalf("read: %v", err)
+	}
+	before := len(s.Linearize())
+	s.Entries = append(s.Entries,
+		transcript.Entry{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "The codename is HERON. Remember it."}}},
+		transcript.Entry{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "Noted: HERON."}}},
+	)
+	dst, err := codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatalf("open temp: %v", err)
+	}
+	id, err := dst.Write(ctx, s)
+	if err == transcript.ErrReadOnly {
+		t.Skip("store is read-only")
+	}
+	if err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	back, err := dst.Read(ctx, id)
+	if err != nil {
+		t.Fatalf("read back: %v", err)
+	}
+	lin := back.Linearize()
+	if len(lin) < 2 {
+		t.Fatalf("active branch has %d messages", len(lin))
+	}
+	if got := lin[len(lin)-2].Text(); got != "The codename is HERON. Remember it." {
+		t.Errorf("second to last on the active branch = %q", got)
+	}
+	if got := lin[len(lin)-1].Text(); got != "Noted: HERON." {
+		t.Errorf("last on the active branch = %q", got)
+	}
+	if len(lin) != before+2 {
+		t.Errorf("active branch has %d messages, want %d: the appended turn did not continue the conversation", len(lin), before+2)
+	}
+}

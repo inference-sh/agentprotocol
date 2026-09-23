@@ -36,3 +36,7 @@ func TestDashWrappedCwd(t *testing.T) {
 		t.Errorf("got %q", got)
 	}
 }
+
+func TestAppend(t *testing.T) {
+	transcripttest.Append(t, OMP, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

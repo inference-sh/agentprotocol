@@ -36,3 +36,7 @@ func TestRoundTrip(t *testing.T) {
 func TestForeign(t *testing.T) {
 	transcripttest.Foreign(t, Codec, "/tmp/some/project")
 }
+
+func TestAppend(t *testing.T) {
+	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

@@ -82,3 +82,7 @@ func TestSidecarWritten(t *testing.T) {
 		t.Errorf("sidecar turns = %+v", doc.State.Meta.Turns)
 	}
 }
+
+func TestAppend(t *testing.T) {
+	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

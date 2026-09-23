@@ -57,9 +57,11 @@ type JSONL struct {
 	// the default is a UUID.
 	NewID func() string
 
-	// Tree marks a format whose rows link to their parent. Before a foreign
-	// session is encoded, entries without an ID get one and each entry's
-	// ParentID is set to the previous message, so Encode can emit the link.
+	// Tree marks a format whose rows link to their parent. Before a write,
+	// every entry without Raw gets an ID if it has none and, if it has no
+	// ParentID, the ID of the entry before it, so Encode can emit the link.
+	// This holds for a foreign session and for entries appended to one read
+	// from the agent.
 	Tree bool
 }
 
@@ -316,20 +318,26 @@ func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
 	if s.Updated.IsZero() {
 		s.Updated = s.Created
 	}
-	if foreign && st.cfg.Tree {
+	if st.cfg.Tree {
+		// Link every entry this write creates, whether the whole session is
+		// foreign or new entries were appended to one read from the agent.
+		// Each new message gets an id and hangs off the entry before it that
+		// has one: the previous new message, or the active leaf of the rows
+		// read back, which is where Linearize would resume.
 		prev := ""
 		for i := range s.Entries {
 			e := &s.Entries[i]
-			if e.Role == RoleOpaque {
-				continue
+			if e.Raw == nil && e.Role != RoleOpaque {
+				if e.ID == "" {
+					e.ID = NewUUID()
+				}
+				if e.ParentID == "" {
+					e.ParentID = prev
+				}
 			}
-			if e.ID == "" {
-				e.ID = NewUUID()
+			if e.ID != "" {
+				prev = e.ID
 			}
-			if e.ParentID == "" {
-				e.ParentID = prev
-			}
-			prev = e.ID
 		}
 	}
 

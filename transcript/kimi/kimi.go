@@ -10,12 +10,19 @@
 // user and assistant messages, tool results arrive as
 // context.append_loop_event rows of type tool.result, and everything else
 // is opaque.
+//
+// Kimi keeps two views of a conversation in the wire log. The context rows,
+// context.append_message and context.append_loop_event, are what it rebuilds
+// the model's context from on resume. The agent.message.appended rows are the
+// transcript it shows. A written session needs both: with only the transcript
+// rows, kimi resumes it and the model sees none of it.
 package kimi
 
 import (
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -23,6 +30,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -47,7 +56,6 @@ var files = transcript.JSONL{
 	},
 	Header:      header,
 	Decode:      decode,
-	Encode:      encode,
 	WriteHeader: writeHeader,
 	After:       writeState,
 	NewID:       func() string { return "session_" + transcript.NewUUID() },
@@ -79,10 +87,12 @@ type indexRow struct {
 
 type row struct {
 	Type    string          `json:"type"`
-	Time    int64           `json:"time,omitempty"`
+	AgentID string          `json:"agentId,omitempty"`
+	TurnID  *int            `json:"turnId,omitempty"`
+	Reason  string          `json:"reason,omitempty"`
 	Message json.RawMessage `json:"message,omitempty"`
 	Event   json.RawMessage `json:"event,omitempty"`
-	AgentID string          `json:"agentId,omitempty"`
+	Time    int64           `json:"time,omitempty"`
 	Kind    string          `json:"kind,omitempty"`
 }
 
@@ -94,9 +104,10 @@ type appended struct {
 }
 
 type message struct {
-	Role      string     `json:"role"`
-	Content   []part     `json:"content"`
-	ToolCalls []toolCall `json:"toolCalls"`
+	Role       string     `json:"role"`
+	Content    []part     `json:"content"`
+	ToolCalls  []toolCall `json:"toolCalls,omitempty"`
+	ToolCallID string     `json:"toolCallId,omitempty"`
 }
 
 type part struct {
@@ -115,16 +126,6 @@ type meta struct {
 	Source    string `json:"source"`
 	MessageID string `json:"messageId,omitempty"`
 	PromptID  string `json:"promptId,omitempty"`
-}
-
-type loopEvent struct {
-	Type       string `json:"type"`
-	ToolCallID string `json:"toolCallId"`
-	Name       string `json:"name,omitempty"`
-	Result     struct {
-		Output string `json:"output"`
-		Error  string `json:"error,omitempty"`
-	} `json:"result"`
 }
 
 func workspaceDir(cwd string) string {
@@ -172,6 +173,38 @@ func (st *store) Read(ctx context.Context, id string) (*transcript.Session, erro
 	return s, nil
 }
 
+// Write plans the session's new entries and writes them with the rows kimi
+// rebuilds the model's context from as well as its transcript rows.
+func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		if e.Raw == nil && e.Role != transcript.RoleOpaque && e.ID == "" {
+			e.ID = messageID()
+		}
+	}
+	w := files
+	w.Encode = newPlan(s).encoder()
+	ws, err := w.Open(st.home)
+	if err != nil {
+		return "", err
+	}
+	return ws.Write(ctx, s)
+}
+
+// messageID mints an id in kimi's form: msg_ and a 26-character ULID-style
+// string.
+func messageID() string {
+	const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+	var b [26]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		panic(err)
+	}
+	for i := range b {
+		b[i] = alphabet[int(b[i])%len(alphabet)]
+	}
+	return "msg_" + string(b[:])
+}
+
 func peek(path string) (transcript.Info, error) {
 	raw, err := os.ReadFile(filepath.Join(filepath.Dir(path), "..", "..", "state.json"))
 	if err != nil {
@@ -216,54 +249,49 @@ func header(raw json.RawMessage, s *transcript.Session) (bool, error) {
 	return r.Type == "metadata", nil
 }
 
+// decode reads the transcript rows, which hold the whole conversation in
+// order: user and assistant messages, and each tool result as a tool message.
+// The context rows describe the same conversation for the model and are kept
+// opaque.
 func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool, error) {
 	var r row
 	if err := json.Unmarshal(raw, &r); err != nil {
 		return transcript.Entry{}, false, err
 	}
-	var e transcript.Entry
+	if r.Type != "agent.message.appended" {
+		return transcript.Entry{}, false, nil
+	}
+	var a appended
+	if err := json.Unmarshal(r.Message, &a); err != nil {
+		return transcript.Entry{}, false, fmt.Errorf("agent.message.appended: %w", err)
+	}
+	e := transcript.Entry{ID: a.Meta.MessageID}
 	if r.Time > 0 {
 		e.Time = time.UnixMilli(r.Time).UTC()
 	}
-	switch r.Type {
-	case "agent.message.appended":
-		var a appended
-		if err := json.Unmarshal(r.Message, &a); err != nil {
-			return transcript.Entry{}, false, fmt.Errorf("agent.message.appended: %w", err)
-		}
-		e.ID = a.Meta.MessageID
-		switch a.Message.Role {
-		case "user":
-			e.Role = transcript.RoleUser
-		case "assistant":
-			e.Role = transcript.RoleAssistant
-		default:
-			return transcript.Entry{}, false, nil
-		}
-		for _, p := range a.Message.Content {
-			if p.Type == "text" {
-				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
-			}
-		}
-		for _, tc := range a.Message.ToolCalls {
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: tc.ID, Name: tc.Name, Input: arguments(tc.Arguments)})
-		}
-	case "context.append_loop_event":
-		var ev loopEvent
-		if err := json.Unmarshal(r.Event, &ev); err != nil {
-			return transcript.Entry{}, false, fmt.Errorf("context.append_loop_event: %w", err)
-		}
-		if ev.Type != "tool.result" {
-			return transcript.Entry{}, false, nil
-		}
-		st := transcript.StatusOK
-		if ev.Result.Error != "" {
-			st = transcript.StatusError
-		}
+	switch a.Message.Role {
+	case "user":
+		e.Role = transcript.RoleUser
+	case "assistant":
+		e.Role = transcript.RoleAssistant
+	case "tool":
 		e.Role = transcript.RoleTool
-		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: ev.ToolCallID, Name: ev.Name, Text: ev.Result.Output, Status: st}}
+		var text strings.Builder
+		for _, p := range a.Message.Content {
+			text.WriteString(p.Text)
+		}
+		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: a.Message.ToolCallID, Text: text.String(), Status: transcript.StatusOK}}
+		return e, true, nil
 	default:
 		return transcript.Entry{}, false, nil
+	}
+	for _, p := range a.Message.Content {
+		if p.Type == "text" {
+			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
+		}
+	}
+	for _, tc := range a.Message.ToolCalls {
+		e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: tc.ID, Name: tc.Name, Input: arguments(tc.Arguments)})
 	}
 	return e, true, nil
 }
@@ -288,55 +316,211 @@ func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
 	return []json.RawMessage{h}, nil
 }
 
-func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
-	t := e.Time
-	if t.IsZero() {
-		t = s.Updated
-	}
-	switch e.Role {
-	case transcript.RoleUser, transcript.RoleAssistant:
-		m := message{Role: string(e.Role), Content: []part{}, ToolCalls: []toolCall{}}
-		for _, b := range e.Content {
-			switch b.Kind {
-			case transcript.BlockText:
-				m.Content = append(m.Content, part{Type: "text", Text: b.Text})
-			case transcript.BlockToolUse:
-				args := string(b.Input)
-				if args == "" {
-					args = "{}"
-				}
-				m.ToolCalls = append(m.ToolCalls, toolCall{Type: "function", ID: b.ToolID, Name: b.Name, Arguments: args})
+// plan is what writing a session's new entries needs to know across them:
+// the turn and step each entry belongs to, and the uuid of each tool call
+// event, which the result that answers it points at.
+type plan struct {
+	turn map[string]int // entry id -> turn index
+	step map[string]int // entry id -> step within the turn
+	last map[string]bool
+	call map[string]string // tool call id -> tool.call event uuid
+}
+
+// newPlan numbers the session's new entries (those without Raw). Turns
+// continue from the user turns already in the log; each assistant entry is
+// one step of its turn.
+func newPlan(s *transcript.Session) plan {
+	p := plan{turn: map[string]int{}, step: map[string]int{}, last: map[string]bool{}, call: map[string]string{}}
+	turn, step := -1, 0
+	var prev string
+	for _, e := range s.Messages() {
+		if e.Role == transcript.RoleUser {
+			if prev != "" {
+				p.last[prev] = true
 			}
+			turn++
+			step = 0
 		}
-		source := "input"
+		if e.Raw != nil {
+			continue
+		}
+		p.turn[e.ID] = max(turn, 0)
 		if e.Role == transcript.RoleAssistant {
-			source = "llm"
-		}
-		wrapped, err := json.Marshal(appended{Message: m, Meta: meta{Source: source, MessageID: e.ID}})
-		if err != nil {
-			return nil, err
-		}
-		return json.Marshal(row{Type: "agent.message.appended", Time: t.UnixMilli(), Message: wrapped, Kind: "event"})
-	case transcript.RoleTool:
-		for _, b := range e.Content {
-			if b.Kind != transcript.BlockToolResult {
-				continue
+			step++
+			for _, b := range e.Content {
+				if b.Kind == transcript.BlockToolUse {
+					p.call[b.ToolID] = transcript.NewUUID()
+				}
 			}
-			ev := loopEvent{Type: "tool.result", ToolCallID: b.ToolID, Name: b.Name}
-			ev.Result.Output = b.Text
-			if b.Status == transcript.StatusError {
-				ev.Result.Error = b.Text
+		}
+		p.step[e.ID] = step
+		prev = e.ID
+	}
+	if prev != "" {
+		p.last[prev] = true
+	}
+	return p
+}
+
+// encoder returns the Encode for one write: it emits, for each new entry, the
+// context rows the model's context is rebuilt from and the transcript row
+// kimi shows, and closes a turn after its last entry.
+func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMessage, error) {
+	return func(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+		t := e.Time
+		if t.IsZero() {
+			t = s.Updated
+		}
+		ms := t.UnixMilli()
+		turn := p.turn[e.ID]
+		turnID := strconv.Itoa(turn)
+		var rows []any
+		switch e.Role {
+		case transcript.RoleUser, transcript.RoleSystem:
+			content := textParts(e)
+			rows = append(rows,
+				row{Type: "context.append_message", AgentID: "main", Time: ms, Message: mustJSON(contextMessage{
+					Role: "user", Content: content, ID: e.ID, ToolCalls: []toolCall{}, Origin: origin{Kind: "user"},
+				})},
+				row{Type: "agent.message.appended", Kind: "event", Time: ms, Message: mustJSON(appended{
+					Message: message{Role: "user", Content: content, ToolCalls: []toolCall{}},
+					Meta:    meta{Source: "input", MessageID: e.ID},
+				})})
+		case transcript.RoleAssistant:
+			stepUUID := transcript.NewUUID()
+			step := p.step[e.ID]
+			rows = append(rows, loopRow(ms, stepEvent{Type: "step.begin", UUID: stepUUID, TurnID: turnID, Step: step}))
+			var calls []toolCall
+			finish := "end_turn"
+			for _, b := range e.Content {
+				switch b.Kind {
+				case transcript.BlockText:
+					rows = append(rows, loopRow(ms, contentPart{Type: "content.part", UUID: transcript.NewUUID(), TurnID: turnID, Step: step, StepUUID: stepUUID, Part: part{Type: "text", Text: b.Text}}))
+				case transcript.BlockToolUse:
+					args := b.Input
+					if len(args) == 0 {
+						args = json.RawMessage(`{}`)
+					}
+					rows = append(rows, loopRow(ms, toolCallEvent{Type: "tool.call", UUID: p.call[b.ToolID], TurnID: turnID, Step: step, StepUUID: stepUUID, ToolCallID: b.ToolID, Name: b.Name, Args: args}))
+					calls = append(calls, toolCall{Type: "function", ID: b.ToolID, Name: b.Name, Arguments: string(args)})
+					finish = "tool_use"
+				}
 			}
-			raw, err := json.Marshal(ev)
+			rows = append(rows, loopRow(ms, stepEvent{Type: "step.end", UUID: stepUUID, TurnID: turnID, Step: step, FinishReason: finish}))
+			if calls == nil {
+				calls = []toolCall{}
+			}
+			rows = append(rows, row{Type: "agent.message.appended", Kind: "event", Time: ms, Message: mustJSON(appended{
+				Message: message{Role: "assistant", Content: textParts(e), ToolCalls: calls},
+				Meta:    meta{Source: "llm", MessageID: e.ID},
+			})})
+		case transcript.RoleTool:
+			for _, b := range e.Content {
+				if b.Kind != transcript.BlockToolResult {
+					continue
+				}
+				ev := toolResultEvent{Type: "tool.result", ParentUUID: p.call[b.ToolID], ToolCallID: b.ToolID}
+				ev.Result.Output = b.Text
+				if b.Status == transcript.StatusError {
+					ev.Result.Error = b.Text
+				}
+				rows = append(rows, loopRow(ms, ev), row{Type: "agent.message.appended", Kind: "event", Time: ms, Message: mustJSON(appended{
+					Message: message{Role: "tool", Content: []part{{Type: "text", Text: b.Text}}, ToolCallID: b.ToolID},
+					Meta:    meta{Source: "tool"},
+				})})
+			}
+		default:
+			return nil, nil
+		}
+		if p.last[e.ID] {
+			rows = append(rows, row{Type: "turn.ended", AgentID: "main", TurnID: &turn, Reason: "completed", Time: ms})
+		}
+		var b strings.Builder
+		for i, r := range rows {
+			line, err := json.Marshal(r)
 			if err != nil {
 				return nil, err
 			}
-			return json.Marshal(row{Type: "context.append_loop_event", AgentID: "main", Event: raw, Time: t.UnixMilli()})
+			if i > 0 {
+				b.WriteByte('\n')
+			}
+			b.Write(line)
 		}
-		return nil, nil
-	default:
-		return nil, nil
+		return json.RawMessage(b.String()), nil
 	}
+}
+
+// The context-row payloads, as kimi writes them.
+type contextMessage struct {
+	Role      string     `json:"role"`
+	Content   []part     `json:"content"`
+	ID        string     `json:"id,omitempty"`
+	ToolCalls []toolCall `json:"toolCalls"`
+	Origin    origin     `json:"origin"`
+}
+
+type origin struct {
+	Kind string `json:"kind"`
+}
+
+type stepEvent struct {
+	Type         string `json:"type"`
+	UUID         string `json:"uuid"`
+	TurnID       string `json:"turnId"`
+	Step         int    `json:"step"`
+	FinishReason string `json:"finishReason,omitempty"`
+}
+
+type contentPart struct {
+	Type     string `json:"type"`
+	UUID     string `json:"uuid"`
+	TurnID   string `json:"turnId"`
+	Step     int    `json:"step"`
+	StepUUID string `json:"stepUuid"`
+	Part     part   `json:"part"`
+}
+
+type toolCallEvent struct {
+	Type       string          `json:"type"`
+	UUID       string          `json:"uuid"`
+	TurnID     string          `json:"turnId"`
+	Step       int             `json:"step"`
+	StepUUID   string          `json:"stepUuid"`
+	ToolCallID string          `json:"toolCallId"`
+	Name       string          `json:"name"`
+	Args       json.RawMessage `json:"args"`
+}
+
+type toolResultEvent struct {
+	Type       string `json:"type"`
+	ParentUUID string `json:"parentUuid"`
+	ToolCallID string `json:"toolCallId"`
+	Result     struct {
+		Output string `json:"output"`
+		Error  string `json:"error,omitempty"`
+	} `json:"result"`
+}
+
+func loopRow(ms int64, event any) row {
+	return row{Type: "context.append_loop_event", AgentID: "main", Event: mustJSON(event), Time: ms}
+}
+
+func textParts(e transcript.Entry) []part {
+	out := []part{}
+	for _, b := range e.Content {
+		if b.Kind == transcript.BlockText {
+			out = append(out, part{Type: "text", Text: b.Text})
+		}
+	}
+	return out
+}
+
+func mustJSON(v any) json.RawMessage {
+	b, err := json.Marshal(v)
+	if err != nil {
+		panic("kimi: marshal " + err.Error())
+	}
+	return b
 }
 
 // writeState writes state.json and adds the session to the index. path is

@@ -34,7 +34,6 @@ func TestRoundTrip(t *testing.T) {
 
 func TestForeign(t *testing.T) {
 	transcripttest.Foreign(t, Codec, "/tmp/some/project")
-	transcripttest.Foreign(t, Qwen, "/tmp/some/project")
 }
 
 func TestAppend(t *testing.T) {

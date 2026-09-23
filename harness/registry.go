@@ -11,6 +11,7 @@ import (
 	"github.com/inference-sh/agentprotocol/transcript/kimi"
 	"github.com/inference-sh/agentprotocol/transcript/kiro"
 	"github.com/inference-sh/agentprotocol/transcript/pi"
+	"github.com/inference-sh/agentprotocol/transcript/qwen"
 )
 
 var standardEvents = Events{
@@ -534,7 +535,7 @@ var All = map[string]Harness{
 		ACPCmd:                  []string{"gemini", "--acp"},
 	},
 	"qwen": {
-		Sessions: gemini.Qwen,
+		Sessions: qwen.Codec,
 		Name:     "qwen", Binary: "qwen",
 		DetectEnvVars: []string{"QWEN_CODE_CLI", "QWEN_CODE_SESSION_ID"},
 		ToolCallGated: ToolCall{Name: "run_shell_command", Args: gatedShellArgs},

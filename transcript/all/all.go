@@ -21,6 +21,7 @@ import (
 	"github.com/inference-sh/agentprotocol/transcript/kimi"
 	"github.com/inference-sh/agentprotocol/transcript/kiro"
 	"github.com/inference-sh/agentprotocol/transcript/pi"
+	"github.com/inference-sh/agentprotocol/transcript/qwen"
 )
 
 // Codecs maps a harness id to its session codec. It holds every codec that
@@ -37,7 +38,7 @@ var Codecs = map[string]transcript.Codec{
 	"kiro":    kiro.Codec,
 	"omp":     pi.OMP,
 	"pi":      pi.Codec,
-	"qwen":    gemini.Qwen,
+	"qwen":    qwen.Codec,
 }
 
 // Open binds a harness's codec to a home directory. A codec registered by

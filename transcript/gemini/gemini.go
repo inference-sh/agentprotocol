@@ -1,5 +1,4 @@
-// Package gemini reads and writes Gemini CLI sessions, and those of Qwen
-// Code, which forked the format.
+// Package gemini reads and writes Gemini CLI sessions.
 //
 // Gemini keeps one JSONL per session under
 // ~/.gemini/tmp/<project>/chats/session-<stamp>-<id prefix>.jsonl, where
@@ -24,9 +23,6 @@ import (
 
 // Codec is the Gemini CLI session store.
 var Codec transcript.Codec = wrap{".gemini/tmp"}
-
-// Qwen is the Qwen Code session store, which shares Gemini's rows.
-var Qwen transcript.Codec = wrap{".qwen/tmp"}
 
 // wrap adds cwd recovery to the JSONL store. Gemini writes the working
 // directory nowhere in the file, only as the <project> directory (the

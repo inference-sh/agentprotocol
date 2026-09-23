@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
 // store is one SQLite codec with its captured sample, for the checks every
@@ -195,4 +196,40 @@ func mustOpen(t *testing.T, c transcript.Codec, home string) transcript.Store {
 		t.Fatal(err)
 	}
 	return st
+}
+
+// TestForeignIDs writes a session whose entry ids come from another agent
+// into each store; see transcripttest.ForeignIDs. The ids a store reads back
+// are its own: row references, opencode's msg_ ids, cursor's content
+// hashes, UUIDs for copilot and kiro.
+func TestForeignIDs(t *testing.T) {
+	hex64 := func(id string) bool {
+		if len(id) != 64 {
+			return false
+		}
+		for _, c := range id {
+			if !strings.ContainsRune("0123456789abcdef", c) {
+				return false
+			}
+		}
+		return true
+	}
+	cases := []struct {
+		name  string
+		codec transcript.Codec
+		valid func(string) bool
+	}{
+		{"goose", Goose, func(id string) bool { return strings.HasPrefix(id, "goose-row:") }},
+		{"hermes", Hermes, func(id string) bool { return strings.HasPrefix(id, "hermes-row:") }},
+		{"opencode", Opencode, func(id string) bool { return strings.HasPrefix(id, "msg_") }},
+		{"kilo", Kilo, func(id string) bool { return strings.HasPrefix(id, "msg_") }},
+		{"cursor", Cursor, hex64},
+		{"copilot", Copilot, transcript.IsUUID},
+		{"kiro", Kiro, transcript.IsUUID},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			transcripttest.ForeignIDs(t, c.codec, "/tmp/some/project", c.valid)
+		})
+	}
 }

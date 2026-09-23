@@ -1,6 +1,7 @@
 package sqlite
 
 import (
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -178,5 +179,39 @@ func TestGooseWriteKeepsExisting(t *testing.T) {
 	}
 	if msgs := own.Messages(); len(msgs) != 1 || msgs[0].Text() != "goose's own turn" {
 		t.Errorf("goose's own session was replaced: %+v", msgs)
+	}
+}
+
+// TestHermesHandBuiltRestorable checks the columns hermes's ACP adapter reads
+// to restore a session: it restores only source "acp", and takes the
+// directory from model_config. With source "cli" the seed probe's session
+// loaded as an empty one and the planted fact never reached the model.
+func TestHermesHandBuiltRestorable(t *testing.T) {
+	home := t.TempDir()
+	st, err := Hermes.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), &transcript.Session{CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "The codename is HERON."}}},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	db, done, err := openRO(filepath.Join(home, hermesPath))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer done()
+	defer db.Close()
+	var source, cwd string
+	if err := db.QueryRow(`SELECT source, json_extract(model_config, '$.cwd') FROM sessions WHERE id = ?`, id).Scan(&source, &cwd); err != nil {
+		t.Fatal(err)
+	}
+	if source != "acp" {
+		t.Errorf("source = %q; hermes's ACP adapter restores only \"acp\"", source)
+	}
+	if cwd != "/tmp/p" {
+		t.Errorf("model_config cwd = %q", cwd)
 	}
 }

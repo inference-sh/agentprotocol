@@ -225,9 +225,18 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 		exists = false
 	}
 	if !exists {
-		source := "cli"
+		// hermes's ACP adapter restores a session only when its source is
+		// "acp"; for any other source, session/resume silently starts an
+		// empty session instead (acp_adapter/session.py _restore). Its CLI
+		// resume does not check the source, so "acp" serves both.
+		source := "acp"
 		if v, ok := s.Vendor.(*hermesVendor); ok && v.Source != "" {
 			source = v.Source
+		}
+		// The ACP adapter takes the session's directory from model_config.
+		modelConfig, err := json.Marshal(map[string]string{"cwd": s.CWD})
+		if err != nil {
+			return "", err
 		}
 		title := s.Title
 		if title == "" {
@@ -236,8 +245,8 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 			}
 		}
 		if _, err := tx.ExecContext(ctx,
-			"INSERT INTO sessions (id, source, started_at, cwd, title, model) VALUES (?, ?, ?, ?, ?, ?)",
-			s.ID, source, epoch(s.Created), s.CWD, title, nullIfEmpty(s.Model)); err != nil {
+			"INSERT INTO sessions (id, source, started_at, cwd, title, model, model_config) VALUES (?, ?, ?, ?, ?, ?, ?)",
+			s.ID, source, epoch(s.Created), s.CWD, title, nullIfEmpty(s.Model), string(modelConfig)); err != nil {
 			return "", fmt.Errorf("hermes: write session: %w", err)
 		}
 	}

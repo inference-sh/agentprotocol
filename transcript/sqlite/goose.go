@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -92,6 +93,9 @@ func (st *gooseStore) List(ctx context.Context, cwd string) ([]transcript.Info, 
 }
 
 func (st *gooseStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
+	if _, err := os.Stat(st.path); errors.Is(err, os.ErrNotExist) {
+		return nil, transcript.ErrNotFound
+	}
 	db, done, err := openRO(st.path)
 	if err != nil {
 		return nil, err
@@ -111,23 +115,27 @@ func (st *gooseStore) Read(ctx context.Context, id string) (*transcript.Session,
 	}
 	s.Created, s.Updated = parseTime(created), parseTime(updated)
 
-	rows, err := db.QueryContext(ctx, "SELECT message_id, role, content_json, created_timestamp FROM messages WHERE session_id = ? ORDER BY id", id)
+	rows, err := db.QueryContext(ctx, "SELECT id, message_id, role, content_json, created_timestamp FROM messages WHERE session_id = ? ORDER BY id", id)
 	if err != nil {
 		return nil, fmt.Errorf("goose: read messages: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
+		var rowID int64
 		var msgID sql.NullString
 		var role, contentJSON string
 		var ts int64
-		if err := rows.Scan(&msgID, &role, &contentJSON, &ts); err != nil {
+		if err := rows.Scan(&rowID, &msgID, &role, &contentJSON, &ts); err != nil {
 			return nil, err
 		}
 		e, err := gooseEntry(role, contentJSON)
 		if err != nil {
 			return nil, err
 		}
-		e.ID = msgID.String
+		// The row id identifies the row on a rewrite; message_id may repeat
+		// or be empty. Raw marks the entry as read, so its row is kept as is.
+		e.ID = gooseRowRef(rowID)
+		e.Raw = json.RawMessage(contentJSON)
 		if ts > 0 {
 			e.Time = time.Unix(ts, 0).UTC()
 		}
@@ -172,11 +180,12 @@ func gooseEntry(role, contentJSON string) (transcript.Entry, error) {
 	return e, nil
 }
 
-// Write persists a session. A session with an id replaces the stored
-// session of that id, which is how a session read from goose is written back.
-// A session without one gets a new id in goose's own scheme, YYYYMMDD_N with
-// N one past the highest for the day, allocated inside the write transaction
-// so it can never land on a session goose already has.
+// Write persists a session without disturbing anything it read. Rows of
+// entries read from the store (Raw set) are kept exactly; rows of entries the
+// session no longer holds are removed; new entries are inserted after them.
+// A session goose does not have gets a sessions row, and a new id in goose's
+// own scheme, YYYYMMDD_N with N one past the highest for the day, allocated
+// inside the transaction so it can never land on a session goose already has.
 func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	now := time.Now()
 	if s.Created.IsZero() {
@@ -198,46 +207,103 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		return "", err
 	}
 	defer tx.Rollback()
+
+	exists := false
 	if s.ID == "" {
 		id, err := nextGooseID(ctx, tx, s.Created)
 		if err != nil {
 			return "", err
 		}
 		s.ID = id
-	}
-	title := s.Title
-	if title == "" {
-		if msgs := s.Messages(); len(msgs) > 0 {
-			title = msgs[0].Text()
+	} else {
+		var one int
+		switch err := tx.QueryRowContext(ctx, "SELECT 1 FROM sessions WHERE id = ?", s.ID).Scan(&one); {
+		case err == nil:
+			exists = true
+		case !errors.Is(err, sql.ErrNoRows):
+			return "", err
 		}
 	}
-	if _, err := tx.ExecContext(ctx,
-		"INSERT OR REPLACE INTO sessions (id, description, session_type, working_dir, created_at, updated_at, extension_data) VALUES (?, ?, 'user', ?, datetime('now'), datetime('now'), '{}')",
-		s.ID, title, s.CWD); err != nil {
-		return "", fmt.Errorf("goose: write session: %w", err)
+	if !exists {
+		title := s.Title
+		if title == "" {
+			if msgs := s.Messages(); len(msgs) > 0 {
+				title = msgs[0].Text()
+			}
+		}
+		if _, err := tx.ExecContext(ctx,
+			"INSERT INTO sessions (id, description, session_type, working_dir) VALUES (?, ?, 'user', ?)",
+			s.ID, title, s.CWD); err != nil {
+			return "", fmt.Errorf("goose: write session: %w", err)
+		}
 	}
-	if _, err := tx.ExecContext(ctx, "DELETE FROM messages WHERE session_id = ?", s.ID); err != nil {
+
+	keep := map[int64]bool{}
+	for _, e := range s.Messages() {
+		if e.Raw != nil {
+			if id, ok := gooseRowID(e.ID); ok {
+				keep[id] = true
+			}
+		}
+	}
+	rows, err := tx.QueryContext(ctx, "SELECT id FROM messages WHERE session_id = ?", s.ID)
+	if err != nil {
 		return "", err
 	}
+	var stale []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			rows.Close()
+			return "", err
+		}
+		if !keep[id] {
+			stale = append(stale, id)
+		}
+	}
+	rows.Close()
+	for _, id := range stale {
+		if _, err := tx.ExecContext(ctx, "DELETE FROM messages WHERE id = ?", id); err != nil {
+			return "", fmt.Errorf("goose: remove message: %w", err)
+		}
+	}
+
+	added := false
 	for _, e := range s.Messages() {
+		if e.Raw != nil {
+			continue
+		}
 		content, err := gooseContentJSON(e)
 		if err != nil {
 			return "", err
 		}
-		ts := s.Created.Unix()
+		ts := now.Unix()
 		if !e.Time.IsZero() {
 			ts = e.Time.Unix()
 		}
 		if _, err := tx.ExecContext(ctx,
-			"INSERT INTO messages (message_id, session_id, role, content_json, created_timestamp) VALUES (?, ?, ?, ?, ?)",
-			e.ID, s.ID, string(gooseRole(e.Role)), content, ts); err != nil {
+			`INSERT INTO messages (message_id, session_id, role, content_json, created_timestamp, metadata_json) VALUES (?, ?, ?, ?, ?, '{"userVisible":true,"agentVisible":true}')`,
+			"msg_"+transcript.NewUUID(), s.ID, string(gooseRole(e.Role)), content, ts); err != nil {
 			return "", fmt.Errorf("goose: write message: %w", err)
+		}
+		added = true
+	}
+	if added && exists {
+		if _, err := tx.ExecContext(ctx, "UPDATE sessions SET updated_at = CURRENT_TIMESTAMP WHERE id = ?", s.ID); err != nil {
+			return "", err
 		}
 	}
 	if err := tx.Commit(); err != nil {
 		return "", err
 	}
 	return s.ID, nil
+}
+
+func gooseRowRef(id int64) string { return "goose-row:" + strconv.FormatInt(id, 10) }
+
+func gooseRowID(ref string) (int64, bool) {
+	n, err := strconv.ParseInt(strings.TrimPrefix(ref, "goose-row:"), 10, 64)
+	return n, err == nil && strings.HasPrefix(ref, "goose-row:")
 }
 
 // nextGooseID returns the first unused YYYYMMDD_N id for a day.

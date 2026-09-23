@@ -4,9 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -51,10 +54,12 @@ func (st *hermesStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 	}
 	defer done()
 	defer db.Close()
-	q := "SELECT id, COALESCE(cwd, ''), COALESCE(title, ''), COALESCE(ended_at, '') FROM sessions"
+	// hermes often leaves the cwd column empty and records the directory in
+	// model_config instead.
+	q := "SELECT id, " + hermesCWD + ", COALESCE(title, ''), COALESCE(ended_at, started_at, '') FROM sessions"
 	args := []any{}
 	if cwd != "" {
-		q += " WHERE cwd = ?"
+		q += " WHERE " + hermesCWD + " = ?"
 		args = append(args, cwd)
 	}
 	rows, err := db.QueryContext(ctx, q, args...)
@@ -75,6 +80,9 @@ func (st *hermesStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 }
 
 func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
+	if _, err := os.Stat(st.path); errors.Is(err, os.ErrNotExist) {
+		return nil, transcript.ErrNotFound
+	}
 	db, done, err := openRO(st.path)
 	if err != nil {
 		return nil, err
@@ -83,34 +91,42 @@ func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session
 	defer db.Close()
 
 	s := &transcript.Session{ID: id, Agent: "hermes"}
-	var cwd, title, start, updated sql.NullString
-	err = db.QueryRowContext(ctx, "SELECT cwd, title, started_at, ended_at FROM sessions WHERE id = ?", id).
-		Scan(&cwd, &title, &start, &updated)
+	var cwd, title, start, updated, source, model sql.NullString
+	err = db.QueryRowContext(ctx, "SELECT "+hermesCWD+", title, started_at, ended_at, source, model FROM sessions WHERE id = ?", id).
+		Scan(&cwd, &title, &start, &updated, &source, &model)
 	if err == sql.ErrNoRows {
 		return nil, transcript.ErrNotFound
 	}
 	if err != nil {
 		return nil, fmt.Errorf("hermes: read session: %w", err)
 	}
-	s.CWD, s.Title = cwd.String, title.String
+	s.CWD, s.Title, s.Model = cwd.String, title.String, model.String
 	s.Created, s.Updated = parseTime(start.String), parseTime(updated.String)
+	if s.Updated.IsZero() {
+		s.Updated = s.Created
+	}
+	s.Vendor = &hermesVendor{Source: source.String}
 
-	rows, err := db.QueryContext(ctx, "SELECT role, COALESCE(content, ''), COALESCE(tool_call_id, ''), COALESCE(tool_name, ''), tool_calls, COALESCE(reasoning, ''), timestamp FROM messages WHERE session_id = ? ORDER BY id", id)
+	rows, err := db.QueryContext(ctx, "SELECT id, role, COALESCE(content, ''), COALESCE(tool_call_id, ''), COALESCE(tool_name, ''), tool_calls, COALESCE(reasoning, ''), timestamp FROM messages WHERE session_id = ? ORDER BY id", id)
 	if err != nil {
 		return nil, fmt.Errorf("hermes: read messages: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
+		var rowID int64
 		var role, content, toolID, toolName, reasoning string
 		var toolCalls sql.NullString
 		var ts sql.NullFloat64
-		if err := rows.Scan(&role, &content, &toolID, &toolName, &toolCalls, &reasoning, &ts); err != nil {
+		if err := rows.Scan(&rowID, &role, &content, &toolID, &toolName, &toolCalls, &reasoning, &ts); err != nil {
 			return nil, err
 		}
 		e, err := hermesEntry(role, content, toolID, toolName, toolCalls.String, reasoning)
 		if err != nil {
 			return nil, err
 		}
+		// Raw marks the entry as read; a rewrite keeps its row as is.
+		e.ID = "hermes-row:" + strconv.FormatInt(rowID, 10)
+		e.Raw = json.RawMessage(strconv.Quote(content))
 		if ts.Valid {
 			e.Time = time.Unix(int64(ts.Float64), 0).UTC()
 		}
@@ -162,18 +178,26 @@ func arguments(s string) json.RawMessage {
 	return quoted
 }
 
+// hermesCWD is the session's directory: the cwd column, or the cwd hermes
+// records inside model_config when it leaves the column empty.
+const hermesCWD = "COALESCE(NULLIF(cwd, ''), json_extract(model_config, '$.cwd'), '')"
+
+// hermesVendor carries the source a session was opened from, which hermes
+// requires on every session row.
+type hermesVendor struct{ Source string }
+
+// Write persists a session without disturbing anything it read. Rows of
+// entries read from the store (Raw set) are kept exactly; rows of entries the
+// session no longer holds are removed; new entries are inserted after them.
+// A session hermes does not have gets a sessions row with the columns hermes
+// requires, source and started_at.
 func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.ID == "" {
 		s.ID = transcript.NewUUID()
 	}
 	now := time.Now()
-	created := now
-	if !s.Created.IsZero() {
-		created = s.Created
-	}
-	updated := now
-	if !s.Updated.IsZero() {
-		updated = s.Updated
+	if s.Created.IsZero() {
+		s.Created = now
 	}
 	if err := os.MkdirAll(filepath.Dir(st.path), 0o755); err != nil {
 		return "", err
@@ -191,30 +215,84 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 		return "", err
 	}
 	defer tx.Rollback()
-	title := s.Title
-	if title == "" {
-		if msgs := s.Messages(); len(msgs) > 0 {
-			title = msgs[0].Text()
+
+	var one int
+	exists := true
+	if err := tx.QueryRowContext(ctx, "SELECT 1 FROM sessions WHERE id = ?", s.ID).Scan(&one); err != nil {
+		if !errors.Is(err, sql.ErrNoRows) {
+			return "", err
+		}
+		exists = false
+	}
+	if !exists {
+		source := "cli"
+		if v, ok := s.Vendor.(*hermesVendor); ok && v.Source != "" {
+			source = v.Source
+		}
+		title := s.Title
+		if title == "" {
+			if msgs := s.Messages(); len(msgs) > 0 {
+				title = msgs[0].Text()
+			}
+		}
+		if _, err := tx.ExecContext(ctx,
+			"INSERT INTO sessions (id, source, started_at, cwd, title, model) VALUES (?, ?, ?, ?, ?, ?)",
+			s.ID, source, epoch(s.Created), s.CWD, title, nullIfEmpty(s.Model)); err != nil {
+			return "", fmt.Errorf("hermes: write session: %w", err)
 		}
 	}
-	if _, err := tx.ExecContext(ctx,
-		"INSERT OR REPLACE INTO sessions (id, cwd, title, started_at, ended_at) VALUES (?, ?, ?, ?, ?)",
-		s.ID, s.CWD, title, created.UTC().Format(time.RFC3339Nano), updated.UTC().Format(time.RFC3339Nano)); err != nil {
-		return "", fmt.Errorf("hermes: write session: %w", err)
+
+	keep := map[string]bool{}
+	for _, e := range s.Messages() {
+		if e.Raw != nil {
+			keep[strings.TrimPrefix(e.ID, "hermes-row:")] = true
+		}
 	}
-	if _, err := tx.ExecContext(ctx, "DELETE FROM messages WHERE session_id = ?", s.ID); err != nil {
+	rows, err := tx.QueryContext(ctx, "SELECT id FROM messages WHERE session_id = ?", s.ID)
+	if err != nil {
 		return "", err
 	}
+	var stale []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			rows.Close()
+			return "", err
+		}
+		if !keep[strconv.FormatInt(id, 10)] {
+			stale = append(stale, id)
+		}
+	}
+	rows.Close()
+	for _, id := range stale {
+		if _, err := tx.ExecContext(ctx, "DELETE FROM messages WHERE id = ?", id); err != nil {
+			return "", fmt.Errorf("hermes: remove message: %w", err)
+		}
+	}
+
+	at := now
+	added := false
 	for _, e := range s.Messages() {
+		if e.Raw != nil {
+			continue
+		}
 		role, content, toolID, toolName, calls, reasoning := hermesColumns(e)
-		ts := float64(updated.Unix())
-		if !e.Time.IsZero() {
-			ts = float64(e.Time.Unix())
+		ts := e.Time
+		if ts.IsZero() {
+			at = at.Add(time.Millisecond)
+			ts = at
 		}
 		if _, err := tx.ExecContext(ctx,
 			"INSERT INTO messages (session_id, role, content, tool_call_id, tool_calls, tool_name, timestamp, reasoning) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-			s.ID, role, content, toolID, calls, toolName, ts, reasoning); err != nil {
+			s.ID, role, content, nullIfEmpty(toolID), calls, nullIfEmpty(toolName), epoch(ts), reasoning); err != nil {
 			return "", fmt.Errorf("hermes: write message: %w", err)
+		}
+		added = true
+	}
+	if added {
+		if _, err := tx.ExecContext(ctx,
+			"UPDATE sessions SET message_count = (SELECT count(*) FROM messages WHERE session_id = ?) WHERE id = ?", s.ID, s.ID); err != nil {
+			return "", err
 		}
 	}
 	if err := tx.Commit(); err != nil {
@@ -222,6 +300,9 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 	}
 	return s.ID, nil
 }
+
+// epoch is the fractional unix seconds hermes stores its times as.
+func epoch(t time.Time) float64 { return float64(t.UnixNano()) / 1e9 }
 
 func hermesColumns(e transcript.Entry) (role, content, toolID, toolName string, toolCalls, reasoning any) {
 	switch e.Role {
@@ -267,8 +348,8 @@ func hermesColumns(e transcript.Entry) (role, content, toolID, toolName string, 
 func hermesSchema(ctx context.Context, db *sql.DB) error {
 	const ddl = `
 CREATE TABLE IF NOT EXISTS sessions (
-  id TEXT PRIMARY KEY, source TEXT, model TEXT, system_prompt TEXT,
-  started_at TEXT, ended_at TEXT, title TEXT, cwd TEXT);
+  id TEXT PRIMARY KEY, source TEXT NOT NULL, model TEXT, model_config TEXT, system_prompt TEXT,
+  started_at REAL NOT NULL, ended_at REAL, message_count INTEGER DEFAULT 0, title TEXT, cwd TEXT);
 CREATE TABLE IF NOT EXISTS messages (
   id INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT NOT NULL REFERENCES sessions(id),
   role TEXT NOT NULL, content TEXT, tool_call_id TEXT, tool_calls TEXT, tool_name TEXT,

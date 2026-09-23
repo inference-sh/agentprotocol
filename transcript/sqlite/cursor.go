@@ -48,6 +48,10 @@ type CursorVendor struct {
 	MetaJSON map[string]json.RawMessage
 	Root     []byte
 	RootIDs  []string
+	// MetaHex and MetaFile are the meta row and meta.json exactly as read,
+	// written back unchanged when the conversation is unchanged.
+	MetaHex  string
+	MetaFile []byte
 }
 
 // cursorMeta is the meta.json beside store.db.
@@ -152,6 +156,10 @@ func (st *cursorStore) Read(ctx context.Context, id string) (*transcript.Session
 	if err != nil {
 		return nil, err
 	}
+	metaFile, err := os.ReadFile(filepath.Join(dir, "meta.json"))
+	if err != nil {
+		return nil, fmt.Errorf("cursor: %w", err)
+	}
 	metaJSON, err := rawFields(filepath.Join(dir, "meta.json"))
 	if err != nil {
 		return nil, err
@@ -196,7 +204,7 @@ func (st *cursorStore) Read(ctx context.Context, id string) (*transcript.Session
 		Title:   sm.Name,
 		Created: time.UnixMilli(m.CreatedAtMs).UTC(),
 		Updated: time.UnixMilli(m.UpdatedAtMs).UTC(),
-		Vendor:  &CursorVendor{Meta: metaFields, MetaJSON: metaJSON, Root: root, RootIDs: ids},
+		Vendor:  &CursorVendor{Meta: metaFields, MetaJSON: metaJSON, Root: root, RootIDs: ids, MetaHex: metaHex, MetaFile: metaFile},
 	}
 	for _, bid := range ids {
 		data, err := blob(ctx, db, bid)
@@ -389,8 +397,9 @@ func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string
 	// The root is reused as read when the conversation is unchanged, which
 	// keeps any fields this codec does not model; otherwise it is rebuilt with
 	// only the message list.
+	unchanged := v != nil && equalIDs(v.RootIDs, ids)
 	var root []byte
-	if v != nil && equalIDs(v.RootIDs, ids) {
+	if unchanged {
 		root = v.Root
 	} else {
 		for _, id := range ids {
@@ -434,16 +443,17 @@ func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return "", err
 	}
+	// The store is append-only and content-addressed: every checkpoint adds
+	// blobs and a new root, and earlier roots stay for rewind. A write adds
+	// what is missing and moves the meta row to the new root; it never
+	// removes a blob.
 	path := filepath.Join(dir, "store.db")
-	if err := os.Remove(path); err != nil && !errors.Is(err, os.ErrNotExist) {
-		return "", err
-	}
 	db, err := openRW(path)
 	if err != nil {
 		return "", err
 	}
 	defer db.Close()
-	if _, err := db.ExecContext(ctx, `CREATE TABLE blobs (id TEXT PRIMARY KEY, data BLOB); CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT);`); err != nil {
+	if _, err := db.ExecContext(ctx, `CREATE TABLE IF NOT EXISTS blobs (id TEXT PRIMARY KEY, data BLOB); CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);`); err != nil {
 		return "", fmt.Errorf("cursor: schema: %w", err)
 	}
 	tx, err := db.BeginTx(ctx, nil)
@@ -456,8 +466,22 @@ func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string
 			return "", fmt.Errorf("cursor: blob: %w", err)
 		}
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO meta (key, value) VALUES ('0', ?)`, hex.EncodeToString(metaBytes)); err != nil {
-		return "", fmt.Errorf("cursor: meta row: %w", err)
+	metaValue := hex.EncodeToString(metaBytes)
+	if unchanged && v.MetaHex != "" {
+		metaValue = v.MetaHex
+	}
+	var current string
+	switch err := tx.QueryRowContext(ctx, `SELECT value FROM meta WHERE key = '0'`).Scan(&current); {
+	case errors.Is(err, sql.ErrNoRows):
+		if _, err := tx.ExecContext(ctx, `INSERT INTO meta (key, value) VALUES ('0', ?)`, metaValue); err != nil {
+			return "", fmt.Errorf("cursor: meta row: %w", err)
+		}
+	case err != nil:
+		return "", err
+	case current != metaValue:
+		if _, err := tx.ExecContext(ctx, `UPDATE meta SET value = ? WHERE key = '0'`, metaValue); err != nil {
+			return "", fmt.Errorf("cursor: meta row: %w", err)
+		}
 	}
 	if err := tx.Commit(); err != nil {
 		return "", err
@@ -475,6 +499,9 @@ func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string
 	out, err := json.Marshal(metaJSON)
 	if err != nil {
 		return "", err
+	}
+	if unchanged && v.MetaFile != nil {
+		out = v.MetaFile
 	}
 	if err := os.WriteFile(filepath.Join(dir, "meta.json"), out, 0o644); err != nil {
 		return "", err

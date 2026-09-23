@@ -2,11 +2,14 @@ package sqlite
 
 import (
 	"context"
+	"crypto/rand"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -37,9 +40,12 @@ type openStore struct{ path string }
 // openMessage is the message `data` payload. Only the fields the codec reads
 // or writes are named; Vendor keeps the rest for a same-agent write.
 type openMessage struct {
-	Role     string   `json:"role"`
-	ParentID string   `json:"parentID,omitempty"`
-	Time     openTime `json:"time"`
+	Role       string   `json:"role"`
+	ParentID   string   `json:"parentID,omitempty"`
+	Time       openTime `json:"time"`
+	Agent      string   `json:"agent,omitempty"`
+	ProviderID string   `json:"providerID,omitempty"`
+	ModelID    string   `json:"modelID,omitempty"`
 }
 
 type openTime struct {
@@ -64,13 +70,13 @@ type openToolState struct {
 	Error  string          `json:"error,omitempty"`
 }
 
-// openVendor keeps the raw message and part payloads of a session read from
-// the store, so a same-agent write reproduces the fields this codec does not
-// model.
+// openVendor carries what a write needs from a session read from the store:
+// the agent, provider and model its messages ran with, which a message
+// appended to it must name too.
 type openVendor struct {
-	Messages map[string]json.RawMessage // message id -> data
-	Version  string
-	Slug     string
+	Agent      string
+	ProviderID string
+	ModelID    string
 }
 
 func (st *openStore) List(ctx context.Context, cwd string) ([]transcript.Info, error) {
@@ -111,6 +117,9 @@ func (st *openStore) List(ctx context.Context, cwd string) ([]transcript.Info, e
 }
 
 func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
+	if _, err := os.Stat(st.path); errors.Is(err, os.ErrNotExist) {
+		return nil, transcript.ErrNotFound
+	}
 	db, done, err := openRO(st.path)
 	if err != nil {
 		return nil, err
@@ -120,9 +129,8 @@ func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, 
 
 	s := &transcript.Session{ID: id}
 	var created, updated int64
-	var version, slug sql.NullString
-	err = db.QueryRowContext(ctx, "SELECT directory, title, version, slug, time_created, time_updated FROM session WHERE id = ?", id).
-		Scan(&s.CWD, &s.Title, &version, &slug, &created, &updated)
+	err = db.QueryRowContext(ctx, "SELECT directory, title, time_created, time_updated FROM session WHERE id = ?", id).
+		Scan(&s.CWD, &s.Title, &created, &updated)
 	if err == sql.ErrNoRows {
 		return nil, transcript.ErrNotFound
 	}
@@ -130,7 +138,7 @@ func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, 
 		return nil, fmt.Errorf("opencode: read session: %w", err)
 	}
 	s.Created, s.Updated = time.UnixMilli(created).UTC(), time.UnixMilli(updated).UTC()
-	vendor := &openVendor{Messages: map[string]json.RawMessage{}, Version: version.String, Slug: slug.String}
+	vendor := &openVendor{}
 	s.Vendor = vendor
 
 	// Parts, grouped by message.
@@ -174,8 +182,16 @@ func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, 
 		if err := json.Unmarshal([]byte(data), &m); err != nil {
 			return nil, fmt.Errorf("opencode: message: %w", err)
 		}
-		vendor.Messages[msgID] = json.RawMessage(data)
-		e := transcript.Entry{ID: msgID, ParentID: m.ParentID, Role: transcript.Role(m.Role)}
+		if m.Agent != "" {
+			vendor.Agent = m.Agent
+		}
+		if m.Role == "assistant" && m.ProviderID != "" {
+			vendor.ProviderID, vendor.ModelID = m.ProviderID, m.ModelID
+			s.Model = m.ModelID
+		}
+		// Raw marks the entry as read from the store: a write leaves its
+		// message and part rows exactly as they are.
+		e := transcript.Entry{ID: msgID, ParentID: m.ParentID, Role: transcript.Role(m.Role), Raw: json.RawMessage(data)}
 		if m.Time.Created > 0 {
 			e.Time = time.UnixMilli(m.Time.Created).UTC()
 		}
@@ -214,19 +230,13 @@ func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, 
 	return s, msgRows.Err()
 }
 
+// Write persists a session without disturbing anything it read. Entries read
+// from the store (Raw set) keep their message and part rows exactly; rows of
+// entries the session no longer holds are removed; new entries are inserted
+// after them as messages opencode accepts, with every field its message and
+// part schemas require. A session opencode does not have yet gets a session
+// row, bound to its directory's project.
 func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
-	if s.ID == "" {
-		s.ID = "ses_" + transcript.NewUUID()
-	}
-	now := time.Now()
-	created := now
-	if !s.Created.IsZero() {
-		created = s.Created
-	}
-	updated := now
-	if !s.Updated.IsZero() {
-		updated = s.Updated
-	}
 	if err := os.MkdirAll(filepath.Dir(st.path), 0o755); err != nil {
 		return "", err
 	}
@@ -244,73 +254,110 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 	}
 	defer tx.Rollback()
 
-	projectID, err := ensureProject(ctx, tx, s.CWD, created, updated)
+	ids := openIDs{}
+	now := time.Now()
+	if s.Created.IsZero() {
+		s.Created = now
+	}
+	exists := false
+	if s.ID != "" {
+		var one int
+		switch err := tx.QueryRowContext(ctx, "SELECT 1 FROM session WHERE id = ?", s.ID).Scan(&one); {
+		case err == nil:
+			exists = true
+		case !errors.Is(err, sql.ErrNoRows):
+			return "", err
+		}
+	} else {
+		s.ID = ids.next("ses", now, true)
+	}
+	if !exists {
+		if err := insertOpenSession(ctx, tx, s); err != nil {
+			return "", err
+		}
+	}
+
+	// Keep what was read; drop rows for entries the session no longer has.
+	keep := map[string]bool{}
+	var lastUser string
+	for _, e := range s.Messages() {
+		if e.Raw != nil {
+			keep[e.ID] = true
+			if e.Role == transcript.RoleUser {
+				lastUser = e.ID
+			}
+		}
+	}
+	stale, err := openMessageIDs(ctx, tx, s.ID)
 	if err != nil {
 		return "", err
 	}
-	vendor, _ := s.Vendor.(*openVendor)
-	version, slug := "0.0.0", "session"
-	if vendor != nil {
-		if vendor.Version != "" {
-			version = vendor.Version
-		}
-		if vendor.Slug != "" {
-			slug = vendor.Slug
-		}
-	}
-	title := s.Title
-	if title == "" {
-		if msgs := s.Messages(); len(msgs) > 0 {
-			title = msgs[0].Text()
-		}
-	}
-	if _, err := tx.ExecContext(ctx,
-		"INSERT OR REPLACE INTO session (id, project_id, slug, directory, title, version, cost, tokens_input, tokens_output, tokens_reasoning, tokens_cache_read, tokens_cache_write, time_created, time_updated) VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, ?, ?)",
-		s.ID, projectID, slug, s.CWD, title, version, created.UnixMilli(), updated.UnixMilli()); err != nil {
-		return "", fmt.Errorf("opencode: write session: %w", err)
-	}
-	if _, err := tx.ExecContext(ctx, "DELETE FROM part WHERE session_id = ?", s.ID); err != nil {
-		return "", err
-	}
-	if _, err := tx.ExecContext(ctx, "DELETE FROM message WHERE session_id = ?", s.ID); err != nil {
-		return "", err
-	}
-
-	results := toolResults(s)
-	for i, e := range s.Messages() {
-		if e.Role == transcript.RoleTool {
-			// A standalone tool-result entry is folded into the assistant
-			// tool part it answers, so it writes no message of its own.
+	for _, id := range stale {
+		if keep[id] {
 			continue
 		}
-		msgID := e.ID
-		if msgID == "" {
-			msgID = fmt.Sprintf("msg_%s%03d", s.ID, i)
+		for _, q := range []string{"DELETE FROM part WHERE message_id = ?", "DELETE FROM message WHERE id = ?"} {
+			if _, err := tx.ExecContext(ctx, q, id); err != nil {
+				return "", fmt.Errorf("opencode: remove message: %w", err)
+			}
 		}
-		mt := created
-		if !e.Time.IsZero() {
-			mt = e.Time
+	}
+
+	d, err := openDefaults(ctx, tx, s)
+	if err != nil {
+		return "", err
+	}
+	results := toolResults(s)
+	at := now
+	added := false
+	for _, e := range s.Messages() {
+		if e.Raw != nil || e.Role == transcript.RoleTool || e.Role == transcript.RoleSystem {
+			// Read rows stay; tool results fold into the assistant part that
+			// called them; opencode has no system messages.
+			continue
 		}
-		data, err := openMessageData(e, msgID, vendor)
+		at = at.Add(time.Millisecond)
+		ms := at.UnixMilli()
+		msgID := ids.next("msg", at, false)
+		var data any
+		switch e.Role {
+		case transcript.RoleUser:
+			data = openUser{Role: "user", Time: openTime{Created: ms}, Agent: d.agent, Model: openModelRef{ProviderID: d.provider, ModelID: d.model}}
+			lastUser = msgID
+		case transcript.RoleAssistant:
+			data = openAssistant{
+				ParentID: lastUser, Role: "assistant", Mode: d.agent, Agent: d.agent,
+				Path: openPath{CWD: s.CWD, Root: s.CWD}, Tokens: openTokens{Cache: openCache{}},
+				ModelID: d.model, ProviderID: d.provider, Time: openTime{Created: ms, Completed: ms}, Finish: "stop",
+			}
+		default:
+			continue
+		}
+		raw, err := json.Marshal(data)
 		if err != nil {
 			return "", err
 		}
 		if _, err := tx.ExecContext(ctx,
 			"INSERT INTO message (id, session_id, time_created, time_updated, data) VALUES (?, ?, ?, ?, ?)",
-			msgID, s.ID, mt.UnixMilli(), mt.UnixMilli(), string(data)); err != nil {
+			msgID, s.ID, ms, ms, string(raw)); err != nil {
 			return "", fmt.Errorf("opencode: write message: %w", err)
 		}
-		for j, part := range openParts(e, results) {
-			partID := fmt.Sprintf("prt_%s%03d%03d", s.ID, i, j)
+		for _, part := range openParts(e, results, ms) {
 			pd, err := json.Marshal(part)
 			if err != nil {
 				return "", err
 			}
 			if _, err := tx.ExecContext(ctx,
 				"INSERT INTO part (id, message_id, session_id, time_created, time_updated, data) VALUES (?, ?, ?, ?, ?, ?)",
-				partID, msgID, s.ID, mt.UnixMilli(), mt.UnixMilli(), string(pd)); err != nil {
+				ids.next("prt", at, false), msgID, s.ID, ms, ms, string(pd)); err != nil {
 				return "", fmt.Errorf("opencode: write part: %w", err)
 			}
+		}
+		added = true
+	}
+	if added && exists {
+		if _, err := tx.ExecContext(ctx, "UPDATE session SET time_updated = ? WHERE id = ?", at.UnixMilli(), s.ID); err != nil {
+			return "", err
 		}
 	}
 	if err := tx.Commit(); err != nil {
@@ -319,55 +366,209 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 	return s.ID, nil
 }
 
-// ensureProject returns the id of the project for a worktree, creating one
-// when the directory is not yet known. opencode identifies a project by its
-// worktree, so a fresh id with the right worktree is enough for it to bind
-// the session to the directory.
-func ensureProject(ctx context.Context, tx *sql.Tx, dir string, created, updated time.Time) (string, error) {
+// The message and part payloads opencode validates on load. The id,
+// sessionID and messageID it also requires come from the row's columns.
+type openUser struct {
+	Role  string       `json:"role"`
+	Time  openTime     `json:"time"`
+	Agent string       `json:"agent"`
+	Model openModelRef `json:"model"`
+}
+
+type openModelRef struct {
+	ProviderID string `json:"providerID"`
+	ModelID    string `json:"modelID"`
+}
+
+type openAssistant struct {
+	ParentID   string     `json:"parentID"`
+	Role       string     `json:"role"`
+	Mode       string     `json:"mode"`
+	Agent      string     `json:"agent"`
+	Path       openPath   `json:"path"`
+	Cost       float64    `json:"cost"`
+	Tokens     openTokens `json:"tokens"`
+	ModelID    string     `json:"modelID"`
+	ProviderID string     `json:"providerID"`
+	Time       openTime   `json:"time"`
+	Finish     string     `json:"finish,omitempty"`
+}
+
+type openPath struct {
+	CWD  string `json:"cwd"`
+	Root string `json:"root"`
+}
+
+type openTokens struct {
+	Input     float64   `json:"input"`
+	Output    float64   `json:"output"`
+	Reasoning float64   `json:"reasoning"`
+	Cache     openCache `json:"cache"`
+}
+
+type openCache struct {
+	Read  float64 `json:"read"`
+	Write float64 `json:"write"`
+}
+
+type openSpan struct {
+	Start int64 `json:"start"`
+	End   int64 `json:"end"`
+}
+
+type openPartOut struct {
+	Type   string        `json:"type"`
+	Text   *string       `json:"text,omitempty"`
+	Time   *openSpan     `json:"time,omitempty"`
+	CallID string        `json:"callID,omitempty"`
+	Tool   string        `json:"tool,omitempty"`
+	State  *openStateOut `json:"state,omitempty"`
+}
+
+type openStateOut struct {
+	Status   string          `json:"status"`
+	Input    json.RawMessage `json:"input"`
+	Output   *string         `json:"output,omitempty"`
+	Error    string          `json:"error,omitempty"`
+	Title    *string         `json:"title,omitempty"`
+	Metadata json.RawMessage `json:"metadata,omitempty"`
+	Time     openSpan        `json:"time"`
+}
+
+// openDefaultsT is who new messages say ran them.
+type openDefaultsT struct{ agent, provider, model string }
+
+// openDefaults picks the agent, provider and model new messages name: those
+// of the session being appended to, else those of the store's latest
+// assistant message, else the session's Model split as provider/model.
+func openDefaults(ctx context.Context, tx *sql.Tx, s *transcript.Session) (openDefaultsT, error) {
+	d := openDefaultsT{agent: "build"}
+	if v, ok := s.Vendor.(*openVendor); ok && v.ProviderID != "" {
+		if v.Agent != "" {
+			d.agent = v.Agent
+		}
+		d.provider, d.model = v.ProviderID, v.ModelID
+		return d, nil
+	}
+	var data string
+	err := tx.QueryRowContext(ctx, `SELECT data FROM message WHERE json_extract(data, '$.role') = 'assistant' ORDER BY time_created DESC LIMIT 1`).Scan(&data)
+	if err == nil {
+		var m openMessage
+		if json.Unmarshal([]byte(data), &m) == nil && m.ProviderID != "" {
+			if m.Agent != "" {
+				d.agent = m.Agent
+			}
+			d.provider, d.model = m.ProviderID, m.ModelID
+			return d, nil
+		}
+	} else if !errors.Is(err, sql.ErrNoRows) {
+		return d, err
+	}
+	d.model = s.Model
+	if i := strings.Index(s.Model, "/"); i > 0 {
+		d.provider = s.Model[:i]
+	}
+	return d, nil
+}
+
+func openMessageIDs(ctx context.Context, tx *sql.Tx, sessionID string) ([]string, error) {
+	rows, err := tx.QueryContext(ctx, "SELECT id FROM message WHERE session_id = ?", sessionID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []string
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		out = append(out, id)
+	}
+	return out, rows.Err()
+}
+
+// insertOpenSession adds a session row for a session opencode does not have,
+// bound to the project of its directory the way opencode binds its own.
+func insertOpenSession(ctx context.Context, tx *sql.Tx, s *transcript.Session) error {
+	created := s.Created.UnixMilli()
+	updated := created
+	if !s.Updated.IsZero() {
+		updated = s.Updated.UnixMilli()
+	}
+	projectID, err := ensureProject(ctx, tx, s.CWD, created)
+	if err != nil {
+		return err
+	}
+	version := "0.0.0"
+	if err := tx.QueryRowContext(ctx, "SELECT version FROM session ORDER BY time_updated DESC LIMIT 1").Scan(&version); err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return err
+	}
+	title := s.Title
+	if title == "" {
+		if msgs := s.Messages(); len(msgs) > 0 {
+			title = msgs[0].Text()
+		}
+	}
+	if _, err := tx.ExecContext(ctx,
+		`INSERT INTO session (id, project_id, slug, directory, title, version, time_created, time_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+		s.ID, projectID, "imported-session", s.CWD, title, version, created, updated); err != nil {
+		return fmt.Errorf("opencode: write session: %w", err)
+	}
+	return nil
+}
+
+// ensureProject returns the project bound to a directory, creating the
+// project and the binding when opencode has none. opencode resolves a
+// directory to its project through project_directory where that table
+// exists, and through the project's worktree otherwise.
+func ensureProject(ctx context.Context, tx *sql.Tx, dir string, at int64) (string, error) {
+	hasDirs, err := tableExists(ctx, tx, "project_directory")
+	if err != nil {
+		return "", err
+	}
 	var id string
-	err := tx.QueryRowContext(ctx, "SELECT id FROM project WHERE worktree = ?", dir).Scan(&id)
+	if hasDirs {
+		err = tx.QueryRowContext(ctx, "SELECT project_id FROM project_directory WHERE directory = ?", dir).Scan(&id)
+	} else {
+		err = tx.QueryRowContext(ctx, "SELECT id FROM project WHERE worktree = ?", dir).Scan(&id)
+	}
 	if err == nil {
 		return id, nil
 	}
-	if err != sql.ErrNoRows {
+	if !errors.Is(err, sql.ErrNoRows) {
 		return "", err
 	}
-	id = transcript.NewUUID()
-	if _, err := tx.ExecContext(ctx,
-		"INSERT INTO project (id, worktree, vcs, time_created, time_updated, sandboxes) VALUES (?, ?, 'git', ?, ?, '[]')",
-		id, dir, created.UnixMilli(), updated.UnixMilli()); err != nil {
-		return "", fmt.Errorf("opencode: write project: %w", err)
+	if err := tx.QueryRowContext(ctx, "SELECT id FROM project WHERE worktree = ?", dir).Scan(&id); err != nil {
+		if !errors.Is(err, sql.ErrNoRows) {
+			return "", err
+		}
+		id = transcript.NewUUID()
+		if _, err := tx.ExecContext(ctx,
+			"INSERT INTO project (id, worktree, vcs, time_created, time_updated, sandboxes) VALUES (?, ?, 'git', ?, ?, '[]')",
+			id, dir, at, at); err != nil {
+			return "", fmt.Errorf("opencode: write project: %w", err)
+		}
+	}
+	if hasDirs {
+		if _, err := tx.ExecContext(ctx,
+			"INSERT OR IGNORE INTO project_directory (project_id, directory, time_created) VALUES (?, ?, ?)",
+			id, dir, at); err != nil {
+			return "", fmt.Errorf("opencode: bind directory: %w", err)
+		}
 	}
 	return id, nil
 }
 
-// openMessageData reproduces the original message payload for a same-agent
-// session, or builds a minimal one for an imported entry.
-func openMessageData(e transcript.Entry, msgID string, vendor *openVendor) (json.RawMessage, error) {
-	if vendor != nil {
-		if raw, ok := vendor.Messages[msgID]; ok {
-			return raw, nil
-		}
-	}
-	m := map[string]any{"role": openRole(e.Role), "time": map[string]int64{"created": timeMillis(e.Time)}}
-	if e.ParentID != "" {
-		m["parentID"] = e.ParentID
-	}
-	return json.Marshal(m)
-}
-
-// openRole maps a tool entry to the assistant role opencode files tool parts
-// under.
-func openRole(r transcript.Role) string {
-	if r == transcript.RoleTool {
-		return string(transcript.RoleAssistant)
-	}
-	return string(r)
+func tableExists(ctx context.Context, tx *sql.Tx, name string) (bool, error) {
+	var n int
+	err := tx.QueryRowContext(ctx, "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = ?", name).Scan(&n)
+	return n > 0, err
 }
 
 // toolResult is a tool call's outcome, collected across a whole session so a
-// call and its result can be folded into one opencode part even when the
-// normalized model keeps them in separate entries.
+// call and its result fold into one opencode part even when the normalized
+// model keeps them in separate entries.
 type toolResult struct {
 	text  string
 	isErr bool
@@ -385,29 +586,74 @@ func toolResults(s *transcript.Session) map[string]toolResult {
 	return out
 }
 
-// openParts turns an entry's blocks into opencode parts, folding each tool
-// call together with its result into the single completed tool part opencode
-// stores.
-func openParts(e transcript.Entry, results map[string]toolResult) []openPart {
-	var parts []openPart
+// openParts turns an entry's blocks into the parts opencode stores, each
+// with the fields its part schema requires. A tool call and its result fold
+// into one tool part.
+func openParts(e transcript.Entry, results map[string]toolResult, ms int64) []openPartOut {
+	var parts []openPartOut
+	span := openSpan{Start: ms, End: ms}
 	for _, b := range e.Content {
 		switch b.Kind {
 		case transcript.BlockText:
-			parts = append(parts, openPart{Type: "text", Text: b.Text})
+			text := b.Text
+			parts = append(parts, openPartOut{Type: "text", Text: &text})
 		case transcript.BlockReasoning:
-			parts = append(parts, openPart{Type: "reasoning", Text: b.Text})
+			text := b.Text
+			parts = append(parts, openPartOut{Type: "reasoning", Text: &text, Time: &span})
 		case transcript.BlockToolUse:
-			state := &openToolState{Status: "completed", Input: b.Input}
-			if r, ok := results[b.ToolID]; ok {
-				state.Output = r.text
-				if r.isErr {
-					state.Status, state.Error = "error", r.text
-				}
+			input := b.Input
+			if !isObject(input) {
+				wrapped, _ := json.Marshal(map[string]json.RawMessage{"input": orNull(input)})
+				input = wrapped
 			}
-			parts = append(parts, openPart{Type: "tool", Tool: b.Name, CallID: b.ToolID, State: state})
+			st := &openStateOut{Status: "completed", Input: input, Metadata: json.RawMessage(`{}`), Time: span}
+			r, ok := results[b.ToolID]
+			switch {
+			case ok && r.isErr:
+				st.Status, st.Error, st.Metadata = "error", r.text, nil
+			default:
+				out, title := r.text, b.Name
+				st.Output, st.Title = &out, &title
+			}
+			parts = append(parts, openPartOut{Type: "tool", CallID: b.ToolID, Tool: b.Name, State: st})
 		}
 	}
 	return parts
+}
+
+func isObject(raw json.RawMessage) bool {
+	var m map[string]json.RawMessage
+	return len(raw) > 0 && json.Unmarshal(raw, &m) == nil && m != nil
+}
+
+func orNull(raw json.RawMessage) json.RawMessage {
+	if len(raw) == 0 {
+		return json.RawMessage("null")
+	}
+	return raw
+}
+
+// openIDs mints ids the way opencode's Identifier does: a prefix, twelve hex
+// digits of the millisecond time with a counter in the low bits (inverted for
+// ids that sort newest first, as session ids do), and fourteen base62
+// characters.
+type openIDs struct{ counter uint64 }
+
+func (g *openIDs) next(prefix string, at time.Time, descending bool) string {
+	g.counter++
+	v := (uint64(at.UnixMilli())<<12 | (g.counter & 0xfff)) & 0xffffffffffff
+	if descending {
+		v = ^v & 0xffffffffffff
+	}
+	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	var rnd [14]byte
+	if _, err := rand.Read(rnd[:]); err != nil {
+		panic(err)
+	}
+	for i := range rnd {
+		rnd[i] = alphabet[int(rnd[i])%len(alphabet)]
+	}
+	return fmt.Sprintf("%s_%012x%s", prefix, v, rnd[:])
 }
 
 func openSchema(ctx context.Context, db *sql.DB) error {
@@ -415,6 +661,9 @@ func openSchema(ctx context.Context, db *sql.DB) error {
 CREATE TABLE IF NOT EXISTS project (
   id TEXT PRIMARY KEY, worktree TEXT NOT NULL, vcs TEXT, name TEXT,
   time_created INTEGER NOT NULL, time_updated INTEGER NOT NULL, sandboxes TEXT NOT NULL DEFAULT '[]');
+CREATE TABLE IF NOT EXISTS project_directory (
+  project_id TEXT NOT NULL, directory TEXT NOT NULL, type TEXT, strategy TEXT, time_created INTEGER NOT NULL,
+  PRIMARY KEY (project_id, directory));
 CREATE TABLE IF NOT EXISTS session (
   id TEXT PRIMARY KEY, project_id TEXT NOT NULL, workspace_id TEXT, parent_id TEXT,
   slug TEXT NOT NULL, directory TEXT NOT NULL, path TEXT, title TEXT NOT NULL, version TEXT NOT NULL,
@@ -429,11 +678,4 @@ CREATE TABLE IF NOT EXISTS part (
   time_created INTEGER NOT NULL, time_updated INTEGER NOT NULL, data TEXT NOT NULL);`
 	_, err := db.ExecContext(ctx, ddl)
 	return err
-}
-
-func timeMillis(t time.Time) int64 {
-	if t.IsZero() {
-		return time.Now().UnixMilli()
-	}
-	return t.UnixMilli()
 }

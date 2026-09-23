@@ -8,6 +8,8 @@ package kiro
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -48,6 +50,18 @@ func (codec) Open(home string) (transcript.Store, error) {
 type store struct {
 	transcript.Store
 	home string
+}
+
+// Write gives new entries their ids before writing, so the transcript rows
+// and the sidecar's message lists name the same messages.
+func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		if e.Raw == nil && e.Role != transcript.RoleOpaque && e.ID == "" {
+			e.ID = transcript.NewUUID()
+		}
+	}
+	return st.Store.Write(ctx, s)
 }
 
 func (st *store) Read(ctx context.Context, id string) (*transcript.Session, error) {
@@ -269,8 +283,12 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 }
 
 // writeSidecar writes <id>.json beside the transcript. A session read from
-// kiro carries its sidecar in Vendor and gets it back with the identity
-// fields updated; a foreign session gets the smallest document kiro reads.
+// kiro carries its sidecar in Vendor and gets it back with only the identity
+// fields updated. Any other session gets a complete document: kiro rejects a
+// sidecar missing any field it deserializes ("failed to parse session
+// metadata"), so every field a kiro-written sidecar has is written, with the
+// model, agent and creation reason taken from kiro's latest sidecar in the
+// same store, which holds values kiro accepts.
 func writeSidecar(ctx context.Context, path string, s *transcript.Session) error {
 	doc := map[string]json.RawMessage{}
 	if v, ok := s.Vendor.(*Vendor); ok {
@@ -279,15 +297,31 @@ func writeSidecar(ctx context.Context, path string, s *transcript.Session) error
 		}
 	}
 	if _, ok := doc["session_state"]; !ok {
+		t := template(filepath.Dir(path), s)
 		state, err := json.Marshal(sessionState{
-			Version:              "v1",
-			ConversationMetadata: conversationMetadata{UserTurnMetadatas: turns(s)},
+			Version: "v1",
+			ConversationMetadata: conversationMetadata{
+				UserTurnMetadatas: turns(s, t),
+			},
+			RTSModelState: rtsModelState{ConversationID: s.ID, ModelInfo: t.ModelInfo},
+			Permissions: permissions{
+				Filesystem: filesystem{
+					AllowedReadPaths: []string{s.CWD}, AllowedWritePaths: []string{},
+					DeniedReadPaths: []string{}, DeniedWritePaths: []string{},
+				},
+				TrustedTools: []string{}, DeniedTools: []string{}, AllowedCommands: []string{},
+			},
+			AgentName: t.AgentName,
 		})
 		if err != nil {
 			return err
 		}
 		doc["session_state"] = state
-		doc["session_created_reason"] = json.RawMessage(`"user"`)
+		reason, err := json.Marshal(t.CreatedReason)
+		if err != nil {
+			return err
+		}
+		doc["session_created_reason"] = reason
 	}
 	title := s.Title
 	if title == "" {
@@ -295,22 +329,14 @@ func writeSidecar(ctx context.Context, path string, s *transcript.Session) error
 			title = msgs[0].Text()
 		}
 	}
-	identity, err := json.Marshal(sidecar{
+	if err := merge(doc, sidecar{
 		SessionID: s.ID,
 		CWD:       s.CWD,
 		CreatedAt: s.Created.UTC().Format(time.RFC3339Nano),
 		UpdatedAt: s.Updated.UTC().Format(time.RFC3339Nano),
 		Title:     title,
-	})
-	if err != nil {
+	}); err != nil {
 		return err
-	}
-	var fields map[string]json.RawMessage
-	if err := json.Unmarshal(identity, &fields); err != nil {
-		return err
-	}
-	for k, val := range fields {
-		doc[k] = val
 	}
 	out, err := json.MarshalIndent(doc, "", "  ")
 	if err != nil {
@@ -319,34 +345,243 @@ func writeSidecar(ctx context.Context, path string, s *transcript.Session) error
 	return os.WriteFile(strings.TrimSuffix(path, filepath.Ext(path))+".json", out, 0o644)
 }
 
-// sessionState is the part of the sidecar kiro needs to find a session's
-// turns; the real document holds much more, which Vendor carries through.
+func merge(dst map[string]json.RawMessage, v any) error {
+	raw, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(raw, &fields); err != nil {
+		return err
+	}
+	for k, val := range fields {
+		dst[k] = val
+	}
+	return nil
+}
+
+// sidecarTemplate is what a new sidecar copies from kiro's own: values of
+// fields kiro validates that a session from elsewhere has no source for.
+type sidecarTemplate struct {
+	ModelInfo     modelInfo
+	AgentName     string
+	CreatedReason string
+}
+
+// template reads kiro's most recent sidecar in dir for the model, agent and
+// creation reason. With none there, it falls back to kiro's built-in agent
+// and the session's own model.
+func template(dir string, s *transcript.Session) sidecarTemplate {
+	model := s.Model
+	if model == "" {
+		model = "auto"
+	}
+	t := sidecarTemplate{
+		ModelInfo:     modelInfo{ModelName: model, ModelID: model, ContextWindowTokens: 200000},
+		AgentName:     "kiro_default",
+		CreatedReason: "subagent",
+	}
+	paths, _ := filepath.Glob(filepath.Join(dir, "*.json"))
+	var newest string
+	var newestTime time.Time
+	for _, p := range paths {
+		if strings.TrimSuffix(filepath.Base(p), ".json") == s.ID {
+			continue
+		}
+		fi, err := os.Stat(p)
+		if err == nil && fi.ModTime().After(newestTime) {
+			newest, newestTime = p, fi.ModTime()
+		}
+	}
+	if newest == "" {
+		return t
+	}
+	raw, err := os.ReadFile(newest)
+	if err != nil {
+		return t
+	}
+	var doc struct {
+		Reason string `json:"session_created_reason"`
+		State  struct {
+			RTS struct {
+				ModelInfo *modelInfo `json:"model_info"`
+			} `json:"rts_model_state"`
+			AgentName string `json:"agent_name"`
+		} `json:"session_state"`
+	}
+	if json.Unmarshal(raw, &doc) != nil {
+		return t
+	}
+	if doc.State.RTS.ModelInfo != nil && doc.State.RTS.ModelInfo.ModelID != "" {
+		t.ModelInfo = *doc.State.RTS.ModelInfo
+	}
+	if doc.State.AgentName != "" {
+		t.AgentName = doc.State.AgentName
+	}
+	if doc.Reason != "" {
+		t.CreatedReason = doc.Reason
+	}
+	return t
+}
+
+// The session_state document, with every field a kiro-written sidecar has.
 type sessionState struct {
 	Version              string               `json:"version"`
 	ConversationMetadata conversationMetadata `json:"conversation_metadata"`
+	RTSModelState        rtsModelState        `json:"rts_model_state"`
+	Permissions          permissions          `json:"permissions"`
+	AgentName            string               `json:"agent_name"`
+	Goal                 *string              `json:"goal"`
 }
 
 type conversationMetadata struct {
-	UserTurnMetadatas []userTurn `json:"user_turn_metadatas"`
+	UserTurnMetadatas    []userTurn `json:"user_turn_metadatas"`
+	LastContextUsage     *float64   `json:"last_context_usage"`
+	UserTurnStartRequest *string    `json:"user_turn_start_request"`
+	LastRequest          *string    `json:"last_request"`
 }
 
 type userTurn struct {
-	MessageIDs []string `json:"message_ids"`
-	EndReason  string   `json:"end_reason"`
+	LoopID                      loopID      `json:"loop_id"`
+	Result                      *turnResult `json:"result,omitempty"`
+	MessageIDs                  []string    `json:"message_ids"`
+	TotalRequestCount           int         `json:"total_request_count"`
+	NumberOfCycles              int         `json:"number_of_cycles"`
+	BuiltinToolUses             int         `json:"builtin_tool_uses"`
+	TurnDuration                duration    `json:"turn_duration"`
+	EndReason                   string      `json:"end_reason"`
+	EndTimestamp                string      `json:"end_timestamp"`
+	InputTokenCount             int         `json:"input_token_count"`
+	OutputTokenCount            int         `json:"output_token_count"`
+	CacheReadInputTokenCount    int         `json:"cache_read_input_token_count"`
+	CacheWriteInputTokenCount   int         `json:"cache_write_input_token_count"`
+	Model                       string      `json:"model"`
+	AssistantResponseLength     int         `json:"assistant_response_length"`
+	RequestAttempts             int         `json:"request_attempts"`
+	ContextUsagePercentage      *float64    `json:"context_usage_percentage"`
+	FinalContextUsagePercentage *float64    `json:"final_context_usage_percentage"`
+	MeteringUsage               []string    `json:"metering_usage"`
+	UserPromptLength            int         `json:"user_prompt_length"`
 }
 
-// turns groups message ids by user turn, which is what kiro's sidecar
-// lists.
-func turns(s *transcript.Session) []userTurn {
+type loopID struct {
+	AgentID agentID `json:"agent_id"`
+	Rand    uint32  `json:"rand"`
+}
+
+type agentID struct {
+	Name     string  `json:"name"`
+	ParentID *string `json:"parent_id"`
+	Rand     *uint32 `json:"rand"`
+}
+
+type turnResult struct {
+	Ok resultMessage `json:"Ok"`
+}
+
+type resultMessage struct {
+	ID      string  `json:"id"`
+	Role    string  `json:"role"`
+	Content []block `json:"content"`
+	Meta    meta    `json:"meta"`
+}
+
+type duration struct {
+	Secs  int64 `json:"secs"`
+	Nanos int64 `json:"nanos"`
+}
+
+type rtsModelState struct {
+	ConversationID         string    `json:"conversation_id"`
+	ModelInfo              modelInfo `json:"model_info"`
+	ContextUsagePercentage *float64  `json:"context_usage_percentage"`
+}
+
+type modelInfo struct {
+	ModelName           string `json:"model_name"`
+	ModelID             string `json:"model_id"`
+	ContextWindowTokens int    `json:"context_window_tokens"`
+}
+
+type permissions struct {
+	Filesystem      filesystem `json:"filesystem"`
+	TrustedTools    []string   `json:"trusted_tools"`
+	DeniedTools     []string   `json:"denied_tools"`
+	AllowedCommands []string   `json:"allowed_commands"`
+}
+
+type filesystem struct {
+	AllowedReadPaths  []string `json:"allowed_read_paths"`
+	AllowedWritePaths []string `json:"allowed_write_paths"`
+	DeniedReadPaths   []string `json:"denied_read_paths"`
+	DeniedWritePaths  []string `json:"denied_write_paths"`
+}
+
+// turns builds one user-turn record per user message: the ids of the
+// messages the turn holds, its last assistant message as the result, and
+// the counts kiro records.
+func turns(s *transcript.Session, t sidecarTemplate) []userTurn {
 	out := []userTurn{}
-	for _, e := range s.Messages() {
+	var last *transcript.Entry
+	msgs := s.Messages()
+	for i := range msgs {
+		e := msgs[i]
 		if e.Role == transcript.RoleUser || len(out) == 0 {
-			out = append(out, userTurn{EndReason: "UserTurnEnd"})
+			if len(out) > 0 {
+				finish(&out[len(out)-1], last)
+			}
+			var r [4]byte
+			if _, err := rand.Read(r[:]); err != nil {
+				panic(err)
+			}
+			out = append(out, userTurn{
+				LoopID:           loopID{AgentID: agentID{Name: "kiro_default"}, Rand: binary.BigEndian.Uint32(r[:])},
+				EndReason:        "UserTurnEnd",
+				EndTimestamp:     s.Updated.UTC().Format(time.RFC3339Nano),
+				Model:            t.ModelInfo.ModelID,
+				MeteringUsage:    []string{},
+				NumberOfCycles:   1,
+				UserPromptLength: len(e.Text()),
+			})
+			last = nil
 		}
-		last := &out[len(out)-1]
-		last.MessageIDs = append(last.MessageIDs, e.ID)
+		turn := &out[len(out)-1]
+		turn.MessageIDs = append(turn.MessageIDs, e.ID)
+		if e.Role == transcript.RoleAssistant {
+			turn.TotalRequestCount++
+			turn.RequestAttempts++
+			for _, b := range e.Content {
+				if b.Kind == transcript.BlockToolUse {
+					turn.BuiltinToolUses++
+				}
+			}
+			last = &msgs[i]
+		}
+	}
+	if len(out) > 0 {
+		finish(&out[len(out)-1], last)
 	}
 	return out
+}
+
+// finish records a turn's last assistant message as its result.
+func finish(turn *userTurn, last *transcript.Entry) {
+	if last == nil {
+		return
+	}
+	content := []block{}
+	for _, b := range last.Content {
+		if b.Kind == transcript.BlockText {
+			d, _ := json.Marshal(b.Text)
+			content = append(content, block{Kind: "text", Data: d})
+		}
+	}
+	ts := last.Time
+	if ts.IsZero() {
+		ts = time.Now()
+	}
+	turn.Result = &turnResult{Ok: resultMessage{ID: last.ID, Role: "assistant", Content: content, Meta: meta{Timestamp: ts.Unix()}}}
+	turn.AssistantResponseLength = len(last.Text())
 }
 
 // readSidecar loads a session's sidecar into Vendor so a Write reproduces

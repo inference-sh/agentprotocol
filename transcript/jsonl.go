@@ -49,6 +49,12 @@ type JSONL struct {
 	// format has any. Optional.
 	WriteHeader func(s *Session) ([]json.RawMessage, error)
 
+	// Prepare runs before anything is written, with the store's home, for a
+	// format whose write needs values only the agent's own store holds, such
+	// as the version stamp its sessions carry. It may fill session fields,
+	// Vendor included. Optional.
+	Prepare func(home string, s *Session) error
+
 	// After runs once the session file is written, for agents that keep an
 	// index or sidecar beside it. Optional.
 	After func(ctx context.Context, path string, s *Session) error
@@ -303,6 +309,11 @@ func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
 	// read back, so rewriting even its own rows would change nothing.
 	if st.cfg.Encode == nil {
 		return "", ErrReadOnly
+	}
+	if st.cfg.Prepare != nil {
+		if err := st.cfg.Prepare(st.home, s); err != nil {
+			return "", err
+		}
 	}
 	foreign := len(s.Entries) == 0 || s.Entries[0].Raw == nil
 	if s.ID == "" {

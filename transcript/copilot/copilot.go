@@ -49,6 +49,7 @@ var Writer = transcript.JSONL{
 	Decode:      decode,
 	Encode:      encode,
 	WriteHeader: writeHeader,
+	Prepare:     prepareStart,
 	After:       writeWorkspace,
 	Tree:        true,
 }
@@ -62,20 +63,97 @@ type Vendor struct {
 
 const root = ".copilot/session-state"
 
+// event is Copilot's event envelope. Copilot rejects an envelope that lacks
+// any of its fields ("Session file is corrupted: invalid session event
+// envelope"), so every field is always written; the root event's parentId is
+// null.
 type event struct {
 	Type      string          `json:"type"`
 	Data      json.RawMessage `json:"data"`
-	ID        string          `json:"id,omitempty"`
-	Timestamp string          `json:"timestamp,omitempty"`
-	ParentID  string          `json:"parentId,omitempty"`
+	ID        string          `json:"id"`
+	Timestamp string          `json:"timestamp"`
+	ParentID  *string         `json:"parentId"`
+}
+
+func parent(id string) *string {
+	if id == "" {
+		return nil
+	}
+	return &id
 }
 
 type sessionStart struct {
 	SessionID string   `json:"sessionId"`
-	Version   int      `json:"version"`
-	Producer  string   `json:"producer"`
+	Version   int      `json:"version,omitempty"`
+	Producer  string   `json:"producer,omitempty"`
 	StartTime string   `json:"startTime"`
 	Context   context_ `json:"context"`
+}
+
+// startIdentity is the part of session.start that names this session. The
+// rest of the event's data is the same for every session a given Copilot
+// writes, and comes from Vendor.
+type startIdentity struct {
+	SessionID string   `json:"sessionId"`
+	StartTime string   `json:"startTime"`
+	Context   context_ `json:"context"`
+}
+
+// defaultStart is session.start's fixed data as Copilot CLI 1.0.88 writes it,
+// used when the store has no session of Copilot's own to copy from. Copilot
+// rejects a session.start without copilotVersion ("Session file is corrupted
+// (line 1: missing field copilotVersion)").
+var defaultStart = map[string]json.RawMessage{
+	"version":        json.RawMessage(`1`),
+	"producer":       json.RawMessage(`"copilot-agent"`),
+	"copilotVersion": json.RawMessage(`"1.0.88"`),
+	"contextTier":    json.RawMessage(`null`),
+	"alreadyInUse":   json.RawMessage(`false`),
+}
+
+// prepareStart gives a session with no session.start of its own the fixed
+// fields of the newest session Copilot wrote in the same store, so the
+// version stamp matches the Copilot that will load it.
+func prepareStart(home string, s *transcript.Session) error {
+	if v, ok := s.Vendor.(*Vendor); ok && len(v.Start) > 0 {
+		return nil
+	}
+	start := map[string]json.RawMessage{}
+	for k, val := range defaultStart {
+		start[k] = val
+	}
+	paths, err := files(home, "")
+	if err != nil {
+		return err
+	}
+	var newest string
+	var newestTime time.Time
+	for _, p := range paths {
+		if fi, err := os.Stat(p); err == nil && fi.ModTime().After(newestTime) {
+			newest, newestTime = p, fi.ModTime()
+		}
+	}
+	if newest != "" {
+		_, _ = transcript.PeekFirstLine(newest, func(row json.RawMessage) (transcript.Info, error) {
+			var ev event
+			if json.Unmarshal(row, &ev) != nil || ev.Type != "session.start" {
+				return transcript.Info{}, nil
+			}
+			var fields map[string]json.RawMessage
+			if json.Unmarshal(ev.Data, &fields) == nil {
+				for k, val := range fields {
+					switch k {
+					case "sessionId", "startTime", "context":
+					default:
+						start[k] = val
+					}
+				}
+			}
+			return transcript.Info{}, nil
+		})
+	}
+	s.Vendor = &Vendor{Start: start}
+	return nil
 }
 
 type context_ struct {
@@ -172,7 +250,10 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	if ev.ID == "" {
 		return transcript.Entry{}, false, nil
 	}
-	e := transcript.Entry{ID: ev.ID, ParentID: ev.ParentID, Role: transcript.RoleOpaque}
+	e := transcript.Entry{ID: ev.ID, Role: transcript.RoleOpaque}
+	if ev.ParentID != nil {
+		e.ParentID = *ev.ParentID
+	}
 	if ev.Timestamp != "" {
 		t, err := time.Parse(time.RFC3339Nano, ev.Timestamp)
 		if err != nil {
@@ -222,7 +303,7 @@ func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
 			fields[k] = val
 		}
 	}
-	identity, err := json.Marshal(sessionStart{SessionID: s.ID, Version: 1, Producer: "agentprotocol", StartTime: stamp(s.Created), Context: context_{CWD: s.CWD}})
+	identity, err := json.Marshal(startIdentity{SessionID: s.ID, StartTime: stamp(s.Created), Context: context_{CWD: s.CWD}})
 	if err != nil {
 		return nil, err
 	}
@@ -259,7 +340,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	if t.IsZero() {
 		t = s.Updated
 	}
-	ev := event{ID: e.ID, ParentID: e.ParentID, Timestamp: stamp(t)}
+	ev := event{ID: e.ID, ParentID: parent(e.ParentID), Timestamp: stamp(t)}
 	var data any
 	switch e.Role {
 	case transcript.RoleUser, transcript.RoleSystem:

@@ -248,3 +248,49 @@ func Append(t *testing.T, codec transcript.Codec, sample Sample) {
 		t.Errorf("active branch has %d messages, want %d: the appended turn did not continue the conversation", len(lin), before+2)
 	}
 }
+
+// ForeignIDs writes a session whose entry ids come from somewhere else, as a
+// session imported from another agent's store does: they are not in this
+// agent's scheme, and the second names the first as its parent. The agent
+// may reject ids of the wrong shape (Copilot rejects any event id that is
+// not a UUID), so the writer must give the entries ids valid names and keep
+// the link. valid is the agent's id scheme.
+func ForeignIDs(t *testing.T, codec transcript.Codec, cwd string, valid func(string) bool) {
+	t.Helper()
+	ctx := context.Background()
+	store, err := codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	s := &transcript.Session{
+		Agent: "test",
+		CWD:   cwd,
+		Entries: []transcript.Entry{
+			{ID: "seed-1", Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "The codename is HERON."}}},
+			{ID: "seed-2", ParentID: "seed-1", Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "Noted: HERON."}}},
+		},
+	}
+	id, err := store.Write(ctx, s)
+	if err == transcript.ErrReadOnly {
+		t.Skip("store is read-only")
+	}
+	if err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	back, err := store.Read(ctx, id)
+	if err != nil {
+		t.Fatalf("read: %v", err)
+	}
+	msgs := back.Linearize()
+	if len(msgs) != 2 || msgs[0].Text() != "The codename is HERON." || msgs[1].Text() != "Noted: HERON." {
+		t.Fatalf("read back %+v, want the two messages in order", msgs)
+	}
+	for _, e := range msgs {
+		if e.ID != "" && !valid(e.ID) {
+			t.Errorf("entry written with id %q, which is not in the agent's scheme", e.ID)
+		}
+	}
+	if msgs[1].ParentID != "" && msgs[1].ParentID != msgs[0].ID {
+		t.Errorf("second entry's parent %q is not the first entry %q", msgs[1].ParentID, msgs[0].ID)
+	}
+}

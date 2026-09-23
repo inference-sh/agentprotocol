@@ -55,12 +55,7 @@ type store struct {
 // Write gives new entries their ids before writing, so the transcript rows
 // and the sidecar's message lists name the same messages.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
-	for i := range s.Entries {
-		e := &s.Entries[i]
-		if e.Raw == nil && e.Role != transcript.RoleOpaque && e.ID == "" {
-			e.ID = transcript.NewUUID()
-		}
-	}
+	transcript.AssignIDs(s, transcript.UUIDs, false)
 	return st.Store.Write(ctx, s)
 }
 

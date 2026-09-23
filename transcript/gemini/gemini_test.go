@@ -39,3 +39,7 @@ func TestForeign(t *testing.T) {
 func TestAppend(t *testing.T) {
 	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
 }
+
+func TestForeignIDs(t *testing.T) {
+	transcripttest.ForeignIDs(t, Codec, "/tmp/some/project", transcript.IsUUID)
+}

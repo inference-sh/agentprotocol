@@ -1,6 +1,7 @@
 package codex
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -47,4 +48,8 @@ func TestForeign(t *testing.T) {
 
 func TestAppend(t *testing.T) {
 	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}
+
+func TestForeignIDs(t *testing.T) {
+	transcripttest.ForeignIDs(t, Codec, "/tmp/some/project", func(id string) bool { return transcript.IsUUID(strings.TrimPrefix(id, "msg_")) })
 }

@@ -189,3 +189,7 @@ func missingPaths(want, got any, at string) []string {
 	}
 	return out
 }
+
+func TestForeignIDs(t *testing.T) {
+	transcripttest.ForeignIDs(t, Codec, "/tmp/some/project", transcript.IsUUID)
+}

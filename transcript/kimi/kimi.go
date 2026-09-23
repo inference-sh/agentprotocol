@@ -55,6 +55,7 @@ var files = transcript.JSONL{
 		Peek: peek,
 	},
 	Header:      header,
+	IDs:         transcript.IDScheme{New: messageID, Valid: validMessageID},
 	Decode:      decode,
 	WriteHeader: writeHeader,
 	After:       writeState,
@@ -176,12 +177,8 @@ func (st *store) Read(ctx context.Context, id string) (*transcript.Session, erro
 // Write plans the session's new entries and writes them with the rows kimi
 // rebuilds the model's context from as well as its transcript rows.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
-	for i := range s.Entries {
-		e := &s.Entries[i]
-		if e.Raw == nil && e.Role != transcript.RoleOpaque && e.ID == "" {
-			e.ID = messageID()
-		}
-	}
+	// Ids first: the plan names entries by id.
+	transcript.AssignIDs(s, files.IDs, false)
 	w := files
 	w.Encode = newPlan(s).encoder()
 	ws, err := w.Open(st.home)
@@ -203,6 +200,21 @@ func messageID() string {
 		b[i] = alphabet[int(b[i])%len(alphabet)]
 	}
 	return "msg_" + string(b[:])
+}
+
+// validMessageID reports whether id is in kimi's form.
+func validMessageID(id string) bool {
+	const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+	rest, ok := strings.CutPrefix(id, "msg_")
+	if !ok || len(rest) != 26 {
+		return false
+	}
+	for _, c := range rest {
+		if !strings.ContainsRune(alphabet, c) {
+			return false
+		}
+	}
+	return true
 }
 
 func peek(path string) (transcript.Info, error) {

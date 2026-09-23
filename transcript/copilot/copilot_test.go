@@ -124,3 +124,7 @@ func TestHandBuiltStart(t *testing.T) {
 		t.Errorf("session.start data = %+v", data)
 	}
 }
+
+func TestForeignIDs(t *testing.T) {
+	transcripttest.ForeignIDs(t, Writer, "/tmp/some/project", transcript.IsUUID)
+}

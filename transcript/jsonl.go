@@ -64,11 +64,14 @@ type JSONL struct {
 	NewID func() string
 
 	// Tree marks a format whose rows link to their parent. Before a write,
-	// every entry without Raw gets an ID if it has none and, if it has no
-	// ParentID, the ID of the entry before it, so Encode can emit the link.
-	// This holds for a foreign session and for entries appended to one read
-	// from the agent.
+	// every entry without Raw that has no ParentID gets the ID of the entry
+	// before it, so Encode can emit the link. This holds for a foreign
+	// session and for entries appended to one read from the agent.
 	Tree bool
+
+	// IDs is the agent's scheme for entry ids. Entries this write creates
+	// get ids in it; see AssignIDs. The zero value is UUIDs.
+	IDs IDScheme
 }
 
 // Layout says where an agent keeps session files. The common case is a
@@ -329,28 +332,7 @@ func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
 	if s.Updated.IsZero() {
 		s.Updated = s.Created
 	}
-	if st.cfg.Tree {
-		// Link every entry this write creates, whether the whole session is
-		// foreign or new entries were appended to one read from the agent.
-		// Each new message gets an id and hangs off the entry before it that
-		// has one: the previous new message, or the active leaf of the rows
-		// read back, which is where Linearize would resume.
-		prev := ""
-		for i := range s.Entries {
-			e := &s.Entries[i]
-			if e.Raw == nil && e.Role != RoleOpaque {
-				if e.ID == "" {
-					e.ID = NewUUID()
-				}
-				if e.ParentID == "" {
-					e.ParentID = prev
-				}
-			}
-			if e.ID != "" {
-				prev = e.ID
-			}
-		}
-	}
+	AssignIDs(s, st.cfg.IDs, st.cfg.Tree)
 
 	var buf bytes.Buffer
 	if foreign && st.cfg.WriteHeader != nil {
@@ -460,6 +442,82 @@ func Glob(pattern string) ([]string, error) {
 	}
 	sort.Strings(m)
 	return m, nil
+}
+
+// IDScheme is how an agent names its entries: New mints an id, Valid says
+// whether an id is one the agent would accept. The zero value is UUIDs.
+type IDScheme struct {
+	New   func() string
+	Valid func(string) bool
+}
+
+// UUIDs is the scheme most agents use for entry ids.
+var UUIDs = IDScheme{New: NewUUID, Valid: IsUUID}
+
+// AssignIDs gives every entry a write creates (no Raw, not opaque) an id in
+// the agent's scheme, and keeps links between entries intact. An entry keeps
+// its id only if the scheme accepts it: a session imported from another
+// agent carries that agent's ids, which this agent may reject (Copilot
+// rejects an event whose id is not a UUID). Each replaced id is remapped in
+// every ParentID that named it. With tree set, a new entry with no ParentID
+// is linked to the entry before it that has an id: the previous new entry,
+// or the active leaf of the rows read back.
+//
+// Codecs that plan a write across entries before encoding call it
+// themselves; the JSONL engine calls it for the rest.
+func AssignIDs(s *Session, scheme IDScheme, tree bool) {
+	if scheme.New == nil {
+		scheme = UUIDs
+	}
+	remap := map[string]string{}
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		if e.Raw != nil || e.Role == RoleOpaque {
+			continue
+		}
+		if e.ID == "" || (scheme.Valid != nil && !scheme.Valid(e.ID)) {
+			id := scheme.New()
+			if e.ID != "" {
+				remap[e.ID] = id
+			}
+			e.ID = id
+		}
+	}
+	prev := ""
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		if e.Raw == nil && e.Role != RoleOpaque {
+			if to, ok := remap[e.ParentID]; ok {
+				e.ParentID = to
+			}
+			if tree && e.ParentID == "" {
+				e.ParentID = prev
+			}
+		}
+		if e.ID != "" {
+			prev = e.ID
+		}
+	}
+}
+
+// IsUUID reports whether s is a UUID in its canonical 8-4-4-4-12 form.
+func IsUUID(s string) bool {
+	if len(s) != 36 {
+		return false
+	}
+	for i, c := range s {
+		switch i {
+		case 8, 13, 18, 23:
+			if c != '-' {
+				return false
+			}
+		default:
+			if !strings.ContainsRune("0123456789abcdefABCDEF", c) {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 // NewUUID returns a random version 4 UUID, which is what most agents use as

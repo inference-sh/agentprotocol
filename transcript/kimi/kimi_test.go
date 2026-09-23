@@ -120,3 +120,7 @@ func TestContextRows(t *testing.T) {
 		t.Errorf("tool.result parentUuid %q does not name the tool.call uuid %q", resultParent, callUUID)
 	}
 }
+
+func TestForeignIDs(t *testing.T) {
+	transcripttest.ForeignIDs(t, Codec, "/tmp/some/project", validMessageID)
+}

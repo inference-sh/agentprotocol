@@ -11,6 +11,8 @@
 package pi
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"path/filepath"
@@ -51,7 +53,25 @@ func codec(root string, project transcript.ProjectDir) transcript.JSONL {
 		Encode:      encode,
 		WriteHeader: writeHeader,
 		Tree:        true,
+		IDs:         transcript.IDScheme{New: newID, Valid: validID},
 	}
+}
+
+// newID mints an entry id the way pi does: eight lowercase hex digits.
+func newID() string {
+	var b [4]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		panic(err)
+	}
+	return hex.EncodeToString(b[:])
+}
+
+func validID(id string) bool {
+	if len(id) != 8 {
+		return false
+	}
+	_, err := hex.DecodeString(id)
+	return err == nil && strings.ToLower(id) == id
 }
 
 // fileStamp is pi's file-name timestamp: an ISO instant with every colon

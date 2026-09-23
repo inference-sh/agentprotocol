@@ -64,3 +64,8 @@ func TestRoundTripPi(t *testing.T) {
 func TestAppendPi(t *testing.T) {
 	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: piCWD, ID: piID})
 }
+
+func TestForeignIDs(t *testing.T) {
+	transcripttest.ForeignIDs(t, Codec, "/tmp/some/project", validID)
+	transcripttest.ForeignIDs(t, OMP, "/tmp/some/project", validID)
+}

@@ -1,5 +1,7 @@
 package harness
 
+import "github.com/inference-sh/agentprotocol/transcript"
+
 // HookFormat describes how a harness expects hook configuration.
 type HookFormat int
 
@@ -177,6 +179,14 @@ type Harness struct {
 	// for a .factory tree on behalf of claude and qwen.
 	SessionDir string
 	SessionExt string
+
+	// Sessions reads and writes this agent's conversations on disk: list
+	// them for a working directory, load one, or write one the agent will
+	// then resume. Nil when nobody has captured the agent's format yet. A
+	// codec for an agent whose store is a database is looked up by name
+	// through transcript.Registered instead, so this package stays free of
+	// database drivers.
+	Sessions transcript.Codec
 
 	// Pre-flight config files (auth, trust, provider config, permissions)
 	ConfigFiles    []ConfigFile

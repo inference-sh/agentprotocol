@@ -1,5 +1,17 @@
 package harness
 
+import (
+	"github.com/inference-sh/agentprotocol/transcript/claude"
+	"github.com/inference-sh/agentprotocol/transcript/codex"
+	"github.com/inference-sh/agentprotocol/transcript/copilot"
+	"github.com/inference-sh/agentprotocol/transcript/droid"
+	"github.com/inference-sh/agentprotocol/transcript/gemini"
+	"github.com/inference-sh/agentprotocol/transcript/grok"
+	"github.com/inference-sh/agentprotocol/transcript/kimi"
+	"github.com/inference-sh/agentprotocol/transcript/kiro"
+	"github.com/inference-sh/agentprotocol/transcript/pi"
+)
+
 var standardEvents = Events{
 	SessionStart: "SessionStart",
 	PromptSubmit: "UserPromptSubmit",
@@ -96,6 +108,7 @@ var codexProviderArgs = []string{
 var All = map[string]Harness{
 	"claude": {
 		Name: "claude", Binary: "claude",
+		Sessions:      claude.Codec,
 		InstallCmd:    []string{"npm", "install", "-g", "@anthropic-ai/claude-code"},
 		DetectEnvVars: []string{"CLAUDECODE", "CLAUDE_CODE", "CLAUDE_CODE_ENTRYPOINT"},
 		APIFormat:     Anthropic,
@@ -133,7 +146,8 @@ var All = map[string]Harness{
 		SDKArgs: []string{"--model", "{{.Model}}", "--dangerously-skip-permissions", "--verbose"},
 	},
 	"codex": {
-		Name: "codex", Binary: "codex",
+		Sessions: codex.Codec,
+		Name:     "codex", Binary: "codex",
 		InstallCmd:    []string{"npm", "install", "-g", "@openai/codex"},
 		DetectEnvVars: []string{"CODEX_SANDBOX", "CODEX_THREAD_ID", "CODEX_MANAGED_BY_NPM"},
 		PostInstall: [][]string{
@@ -182,7 +196,8 @@ var All = map[string]Harness{
 		SDKArgs: append([]string{"--dangerously-bypass-hook-trust", "--dangerously-bypass-approvals-and-sandbox"}, codexProviderArgs...),
 	},
 	"copilot": {
-		Name: "copilot", Binary: "copilot",
+		Sessions: copilot.Codec,
+		Name:     "copilot", Binary: "copilot",
 		ToolCallGated: ToolCall{Name: "bash", Args: gatedShellArgs},
 		InstallCmd:    []string{"npm", "install", "-g", "@github/copilot"},
 		DetectEnvVars: []string{"COPILOT_MODEL", "COPILOT_GITHUB_TOKEN", "COPILOT_CLI", "COPILOT_LOADER_PID"},
@@ -208,7 +223,8 @@ var All = map[string]Harness{
 		ACPCmd:                  []string{"copilot", "--acp"},
 	},
 	"grok": {
-		Name: "grok", Binary: "grok",
+		Sessions: grok.Codec,
+		Name:     "grok", Binary: "grok",
 		DetectEnvVars:  []string{"GROK_SESSION_ID", "GROK_WORKSPACE_ROOT"},
 		ToolCallGated:  ToolCall{Name: "run_terminal_command", Args: gatedShellArgs},
 		InstallCmd:     []string{"sh", "-c", "curl -fsSL https://x.ai/cli/install.sh | bash"},
@@ -251,7 +267,8 @@ var All = map[string]Harness{
 		ACPCmd:         []string{"grok", "agent", "stdio"},
 	},
 	"pi": {
-		Name: "pi", Binary: "pi",
+		Sessions: pi.Codec,
+		Name:     "pi", Binary: "pi",
 		InstallCmd:        []string{"npm", "install", "-g", "--ignore-scripts", "@earendil-works/pi-coding-agent"},
 		DetectEnvVars:     []string{"PI_CODING_AGENT"},
 		APIFormat:         OpenAI,
@@ -272,6 +289,7 @@ var All = map[string]Harness{
 	},
 	"kiro": {
 		Name: "kiro", Binary: "kiro-cli",
+		Sessions:       kiro.Codec,
 		DetectEnvVars:  []string{"KIRO_SESSION_ID", "KIRO_VERSION"},
 		ToolCallGated:  ToolCall{Name: "shell", Args: gatedShellArgs},
 		InstallCmd:     []string{"sh", "-c", "curl -fsSL https://cli.kiro.dev/install | bash"},
@@ -325,7 +343,8 @@ var All = map[string]Harness{
 	},
 
 	"omp": {
-		Name: "omp", Binary: "omp",
+		Sessions: pi.OMP,
+		Name:     "omp", Binary: "omp",
 		ToolCallGated:     ToolCall{Name: "bash", Args: gatedShellArgs},
 		InstallCmd:        []string{"npm", "install", "-g", "@oh-my-pi/pi-coding-agent"},
 		APIFormat:         OpenAI,
@@ -389,7 +408,8 @@ var All = map[string]Harness{
 		[]string{"kilo", "acp"}, []string{"--cwd", "{{.RepoDir}}"}),
 		"bash", gatedShellArgs),
 	"kimi": {
-		Name: "kimi", Binary: "kimi",
+		Sessions: kimi.Codec,
+		Name:     "kimi", Binary: "kimi",
 		ToolCallGated: ToolCall{Name: "Bash", Args: gatedShellArgs},
 		InstallCmd:    []string{"npm", "install", "-g", "@moonshot-ai/kimi-code"},
 		APIFormat:     OpenAI,
@@ -462,7 +482,8 @@ var All = map[string]Harness{
 		ACPCmd:         []string{"goose", "acp"},
 	},
 	"gemini": {
-		Name: "gemini", Binary: "gemini",
+		Sessions: gemini.Codec,
+		Name:     "gemini", Binary: "gemini",
 		ToolCallGated: ToolCall{Name: "run_shell_command", Args: gatedShellArgs},
 		InstallCmd:    []string{"npm", "install", "-g", "@google/gemini-cli"},
 		DetectEnvVars: []string{"GEMINI_CLI", "GEMINI_SESSION_ID", "GEMINI_CWD"},
@@ -512,7 +533,8 @@ var All = map[string]Harness{
 		ACPCmd:                  []string{"gemini", "--acp"},
 	},
 	"qwen": {
-		Name: "qwen", Binary: "qwen",
+		Sessions: gemini.Qwen,
+		Name:     "qwen", Binary: "qwen",
 		DetectEnvVars: []string{"QWEN_CODE_CLI", "QWEN_CODE_SESSION_ID"},
 		ToolCallGated: ToolCall{Name: "run_shell_command", Args: gatedShellArgs},
 		InstallCmd:    []string{"npm", "install", "-g", "@qwen-code/qwen-code"},
@@ -552,7 +574,8 @@ var All = map[string]Harness{
 		[]string{"opencode", "acp"}, []string{"--cwd", "{{.RepoDir}}"}),
 		"bash", gatedShellArgs),
 	"droid": {
-		Name: "droid", Binary: "droid",
+		Sessions: droid.Codec,
+		Name:     "droid", Binary: "droid",
 		DetectEnvVars: []string{"DROID_PROJECT_DIR", "FACTORY_UPSTREAM_CLIENT_TYPE"},
 		// droid mangles the project path into the directory name.
 		SessionDir:    "{{.HomeDir}}/.factory/sessions/{{.MangledRepoDir}}",

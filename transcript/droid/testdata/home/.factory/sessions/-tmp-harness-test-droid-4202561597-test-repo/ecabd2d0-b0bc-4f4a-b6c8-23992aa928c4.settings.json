@@ -1,0 +1,35 @@
+{
+  "assistantActiveTimeMs": 245,
+  "model": "custom:Mock-0",
+  "reasoningEffort": "none",
+  "interactionMode": "auto",
+  "autonomyLevel": "off",
+  "autonomyMode": "normal",
+  "compactionThresholdCheckEnabled": true,
+  "toolExecutionMode": "direct_only",
+  "allowSubagentsInScripts": false,
+  "tokenUsage": {
+    "inputTokens": 40,
+    "outputTokens": 27,
+    "cacheCreationTokens": 0,
+    "cacheReadTokens": 0,
+    "thinkingTokens": 0,
+    "factoryCredits": 0
+  },
+  "childInclusiveTokenUsageBySessionId": {},
+  "inclusiveTokenUsage": {
+    "inputTokens": 40,
+    "outputTokens": 27,
+    "cacheCreationTokens": 0,
+    "cacheReadTokens": 0,
+    "thinkingTokens": 0,
+    "factoryCredits": 0
+  },
+  "providerLock": "openai",
+  "providerLockTimestamp": "2026-09-22T20:42:03.955Z",
+  "lastCallTokenUsage": {
+    "inputTokens": 10,
+    "outputTokens": 5,
+    "cacheReadTokens": 0
+  }
+}

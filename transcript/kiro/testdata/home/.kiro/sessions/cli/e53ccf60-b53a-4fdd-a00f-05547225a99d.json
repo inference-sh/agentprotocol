@@ -1,0 +1,93 @@
+{
+  "session_id": "e53ccf60-b53a-4fdd-a00f-05547225a99d",
+  "cwd": "/tmp/harness-test-kiro-2549443901/test-repo",
+  "created_at": "2026-09-22T20:45:57.063036596Z",
+  "updated_at": "2026-09-22T20:45:59.165974376Z",
+  "title": "What is the project codename? Reply ONLY the codename.",
+  "session_created_reason": "subagent",
+  "session_state": {
+    "version": "v1",
+    "conversation_metadata": {
+      "user_turn_metadatas": [
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 3686174252
+          },
+          "result": {
+            "Ok": {
+              "id": "c725a8c6-c8bd-43ba-a592-fdebe8298e27",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": "Hello from mock server."
+                }
+              ],
+              "meta": {
+                "timestamp": 1790109959
+              }
+            }
+          },
+          "message_ids": [
+            "88c0e56e-5ada-4024-b2ee-1b9a89e12f30",
+            "a1b38955-c3e9-4398-9c5f-0958b42c9007",
+            "0c3da116-5159-417e-9a8b-d8ae90c6d212",
+            "ed8d06fe-ed4d-4f58-a48d-7dcbc39b3c77"
+          ],
+          "total_request_count": 2,
+          "number_of_cycles": 1,
+          "builtin_tool_uses": 1,
+          "turn_duration": {
+            "secs": 0,
+            "nanos": 42266877
+          },
+          "end_reason": "UserTurnEnd",
+          "end_timestamp": "2026-09-22T20:45:59.159850077Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "cache_read_input_token_count": 0,
+          "cache_write_input_token_count": 0,
+          "model": "kiro-default",
+          "assistant_response_length": 23,
+          "request_attempts": 2,
+          "context_usage_percentage": null,
+          "final_context_usage_percentage": null,
+          "metering_usage": [],
+          "user_prompt_length": 54
+        }
+      ],
+      "last_context_usage": null,
+      "user_turn_start_request": null,
+      "last_request": null
+    },
+    "rts_model_state": {
+      "conversation_id": "e53ccf60-b53a-4fdd-a00f-05547225a99d",
+      "model_info": {
+        "model_name": "kiro-default",
+        "model_id": "kiro-default",
+        "context_window_tokens": 200000
+      },
+      "context_usage_percentage": null
+    },
+    "permissions": {
+      "filesystem": {
+        "allowed_read_paths": [
+          "/tmp/harness-test-kiro-2549443901/test-repo"
+        ],
+        "allowed_write_paths": [],
+        "denied_read_paths": [],
+        "denied_write_paths": []
+      },
+      "trusted_tools": [],
+      "denied_tools": [],
+      "allowed_commands": []
+    },
+    "agent_name": "belt",
+    "goal": null
+  }
+}

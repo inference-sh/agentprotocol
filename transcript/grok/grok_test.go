@@ -1,6 +1,9 @@
 package grok
 
 import (
+	"encoding/json"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -39,4 +42,34 @@ func TestForeign(t *testing.T) {
 
 func TestAppend(t *testing.T) {
 	transcripttest.Append(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}
+
+// TestHandBuiltSummary checks that a session built by hand writes every
+// field grok's Summary type requires, since grok rejects summary.json with
+// "missing field" otherwise.
+func TestHandBuiltSummary(t *testing.T) {
+	home := t.TempDir()
+	st, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), &transcript.Session{CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "hi"}}},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(filepath.Join(home, root, transcript.EscapedCwd.Name("/tmp/p"), id, "summary.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(raw, &fields); err != nil {
+		t.Fatal(err)
+	}
+	for _, required := range []string{"info", "session_summary", "created_at", "updated_at", "num_messages", "current_model_id"} {
+		if _, ok := fields[required]; !ok {
+			t.Errorf("summary.json lacks %s, which grok requires", required)
+		}
+	}
 }

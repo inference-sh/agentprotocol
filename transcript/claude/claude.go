@@ -123,6 +123,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	}
 	if r.Message.Model != "" {
 		v.Model = r.Message.Model
+		s.Model = r.Message.Model
 	}
 	if r.Timestamp != "" {
 		t, err := time.Parse(time.RFC3339Nano, r.Timestamp)
@@ -261,6 +262,9 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		m.ID = "msg_" + e.ID
 		m.Type = "message"
 		m.Model = v.Model
+		if m.Model == "" {
+			m.Model = s.Model
+		}
 		m.Usage = &usage{}
 	}
 	t := e.Time

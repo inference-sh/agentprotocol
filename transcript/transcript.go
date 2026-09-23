@@ -104,10 +104,13 @@ func (e Entry) Text() string {
 
 // Session is one conversation.
 type Session struct {
-	ID      string    `json:"id"`
-	Agent   string    `json:"agent"`
-	CWD     string    `json:"cwd"`
-	Title   string    `json:"title,omitempty"`
+	ID    string `json:"id"`
+	Agent string `json:"agent"`
+	CWD   string `json:"cwd"`
+	Title string `json:"title,omitempty"`
+	// Model is the model the session last ran on, as the agent names it, when
+	// the store records one. A writer whose format requires a model uses it.
+	Model   string    `json:"model,omitempty"`
 	Created time.Time `json:"created,omitempty"`
 	Updated time.Time `json:"updated,omitempty"`
 	Entries []Entry   `json:"entries"`

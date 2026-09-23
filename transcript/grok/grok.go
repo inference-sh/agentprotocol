@@ -50,11 +50,17 @@ type Vendor struct {
 	Summary map[string]json.RawMessage
 }
 
+// summary is the part of summary.json the codec reads and writes. It holds
+// every field grok requires when it parses the file: those without a serde
+// default in grok's Summary type (xai-grok-shell session/persistence.rs).
+// Everything else passes through Vendor.
 type summary struct {
-	Info      summaryInfo `json:"info"`
-	Title     string      `json:"session_summary,omitempty"`
-	CreatedAt string      `json:"created_at"`
-	UpdatedAt string      `json:"updated_at"`
+	Info           summaryInfo `json:"info"`
+	Title          string      `json:"session_summary"`
+	CreatedAt      string      `json:"created_at"`
+	UpdatedAt      string      `json:"updated_at"`
+	NumMessages    int         `json:"num_messages"`
+	CurrentModelID string      `json:"current_model_id"`
 }
 
 type summaryInfo struct {
@@ -157,6 +163,7 @@ func readSummary(dir string, s *transcript.Session) error {
 	if t, err := time.Parse(time.RFC3339Nano, sm.CreatedAt); err == nil {
 		s.Created = t
 	}
+	s.Model = sm.CurrentModelID
 	s.Vendor = &Vendor{Summary: fields}
 	return nil
 }
@@ -295,11 +302,16 @@ func writeSummary(ctx context.Context, path string, s *transcript.Session) error
 			title = msgs[0].Text()
 		}
 	}
+	// grok overwrites current_model_id with the model it runs on when it
+	// opens the session, so a session with no recorded model can carry an
+	// empty one; the field only has to be present.
 	identity, err := json.Marshal(summary{
-		Info:      summaryInfo{ID: s.ID, CWD: s.CWD},
-		Title:     title,
-		CreatedAt: s.Created.UTC().Format(time.RFC3339Nano),
-		UpdatedAt: s.Updated.UTC().Format(time.RFC3339Nano),
+		Info:           summaryInfo{ID: s.ID, CWD: s.CWD},
+		Title:          title,
+		CreatedAt:      s.Created.UTC().Format(time.RFC3339Nano),
+		UpdatedAt:      s.Updated.UTC().Format(time.RFC3339Nano),
+		NumMessages:    len(s.Messages()),
+		CurrentModelID: s.Model,
 	})
 	if err != nil {
 		return err
@@ -311,23 +323,11 @@ func writeSummary(ctx context.Context, path string, s *transcript.Session) error
 	for k, val := range known {
 		fields[k] = val
 	}
-	counts := struct {
-		NumMessages       int `json:"num_messages"`
-		NumChatMessages   int `json:"num_chat_messages"`
-		ChatFormatVersion int `json:"chat_format_version"`
-	}{len(s.Messages()), len(s.Messages()), 1}
-	cj, err := json.Marshal(counts)
-	if err != nil {
-		return err
+	if _, ok := fields["num_chat_messages"]; !ok {
+		fields["num_chat_messages"] = known["num_messages"]
 	}
-	var countFields map[string]json.RawMessage
-	if err := json.Unmarshal(cj, &countFields); err != nil {
-		return err
-	}
-	for k, val := range countFields {
-		if _, ok := fields[k]; !ok || k != "chat_format_version" {
-			fields[k] = val
-		}
+	if _, ok := fields["chat_format_version"]; !ok {
+		fields["chat_format_version"] = json.RawMessage("1")
 	}
 	out, err := json.MarshalIndent(fields, "", "  ")
 	if err != nil {

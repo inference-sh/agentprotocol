@@ -86,6 +86,6 @@ write-ahead log, so the capture waits for the flush after `session/close`
 and folds the log into the main file with `PRAGMA wal_checkpoint(TRUNCATE)`
 before copying, or the copied file is empty. cursor writes its store only
 once its backend checkpoints the conversation, which the harness-test mock
-does from d7e0451 on, tool turn included from 4b2d12c.
+does from d7e0451 on, tool turn included, with cursor's own tool names and ids, from b486703.
 
 windsurf is an IDE with no CLI and no local store, so it has no codec.

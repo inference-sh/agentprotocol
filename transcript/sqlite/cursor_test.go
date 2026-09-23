@@ -11,11 +11,11 @@ import (
 
 // The cursor sample is one headless run of cursor-agent in the harness-test
 // container, whose mock checkpoints the conversation as Cursor's backend does
-// (harness-test 4b2d12c): a prompt, a read_file tool call, its result, an
+// (harness-test b486703): a prompt, a Read tool call, its result, an
 // answer.
 const (
-	cursorCWD = "/tmp/harness-test-cursor-305147681/test-repo"
-	cursorID  = "58cbecf4-11d9-4b9a-a22a-963cc72d6d16"
+	cursorCWD = "/tmp/harness-test-cursor-956164664/test-repo"
+	cursorID  = "287974f9-6a0e-4655-9cbc-f236ee648317"
 )
 
 func TestCursorRead(t *testing.T) {
@@ -48,11 +48,11 @@ func TestCursorRead(t *testing.T) {
 		}
 	}
 	call, result := msgs[1].Content[0], msgs[2].Content[0]
-	if call.Kind != transcript.BlockToolUse || call.ToolID != "call-1" || call.Name != "read_file" {
+	if call.Kind != transcript.BlockToolUse || call.ToolID != "tool_046f39ab-4162-4276-913e-98899cb0b966" || call.Name != "Read" {
 		t.Errorf("tool call = %+v", call)
 	}
 	// The result is the one thing the readable transcript drops.
-	if result.Kind != transcript.BlockToolResult || result.ToolID != "call-1" || result.Text != "test" {
+	if result.Kind != transcript.BlockToolResult || result.ToolID != "tool_046f39ab-4162-4276-913e-98899cb0b966" || result.Text != "test" {
 		t.Errorf("tool result = %+v", result)
 	}
 	if msgs[3].Text() != "Hello from mock server." {

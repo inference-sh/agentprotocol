@@ -73,6 +73,13 @@ type Session interface {
 	Close() error
 }
 
+// Killer is implemented by sessions backed by a local process. Kill ends the
+// process at once (SIGKILL), with no graceful shutdown and no chance to flush
+// its transcript, the way a crash or OOM would; Events then closes. Close is
+// the normal way to end a session; Kill exists to test what an agent does
+// after dying mid-work, and for a caller that must stop a wedged agent.
+type Killer interface{ Kill() error }
+
 // Capabilities describes what a backend can do. A caller checks these instead
 // of special-casing by Kind, so a new backend does not require changes
 // upstream.

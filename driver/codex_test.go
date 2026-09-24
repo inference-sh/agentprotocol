@@ -24,6 +24,7 @@ const codexFakeEnv = "AGENTPROTOCOL_FAKE_CODEX"
 func init() {
 	if mode, ok := os.LookupEnv(codexFakeEnv); ok {
 		runFakeCodex(mode)
+		lingerIfAsked()
 		os.Exit(0)
 	}
 }
@@ -314,6 +315,34 @@ func TestCodexCloseClosesEvents(t *testing.T) {
 	if err := sess.Prompt(context.Background(), driver.TextInput("x")); err == nil {
 		t.Error("prompt after close succeeded")
 	}
+}
+
+func TestCodexKillEndsAWedgedAgentAtOnce(t *testing.T) {
+	b, _ := codexBackend(t, "normal")
+	b.Env = append(b.Env, ignoreEOFEnv+"=1")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = sess.Prompt(context.Background(), driver.TextInput("run touch x"))
+	events := until(t, sess.Events(), ap.AgentEventApprovalRequired)
+	req, _ := ap.PayloadAs[ap.ApprovalRequiredPayload](events[len(events)-1], ap.AgentEventApprovalRequired)
+
+	got := killMidWork(t, sess)
+	errEv, ok := findEvent(got, ap.AgentEventError)
+	if !ok {
+		t.Fatalf("killed with no error event: %v", typesOf(got))
+	}
+	if p, _ := ap.PayloadAs[ap.ErrorPayload](errEv, ap.AgentEventError); p.Code != "process_exited" {
+		t.Errorf("error = %+v", p)
+	}
+	if err := sess.Resolve(context.Background(), req.ToolInvocationID, driver.Allow()); err == nil {
+		t.Error("resolving a request of a killed agent succeeded")
+	}
+}
+
+func TestCodexKillAfterCloseIsHarmless(t *testing.T) {
+	killAfterClose(t, openCodex(t, "normal", driver.SessionConfig{}))
 }
 
 func TestCodexSendsApprovalPolicyThatAsks(t *testing.T) {

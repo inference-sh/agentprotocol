@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -361,6 +362,21 @@ func (s *claudeSession) Close() error {
 	})
 	return s.closeErr
 }
+
+// Kill implements Killer. The CLI gets no end of input and no grace, so the
+// transcript holds only what it had already written. The session then ends
+// as it does when claude crashes: a turn still open reports process_exited,
+// and Events closes once the queued events are read. Close afterwards
+// releases the rest.
+func (s *claudeSession) Kill() error {
+	if err := s.proc.Kill(); err != nil && !errors.Is(err, os.ErrProcessDone) {
+		return fmt.Errorf("driver: kill claude: %w", err)
+	}
+	<-s.proc.Exited()
+	return nil
+}
+
+var _ Killer = (*claudeSession)(nil)
 
 // watch ends the event stream when the process does. A turn still open at
 // that point failed, and says so.

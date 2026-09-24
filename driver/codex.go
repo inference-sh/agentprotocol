@@ -109,6 +109,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 		openTools: map[string]string{},
 		prompts:   make(chan Input, 64),
 		stop:      make(chan struct{}),
+		watched:   make(chan struct{}),
 	}
 
 	name := b.ClientName
@@ -214,6 +215,7 @@ type codexSession struct {
 
 	prompts chan Input
 	stop    chan struct{}
+	watched chan struct{} // closed when watch has finished
 
 	evMu     sync.Mutex
 	events   chan ap.AgentEvent
@@ -482,6 +484,17 @@ func (s *codexSession) Close() error {
 	return err
 }
 
+// Kill implements Killer. Codex gets no grace to finish writing its rollout.
+// The session then ends as it does when codex crashes: an error event with
+// code process_exited, then Events closes. After Close it does nothing.
+func (s *codexSession) Kill() error {
+	_ = s.proc.Kill()
+	<-s.watched
+	return s.Close()
+}
+
+var _ Killer = (*codexSession)(nil)
+
 // watch closes the event stream when codex exits on its own, which is the
 // signal to a caller that no more work is coming.
 func (s *codexSession) watch() {
@@ -504,6 +517,7 @@ func (s *codexSession) watch() {
 	}
 	<-s.proc.Exited()
 	s.closeEvents()
+	close(s.watched)
 }
 
 func (s *codexSession) emit(ev ap.AgentEvent) {

@@ -30,6 +30,7 @@ const (
 func init() {
 	if script := os.Getenv(fakeClaudeEnv); script != "" {
 		runFakeClaude(script)
+		lingerIfAsked()
 		os.Exit(0)
 	}
 }
@@ -456,6 +457,28 @@ func TestClaudeCloseEndsTheEventStream(t *testing.T) {
 	if err := sess.Close(); err != nil {
 		t.Errorf("second close: %v", err)
 	}
+}
+
+func TestClaudeKillEndsAWedgedAgentAtOnce(t *testing.T) {
+	b, _ := claudeRunning(t, "permission")
+	b.Env = append(b.Env, ignoreEOFEnv+"=1")
+	sess := openClaude(t, b, driver.SessionConfig{})
+	_ = sess.Prompt(context.Background(), driver.TextInput("touch x"))
+	approvalFor(t, sess)
+
+	got := killMidWork(t, sess)
+	errEv, ok := findEvent(got, ap.AgentEventError)
+	if !ok {
+		t.Fatalf("turn cut short by a kill with no error event: %v", typesOf(got))
+	}
+	if p, _ := ap.PayloadAs[ap.ErrorPayload](errEv, ap.AgentEventError); p.Code != "process_exited" {
+		t.Errorf("error = %+v", p)
+	}
+}
+
+func TestClaudeKillAfterCloseIsHarmless(t *testing.T) {
+	b, _ := claudeRunning(t, "echo")
+	killAfterClose(t, openClaude(t, b, driver.SessionConfig{}))
 }
 
 func TestClaudeRefusesToSkipPermissions(t *testing.T) {

@@ -24,6 +24,17 @@ import (
 
 const agentEnv = "AGENTPROTOCOL_FAKE_AGENT"
 
+// ignoreEOFEnv makes every fake ignore the end of its input and keep running,
+// as a wedged agent would, so only a kill can end it.
+const ignoreEOFEnv = "AGENTPROTOCOL_FAKE_IGNORE_EOF"
+
+// lingerIfAsked is where a fake goes when its input ends.
+func lingerIfAsked() {
+	if os.Getenv(ignoreEOFEnv) != "" {
+		time.Sleep(time.Hour)
+	}
+}
+
 func TestMain(m *testing.M) {
 	if script := os.Getenv(agentEnv); script != "" {
 		runFakeAgent(script)
@@ -234,6 +245,94 @@ func TestCloseEndsTheEventStream(t *testing.T) {
 	case <-time.After(2 * time.Second):
 		t.Error("event channel never closed; a consumer would block forever")
 	}
+}
+
+// killMidWork kills a session whose agent is in the middle of a turn and
+// would ignore the end of its input. Kill must not wait out a shutdown grace,
+// Events must close, and a second Kill and a Close must be harmless. It
+// returns the events that arrived after the kill.
+func killMidWork(t *testing.T, sess driver.Session) []ap.AgentEvent {
+	t.Helper()
+	k, ok := sess.(driver.Killer)
+	if !ok {
+		t.Fatalf("%T does not implement driver.Killer", sess)
+	}
+	start := time.Now()
+	if err := k.Kill(); err != nil {
+		t.Fatalf("kill: %v", err)
+	}
+	if d := time.Since(start); d > time.Second {
+		t.Errorf("kill took %s; it waited for a graceful shutdown", d)
+	}
+
+	var got []ap.AgentEvent
+	deadline := time.After(3 * time.Second)
+	for {
+		select {
+		case ev, ok := <-sess.Events():
+			if !ok {
+				if err := k.Kill(); err != nil {
+					t.Errorf("second kill: %v", err)
+				}
+				start = time.Now()
+				_ = sess.Close()
+				if d := time.Since(start); d > time.Second {
+					t.Errorf("close after kill took %s", d)
+				}
+				return got
+			}
+			got = append(got, ev)
+		case <-deadline:
+			t.Fatalf("events never closed after kill; got %v", typesOf(got))
+		}
+	}
+}
+
+// killAfterClose checks Kill is harmless on a session already closed.
+func killAfterClose(t *testing.T, sess driver.Session) {
+	t.Helper()
+	if err := sess.Close(); err != nil {
+		t.Errorf("close: %v", err)
+	}
+	if err := sess.(driver.Killer).Kill(); err != nil {
+		t.Errorf("kill after close: %v", err)
+	}
+	select {
+	case <-drain(sess.Events()):
+	case <-time.After(3 * time.Second):
+		t.Error("events still open")
+	}
+}
+
+func TestKillEndsAWedgedAgentAtOnce(t *testing.T) {
+	b := backendRunning(t, "permission")
+	b.Env = append(b.Env, ignoreEOFEnv+"=1")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir(),
+	})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	_ = sess.Prompt(context.Background(), driver.TextInput("do something risky"))
+	approval, ok := findEvent(collect(t, sess.Events(), 3, 3*time.Second), ap.AgentEventApprovalRequired)
+	if !ok {
+		t.Fatal("agent never parked on an approval")
+	}
+	p, _ := ap.PayloadAs[ap.ApprovalRequiredPayload](approval, ap.AgentEventApprovalRequired)
+
+	killMidWork(t, sess)
+	if err := sess.Resolve(context.Background(), p.ToolInvocationID, driver.Allow()); err == nil {
+		t.Error("resolving a request of a killed agent succeeded")
+	}
+}
+
+func TestKillAfterCloseIsHarmless(t *testing.T) {
+	b := backendRunning(t, "echo")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir()})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	killAfterClose(t, sess)
 }
 
 // drain reads until the channel closes and reports the final state.
@@ -487,6 +586,7 @@ func runFakeAgent(script string) {
 			}
 		}
 	}
+	lingerIfAsked()
 	os.Exit(0)
 }
 

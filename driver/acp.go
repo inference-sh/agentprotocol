@@ -181,6 +181,8 @@ type acpSession struct {
 	chatID string
 
 	events     chan ap.AgentEvent
+	evMu       sync.Mutex
+	evClosed   bool
 	closeOnce  sync.Once
 	emitReplay bool
 
@@ -250,10 +252,24 @@ func (s *acpSession) Close() error {
 	s.closeOnce.Do(func() {
 		s.failPending()
 		err = s.proc.Wait()
-		close(s.events)
+		s.closeEvents()
 	})
 	return err
 }
+
+// Kill implements Killer. The agent gets no session/close and no grace; any
+// request parked on a person is cancelled. After Close it does nothing.
+func (s *acpSession) Kill() error {
+	var err error
+	s.closeOnce.Do(func() {
+		s.failPending()
+		err = s.proc.Kill()
+		s.closeEvents()
+	})
+	return err
+}
+
+var _ Killer = (*acpSession)(nil)
 
 // failPending releases every parked request so the agent is not left waiting
 // on a decision that will never arrive.
@@ -345,15 +361,25 @@ func (s *acpSession) dropPending(id string) {
 // A slow reader must not wedge the agent's transport, and a session that is
 // closing has no one left to tell.
 func (s *acpSession) emit(ev ap.AgentEvent) {
-	defer func() {
-		// A send on a channel closed by Close races with an in-flight update
-		// from the read loop. Recovering keeps a late event from taking the
-		// process down.
-		_ = recover()
-	}()
+	// The lock orders a late event from the read loop or a prompt goroutine
+	// against the close in Close or Kill.
+	s.evMu.Lock()
+	defer s.evMu.Unlock()
+	if s.evClosed {
+		return
+	}
 	select {
 	case s.events <- ev:
 	default:
+	}
+}
+
+func (s *acpSession) closeEvents() {
+	s.evMu.Lock()
+	defer s.evMu.Unlock()
+	if !s.evClosed {
+		s.evClosed = true
+		close(s.events)
 	}
 }
 

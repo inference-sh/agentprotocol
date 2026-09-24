@@ -277,7 +277,35 @@ type message struct {
 	ToolCallID string  `json:"toolCallId,omitempty"`
 	ToolName   string  `json:"toolName,omitempty"`
 	IsError    bool    `json:"isError,omitempty"`
-	Timestamp  int64   `json:"timestamp,omitempty"`
+	// Usage and StopReason are required on an assistant message: pi-ai's
+	// context estimate reads usage.totalTokens off every assistant message
+	// in the history (utils/estimate.js, pi 0.87.1), and one without usage
+	// fails the next request with "Cannot read properties of undefined". An
+	// imported turn has no usage of its own, so it gets zeros, which pi
+	// treats as "no usage reported". provider, api and model are left out:
+	// pi compares them to the current model and treats a mismatch as a turn
+	// from another model, which an imported one is.
+	Usage      *usage `json:"usage,omitempty"`
+	StopReason string `json:"stopReason,omitempty"`
+	Timestamp  int64  `json:"timestamp,omitempty"`
+}
+
+// usage is pi-ai's Usage, written as zeros.
+type usage struct {
+	Input       int       `json:"input"`
+	Output      int       `json:"output"`
+	CacheRead   int       `json:"cacheRead"`
+	CacheWrite  int       `json:"cacheWrite"`
+	TotalTokens int       `json:"totalTokens"`
+	Cost        usageCost `json:"cost"`
+}
+
+type usageCost struct {
+	Input      float64 `json:"input"`
+	Output     float64 `json:"output"`
+	CacheRead  float64 `json:"cacheRead"`
+	CacheWrite float64 `json:"cacheWrite"`
+	Total      float64 `json:"total"`
 }
 
 // content is a message's content: pi writes a plain string for some rows and
@@ -1451,6 +1479,15 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	}
 	if m.Role == "" || (len(m.Content) == 0 && m.Role != "toolResult") {
 		return nil, nil
+	}
+	if m.Role == "assistant" {
+		m.Usage = &usage{}
+		m.StopReason = "stop"
+		for _, b := range m.Content {
+			if b.Type == "toolCall" {
+				m.StopReason = "toolUse"
+			}
+		}
 	}
 	if m.Content == nil {
 		m.Content = []block{}

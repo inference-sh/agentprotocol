@@ -410,6 +410,15 @@ func TestForeignSystemChain(t *testing.T) {
 	if !strings.Contains(string(back.Entries[1].Raw), `"parentId":null`) {
 		t.Errorf("first row = %s", back.Entries[1].Raw)
 	}
+	// pi fails the next request on an assistant message without usage.
+	for _, e := range back.Entries {
+		if e.Role == transcript.RoleAssistant {
+			raw := string(e.Raw)
+			if !strings.Contains(raw, `"usage":{"input":0,`) || !strings.Contains(raw, `"totalTokens":0`) || !strings.Contains(raw, `"stopReason":"stop"`) {
+				t.Errorf("assistant row = %s", raw)
+			}
+		}
+	}
 }
 
 const ompDirTest = ".omp/agent/sessions/-p"

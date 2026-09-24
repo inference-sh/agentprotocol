@@ -1,11 +1,15 @@
 package harness
 
 import (
+	"context"
 	"encoding/json"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
+	"sync"
+	"time"
 )
 
 func npmPackageName(name string) string {
@@ -145,12 +149,23 @@ func KnownNames() []string {
 	return names
 }
 
+// DetectAll runs detection for every known agent, in parallel, and returns
+// the results sorted by name. Each agent's version check is bounded by
+// VersionTimeout, so one binary that stalls cannot hold the rest up.
 func DetectAll() []DetectResult {
 	home, _ := os.UserHomeDir()
-	var results []DetectResult
-	for name, h := range All {
-		results = append(results, runDetection(name, h.Binary, home))
+	names := KnownNames()
+	sort.Strings(names)
+	results := make([]DetectResult, len(names))
+	var wg sync.WaitGroup
+	for i, name := range names {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			results[i] = runDetection(name, All[name].Binary, home)
+		}()
 	}
+	wg.Wait()
 	return results
 }
 
@@ -277,8 +292,18 @@ func probeEnvVar(name, _, _ string, r *DetectResult) {
 
 // --- Helpers ---
 
+// VersionTimeout bounds each agent's `--version` during detection. Most
+// answer in under a second; a binary that waits on stdin, a network check or
+// an update prompt would otherwise hang whoever is detecting.
+var VersionTimeout = 3 * time.Second
+
+// npmListTimeout bounds the one `npm list -g` detection makes.
+var npmListTimeout = 10 * time.Second
+
 func getVersion(binary string) string {
-	out, err := exec.Command(binary, "--version").CombinedOutput()
+	ctx, cancel := context.WithTimeout(context.Background(), VersionTimeout)
+	defer cancel()
+	out, err := boundedOutput(ctx, binary, "--version")
 	if err != nil {
 		return ""
 	}
@@ -289,14 +314,31 @@ func getVersion(binary string) string {
 	return v
 }
 
-var npmGlobalCache map[string]bool
+// boundedOutput runs a command with no stdin and returns its combined output,
+// killing it when ctx ends. WaitDelay covers a child that exits but leaves a
+// grandchild holding the output pipe open, which would otherwise block the
+// read past the deadline.
+func boundedOutput(ctx context.Context, name string, args ...string) ([]byte, error) {
+	cmd := exec.CommandContext(ctx, name, args...)
+	cmd.WaitDelay = 500 * time.Millisecond
+	return cmd.CombinedOutput()
+}
+
+var (
+	npmGlobalOnce  sync.Once
+	npmGlobalCache map[string]bool
+)
 
 func npmHasGlobal(pkg string) bool {
-	if npmGlobalCache == nil {
+	npmGlobalOnce.Do(func() {
 		npmGlobalCache = make(map[string]bool)
-		out, err := exec.Command("npm", "list", "-g", "--depth=0", "--json").Output()
-		if err != nil {
-			return false
+		ctx, cancel := context.WithTimeout(context.Background(), npmListTimeout)
+		defer cancel()
+		cmd := exec.CommandContext(ctx, "npm", "list", "-g", "--depth=0", "--json")
+		cmd.WaitDelay = 500 * time.Millisecond
+		out, err := cmd.Output()
+		if err != nil && len(out) == 0 {
+			return
 		}
 		var result struct {
 			Dependencies map[string]any `json:"dependencies"`
@@ -306,6 +348,6 @@ func npmHasGlobal(pkg string) bool {
 				npmGlobalCache[k] = true
 			}
 		}
-	}
+	})
 	return npmGlobalCache[pkg]
 }

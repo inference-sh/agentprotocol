@@ -486,50 +486,71 @@ const hermesJSONPrefix = "\x00json:"
 // parts of a JSON list joined.
 func hermesText(content string) string {
 	var b strings.Builder
-	for _, t := range hermesParts(content) {
-		b.WriteString(t)
+	for _, x := range hermesBlocks(content) {
+		if x.Kind == transcript.BlockText {
+			b.WriteString(x.Text)
+		}
 	}
 	return b.String()
 }
 
-// hermesParts splits content into its text parts. A list keeps one part per
-// text item and drops images and audio, which have no block here.
-func hermesParts(content string) []string {
+// hermesBlocks splits content into blocks. A list keeps one text block per
+// text item and one image block per image_url item, whose URL is the image
+// as a data: URL or where it is (acp_adapter/content.py _image_parts,
+// gateway/platforms/api_server.py _normalize_image_part); audio has no
+// block here.
+func hermesBlocks(content string) []transcript.Block {
+	text := func(t string) transcript.Block { return transcript.Block{Kind: transcript.BlockText, Text: t} }
 	raw, ok := strings.CutPrefix(content, hermesJSONPrefix)
 	if !ok {
 		if content == "" {
 			return nil
 		}
-		return []string{content}
+		return []transcript.Block{text(content)}
 	}
 	var parts []json.RawMessage
 	if json.Unmarshal([]byte(raw), &parts) != nil {
 		var single json.RawMessage
 		if json.Unmarshal([]byte(raw), &single) != nil {
-			return []string{content}
+			return []transcript.Block{text(content)}
 		}
 		parts = []json.RawMessage{single}
 	}
-	var out []string
+	var out []transcript.Block
 	for _, p := range parts {
 		var s string
 		if json.Unmarshal(p, &s) == nil {
-			out = append(out, s)
+			out = append(out, text(s))
 			continue
 		}
 		var item struct {
-			Type    string  `json:"type"`
-			Text    *string `json:"text"`
-			Content *string `json:"content"`
+			Type     string          `json:"type"`
+			Text     *string         `json:"text"`
+			Content  *string         `json:"content"`
+			ImageURL json.RawMessage `json:"image_url"`
 		}
 		if json.Unmarshal(p, &item) != nil {
 			continue
 		}
 		switch {
 		case item.Text != nil:
-			out = append(out, *item.Text)
+			out = append(out, text(*item.Text))
 		case item.Type == "text" && item.Content != nil:
-			out = append(out, *item.Content)
+			out = append(out, text(*item.Content))
+		case item.Type == "image_url" || item.Type == "input_image":
+			// The URL is an object's url on a Chat Completions part and the
+			// value itself on a Responses one.
+			var ref struct {
+				URL string `json:"url"`
+			}
+			if json.Unmarshal(item.ImageURL, &ref) != nil {
+				json.Unmarshal(item.ImageURL, &ref.URL)
+			}
+			if ref.URL != "" {
+				b := mediaBlock("", ref.URL, "")
+				b.Kind = transcript.BlockImage
+				out = append(out, b)
+			}
 		}
 	}
 	return out
@@ -539,23 +560,24 @@ func hermesParts(content string) []string {
 // (system, session_meta) are hermes's bookkeeping, stripped before the model
 // sees history, and are kept as opaque rows.
 func hermesEntry(role, content, toolID, toolName, toolCalls, reasoning string) (transcript.Entry, error) {
-	text := func() []transcript.Block {
-		var out []transcript.Block
-		for _, t := range hermesParts(content) {
-			out = append(out, transcript.Block{Kind: transcript.BlockText, Text: t})
-		}
-		return out
-	}
 	e := transcript.Entry{Role: transcript.Role(role)}
 	switch role {
 	case "tool":
+		// A multimodal result (a screenshot) is an OpenAI content list
+		// (tool_executor.py); its images follow the result.
 		e.Role = transcript.RoleTool
 		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: toolID, Name: toolName, Text: hermesText(content), Status: transcript.StatusOK}}
+		for _, b := range hermesBlocks(content) {
+			if isMedia(b) {
+				b.ToolID = toolID
+				e.Content = append(e.Content, b)
+			}
+		}
 	case "assistant":
 		if reasoning != "" {
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: reasoning})
 		}
-		e.Content = append(e.Content, text()...)
+		e.Content = append(e.Content, hermesBlocks(content)...)
 		if toolCalls != "" {
 			var calls []hermesToolCall
 			if err := json.Unmarshal([]byte(toolCalls), &calls); err != nil {
@@ -566,7 +588,7 @@ func hermesEntry(role, content, toolID, toolName, toolCalls, reasoning string) (
 			}
 		}
 	case "user":
-		e.Content = text()
+		e.Content = hermesBlocks(content)
 	default:
 		e.Role = transcript.RoleOpaque
 	}
@@ -777,7 +799,15 @@ func hermesColumns(e transcript.Entry) (role, content, toolID, toolName string, 
 	case transcript.RoleTool:
 		for _, b := range e.Content {
 			if b.Kind == transcript.BlockToolResult {
-				return "tool", b.Text, b.ToolID, b.Name, nil, nil
+				// The images the tool returned go in its content after the
+				// text, as hermes keeps a multimodal result.
+				blocks := []transcript.Block{{Kind: transcript.BlockText, Text: b.Text}}
+				for _, m := range e.Content {
+					if m.Kind == transcript.BlockImage && m.ToolID == b.ToolID {
+						blocks = append(blocks, m)
+					}
+				}
+				return "tool", hermesContent(blocks), b.ToolID, b.Name, nil, nil
 			}
 		}
 		return "tool", "", "", "", nil, nil
@@ -787,6 +817,8 @@ func hermesColumns(e transcript.Entry) (role, content, toolID, toolName string, 
 		for _, b := range e.Content {
 			switch b.Kind {
 			case transcript.BlockText:
+				// An answer's image has no place in the OpenAI messages
+				// hermes sends, so it is dropped.
 				text += b.Text
 			case transcript.BlockReasoning:
 				reason += b.Text
@@ -809,8 +841,43 @@ func hermesColumns(e transcript.Entry) (role, content, toolID, toolName string, 
 		}
 		return "assistant", text, "", "", callsCol, reasonCol
 	default:
-		return "user", e.Text(), "", "", nil, nil
+		return "user", hermesContent(e.Content), "", "", nil, nil
 	}
+}
+
+// hermesContent is the content column for text and images: plain text when
+// there is no image, else the JSON list of text and image_url parts hermes
+// stores multimodal content as (hermes_state_messages.py _encode_content).
+// hermes keeps no other kind of file in a message, so a file is dropped.
+func hermesContent(blocks []transcript.Block) string {
+	type imageURL struct {
+		URL string `json:"url"`
+	}
+	type part struct {
+		Type     string    `json:"type"`
+		Text     *string   `json:"text,omitempty"`
+		ImageURL *imageURL `json:"image_url,omitempty"`
+	}
+	var text string
+	var parts []part
+	images := false
+	for _, b := range blocks {
+		switch b.Kind {
+		case transcript.BlockText:
+			text += b.Text
+			parts = append(parts, part{Type: "text", Text: &b.Text})
+		case transcript.BlockImage:
+			if url := mediaURL(b); url != "" {
+				parts = append(parts, part{Type: "image_url", ImageURL: &imageURL{URL: url}})
+				images = true
+			}
+		}
+	}
+	if !images {
+		return text
+	}
+	raw, _ := json.Marshal(parts)
+	return hermesJSONPrefix + string(raw)
 }
 
 func hermesSchema(ctx context.Context, db *sql.DB) error {

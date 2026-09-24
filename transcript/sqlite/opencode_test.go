@@ -1,13 +1,16 @@
 package sqlite
 
 import (
+	"bytes"
 	"fmt"
+	"os"
 	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
 // The opencode sample is one real session extracted from a live database: a
@@ -510,5 +513,160 @@ func TestOpencodePartRevert(t *testing.T) {
 				t.Errorf("after write the model gets %q, want %q", sent, want)
 			}
 		})
+	}
+}
+
+// The image samples are HTTP-server runs of opencode 1.x and Kilo in the
+// harness-test container against the mock LLM: a prompt with a PNG as a
+// data: URL, a PDF and a text file as file: URLs (which opencode reads into
+// a data: URL and into synthetic text), then a read tool call on the PNG,
+// whose result holds the image as an attachment.
+var imageSamples = []struct {
+	codec transcript.Codec
+	agent string
+	home  string
+	id    string
+}{
+	{Opencode, "opencode", "testdata/opencode-image", "ses_f2d19fd93ffeGrHkN9qhzU544J"},
+	{Kilo, "kilo", "testdata/kilo-image", "ses_f2d19a999ffeotA1Yxc4k2Dlj6"},
+}
+
+// media lists an entry list's images and files as "kind media-type name
+// tool-id size", with URI in place of size for a reference.
+func media(es []transcript.Entry) []string {
+	var out []string
+	for _, e := range es {
+		for _, b := range e.Content {
+			if b.Kind != transcript.BlockImage && b.Kind != transcript.BlockFile {
+				continue
+			}
+			where := fmt.Sprint(len(b.Data))
+			if b.Data == nil {
+				where = b.URI
+			}
+			out = append(out, fmt.Sprintf("%s: %s %s %s %s %s", e.Role, b.Kind, b.MediaType, b.Name, b.ToolID, where))
+		}
+	}
+	return out
+}
+
+// TestOpencodeImages reads the images and files opencode keeps. The model
+// is given the prompt's PNG and PDF as their bytes and not the text file,
+// which it gets as the text opencode read it into; the person is shown all
+// three under the prompt. The read tool's PNG follows the call's result in
+// the answer, where opencode keeps a call and its result.
+func TestOpencodeImages(t *testing.T) {
+	png, err := os.ReadFile("testdata/pic.png")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range imageSamples {
+		t.Run(c.agent, func(t *testing.T) {
+			s := readSample(t, c.codec, c.home, c.id)
+			sameLines(t, "model", media(s.Context()), []string{
+				"user: image image/png pic.png  97",
+				"user: file application/pdf doc.pdf  389",
+				"assistant: image image/png  call_mock_1 97",
+			})
+			sameLines(t, "person", media(s.Linearize()), []string{
+				"user: image image/png pic.png  97",
+				"user: file application/pdf doc.pdf  389",
+				"user: file text/plain README.md  file:///home/testuser/test-repo/README.md",
+				"assistant: image image/png  call_mock_1 97",
+			})
+			for _, e := range s.Context() {
+				for i, b := range e.Content {
+					if b.Kind != transcript.BlockImage {
+						continue
+					}
+					if !bytes.Equal(b.Data, png) {
+						t.Errorf("%s image is not the PNG sent", e.Role)
+					}
+					if b.ToolID != "" && (i == 0 || e.Content[i-1].Kind != transcript.BlockToolResult || e.Content[i-1].ToolID != b.ToolID) {
+						t.Errorf("tool image does not follow its result: %+v", e.Content)
+					}
+				}
+			}
+		})
+	}
+}
+
+// TestOpencodeImagesImported writes the image samples as another agent's
+// session: the prompt's image and PDF become file parts with data: URLs,
+// the tool's image an attachment of the tool part, and they read back as
+// they were.
+func TestOpencodeImagesImported(t *testing.T) {
+	for _, c := range imageSamples {
+		t.Run(c.agent, func(t *testing.T) {
+			transcripttest.Imported(t, c.codec, transcripttest.Sample{Home: copyHome(t, c.home), ID: c.id})
+			s := readSample(t, c.codec, c.home, c.id)
+			want := media(s.Portable().Entries)
+			s.Agent = "elsewhere"
+			home := t.TempDir()
+			id, err := mustOpen(t, c.codec, home).Write(t.Context(), s)
+			if err != nil {
+				t.Fatal(err)
+			}
+			back := readSample(t, c.codec, home, id)
+			// The text file reached the model only as text, which moved; its
+			// part was the person's alone.
+			sameLines(t, "images", media(back.Context()), slices.DeleteFunc(want, func(x string) bool { return strings.Contains(x, "text/plain") }))
+		})
+	}
+}
+
+// TestOpencodeImageRewrite: an unchanged rewrite keeps every row of the
+// image samples, attachments included.
+func TestOpencodeImageRewrite(t *testing.T) {
+	for _, c := range imageSamples {
+		t.Run(c.agent, func(t *testing.T) {
+			home := copyHome(t, c.home)
+			db := filepath.Join(home, ".local/share", c.agent, c.agent+".db")
+			before := dump(t, db)
+			s := readSample(t, c.codec, home, c.id)
+			if _, err := mustOpen(t, c.codec, home).Write(t.Context(), s); err != nil {
+				t.Fatal(err)
+			}
+			after := dump(t, db)
+			for table, rows := range before {
+				if strings.Join(rows, "\n") != strings.Join(after[table], "\n") {
+					t.Errorf("table %s changed on an unchanged rewrite", table)
+				}
+			}
+		})
+	}
+}
+
+// TestOpencodeAttachmentsSent: the model is given a tool's attachments
+// only as data: URLs and not once a prune compacted the output; Kilo never
+// gives it send_file's (message-v2.ts toModelMessages, toModelOutput). No
+// mock run prunes or calls send_file, so the parts are built here.
+func TestOpencodeAttachmentsSent(t *testing.T) {
+	part := func(tool string, compacted int64, urls ...string) openPart {
+		p := openPart{Type: "tool", Tool: tool, CallID: "c1", State: &openToolState{Status: "completed", Output: "ok"}}
+		p.State.Time.Compacted = compacted
+		for _, u := range urls {
+			p.State.Attachments = append(p.State.Attachments, openFile{Mime: "image/png", URL: u})
+		}
+		return p
+	}
+	count := func(bs []transcript.Block) int {
+		return len(slices.DeleteFunc(bs, func(b transcript.Block) bool { return b.Kind != transcript.BlockImage }))
+	}
+	for _, c := range []struct {
+		name string
+		p    openPart
+		kilo bool
+		want int
+	}{
+		{"data URL", part("read", 0, "data:image/png;base64,AA=="), false, 1},
+		{"file URL", part("read", 0, "file:///tmp/a.png"), false, 0},
+		{"pruned", part("read", 1790000000000, "data:image/png;base64,AA=="), false, 0},
+		{"opencode send_file", part("send_file", 0, "data:image/png;base64,AA=="), false, 1},
+		{"kilo send_file", part("send_file", 0, "data:image/png;base64,AA=="), true, 0},
+	} {
+		if got := count(openToolBlocks(c.p, c.kilo)); got != c.want {
+			t.Errorf("%s: %d images, want %d", c.name, got, c.want)
+		}
 	}
 }

@@ -1,13 +1,16 @@
 package sqlite
 
 import (
+	"bytes"
 	"encoding/json"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
 // The samples are runs in the harness-test container against its mock
@@ -352,6 +355,14 @@ func TestGooseBlocks(t *testing.T) {
 			want:    []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: "t3", Text: "no such tool", Status: transcript.StatusError}},
 		},
 		{
+			// goose's ACP prompt has no document case (acp/server.rs
+			// convert_acp_prompt_to_message); its SDK writes one
+			// (goose-sdk bindings.rs to_goose_content).
+			name: "a document is a file", role: "user", meta: both,
+			content: `[{"type":"text","text":"read this"},{"type":"document","data":"JVBERi0=","mimeType":"application/pdf","name":"q3.pdf"}]`,
+			want:    []transcript.Block{{Kind: transcript.BlockText, Text: "read this"}, {Kind: transcript.BlockFile, MediaType: "application/pdf", Name: "q3.pdf", Data: []byte("%PDF-")}},
+		},
+		{
 			name: "user-only metadata", role: "user", meta: gooseVisibility(`{"userVisible":true,"agentVisible":false}`),
 			content:  `[{"type":"text","text":"/compact"}]`,
 			want:     []transcript.Block{{Kind: transcript.BlockText, Text: "/compact"}},
@@ -374,6 +385,52 @@ func TestGooseBlocks(t *testing.T) {
 			}
 		})
 	}
+}
+
+// The goose image sample is a goose 1.52.0 ACP run in the harness-test
+// container: a prompt with a PNG, then a read_image call on the same PNG.
+const (
+	gooseImageHome = "testdata/goose-image"
+	gooseImageID   = "20260924_2"
+)
+
+// TestGooseImages reads the prompt's image and the one read_image returned,
+// which follows the call's result.
+func TestGooseImages(t *testing.T) {
+	png, err := os.ReadFile("testdata/pic.png")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := readSample(t, Goose, gooseImageHome, gooseImageID)
+	want := []string{"user: image image/png   97", "tool: image image/png  call_mock_1 97"}
+	sameLines(t, "model", media(s.Context()), want)
+	sameLines(t, "person", media(s.Linearize()), want)
+	for _, e := range s.Context() {
+		for i, b := range e.Content {
+			if b.Kind == transcript.BlockImage && !bytes.Equal(b.Data, png) {
+				t.Errorf("%s image is not the PNG sent", e.Role)
+			}
+			if b.Kind == transcript.BlockImage && b.ToolID != "" && e.Content[i-1].Kind != transcript.BlockToolResult {
+				t.Errorf("tool image does not follow its result: %+v", e.Content)
+			}
+		}
+	}
+}
+
+// TestGooseImagesImported writes the image sample as another agent's
+// session: the images go back as goose's image items, in the prompt and in
+// the tool's result.
+func TestGooseImagesImported(t *testing.T) {
+	transcripttest.Imported(t, Goose, transcripttest.Sample{Home: copyHome(t, gooseImageHome), ID: gooseImageID})
+	s := readSample(t, Goose, gooseImageHome, gooseImageID)
+	want := media(s.Portable().Entries)
+	s.Agent = "elsewhere"
+	home := t.TempDir()
+	id, err := mustOpen(t, Goose, home).Write(t.Context(), s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sameLines(t, "images", media(readSample(t, Goose, home, id).Context()), want)
 }
 
 // TestGooseAppendOrder writes a turn whose time is before the sample's last
@@ -532,7 +589,7 @@ func TestHermesContentShapes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got := said([]transcript.Entry{e}); got[0] != "user: look at thisand this" || len(e.Content) != 2 {
+	if got := said([]transcript.Entry{e}); got[0] != "user: look at thisand this" || len(e.Content) != 3 {
 		t.Errorf("list content decodes to %q (%d blocks)", got, len(e.Content))
 	}
 	for _, role := range []string{"session_meta", "system"} {
@@ -562,6 +619,86 @@ func TestHermesContentShapes(t *testing.T) {
 	back := readSample(t, Hermes, home, hermesID)
 	if len(back.Entries) != len(s.Entries) || len(back.Messages()) != n {
 		t.Errorf("rewrite kept %d of %d rows", len(back.Entries), len(s.Entries))
+	}
+}
+
+// TestHermesImages decodes the images hermes keeps in a JSON list of parts.
+// The released hermes writes a turn's images as "[screenshot]" text
+// (agent/session_persistence.py _durable_content), which is what an ACP
+// image prompt in the harness-test container stored; the list is stored
+// when hermes writes its live messages back (hermes_state_messages.py
+// replace_messages, on a rewind or a compaction): a prompt's images as
+// image_url parts with a data: URL (acp_adapter/content.py _image_parts) or
+// an http(s) one (gateway/platforms/api_server.py _normalize_image_part),
+// and a screenshot a tool returned (tool_executor.py, a multimodal result
+// as an OpenAI content list).
+func TestHermesImages(t *testing.T) {
+	cases := []struct {
+		name, role, content, toolID string
+		want                        []transcript.Block
+	}{{
+		name: "a prompt's image", role: "user",
+		content: hermesJSONPrefix + `[{"type": "text", "text": "[Attached image: pic.png]"}, {"type": "image_url", "image_url": {"url": "data:image/png;base64,iVBORw=="}}]`,
+		want:    []transcript.Block{{Kind: transcript.BlockText, Text: "[Attached image: pic.png]"}, {Kind: transcript.BlockImage, MediaType: "image/png", Data: []byte{0x89, 'P', 'N', 'G'}}},
+	}, {
+		name: "an image by URL", role: "user",
+		content: hermesJSONPrefix + `[{"type": "image_url", "image_url": {"url": "https://example.com/a.jpg", "detail": "high"}}]`,
+		want:    []transcript.Block{{Kind: transcript.BlockImage, URI: "https://example.com/a.jpg"}},
+	}, {
+		name: "a tool's screenshot", role: "tool", toolID: "call_1",
+		content: hermesJSONPrefix + `[{"type": "text", "text": "captured"}, {"type": "image_url", "image_url": {"url": "data:image/png;base64,iVBORw=="}}]`,
+		want: []transcript.Block{
+			{Kind: transcript.BlockToolResult, ToolID: "call_1", Name: "computer_use", Text: "captured", Status: transcript.StatusOK},
+			{Kind: transcript.BlockImage, ToolID: "call_1", MediaType: "image/png", Data: []byte{0x89, 'P', 'N', 'G'}},
+		},
+	}}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			name := ""
+			if c.toolID != "" {
+				name = "computer_use"
+			}
+			e, err := hermesEntry(c.role, c.content, c.toolID, name, "", "")
+			if err != nil {
+				t.Fatal(err)
+			}
+			got, _ := json.Marshal(e.Content)
+			want, _ := json.Marshal(c.want)
+			if string(got) != string(want) {
+				t.Errorf("content %s, want %s", got, want)
+			}
+		})
+	}
+}
+
+// TestHermesImagesWritten writes another agent's images into hermes: a
+// prompt's and a tool's go in as image_url parts and read back as they were;
+// a file, which hermes has no part for, is dropped.
+func TestHermesImagesWritten(t *testing.T) {
+	png := []byte{0x89, 'P', 'N', 'G'}
+	s := &transcript.Session{Agent: "elsewhere", CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{
+			{Kind: transcript.BlockText, Text: "what is this"},
+			{Kind: transcript.BlockImage, MediaType: "image/png", Data: png},
+			{Kind: transcript.BlockFile, MediaType: "application/pdf", Name: "a.pdf", Data: []byte("%PDF-")},
+		}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockToolUse, ToolID: "c1", Name: "shot", Input: json.RawMessage(`{}`)}}},
+		{Role: transcript.RoleTool, Content: []transcript.Block{
+			{Kind: transcript.BlockToolResult, ToolID: "c1", Name: "shot", Text: "done", Status: transcript.StatusOK},
+			{Kind: transcript.BlockImage, ToolID: "c1", MediaType: "image/png", Data: png},
+		}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "a PNG"}}},
+	}}
+	home := t.TempDir()
+	id, err := mustOpen(t, Hermes, home).Write(t.Context(), s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	back := readSample(t, Hermes, home, id)
+	sameLines(t, "images", media(back.Context()), []string{"user: image image/png   4", "tool: image image/png  c1 4"})
+	sameLines(t, "text", said(back.Context()), []string{"user: what is this", "assistant: call c1", "tool: result c1", "assistant: a PNG"})
+	if r := back.Context()[2].Content[0]; r.Text != "done" {
+		t.Errorf("tool result reads back as %q", r.Text)
 	}
 }
 

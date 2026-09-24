@@ -3,6 +3,7 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -45,6 +46,24 @@ type gooseContent struct {
 	Thinking string `json:"thinking,omitempty"`
 	Msg      string `json:"msg,omitempty"`
 	Message  string `json:"message,omitempty"`
+	// Data is an image's or a document's bytes in base64, MimeType its type,
+	// and Name a document's file name (rmcp ImageContent, goose
+	// DocumentContent in conversation/message.rs).
+	Data     string `json:"data,omitempty"`
+	MimeType string `json:"mimeType,omitempty"`
+	Name     string `json:"name,omitempty"`
+}
+
+// media is an image or document content item as a block.
+func (c gooseContent) media() transcript.Block {
+	b := transcript.Block{Kind: transcript.BlockImage, MediaType: c.MimeType, Name: c.Name}
+	if c.Type == "document" {
+		b.Kind = transcript.BlockFile
+	}
+	// goose writes the bytes with the standard alphabet (goose-sdk
+	// bindings.rs); a row that does not decode keeps an empty block.
+	b.Data, _ = base64.StdEncoding.DecodeString(c.Data)
+	return b
 }
 
 // gooseAnnotations are the MCP annotations goose keeps on text, images and
@@ -212,7 +231,7 @@ func gooseVisibility(meta string) gooseMeta {
 // the provider formats then drop what the model is never sent (system
 // notifications, errors, confirmation requests). The
 // entry's Content is what the model was given when it was given the row,
-// else what the person was shown. Images and documents have no block here.
+// else what the person was shown.
 func gooseEntry(role, contentJSON string, meta gooseMeta) (transcript.Entry, error) {
 	var content []gooseContent
 	if err := json.Unmarshal([]byte(contentJSON), &content); err != nil {
@@ -238,8 +257,14 @@ func gooseEntry(role, contentJSON string, meta gooseMeta) (transcript.Entry, err
 				user, toUser = append(user, b), true
 			}
 		case "image", "document":
-			toModel = toModel || c.Annotations.includes("assistant")
-			toUser = toUser || c.Annotations.includes("user")
+			// A document carries no annotations, so it is for both.
+			b := c.media()
+			if c.Annotations.includes("assistant") {
+				model, toModel = append(model, b), true
+			}
+			if c.Annotations.includes("user") {
+				user, toUser = append(user, b), true
+			}
 		case "thinking":
 			b := transcript.Block{Kind: transcript.BlockReasoning, Text: c.Thinking}
 			model, user, toModel, toUser = append(model, b), append(user, b), true, true
@@ -259,7 +284,7 @@ func gooseEntry(role, contentJSON string, meta gooseMeta) (transcript.Entry, err
 		case "toolResponse":
 			toolResults++
 			m, u := gooseToolResult(c)
-			model, user, toModel, toUser = append(model, m), append(user, u), true, true
+			model, user, toModel, toUser = append(model, m...), append(user, u...), true, true
 		}
 	}
 	if e.Role == transcript.RoleUser && toolResults > 0 && toolResults == len(content) {
@@ -276,10 +301,12 @@ func gooseEntry(role, contentJSON string, meta gooseMeta) (transcript.Entry, err
 }
 
 // gooseToolResult is a tool result as the model and as the person get it:
-// each keeps the output items annotated for it. A call that failed, or whose
-// result says isError, is an error.
-func gooseToolResult(c gooseContent) (model, user transcript.Block) {
+// each keeps the output items annotated for it, the text as the result and
+// each image after it. A call that failed, or whose result says isError, is
+// an error.
+func gooseToolResult(c gooseContent) (model, user []transcript.Block) {
 	var m, u strings.Builder
+	var mImages, uImages []transcript.Block
 	status := transcript.StatusOK
 	if r := c.ToolResult; r != nil {
 		switch {
@@ -291,6 +318,17 @@ func gooseToolResult(c gooseContent) (model, user transcript.Block) {
 			status = transcript.StatusError
 		}
 		for _, rc := range r.Value.Content {
+			if rc.Type == "image" {
+				b := rc.media()
+				b.ToolID = c.ID
+				if rc.Annotations.includes("assistant") {
+					mImages = append(mImages, b)
+				}
+				if rc.Annotations.includes("user") {
+					uImages = append(uImages, b)
+				}
+				continue
+			}
 			if rc.Annotations.includes("assistant") {
 				m.WriteString(rc.Text)
 			}
@@ -299,9 +337,10 @@ func gooseToolResult(c gooseContent) (model, user transcript.Block) {
 			}
 		}
 	}
-	model = transcript.Block{Kind: transcript.BlockToolResult, ToolID: c.ID, Text: m.String(), Status: status}
-	user = model
-	user.Text = u.String()
+	res := transcript.Block{Kind: transcript.BlockToolResult, ToolID: c.ID, Text: m.String(), Status: status}
+	model = append([]transcript.Block{res}, mImages...)
+	res.Text = u.String()
+	user = append([]transcript.Block{res}, uImages...)
 	return model, user
 }
 
@@ -516,12 +555,27 @@ func gooseRole(r transcript.Role) transcript.Role {
 	return r
 }
 
+// gooseContentJSON encodes an entry as a goose content array. An image or a
+// file becomes an image or document item, and an image a tool returned an
+// item of the tool's result. goose holds their bytes and nothing else, so a
+// block that only points at its content has no item, and MCP tool output
+// has no document item, so neither has a file a tool returned.
 func gooseContentJSON(e transcript.Entry) (string, error) {
 	var content []gooseContent
+	returned := map[string][]gooseContent{}
+	for _, b := range e.Content {
+		if b.Kind == transcript.BlockImage && b.ToolID != "" && len(b.Data) > 0 {
+			returned[b.ToolID] = append(returned[b.ToolID], gooseMedia(b))
+		}
+	}
 	for _, b := range e.Content {
 		switch b.Kind {
 		case transcript.BlockText:
 			content = append(content, gooseContent{Type: "text", Text: b.Text})
+		case transcript.BlockImage, transcript.BlockFile:
+			if b.ToolID == "" && len(b.Data) > 0 {
+				content = append(content, gooseMedia(b))
+			}
 		case transcript.BlockToolUse:
 			c := gooseContent{Type: "toolRequest", ID: b.ToolID, ToolCall: &gooseToolCall{Status: "success"}}
 			c.ToolCall.Value.Name = b.Name
@@ -536,7 +590,7 @@ func gooseContentJSON(e transcript.Entry) (string, error) {
 				status = "error"
 			}
 			c := gooseContent{Type: "toolResponse", ID: b.ToolID, ToolResult: &gooseToolReslt{Status: status}}
-			c.ToolResult.Value.Content = []gooseContent{{Type: "text", Text: b.Text}}
+			c.ToolResult.Value.Content = append([]gooseContent{{Type: "text", Text: b.Text}}, returned[b.ToolID]...)
 			content = append(content, c)
 		}
 	}
@@ -545,6 +599,18 @@ func gooseContentJSON(e transcript.Entry) (string, error) {
 	}
 	out, err := json.Marshal(content)
 	return string(out), err
+}
+
+// gooseMedia is an image or a file as goose's image or document item.
+func gooseMedia(b transcript.Block) gooseContent {
+	c := gooseContent{Type: "image", Data: base64.StdEncoding.EncodeToString(b.Data), MimeType: b.MediaType}
+	if b.Kind == transcript.BlockFile {
+		c.Type, c.Name = "document", b.Name
+	}
+	if c.MimeType == "" {
+		c.MimeType = "application/octet-stream"
+	}
+	return c
 }
 
 func gooseSchema(ctx context.Context, db *sql.DB) error {

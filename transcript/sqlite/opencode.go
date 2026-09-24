@@ -4,9 +4,11 @@ import (
 	"context"
 	"crypto/rand"
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
+	neturl "net/url"
 	"os"
 	"path/filepath"
 	"slices"
@@ -77,14 +79,30 @@ type openPart struct {
 	// TailStartID is set on a compaction part to the first message the
 	// compaction keeps after its summary.
 	TailStartID string `json:"tail_start_id,omitempty"`
+	openFile
+}
+
+// openFile is what a file part holds, and what each of a tool's attachments
+// holds: its type, its name, and a URL that is a data: URL once opencode has
+// read the file (prompt.ts resolvePart) or the file: URL of a text file or
+// directory it inlined as text instead.
+type openFile struct {
+	Mime     string `json:"mime,omitempty"`
+	Filename string `json:"filename,omitempty"`
+	URL      string `json:"url,omitempty"`
 }
 
 type openToolState struct {
-	Status   string          `json:"status"`
-	Input    json.RawMessage `json:"input,omitempty"`
-	Output   string          `json:"output,omitempty"`
-	Error    string          `json:"error,omitempty"`
-	Metadata json.RawMessage `json:"metadata,omitempty"`
+	Status      string          `json:"status"`
+	Input       json.RawMessage `json:"input,omitempty"`
+	Output      string          `json:"output,omitempty"`
+	Error       string          `json:"error,omitempty"`
+	Metadata    json.RawMessage `json:"metadata,omitempty"`
+	Attachments []openFile      `json:"attachments,omitempty"`
+	Time        struct {
+		// Compacted is set when a prune cleared the output for the model.
+		Compacted int64 `json:"compacted,omitempty"`
+	} `json:"time"`
 }
 
 // openRevert is the session's revert column: the message, and optionally
@@ -343,8 +361,8 @@ func openEntries(msgs []openRow, rev *openRevert, kilo bool) []transcript.Entry 
 			out = append(out, openEntry(r, id, v.model, v.user, v.blocks))
 		}
 		if len(out) == start {
-			// A message with no part the entry can hold, like a prompt of
-			// only an image, is still a message.
+			// A message with no part the entry can hold, like an answer that
+			// only stepped, is still a message.
 			out = append(out, openEntry(r, r.id, !unsent[i], i < reverted, nil))
 		}
 		if i == carrier {
@@ -464,6 +482,9 @@ const kiloTransient = "kilocode.lifecycle"
 
 // openViews maps each part of a message to its blocks and who gets them.
 func openViews(r openRow, kilo bool) []openView {
+	// The TUI shows a prompt's files beneath its typed text, and shows
+	// nothing of a prompt without any (TUI UserMessage).
+	typed := slices.ContainsFunc(r.parts, func(p openPart) bool { return p.Type == "text" && !p.Synthetic && p.Text != "" })
 	var out []openView
 	for _, p := range r.parts {
 		v := openView{id: p.ID, model: true, user: true}
@@ -481,6 +502,13 @@ func openViews(r openRow, kilo bool) []openView {
 					text(p.Text)
 				}
 				v.model, v.user = !p.Ignored, !p.Synthetic
+			case "file":
+				// A text file or a directory reaches the model as the
+				// synthetic text opencode read it into; the part itself is
+				// only shown (message-v2.ts toModelMessages).
+				v.blocks = []transcript.Block{mediaBlock(p.Mime, p.URL, p.Filename)}
+				v.model = p.Mime != "text/plain" && p.Mime != "application/x-directory"
+				v.user = typed
 			case "compaction":
 				text("What did we do so far?")
 				v.user = false
@@ -502,7 +530,7 @@ func openViews(r openRow, kilo bool) []openView {
 			case "reasoning":
 				v.blocks = []transcript.Block{{Kind: transcript.BlockReasoning, Text: p.Text}}
 			case "tool":
-				v.blocks = openToolBlocks(p)
+				v.blocks = openToolBlocks(p, kilo)
 			}
 		}
 		out = append(out, v)
@@ -522,8 +550,9 @@ func openTransient(p openPart) bool {
 // openToolBlocks splits a tool part into its call and, once there is one,
 // its result, as toModelMessages sends them. A call still pending or
 // running when the session stopped is answered as interrupted, and one
-// interrupted by an abort sends the output it had.
-func openToolBlocks(p openPart) []transcript.Block {
+// interrupted by an abort sends the output it had. The images and files a
+// completed call returned follow its result.
+func openToolBlocks(p openPart, kilo bool) []transcript.Block {
 	use := transcript.Block{Kind: transcript.BlockToolUse, ToolID: p.CallID, Name: p.Tool}
 	if p.State == nil {
 		return []transcript.Block{use}
@@ -536,6 +565,7 @@ func openToolBlocks(p openPart) []transcript.Block {
 		// "[Old tool result content cleared]"; the person still sees it
 		// all, and the entry keeps it.
 		res.Text = p.State.Output
+		return append([]transcript.Block{use, res}, openAttachments(p, kilo)...)
 	case "error":
 		var meta struct {
 			Interrupted bool            `json:"interrupted"`
@@ -553,6 +583,86 @@ func openToolBlocks(p openPart) []transcript.Block {
 		return []transcript.Block{use}
 	}
 	return []transcript.Block{use, res}
+}
+
+// openAttachments are the images and files a completed tool call returned,
+// as the model is given them: only those held as data: URLs, none once a
+// prune cleared the output, and in Kilo none from send_file, whose
+// attachments are for delivery to a phone (message-v2.ts toModelMessages
+// and toModelOutput). The TUI shows no attachment, so one the model is not
+// given is for nobody and stays only in the row. A provider that takes no
+// media in a tool result gets them in a user message after the call's; the
+// block keeps them with the result either way.
+func openAttachments(p openPart, kilo bool) []transcript.Block {
+	if p.State.Time.Compacted != 0 || kilo && p.Tool == "send_file" {
+		return nil
+	}
+	var out []transcript.Block
+	for _, a := range p.State.Attachments {
+		if !strings.HasPrefix(a.URL, "data:") || !strings.Contains(a.URL, ",") {
+			continue
+		}
+		b := mediaBlock(a.Mime, a.URL, a.Filename)
+		b.ToolID = p.CallID
+		out = append(out, b)
+	}
+	return out
+}
+
+// mediaBlock is an image or a file an agent keeps as a URL: the bytes of a
+// data: URL, or else the URL as the block's URI. mediaType is the type the
+// agent records beside the URL, if any; the data: URL's own names it
+// otherwise.
+func mediaBlock(mediaType, url, name string) transcript.Block {
+	b := transcript.Block{Kind: transcript.BlockFile, MediaType: mediaType, URI: url, Name: name}
+	if mt, data, ok := parseDataURL(url); ok {
+		b.URI, b.Data = "", data
+		if b.MediaType == "" {
+			b.MediaType = mt
+		}
+	}
+	if strings.HasPrefix(b.MediaType, "image/") {
+		b.Kind = transcript.BlockImage
+	}
+	return b
+}
+
+// parseDataURL decodes a data: URL (RFC 2397) into its media type and bytes.
+func parseDataURL(u string) (string, []byte, bool) {
+	rest, ok := strings.CutPrefix(u, "data:")
+	if !ok {
+		return "", nil, false
+	}
+	meta, payload, ok := strings.Cut(rest, ",")
+	if !ok {
+		return "", nil, false
+	}
+	mediaType, params, _ := strings.Cut(meta, ";")
+	if strings.HasSuffix(params, "base64") {
+		data, err := base64.StdEncoding.DecodeString(payload)
+		if err != nil {
+			return "", nil, false
+		}
+		return mediaType, data, true
+	}
+	text, err := neturl.PathUnescape(payload)
+	if err != nil {
+		return "", nil, false
+	}
+	return mediaType, []byte(text), true
+}
+
+// mediaURL is a block's content as a URL: a data: URL of its bytes, or the
+// URI it points at.
+func mediaURL(b transcript.Block) string {
+	if len(b.Data) == 0 {
+		return b.URI
+	}
+	mt := b.MediaType
+	if mt == "" {
+		mt = "application/octet-stream"
+	}
+	return "data:" + mt + ";base64," + base64.StdEncoding.EncodeToString(b.Data)
 }
 
 // openRevertOf reads a session's revert state, nil when there is none or
@@ -734,7 +844,10 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 			msgID, s.ID, ms, ms, string(raw)); err != nil {
 			return "", fmt.Errorf("opencode: write message: %w", err)
 		}
-		for _, part := range openParts(e, results, ms) {
+		newPart := func() openAttachment {
+			return openAttachment{ID: ids.next("prt", at, false), SessionID: s.ID, MessageID: msgID}
+		}
+		for _, part := range openParts(e, results, ms, newPart) {
 			pd, err := json.Marshal(part)
 			if err != nil {
 				return "", err
@@ -815,16 +928,28 @@ type openPartOut struct {
 	CallID string        `json:"callID,omitempty"`
 	Tool   string        `json:"tool,omitempty"`
 	State  *openStateOut `json:"state,omitempty"`
+	openFile
 }
 
 type openStateOut struct {
-	Status   string          `json:"status"`
-	Input    json.RawMessage `json:"input"`
-	Output   *string         `json:"output,omitempty"`
-	Error    string          `json:"error,omitempty"`
-	Title    *string         `json:"title,omitempty"`
-	Metadata json.RawMessage `json:"metadata,omitempty"`
-	Time     openSpan        `json:"time"`
+	Status      string           `json:"status"`
+	Input       json.RawMessage  `json:"input"`
+	Output      *string          `json:"output,omitempty"`
+	Error       string           `json:"error,omitempty"`
+	Title       *string          `json:"title,omitempty"`
+	Metadata    json.RawMessage  `json:"metadata,omitempty"`
+	Time        openSpan         `json:"time"`
+	Attachments []openAttachment `json:"attachments,omitempty"`
+}
+
+// openAttachment is a file part a tool returned, which names its own part
+// id, session and message like a part row does (tools.ts).
+type openAttachment struct {
+	ID        string `json:"id"`
+	SessionID string `json:"sessionID"`
+	MessageID string `json:"messageID"`
+	Type      string `json:"type"`
+	openFile
 }
 
 // openDefaultsT is who new messages say ran them.
@@ -1026,24 +1151,40 @@ func tableExists(ctx context.Context, tx *sql.Tx, name string) (bool, error) {
 type toolResult struct {
 	text  string
 	isErr bool
+	// media are the images and files the call returned.
+	media []transcript.Block
 }
 
 func toolResults(s *transcript.Session) map[string]toolResult {
 	out := map[string]toolResult{}
 	for _, e := range s.Messages() {
 		for _, b := range e.Content {
-			if b.Kind == transcript.BlockToolResult {
-				out[b.ToolID] = toolResult{text: b.Text, isErr: b.Status == transcript.StatusError}
+			switch {
+			case b.Kind == transcript.BlockToolResult:
+				r := out[b.ToolID]
+				r.text, r.isErr = b.Text, b.Status == transcript.StatusError
+				out[b.ToolID] = r
+			case isMedia(b) && b.ToolID != "":
+				r := out[b.ToolID]
+				r.media = append(r.media, b)
+				out[b.ToolID] = r
 			}
 		}
 	}
 	return out
 }
 
+func isMedia(b transcript.Block) bool {
+	return b.Kind == transcript.BlockImage || b.Kind == transcript.BlockFile
+}
+
 // openParts turns an entry's blocks into the parts opencode stores, each
 // with the fields its part schema requires. A tool call and its result fold
-// into one tool part.
-func openParts(e transcript.Entry, results map[string]toolResult, ms int64) []openPartOut {
+// into one tool part, with the images and files the call returned as its
+// attachments; newPart names each attachment's part. A prompt's image or
+// file becomes a file part. opencode sends the model no file part of an
+// answer, so an answer's own image or file is dropped.
+func openParts(e transcript.Entry, results map[string]toolResult, ms int64, newPart func() openAttachment) []openPartOut {
 	var parts []openPartOut
 	span := openSpan{Start: ms, End: ms}
 	for _, b := range e.Content {
@@ -1051,6 +1192,10 @@ func openParts(e transcript.Entry, results map[string]toolResult, ms int64) []op
 		case transcript.BlockText:
 			text := b.Text
 			parts = append(parts, openPartOut{Type: "text", Text: &text})
+		case transcript.BlockImage, transcript.BlockFile:
+			if e.Role == transcript.RoleUser && b.ToolID == "" {
+				parts = append(parts, openPartOut{Type: "file", openFile: openFileOf(b)})
+			}
 		case transcript.BlockReasoning:
 			text := b.Text
 			parts = append(parts, openPartOut{Type: "reasoning", Text: &text, Time: &span})
@@ -1068,11 +1213,31 @@ func openParts(e transcript.Entry, results map[string]toolResult, ms int64) []op
 			default:
 				out, title := r.text, b.Name
 				st.Output, st.Title = &out, &title
+				for _, m := range r.media {
+					a := newPart()
+					a.Type, a.openFile = "file", openFileOf(m)
+					st.Attachments = append(st.Attachments, a)
+				}
 			}
 			parts = append(parts, openPartOut{Type: "tool", CallID: b.ToolID, Tool: b.Name, State: st})
 		}
 	}
 	return parts
+}
+
+// openFileOf is an image or file block as a file part holds it. opencode
+// sends the model a file part's URL as it is and reads bytes only from a
+// data: URL, so a block with its bytes becomes one; a path it points at
+// becomes a file: URL, the form opencode keeps a local file in.
+func openFileOf(b transcript.Block) openFile {
+	f := openFile{Mime: b.MediaType, Filename: b.Name, URL: mediaURL(b)}
+	if f.Mime == "" {
+		f.Mime = "application/octet-stream"
+	}
+	if filepath.IsAbs(f.URL) {
+		f.URL = (&neturl.URL{Scheme: "file", Path: f.URL}).String()
+	}
+	return f
 }
 
 func isObject(raw json.RawMessage) bool {

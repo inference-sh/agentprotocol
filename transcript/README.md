@@ -32,10 +32,12 @@ entries, taken from the agent's loader, so three views stay distinct:
 | `Context()` | what the agent gives the model when it resumes: the active branch for the model, every compaction applied |
 
 `Entry.Audience` says who an entry is for (everyone, the model, the person,
-or nobody). `Entry.Compaction` marks a row that replaces the history before
+or nobody), and `Entry.ModelContent` holds what the model was sent when it
+differs from what the person saw (a prompt with a hook's output appended). `Entry.Compaction` marks a row that replaces the history before
 it with a summary, keeping the entries from `Keep` on. `Session.Leaf` pins
 the entry a tree store resumes from, when the agent's rule is not "the last
-linked row". A JSONL codec sets them in `Finish`, which runs after every row
+linked row", and `Session.Restart` says it resumes from nothing. Content
+blocks are text, reasoning, tool calls and results, images and files. A JSONL codec sets them in `Finish`, which runs after every row
 is decoded.
 
 `Session.Events()` projects the conversation the person sees onto the

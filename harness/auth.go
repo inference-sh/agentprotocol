@@ -6,6 +6,8 @@ import (
 	"errors"
 	"os"
 	"os/exec"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -182,6 +184,13 @@ type StatusCheck struct {
 	// returns the state and exit code and drops the output.
 	OutputHasSecret bool
 
+	// MinVersion is the earliest version of the agent this command is known
+	// to be a status check on. Below it CheckLogin runs nothing: an older pi
+	// has no `auth check` and takes the words as a prompt, so the "check"
+	// would start a billed model turn. It is the version the command appeared
+	// in where the agent's changelog says, else the version it was measured on.
+	MinVersion string
+
 	// Note is how it was measured, and any caveat.
 	Note string
 }
@@ -201,6 +210,11 @@ var StatusTimeout = 5 * time.Second
 // ErrNoStatusCheck is returned for an agent with no status command.
 var ErrNoStatusCheck = errors.New("harness: agent has no auth status command")
 
+// ErrStatusCheckUnsupported is returned when the installed agent is older
+// than the status check's MinVersion, or its version cannot be read. Nothing
+// was run.
+var ErrStatusCheckUnsupported = errors.New("harness: installed agent version does not support its auth status command")
+
 // StatusResult is one run of a StatusCheck.
 type StatusResult struct {
 	State    LoginState
@@ -218,7 +232,22 @@ func CheckLogin(ctx context.Context, name string, env ...string) (StatusResult, 
 	if !ok || h.Auth.Status == nil {
 		return StatusResult{State: LoginUnknown}, ErrNoStatusCheck
 	}
+	return CheckLoginVersion(ctx, name, getVersion(h.Auth.Status.Cmd[0]), env...)
+}
+
+// CheckLoginVersion is CheckLogin for a caller that already knows the
+// installed version (DetectResult.Version), which saves a --version run.
+// It runs nothing and returns ErrStatusCheckUnsupported when version is
+// below the check's MinVersion or cannot be read.
+func CheckLoginVersion(ctx context.Context, name, version string, env ...string) (StatusResult, error) {
+	h, ok := All[name]
+	if !ok || h.Auth.Status == nil {
+		return StatusResult{State: LoginUnknown}, ErrNoStatusCheck
+	}
 	s := *h.Auth.Status
+	if s.MinVersion != "" && !versionAtLeast(version, s.MinVersion) {
+		return StatusResult{State: LoginUnknown}, ErrStatusCheckUnsupported
+	}
 	if len(s.Providers) == 0 {
 		return s.run(ctx, s.Cmd, env)
 	}
@@ -306,4 +335,28 @@ func (s StatusCheck) classify(code int, out string) LoginState {
 		return LoginLoggedIn
 	}
 	return LoginUnknown
+}
+
+var versionRe = regexp.MustCompile(`\d+(?:\.\d+)+`)
+
+// versionAtLeast compares the first dotted number in each string ("claude
+// 2.1.281 (Claude Code)", "2026.09.23-86fc751"). A version it cannot read is
+// not at least anything.
+func versionAtLeast(have, min string) bool {
+	h, m := versionRe.FindString(have), versionRe.FindString(min)
+	if h == "" || m == "" {
+		return false
+	}
+	hp, mp := strings.Split(h, "."), strings.Split(m, ".")
+	for i := 0; i < len(mp); i++ {
+		var a, b int
+		if i < len(hp) {
+			a, _ = strconv.Atoi(hp[i])
+		}
+		b, _ = strconv.Atoi(mp[i])
+		if a != b {
+			return a > b
+		}
+	}
+	return true
 }

@@ -20,6 +20,7 @@ var authTable = map[string]Auth{
 		},
 		Status: &StatusCheck{
 			Cmd:           []string{"claude", "auth", "status", "--json"},
+			MinVersion:    "2.1.281",
 			LoggedOutExit: 1, LoggedOutContains: `"loggedIn": false`, LoggedInExit: 0,
 			Output: `JSON. Logged out (measured, indented JSON): {"loggedIn": false, "authMethod": "none", "apiProvider": "firstParty", ...}, exit 1. ` +
 				`Logged in (source): loggedIn true, authMethod claude.ai|oauth_token|api_key|api_key_helper|third_party, email, orgId, orgName, subscriptionType, apiKeySource (an env var name); no token field`,
@@ -51,6 +52,7 @@ var authTable = map[string]Auth{
 		},
 		Status: &StatusCheck{
 			Cmd:           []string{"codex", "login", "status"},
+			MinVersion:    "0.156.1",
 			LoggedOutExit: 1, LoggedOutContains: "Not logged in", LoggedInExit: 0,
 			Output:          `text. Logged out (measured): "Not logged in", exit 1. Logged in (source): "Logged in using ChatGPT" / "... access token" / "... personal access token" / "... an API key - <first 8>***<last 5>"`,
 			OutputHasSecret: true,
@@ -95,6 +97,7 @@ var authTable = map[string]Auth{
 		},
 		Status: &StatusCheck{
 			Cmd:           []string{"cursor-agent", "status", "--format", "json"},
+			MinVersion:    "2026.09.23",
 			LoggedOutExit: 0, LoggedOutContains: `"isAuthenticated": false`, LoggedInExit: 0,
 			Output: `JSON, exit 0 either way. Logged out (measured, indented JSON): {"status": "unauthenticated", "isAuthenticated": false, "hasAccessToken": false, "hasRefreshToken": false, "message": "Not logged in"}. ` +
 				`Logged in (source): status "authenticated" or "partially-authenticated", isAuthenticated true, userInfo {email,userId,firstName,lastName,teamId,teamName}; booleans for the tokens, never the tokens`,
@@ -156,6 +159,7 @@ var authTable = map[string]Auth{
 		},
 		Status: &StatusCheck{
 			Cmd:           []string{"kiro-cli", "whoami", "--format", "json"},
+			MinVersion:    "2.24.0",
 			LoggedOutExit: 1, LoggedOutContains: `"account":null`, LoggedInExit: 0,
 			Output: `JSON. Logged out (measured): {"account":null}, exit 1. With KIRO_API_KEY set (measured, fake key): {"accountType":"ApiKey","email":null}, exit 0, key not validated. ` +
 				`Logged in (binary strings): accountType and email; plain format says "Logged in with Builder ID" / "IAM Identity Center (<start url>)" / "External IdP"`,
@@ -180,6 +184,7 @@ var authTable = map[string]Auth{
 		},
 		Status: &StatusCheck{
 			Cmd:           []string{"droid", "doctor", "--auth", "--json"},
+			MinVersion:    "0.226.2",
 			LoggedOutExit: 0, LoggedOutContains: "not logged in", LoggedInExit: 0, LoggedOutAnyExit: true,
 			Output: `JSON; exit 0 with network, 1 without (measured), whatever the login. Logged out (measured): the check with id "auth.verify" has status "warn" and detail "no usable credentials found (not logged in)". Logged in: unverified; strings suggest descriptions only`,
 			Note:   "probes api.workos.com (265ms offline, with that check failing) and writes ~/.factory/cache/certs/ on every run, so not Cheap",
@@ -340,6 +345,7 @@ var authTable = map[string]Auth{
 		},
 		Status: &StatusCheck{
 			Cmd:           []string{"pi", "auth", "check", "--provider", "{{.Provider}}", "--json", "--no-refresh"},
+			MinVersion:    "0.84.1", // `pi auth check` appeared in 0.84.1 (CHANGELOG); 0.80.3 reads "auth check" as a prompt
 			Providers:     []string{"anthropic", "openai-codex", "github-copilot", "xai", "kimi-coding"},
 			LoggedOutExit: 1, LoggedOutContains: "not_ready", LoggedInExit: 0,
 			Output: `JSON per provider. Logged out (measured): {"status":"not_ready","provider":"anthropic","reason":"credentials_not_configured"}, exit 1. ` +

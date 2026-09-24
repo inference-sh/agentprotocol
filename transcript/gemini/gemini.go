@@ -398,11 +398,27 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 			out = appendLine(out, row)
 		}
 	}
-	name := "session-" + s.Created.UTC().Format("2006-01-02T15-04") + "-" + prefix(s.ID) + ".jsonl"
+	name := "session-" + fileMinute(s.Created, now).Format("2006-01-02T15-04") + "-" + prefix(s.ID) + ".jsonl"
 	if v, ok := s.Vendor.(*Vendor); ok && v.FileName != "" {
 		name = v.FileName
 	}
 	return s.ID, writeFile(filepath.Join(dir, name), out)
+}
+
+// fileMinute is the minute a new session file is named for. gemini 0.61's
+// session/load starts a new recording for the session before resolving it,
+// named for the current minute; if the session's own file carries that
+// minute, the recording's first checkpoint replaces the conversation in it
+// and the load fails with "Invalid session identifier" (reproduced by the
+// harness-test seed probe, deterministic within the minute). Gemini accepts
+// a file named for any minute, so a session created in the current minute is
+// named for the one before, which no load can collide with.
+func fileMinute(created, now time.Time) time.Time {
+	m := created.UTC().Truncate(time.Minute)
+	if cur := now.UTC().Truncate(time.Minute); !m.Before(cur) {
+		m = cur.Add(-time.Minute)
+	}
+	return m
 }
 
 // keepsPrefix reports whether the session's messages begin with the ones read

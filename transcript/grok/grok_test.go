@@ -77,3 +77,7 @@ func TestHandBuiltSummary(t *testing.T) {
 func TestForeignIDs(t *testing.T) {
 	transcripttest.ForeignIDs(t, Codec, "/tmp/some/project", func(string) bool { return true })
 }
+
+func TestListsCWD(t *testing.T) {
+	transcripttest.ListsCWD(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

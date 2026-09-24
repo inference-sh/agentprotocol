@@ -193,3 +193,7 @@ func missingPaths(want, got any, at string) []string {
 func TestForeignIDs(t *testing.T) {
 	transcripttest.ForeignIDs(t, Codec, "/tmp/some/project", transcript.IsUUID)
 }
+
+func TestListsCWD(t *testing.T) {
+	transcripttest.ListsCWD(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

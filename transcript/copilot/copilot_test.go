@@ -128,3 +128,7 @@ func TestHandBuiltStart(t *testing.T) {
 func TestForeignIDs(t *testing.T) {
 	transcripttest.ForeignIDs(t, Writer, "/tmp/some/project", transcript.IsUUID)
 }
+
+func TestListsCWD(t *testing.T) {
+	transcripttest.ListsCWD(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

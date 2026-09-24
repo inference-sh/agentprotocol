@@ -69,3 +69,8 @@ func TestForeignIDs(t *testing.T) {
 	transcripttest.ForeignIDs(t, Codec, "/tmp/some/project", validID)
 	transcripttest.ForeignIDs(t, OMP, "/tmp/some/project", validID)
 }
+
+func TestListsCWD(t *testing.T) {
+	transcripttest.ListsCWD(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: piCWD, ID: piID})
+	transcripttest.ListsCWD(t, OMP, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

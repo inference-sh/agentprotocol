@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
 	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
@@ -178,4 +179,22 @@ func TestAppend(t *testing.T) {
 
 func TestForeignIDs(t *testing.T) {
 	transcripttest.ForeignIDs(t, Codec, "/tmp/some/project", IDs.Valid)
+}
+
+func TestListsCWD(t *testing.T) {
+	transcripttest.ListsCWD(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}
+
+// TestFileMinute: a session created in the current minute is named for the
+// minute before, which gemini 0.61's load cannot overwrite; an older one
+// keeps its own minute.
+func TestFileMinute(t *testing.T) {
+	now := time.Date(2026, 9, 24, 10, 30, 45, 0, time.UTC)
+	if got := fileMinute(now.Add(-5*time.Second), now); !got.Equal(time.Date(2026, 9, 24, 10, 29, 0, 0, time.UTC)) {
+		t.Errorf("created this minute: named %v", got)
+	}
+	old := time.Date(2026, 9, 24, 9, 12, 30, 0, time.UTC)
+	if got := fileMinute(old, now); !got.Equal(time.Date(2026, 9, 24, 9, 12, 0, 0, time.UTC)) {
+		t.Errorf("created earlier: named %v", got)
+	}
 }

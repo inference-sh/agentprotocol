@@ -26,6 +26,7 @@ var Codec = transcript.JSONL{
 		Root:    ".claude/projects",
 		Project: transcript.MangledCwd,
 		Ext:     ".jsonl",
+		Peek:    peek,
 	},
 	Decode: decode,
 	Encode: encode,
@@ -291,4 +292,10 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		r.ParentUUID = &e.ParentID
 	}
 	return json.Marshal(r)
+}
+
+// peek names the session's working directory, which the directory name
+// holds only in a form that cannot be reversed, from the cwd its rows carry.
+func peek(path string) (transcript.Info, error) {
+	return transcript.Info{CWD: transcript.PeekField(path, "cwd", 64)}, nil
 }

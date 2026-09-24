@@ -23,6 +23,11 @@ var Codec = transcript.JSONL{
 		Root:    ".factory/sessions",
 		Project: transcript.MangledCwd,
 		Ext:     ".jsonl",
+		// The session_start header names the working directory, which the
+		// mangled directory name cannot give back.
+		Peek: func(path string) (transcript.Info, error) {
+			return transcript.Info{CWD: transcript.PeekField(path, "cwd", 1)}, nil
+		},
 	},
 	Header:      header,
 	Decode:      decode,

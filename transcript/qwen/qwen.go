@@ -43,6 +43,7 @@ var Codec = transcript.JSONL{
 		PathFor: func(home string, s *transcript.Session) string {
 			return filepath.Join(home, root, transcript.MangledCwd.Name(s.CWD), "chats", s.ID+".jsonl")
 		},
+		Peek: peek,
 	},
 	Decode: decode,
 	Encode: encode,
@@ -256,3 +257,9 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 // ProjectDir is the directory Qwen keeps a working directory's sessions in,
 // under ~/.qwen/projects.
 func ProjectDir(cwd string) string { return strings.TrimSpace(transcript.MangledCwd.Name(cwd)) }
+
+// peek names the session's working directory, which the directory name
+// holds only in a form that cannot be reversed, from the cwd its rows carry.
+func peek(path string) (transcript.Info, error) {
+	return transcript.Info{CWD: transcript.PeekField(path, "cwd", 64)}, nil
+}

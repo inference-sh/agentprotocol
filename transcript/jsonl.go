@@ -446,6 +446,27 @@ func EachLine(path string, fn func(row json.RawMessage) (more bool, err error)) 
 	return sc.Err()
 }
 
+// PeekField returns the first non-empty string value of key among the first
+// maxRows rows of a JSONL file, for Layout.Peek implementations whose format
+// stamps a field such as cwd on its rows rather than in a header.
+func PeekField(path, key string, maxRows int) string {
+	var found string
+	n := 0
+	_ = EachLine(path, func(row json.RawMessage) (bool, error) {
+		n++
+		var fields map[string]json.RawMessage
+		if json.Unmarshal(row, &fields) == nil {
+			var v string
+			if json.Unmarshal(fields[key], &v) == nil && v != "" {
+				found = v
+				return false, nil
+			}
+		}
+		return n < maxRows, nil
+	})
+	return found
+}
+
 // Glob is filepath.Glob with sorted output, for Layout.Files
 // implementations.
 func Glob(pattern string) ([]string, error) {

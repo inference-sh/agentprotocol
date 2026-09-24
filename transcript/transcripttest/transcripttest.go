@@ -294,3 +294,28 @@ func ForeignIDs(t *testing.T, codec transcript.Codec, cwd string, valid func(str
 		t.Errorf("second entry's parent %q is not the first entry %q", msgs[1].ParentID, msgs[0].ID)
 	}
 }
+
+// ListsCWD lists the sample's store with no directory filter and requires
+// the session to carry its working directory: a caller listing every
+// session (a daemon, a session browser) needs it, and liveness compares it
+// against running processes.
+func ListsCWD(t *testing.T, codec transcript.Codec, sample Sample) {
+	t.Helper()
+	store, err := codec.Open(sample.Home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	infos, err := store.List(context.Background(), "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, in := range infos {
+		if in.ID == sample.ID {
+			if in.CWD != sample.CWD {
+				t.Errorf("unfiltered listing gives cwd %q, want %q", in.CWD, sample.CWD)
+			}
+			return
+		}
+	}
+	t.Errorf("unfiltered listing has no session %s", sample.ID)
+}

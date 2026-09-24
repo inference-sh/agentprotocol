@@ -361,3 +361,38 @@ func TestPortableKeepRemapped(t *testing.T) {
 		t.Errorf("lowered: %q", got)
 	}
 }
+
+// History a compaction retired, which its agent still showed, travels to a
+// writer that records compactions but not shown-only entries; a shown-only
+// entry the compaction does not retire does not.
+func TestLowerKeepsRetiredHistory(t *testing.T) {
+	retired := text("1", "", RoleUser, "u1")
+	retired.Audience = AudienceUser
+	stats := text("4", "", RoleUser, "/stats")
+	stats.Audience = AudienceUser
+	s := &Session{Entries: []Entry{
+		retired,
+		text("2", "", RoleAssistant, "a1"),
+		{ID: "3", Compaction: &Compaction{Summary: []Entry{text("", "", RoleUser, "S")}}},
+		stats,
+		text("5", "", RoleUser, "u2"),
+	}}
+	got := s.Lower(Capabilities{Compaction: true})
+	if texts(got.Entries) != "u1 a1  u2" || got.Entries[0].Audience != AudienceAll {
+		t.Errorf("lowered: %q, first audience %d", texts(got.Entries), got.Entries[0].Audience)
+	}
+}
+
+// A written compaction still names the entry it keeps after ids are given
+// in the writer's scheme.
+func TestAssignIDsFollowsKeep(t *testing.T) {
+	s := &Session{Entries: []Entry{
+		text("foreign-1", "", RoleUser, "u1"),
+		text("foreign-2", "", RoleAssistant, "a1"),
+		{Compaction: &Compaction{Keep: "foreign-2"}},
+	}}
+	AssignIDs(s, UUIDs, true)
+	if k := s.Entries[2].Compaction.Keep; k != s.Entries[1].ID || !IsUUID(k) {
+		t.Errorf("keep = %q, want %q", k, s.Entries[1].ID)
+	}
+}

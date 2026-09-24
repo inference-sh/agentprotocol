@@ -72,6 +72,10 @@ var Codec = transcript.JSONL{
 	Encode:  encode,
 	Prepare: prepare,
 	Tree:    true,
+	// Qwen records a compaction as a chat_compression row whose history the
+	// model is given from then on, and keeps the rows before it for the
+	// person; a realtime_message row is shown and never sent.
+	Caps: transcript.Capabilities{Compaction: true, UserOnly: true},
 }
 
 // Vendor is what a Qwen session carries in Session.Vendor: the stamps Qwen
@@ -472,17 +476,141 @@ func finish(s *transcript.Session) error {
 			}
 		}
 	}
+	keptVerbatim(s)
 	return nil
+}
+
+// keptVerbatim marks the turns a compressed history repeats from before the
+// compression as conversation. Qwen's own compression keeps none (the
+// summary, an acknowledgement, re-embedded files); a session written from
+// another agent's compaction keeps that agent's recent turns there, and
+// they must travel on with it rather than read as Qwen's context.
+func keptVerbatim(s *transcript.Session) {
+	seen := map[string]bool{}
+	for _, i := range s.Branch() {
+		e := s.Entries[i]
+		if c := e.Compaction; c != nil {
+			for k := range c.Summary {
+				m := &c.Summary[k]
+				if m.Audience == transcript.AudienceModel && seen[turnKey(*m)] {
+					m.Audience = transcript.AudienceAll
+				}
+			}
+			continue
+		}
+		if e.Role != transcript.RoleOpaque {
+			seen[turnKey(e)] = true
+		}
+	}
+}
+
+// turnKey is what makes two entries the same turn: role and text, tool
+// calls and results by id.
+func turnKey(e transcript.Entry) string {
+	var b strings.Builder
+	b.WriteString(string(e.Role))
+	for _, x := range e.Content {
+		b.WriteString("\x00" + string(x.Kind) + "\x00" + x.ToolID + "\x00" + x.Text)
+	}
+	return b.String()
 }
 
 // prepare gives a session from another agent a UUID when its id is not one
 // Qwen lists: Qwen only lists a file whose name matches sessionFile and whose
-// first row's sessionId is that name.
+// first row's sessionId is that name. It also lays out the compactions the
+// session carries.
 func prepare(home string, s *transcript.Session) error {
 	if s.Agent != agent && !sessionFile.MatchString(s.ID+".jsonl") {
 		s.ID = transcript.NewUUID()
 	}
+	compactions(s)
 	return nil
+}
+
+// resumeTrailer and acknowledgement are what composePostCompactHistory
+// (services/postCompactAttachments.ts) puts around a summary: the trailer
+// after it in the user message, and the model's reply after that.
+const (
+	resumeTrailer   = "Resume the prior task using the summary above. Continue from the last in-flight step; do not acknowledge the summary, do not re-introduce, do not greet the user again."
+	acknowledgement = "Got it. Thanks for the additional context!"
+)
+
+// compactions turns each compaction marker this write creates into the
+// history a chat_compression row gives the model outright: the summary as
+// Qwen wraps it and the model's acknowledgement, then what the model had
+// gathered by then from the marker's Keep on, the way Session.Context
+// applies a compaction. The acknowledgement is left out when a kept
+// answer follows the summary, so the roles still alternate. A marker's
+// row is linked to the row before it, as Qwen records one, which the id
+// assignment does not do for a row that is not a message.
+func compactions(s *transcript.Session) {
+	type placed struct {
+		at int
+		e  transcript.Entry
+	}
+	var ctx []placed
+	var markers []int
+	first := map[string]int{}
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		c := e.Compaction
+		if c == nil {
+			if _, seen := first[e.ID]; !seen && e.ID != "" {
+				first[e.ID] = i
+			}
+			if e.Role != transcript.RoleOpaque && e.Audience.Model() {
+				ctx = append(ctx, placed{i, *e})
+			}
+			continue
+		}
+		keep := len(s.Entries)
+		if at, ok := first[c.Keep]; ok && c.Keep != "" {
+			keep = at
+		}
+		next := make([]placed, 0, len(c.Summary)+len(ctx))
+		for _, m := range c.Summary {
+			next = append(next, placed{i, m})
+		}
+		var kept []transcript.Entry
+		for _, k := range ctx {
+			if k.at >= keep {
+				next = append(next, k)
+				kept = append(kept, k.e)
+			}
+		}
+		ctx = next
+		if e.Raw != nil {
+			continue
+		}
+		var text []string
+		for _, m := range c.Summary {
+			if t := m.Text(); t != "" {
+				text = append(text, t)
+			}
+		}
+		summary := strings.Join(text, "\n\n")
+		if !strings.HasSuffix(summary, resumeTrailer) {
+			summary += "\n\n" + resumeTrailer
+		}
+		history := []transcript.Entry{{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: summary}}}}
+		if len(kept) == 0 || kept[0].Role != transcript.RoleAssistant {
+			history = append(history, transcript.Entry{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockText, Text: acknowledgement}}})
+		}
+		e.Compaction = &transcript.Compaction{Summary: append(history, kept...)}
+		if !transcript.IsUUID(e.ID) {
+			e.ID = transcript.NewUUID()
+		}
+		markers = append(markers, i)
+	}
+	if len(markers) == 0 {
+		return
+	}
+	transcript.AssignIDs(s, transcript.UUIDs, true)
+	for _, i := range markers {
+		if i > 0 {
+			s.Entries[i].ParentID = s.Entries[i-1].ID
+		}
+	}
 }
 
 // localCommand reports whether a slash_command payload is the local result
@@ -526,6 +654,23 @@ func responseText(raw json.RawMessage) string {
 	return string(raw)
 }
 
+// compressionRow is a chat_compression row's payload as
+// recordChatCompression writes it (services/chatRecordingService.ts).
+type compressionRow struct {
+	Info              compressionInfo `json:"info"`
+	CompressedHistory []message       `json:"compressedHistory"`
+}
+
+type compressionInfo struct {
+	OriginalTokenCount int    `json:"originalTokenCount"`
+	NewTokenCount      int    `json:"newTokenCount"`
+	CompressionStatus  int    `json:"compressionStatus"`
+	TriggerReason      string `json:"triggerReason"`
+}
+
+// compressed is Qwen's COMPRESSED CompressionStatus.
+const compressed = 1
+
 func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
 	v, _ := s.Vendor.(*Vendor)
 	if v == nil {
@@ -551,16 +696,59 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	if e.ParentID != "" {
 		r.ParentUUID = &e.ParentID
 	}
+	if e.Role == transcript.RoleOpaque && e.Compaction != nil {
+		// prepare laid out the history the model is given from here on.
+		p := compressionRow{Info: compressionInfo{CompressionStatus: compressed, TriggerReason: "manual"}, CompressedHistory: []message{}}
+		for _, m := range e.Compaction.Summary {
+			if msg, _, err := qwenMessage(m); err != nil {
+				return nil, err
+			} else if len(msg.Parts) > 0 {
+				p.CompressedHistory = append(p.CompressedHistory, msg)
+			}
+		}
+		payload, err := json.Marshal(p)
+		if err != nil {
+			return nil, err
+		}
+		r.Type, r.Subtype, r.Provenance, r.Message, r.SystemPayload = "system", subtypeCompression, "system", nil, payload
+		return json.Marshal(r)
+	}
 	switch e.Role {
 	case transcript.RoleUser, transcript.RoleSystem:
-		r.Type, r.Provenance, r.Message.Role = "user", "real_user", "user"
+		r.Type, r.Provenance = "user", "real_user"
 	case transcript.RoleAssistant:
-		r.Type, r.Provenance, r.Message.Role, r.Model = "assistant", "assistant_output", "model", s.Model
+		r.Type, r.Provenance, r.Model = "assistant", "assistant_output", s.Model
 	case transcript.RoleTool:
-		r.Type, r.Provenance, r.Message.Role = "tool_result", "tool_result", "user"
+		r.Type, r.Provenance = "tool_result", "tool_result"
 	default:
 		return nil, nil
 	}
+	if !e.Audience.Model() {
+		// Shown and never sent: a realtime_message row, which Qwen's replay
+		// shows and its model history skips (session-api-history.ts). Such a
+		// row holds a user's or an assistant's text and nothing else.
+		if e.Role != transcript.RoleUser && e.Role != transcript.RoleAssistant || e.Text() == "" {
+			return nil, nil
+		}
+		e.Content = []transcript.Block{{Kind: transcript.BlockText, Text: e.Text()}}
+		r.Subtype = subtypeRealtime
+	}
+	msg, result, err := qwenMessage(e)
+	if err != nil || len(msg.Parts) == 0 {
+		return nil, err
+	}
+	r.Message, r.ToolCallResult = &msg, result
+	return json.Marshal(r)
+}
+
+// qwenMessage is an entry as a Gemini-shaped message, with the result of
+// the last tool call it answers.
+func qwenMessage(e transcript.Entry) (message, *toolCallResult, error) {
+	m := message{Role: "user"}
+	if e.Role == transcript.RoleAssistant {
+		m.Role = "model"
+	}
+	var result *toolCallResult
 	responses := map[string]int{} // tool call id -> index of its functionResponse part
 	for _, b := range e.Content {
 		switch b.Kind {
@@ -571,41 +759,38 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			}
 			// What a tool returned goes in its response, as Qwen nests it.
 			if i, found := responses[b.ToolID]; found && b.ToolID != "" {
-				fr := r.Message.Parts[i].FunctionResponse
+				fr := m.Parts[i].FunctionResponse
 				fr.Parts = append(fr.Parts, p)
 				continue
 			}
-			r.Message.Parts = append(r.Message.Parts, p)
+			m.Parts = append(m.Parts, p)
 		case transcript.BlockText:
-			r.Message.Parts = append(r.Message.Parts, part{Text: b.Text})
+			m.Parts = append(m.Parts, part{Text: b.Text})
 		case transcript.BlockReasoning:
-			r.Message.Parts = append(r.Message.Parts, part{Text: b.Text, Thought: true})
+			m.Parts = append(m.Parts, part{Text: b.Text, Thought: true})
 		case transcript.BlockToolUse:
 			args := b.Input
 			if len(args) == 0 {
 				args = json.RawMessage(`{}`)
 			}
-			r.Message.Parts = append(r.Message.Parts, part{FunctionCall: &functionCall{ID: b.ToolID, Name: b.Name, Args: args}})
+			m.Parts = append(m.Parts, part{FunctionCall: &functionCall{ID: b.ToolID, Name: b.Name, Args: args}})
 		case transcript.BlockToolResult:
 			resp, err := json.Marshal(struct {
 				Output string `json:"output"`
 			}{b.Text})
 			if err != nil {
-				return nil, err
+				return message{}, nil, err
 			}
-			responses[b.ToolID] = len(r.Message.Parts)
-			r.Message.Parts = append(r.Message.Parts, part{FunctionResponse: &functionResponse{ID: b.ToolID, Name: b.Name, Response: resp}})
+			responses[b.ToolID] = len(m.Parts)
+			m.Parts = append(m.Parts, part{FunctionResponse: &functionResponse{ID: b.ToolID, Name: b.Name, Response: resp}})
 			status := "success"
 			if b.Status == transcript.StatusError {
 				status = "error"
 			}
-			r.ToolCallResult = &toolCallResult{CallID: b.ToolID, Status: status}
+			result = &toolCallResult{CallID: b.ToolID, Status: status}
 		}
 	}
-	if len(r.Message.Parts) == 0 {
-		return nil, nil
-	}
-	return json.Marshal(r)
+	return m, result, nil
 }
 
 // ProjectDir is the directory Qwen keeps a working directory's sessions in,

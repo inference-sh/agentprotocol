@@ -598,6 +598,15 @@ func AssignIDs(s *Session, scheme IDScheme, tree bool) {
 			e.ID = id
 		}
 	}
+	// A compaction marker names the first entry it keeps by ID; follow the
+	// renaming there too.
+	for i := range s.Entries {
+		if c := s.Entries[i].Compaction; c != nil && s.Entries[i].Raw == nil {
+			if to, ok := remap[c.Keep]; ok {
+				c.Keep = to
+			}
+		}
+	}
 	prev, first := "", true
 	for i := range s.Entries {
 		e := &s.Entries[i]

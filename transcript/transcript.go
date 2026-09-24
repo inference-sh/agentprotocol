@@ -518,6 +518,32 @@ func (s *Session) Portable() *Session {
 	return &out
 }
 
+// retired reports, for each entry of a portable session, whether a later
+// compaction retires it: it comes before the compaction and before the
+// first entry the compaction keeps.
+func (s *Session) retired() map[int]bool {
+	out := map[int]bool{}
+	for at, e := range s.Entries {
+		c := e.Compaction
+		if c == nil {
+			continue
+		}
+		upto := at
+		for k := 0; k < at; k++ {
+			if c.Keep != "" && s.Entries[k].ID == c.Keep {
+				upto = k
+				break
+			}
+		}
+		for k := 0; k < upto; k++ {
+			if s.Entries[k].Compaction == nil {
+				out[k] = true
+			}
+		}
+	}
+	return out
+}
+
 // Capabilities are what a writer can record of a portable session beyond
 // plain messages.
 type Capabilities struct {
@@ -531,15 +557,22 @@ type Capabilities struct {
 // Lower reduces a portable session to what a writer with these
 // capabilities can record. Without Compaction, each compaction is applied:
 // the history it retired is replaced by its summary, as the model has it.
-// Without UserOnly, entries the model is not given are left out. With
-// both, the session is returned as it is.
+// Without UserOnly, entries the model is not given are left out, except
+// history a later compaction retires: the writer's own compaction keeps it
+// from the model, so it travels as ordinary history before the marker.
+// With both, the session is returned as it is.
 func (s *Session) Lower(c Capabilities) *Session {
 	out := *s
 	keep := func(e Entry) bool { return e.Audience.Model() || c.UserOnly }
 	out.Entries = nil
 	if c.Compaction {
-		for _, e := range s.Entries {
-			if e.Compaction != nil || keep(e) {
+		retired := s.retired()
+		for i, e := range s.Entries {
+			switch {
+			case e.Compaction != nil || keep(e):
+				out.Entries = append(out.Entries, e)
+			case retired[i]:
+				e.Audience = AudienceAll
 				out.Entries = append(out.Entries, e)
 			}
 		}

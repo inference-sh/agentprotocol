@@ -136,12 +136,22 @@ func codec(agent, root string, project transcript.ProjectDir, v variant) transcr
 		Header:      header,
 		Decode:      v.decode,
 		Finish:      v.finish,
-		Encode:      encode,
+		Prepare:     prepare,
+		Encode:      v.encode,
 		WriteHeader: writeHeader,
 		Tree:        true,
-		IDs:         transcript.IDScheme{New: newID, Valid: validID},
+		IDs:         ids,
+		// Both agents record a compaction as a compaction entry that keeps
+		// the history before it on the branch. Every row either shows that
+		// is left out of the model's context is one of their own making (an
+		// aborted turn, a bash run kept out of context), not a place for
+		// another agent's.
+		Caps: transcript.Capabilities{Compaction: true},
 	}
 }
+
+// ids is the agents' entry id scheme.
+var ids = transcript.IDScheme{New: newID, Valid: validID}
 
 // newID mints an entry id the way pi does: eight lowercase hex digits.
 func newID() string {
@@ -1430,7 +1440,112 @@ type messageRow struct {
 	Message   json.RawMessage `json:"message"`
 }
 
-func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+// compactionRow is a compaction entry as appendCompaction writes it
+// (session-manager.ts): the summary as generated, before the wrapper the
+// agent puts around it for the model, and the first entry kept. A
+// compaction that keeps nothing names itself.
+type compactionRow struct {
+	Type             string  `json:"type"`
+	ID               string  `json:"id"`
+	ParentID         *string `json:"parentId"`
+	Timestamp        string  `json:"timestamp"`
+	Summary          string  `json:"summary"`
+	FirstKeptEntryID string  `json:"firstKeptEntryId"`
+	TokensBefore     int     `json:"tokensBefore"`
+}
+
+// prepare gives each compaction marker of a session from another agent an
+// id in the agents' scheme and a first kept entry that is written, after
+// ids are assigned, since firstKeptEntryId names that entry by its id and
+// the agents keep nothing when it names none on the branch. It assigns the
+// ids itself, which the store's own pass then leaves as they are.
+func prepare(home string, s *transcript.Session) error {
+	keep := map[int]int{} // marker index to its kept entry's index
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		if e.Raw != nil || e.Compaction == nil {
+			continue
+		}
+		c := *e.Compaction
+		e.Compaction = &c
+		if !validID(e.ID) {
+			e.ID = newID()
+		}
+		keep[i] = -1
+		for k := 0; k < i && c.Keep != ""; k++ {
+			if s.Entries[k].ID == c.Keep {
+				keep[i] = k
+				break
+			}
+		}
+	}
+	if len(keep) == 0 {
+		return nil
+	}
+	transcript.AssignIDs(s, ids, true)
+	for i, k := range keep {
+		e := &s.Entries[i]
+		if i > 0 {
+			e.ParentID = s.Entries[i-1].ID
+		}
+		e.Compaction.Keep = ""
+		for ; k >= 0 && k < i; k++ {
+			if row, err := piVariant.encode(s.Entries[k], s); err == nil && len(row) > 0 && s.Entries[k].Compaction == nil {
+				e.Compaction.Keep = s.Entries[k].ID
+				break
+			}
+		}
+	}
+	return nil
+}
+
+// encodeCompaction writes a compaction marker as the agent's own
+// compaction entry. The summary the marker holds is what the model got; when
+// it is this agent's own wrapping of a summary, the wrapper comes off, since
+// the agent stores the summary bare and wraps it again on load.
+func (v variant) encodeCompaction(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+	var text []string
+	for _, m := range e.Compaction.Summary {
+		if t := m.Text(); t != "" {
+			text = append(text, v.unwrapSummary(t))
+		}
+	}
+	t := e.Time
+	if t.IsZero() {
+		t = s.Updated
+	}
+	r := compactionRow{Type: "compaction", ID: e.ID, Timestamp: t.UTC().Format("2006-01-02T15:04:05.000Z"),
+		Summary: strings.Join(text, "\n\n"), FirstKeptEntryID: e.Compaction.Keep}
+	if r.FirstKeptEntryID == "" {
+		r.FirstKeptEntryID = e.ID
+	}
+	if e.ParentID != "" {
+		parent := e.ParentID
+		r.ParentID = &parent
+	}
+	return json.Marshal(r)
+}
+
+// unwrapSummary takes off the wrapper compactionSummary puts around a
+// summary, when the text carries it.
+func (v variant) unwrapSummary(text string) string {
+	prefix, suffix := piCompactionPrefix, piCompactionSuffix
+	if v == ompVariant {
+		before, after, _ := strings.Cut(ompCompactionTemplate, "{{summary}}")
+		prefix, suffix = before, strings.TrimRight(after, "\n")
+	}
+	if inner, ok := strings.CutPrefix(text, prefix); ok {
+		if inner, ok := strings.CutSuffix(inner, suffix); ok {
+			return inner
+		}
+	}
+	return text
+}
+
+func (v variant) encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+	if e.Role == transcript.RoleOpaque && e.Compaction != nil {
+		return v.encodeCompaction(e, s)
+	}
 	t := e.Time
 	if t.IsZero() {
 		t = s.Updated

@@ -59,6 +59,10 @@ var files = transcript.JSONL{
 	Decode:      decode,
 	Encode:      (&plan{}).encode,
 	WriteHeader: (&plan{}).header,
+	// Codex records a compaction as a compacted row whose replacement
+	// history the model is given from then on, and keeps the rows before it.
+	// Nothing it shows stays out of the history it sends.
+	Caps: transcript.Capabilities{Compaction: true},
 }
 
 // Vendor is what a Codex session carries in Session.Vendor.
@@ -276,7 +280,7 @@ func (st *store) rel(path string) string {
 // another home, and then exactly as read.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != files.Agent {
-		s = s.Portable().Lower(transcript.Capabilities{})
+		s = s.Portable().Lower(files.Caps)
 	}
 	v, _ := s.Vendor.(*Vendor)
 	at := 0
@@ -292,7 +296,7 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 		}
 	}
 	head := *s
-	head.Entries = s.Entries[at:]
+	head.Entries = append([]transcript.Entry(nil), s.Entries[at:]...)
 	p := newPlan(&head)
 	w := files
 	w.Encode = p.encode
@@ -501,10 +505,14 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 type plan struct {
 	paginated bool
 	next      uint64
+	// kept holds, for each compaction marker this write records, the
+	// earlier entries it keeps after its summary, by the marker's id.
+	kept map[string][]transcript.Entry
 }
 
 func newPlan(s *transcript.Session) *plan {
 	p := &plan{}
+	p.gather(s)
 	v, ok := s.Vendor.(*Vendor)
 	if !ok {
 		return p
@@ -526,6 +534,60 @@ func newPlan(s *transcript.Session) *plan {
 		}
 	}
 	return p
+}
+
+// gather finds what each compaction marker in the session keeps: what the
+// model had gathered by then from its Keep on, the way Session.Context
+// applies a compaction, earlier summaries included. A replacement history
+// names those entries outright, so they are gathered here, while the
+// entries still carry the ids Keep names. A marker without an id gets one to
+// be found by.
+func (p *plan) gather(s *transcript.Session) {
+	type placed struct {
+		at int
+		e  transcript.Entry
+	}
+	var ctx []placed
+	first := map[string]int{}
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		c := e.Compaction
+		if c == nil {
+			if _, seen := first[e.ID]; !seen && e.ID != "" {
+				first[e.ID] = i
+			}
+			if e.Role != transcript.RoleOpaque && e.Audience.Model() {
+				ctx = append(ctx, placed{i, *e})
+			}
+			continue
+		}
+		keep := len(s.Entries)
+		if at, ok := first[c.Keep]; ok && c.Keep != "" {
+			keep = at
+		}
+		next := make([]placed, 0, len(c.Summary)+len(ctx))
+		for _, m := range c.Summary {
+			next = append(next, placed{i, m})
+		}
+		var kept []transcript.Entry
+		for _, k := range ctx {
+			if k.at >= keep {
+				next = append(next, k)
+				kept = append(kept, k.e)
+			}
+		}
+		ctx = next
+		if e.Raw != nil {
+			continue
+		}
+		if e.ID == "" {
+			e.ID = transcript.NewUUID()
+		}
+		if p.kept == nil {
+			p.kept = map[string][]transcript.Entry{}
+		}
+		p.kept[e.ID] = kept
+	}
 }
 
 func (p *plan) ordinal() *uint64 {
@@ -574,6 +636,96 @@ func (p *plan) header(s *transcript.Session) ([]json.RawMessage, error) {
 }
 
 func (p *plan) encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+	if e.Role == transcript.RoleOpaque && e.Compaction != nil {
+		return p.compacted(e, s)
+	}
+	items, err := encodeItems(e)
+	if err != nil || len(items) == 0 {
+		return nil, err
+	}
+	t := e.Time
+	if t.IsZero() {
+		t = s.Updated
+	}
+	// One entry can need several rows (a message plus its tool calls); the
+	// store writes whatever bytes Encode returns, so they are joined with
+	// newlines here.
+	var b strings.Builder
+	for i, it := range items {
+		payload, err := json.Marshal(it)
+		if err != nil {
+			return nil, err
+		}
+		line, err := json.Marshal(row{Timestamp: stamp(t), Ordinal: p.ordinal(), Type: "response_item", Payload: payload})
+		if err != nil {
+			return nil, err
+		}
+		if i > 0 {
+			b.WriteByte('\n')
+		}
+		b.Write(line)
+	}
+	return json.RawMessage(b.String()), nil
+}
+
+// compacted writes a compaction marker as the row Codex writes when it
+// compacts (core/src/compact.rs): the summary as its message and the whole
+// history the model is given from there on as its replacement_history,
+// which is what resume rebuilds the history from
+// (rollout_reconstruction.rs). That history is the marker's summary
+// followed by the entries it kept, which plan gathered.
+func (p *plan) compacted(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+	summary := e.Compaction.Summary
+	wrapped := false
+	for _, m := range summary {
+		wrapped = wrapped || isSummary(m)
+	}
+	var message string
+	if !wrapped {
+		// Codex keeps its summary as a user message behind its own
+		// preamble, and finds it again by that preamble.
+		var text []string
+		for _, m := range summary {
+			if t := m.Text(); t != "" {
+				text = append(text, t)
+			}
+		}
+		message = summaryPrefix + "\n" + strings.Join(text, "\n\n")
+		summary = []transcript.Entry{{ID: e.ID, Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: message}}}}
+	}
+	history := []json.RawMessage{}
+	for _, m := range append(summary, p.kept[e.ID]...) {
+		if isSummary(m) {
+			message = m.Text()
+		}
+		if m.ID == "" {
+			m.ID = transcript.NewUUID()
+		}
+		items, err := encodeItems(m)
+		if err != nil {
+			return nil, err
+		}
+		for _, it := range items {
+			raw, err := json.Marshal(it)
+			if err != nil {
+				return nil, err
+			}
+			history = append(history, raw)
+		}
+	}
+	payload, err := json.Marshal(compacted{Message: message, ReplacementHistory: history})
+	if err != nil {
+		return nil, err
+	}
+	t := e.Time
+	if t.IsZero() {
+		t = s.Updated
+	}
+	return json.Marshal(row{Timestamp: stamp(t), Ordinal: p.ordinal(), Type: "compacted", Payload: payload})
+}
+
+// encodeItems is the Responses items an entry becomes.
+func encodeItems(e transcript.Entry) ([]any, error) {
 	if e.ID == "" {
 		e.ID = transcript.NewUUID()
 	}
@@ -645,35 +797,8 @@ func (p *plan) encode(e transcript.Entry, s *transcript.Session) (json.RawMessag
 			}
 			items = append(items, functionCallOutput{Type: "function_call_output", ID: "fco_" + b.ToolID, CallID: b.ToolID, Output: out})
 		}
-	default:
-		return nil, nil
 	}
-	if len(items) == 0 {
-		return nil, nil
-	}
-	t := e.Time
-	if t.IsZero() {
-		t = s.Updated
-	}
-	// One entry can need several rows (a message plus its tool calls); the
-	// store writes whatever bytes Encode returns, so they are joined with
-	// newlines here.
-	var b strings.Builder
-	for i, it := range items {
-		payload, err := json.Marshal(it)
-		if err != nil {
-			return nil, err
-		}
-		line, err := json.Marshal(row{Timestamp: stamp(t), Ordinal: p.ordinal(), Type: "response_item", Payload: payload})
-		if err != nil {
-			return nil, err
-		}
-		if i > 0 {
-			b.WriteByte('\n')
-		}
-		b.Write(line)
-	}
-	return json.RawMessage(b.String()), nil
+	return items, nil
 }
 
 func stamp(t time.Time) string {

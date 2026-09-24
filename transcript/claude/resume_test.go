@@ -82,8 +82,9 @@ func expect(t *testing.T, what string, got []transcript.Entry, want []seen) {
 // TestCompactedResume: the rows /compact kept still name their parents from
 // before it, and the boundary has no parent. Claude splices them in behind
 // the summary and drops the turn the compaction retired: the model gets the
-// summary, the kept turns and the /compact exchange, and the person sees
-// the same without the summary and the caveat.
+// summary, the kept turns and the /compact exchange. The retired turn is
+// linked in ahead of the boundary, through its logicalParentUuid, so the
+// person's view and a move to another agent keep it.
 func TestCompactedResume(t *testing.T) {
 	st, err := Codec.Open(compacted.Home)
 	if err != nil {
@@ -100,6 +101,7 @@ func TestCompactedResume(t *testing.T) {
 		stdout  = "<local-command-stdout>Compacted (ctrl+o to see full summary)"
 		hello   = "Hello from mock server."
 		more    = "Tell me more about the project."
+		first   = "What is the project codename? Reply ONLY the codename."
 	)
 	all, model := transcript.AudienceAll, transcript.AudienceModel
 	expect(t, "context", s.Context(), []seen{
@@ -112,6 +114,9 @@ func TestCompactedResume(t *testing.T) {
 		{transcript.RoleUser, all, stdout},
 	})
 	expect(t, "linearize", s.Linearize(), []seen{
+		{transcript.RoleUser, all, first},
+		{transcript.RoleAssistant, all, "[use toolu_mock_1]"},
+		{transcript.RoleTool, all, "[result toolu_mock_1]"},
 		{transcript.RoleAssistant, all, hello},
 		{transcript.RoleUser, all, more},
 		{transcript.RoleAssistant, all, hello},
@@ -481,4 +486,30 @@ func TestRewindToStart(t *testing.T) {
 	if lin := back.Linearize(); len(lin) != 1 || lin[0].Text() != "again" {
 		t.Errorf("after the rewind, an appended prompt reads back as %d entries", len(lin))
 	}
+}
+
+// TestRetiredWithoutLogicalParent: the main sample's boundary names as its
+// logical parent a row Claude never wrote to the file, so the retired
+// history is found from the end of the segment the compaction kept.
+func TestRetiredWithoutLogicalParent(t *testing.T) {
+	st, err := Codec.Open("testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := st.Read(t.Context(), sampleID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := transcript.AudienceAll
+	hello := "Hello from mock server."
+	expect(t, "linearize", s.Linearize()[:4], []seen{
+		{transcript.RoleUser, all, "What is the project codename? Reply ONLY the codename."},
+		{transcript.RoleAssistant, all, "[use toolu_mock_1]"},
+		{transcript.RoleTool, all, "[result toolu_mock_1]"},
+		{transcript.RoleAssistant, all, hello},
+	})
+	expect(t, "context", s.Context()[:2], []seen{
+		{transcript.RoleUser, all, "This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation."},
+		{transcript.RoleAssistant, all, hello},
+	})
 }

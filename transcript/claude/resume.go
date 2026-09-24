@@ -25,7 +25,10 @@ import (
 // Before the API call, normalizeMessagesForAPI merges the rows one assistant
 // message was streamed into. finish does all of this on the session: model
 // links follow the loader's chain, Leaf is the chain's end, and each API
-// message is one entry.
+// message is one entry. The one departure is the history a compaction
+// retired: Claude's loader drops it, and finish links it in ahead of the
+// boundary, whose Compaction keeps it from the model, so it stays the
+// session's history when the session moves to another agent.
 
 // meta is what the loader reads off a row besides its content.
 type meta struct {
@@ -39,6 +42,9 @@ type meta struct {
 	Attachment  *attach `json:"attachment"`
 
 	CompactMetadata *compactMetadata `json:"compactMetadata"`
+	// LogicalParentUUID is the row a compact boundary followed before
+	// Claude cut its parent link: the end of the history it retired.
+	LogicalParentUUID string `json:"logicalParentUuid"`
 	// IsCompactSummary marks the user row holding a compaction's summary.
 	IsCompactSummary bool `json:"isCompactSummary"`
 
@@ -145,6 +151,7 @@ func finish(s *transcript.Session) error {
 		s.Restart = true
 		return nil
 	}
+	boundary, retired := l.retired()
 	kept := l.relinkPreserved()
 	leaf := l.leaf(p, kept)
 	if leaf < 0 {
@@ -153,6 +160,9 @@ func finish(s *transcript.Session) error {
 	chain := l.chain(leaf)
 	chain = l.recoverParallel(chain)
 	chain = l.trailing(leaf, chain)
+	if chain[0] == boundary {
+		chain = l.behind(retired, chain)
+	}
 	for k, i := range chain {
 		if k == 0 {
 			s.Entries[i].ParentID = ""
@@ -166,23 +176,96 @@ func finish(s *transcript.Session) error {
 	return nil
 }
 
-// summaries turns each compact boundary on the chain into a Compaction
-// carrying the summary row after it. Claude sends that summary and shows it
-// only in the ctrl+o view; as the compaction's Summary it is still what the
-// model gets in that place, and it is also conversation, the one record of
-// what the compaction retired, so it moves with the session to another
-// agent. The row itself is then nobody's.
+// retired is the history the last compaction retired, root first, as Claude
+// had it before compacting: the chain that ended at the boundary's logical
+// parent, and before an earlier boundary on it, what that one retired. It
+// runs before relinkPreserved, while every row is in the map and names its
+// parent from disk. Claude's loader drops these rows; they are linked in
+// ahead of the boundary, with the audience they had, so the person's view of
+// the session and a move to another agent keep them, while the boundary's
+// Compaction still keeps them from the model. It returns the boundary, or
+// -1 when there is none.
+func (l *loader) retired() (int, []int) {
+	b := -1
+	for i, r := range l.rows {
+		if l.live(i) && r.boundary() {
+			b = i
+		}
+	}
+	if b < 0 {
+		return -1, nil
+	}
+	var out []int
+	seen := map[int]bool{}
+	for at := b; at >= 0 && !seen[at]; {
+		seen[at] = true
+		from := l.retiredEnd(at)
+		if from < 0 {
+			break
+		}
+		walk := l.recoverParallel(l.chain(from))
+		out = append(walk, out...)
+		at = -1
+		if l.rows[walk[0]].boundary() {
+			at = walk[0]
+		}
+	}
+	return b, out
+}
+
+// retiredEnd is the last row before boundary b: its logical parent, or,
+// when Claude did not persist that row, the end of the segment it kept,
+// which was the end of the conversation when it compacted.
+func (l *loader) retiredEnd(b int) int {
+	r := l.rows[b]
+	if i, ok := l.byID[r.LogicalParentUUID]; ok && r.LogicalParentUUID != "" {
+		return i
+	}
+	if m := r.CompactMetadata; m != nil && m.PreservedSegment != nil {
+		if i, ok := l.byID[m.PreservedSegment.TailUUID]; ok {
+			return i
+		}
+	}
+	return -1
+}
+
+// behind puts the retired rows ahead of the chain, leaving out those the
+// compaction kept, which the chain holds behind the summary.
+func (l *loader) behind(retired, chain []int) []int {
+	on := make(map[int]bool, len(chain))
+	for _, i := range chain {
+		on[i] = true
+	}
+	out := make([]int, 0, len(retired)+len(chain))
+	for _, i := range retired {
+		if !on[i] {
+			on[i] = true
+			out = append(out, i)
+		}
+	}
+	return append(out, chain...)
+}
+
+// summaries turns each compact boundary on the chain into a Compaction,
+// which retires everything before it on the chain, carrying the summary row
+// after it. Claude sends that summary and shows it only in the ctrl+o view;
+// as the compaction's Summary it is still what the model gets in that
+// place, and it is also conversation, the one record of what the compaction
+// retired, so it moves with the session to another agent. The row itself is
+// then nobody's.
 func (l *loader) summaries(chain []int) {
 	for k, i := range chain {
 		if !l.rows[i].boundary() {
 			continue
 		}
+		c := &transcript.Compaction{}
+		l.s.Entries[i].Compaction = c
 		for _, j := range chain[k+1:] {
 			if l.rows[j].conversational() {
 				if l.rows[j].IsCompactSummary {
 					sum := l.s.Entries[j]
 					sum.Raw, sum.Audience = nil, transcript.AudienceAll
-					l.s.Entries[i].Compaction = &transcript.Compaction{Summary: []transcript.Entry{sum}}
+					c.Summary = []transcript.Entry{sum}
 					l.s.Entries[j].Audience = transcript.AudienceNone
 				}
 				break
@@ -859,7 +942,7 @@ func stamp(home string, s *transcript.Session) error {
 	var last time.Time
 	for i := range s.Entries {
 		e := &s.Entries[i]
-		if e.Raw != nil || e.Role == transcript.RoleOpaque {
+		if e.Raw != nil || e.Role == transcript.RoleOpaque && e.Compaction == nil {
 			if e.Time.After(last) {
 				last = e.Time
 			}

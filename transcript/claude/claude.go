@@ -44,9 +44,14 @@ var Codec = transcript.JSONL{
 	},
 	Decode:  decode,
 	Finish:  finish,
-	Prepare: stamp,
+	Prepare: prepare,
 	Encode:  encode,
 	Tree:    true,
+	// Claude records a compaction as a boundary and a summary and keeps the
+	// history before them in the file, which is what another agent's
+	// compaction becomes. It has no row that is shown and never sent other
+	// than an API error it made up itself.
+	Caps: transcript.Capabilities{Compaction: true},
 }
 
 // Vendor is what a Claude session carries in Session.Vendor: the stamps
@@ -55,6 +60,10 @@ type Vendor struct {
 	Version   string
 	GitBranch string
 	Model     string
+
+	// summaryOf names, for each compact boundary this write creates, the
+	// summary row prepare put after it.
+	summaryOf map[string]string
 }
 
 // row is a Claude transcript line. Only the fields the codec reads or
@@ -72,11 +81,41 @@ type row struct {
 	UUID        string   `json:"uuid,omitempty"`
 	Timestamp   string   `json:"timestamp,omitempty"`
 
+	// A compaction's summary row is sent and shown only in the transcript
+	// view.
+	IsVisibleInTranscriptOnly bool `json:"isVisibleInTranscriptOnly,omitempty"`
+	IsCompactSummary          bool `json:"isCompactSummary,omitempty"`
+
 	// Read only: Claude sets these on rows it writes itself, never on a row
 	// this codec encodes.
-	IsMeta                    bool `json:"isMeta,omitempty"`
-	IsVisibleInTranscriptOnly bool `json:"isVisibleInTranscriptOnly,omitempty"`
-	IsAPIErrorMessage         bool `json:"isApiErrorMessage,omitempty"`
+	IsMeta            bool `json:"isMeta,omitempty"`
+	IsAPIErrorMessage bool `json:"isApiErrorMessage,omitempty"`
+}
+
+// boundaryRow is a compact_boundary system row. Its fields stay off row,
+// whose decode would otherwise take every row's content field for a string.
+type boundaryRow struct {
+	row
+	LogicalParentUUID string    `json:"logicalParentUuid,omitempty"`
+	Subtype           string    `json:"subtype"`
+	Content           string    `json:"content"`
+	Level             string    `json:"level"`
+	CompactMetadata   *compacts `json:"compactMetadata"`
+}
+
+// compacts is a boundary's compactMetadata as createCompactBoundaryMessage
+// writes it (utils/messages.ts), with the preservedSegment compact.ts adds
+// when the compaction keeps recent messages.
+type compacts struct {
+	Trigger          string     `json:"trigger"`
+	PreTokens        int        `json:"preTokens"`
+	PreservedSegment *preserved `json:"preservedSegment,omitempty"`
+}
+
+type preserved struct {
+	HeadUUID   string `json:"headUuid"`
+	AnchorUUID string `json:"anchorUuid"`
+	TailUUID   string `json:"tailUuid"`
 }
 
 // timeLayout is JavaScript's Date.toISOString, which Claude stamps rows
@@ -331,16 +370,22 @@ func media(b block, toolID string) (transcript.Block, bool) {
 // encode builds a Claude row for an entry from another agent, with the
 // fields Claude writes itself on the version named above.
 func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+	v, _ := s.Vendor.(*Vendor)
+	if v == nil {
+		v = &Vendor{}
+	}
+	if e.Role == transcript.RoleOpaque && e.Compaction != nil {
+		return encodeBoundary(e, s, v)
+	}
+	if sum, ok := v.summaryOf[e.ParentID]; ok && sum == e.ID {
+		return encodeSummary(e, s, v)
+	}
 	role := e.Role
 	if role == transcript.RoleTool {
 		role = transcript.RoleUser
 	}
 	if role != transcript.RoleUser && role != transcript.RoleAssistant {
 		return nil, nil
-	}
-	v, _ := s.Vendor.(*Vendor)
-	if v == nil {
-		v = &Vendor{}
 	}
 	// What a tool returned goes inside its tool_result, as Claude Code
 	// writes it.
@@ -407,6 +452,14 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		}
 		m.Usage = &usage{}
 	}
+	r := stamped(e, s, v, string(role))
+	r.Message = m
+	return json.Marshal(r)
+}
+
+// stamped is a row of type typ for an entry, with the stamps every row
+// carries and its parent link.
+func stamped(e transcript.Entry, s *transcript.Session, v *Vendor, typ string) row {
 	t := e.Time
 	if t.IsZero() {
 		t = s.Updated
@@ -422,15 +475,157 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		SessionID:   s.ID,
 		Version:     version,
 		GitBranch:   v.GitBranch,
-		Type:        string(role),
-		Message:     m,
+		Type:        typ,
 		UUID:        e.ID,
 		Timestamp:   t.UTC().Format(timeLayout),
 	}
 	if e.ParentID != "" {
 		r.ParentUUID = &e.ParentID
 	}
+	return r
+}
+
+// encodeBoundary writes a compaction marker as createCompactBoundaryMessage
+// builds one: no parent, the last row before it as logical parent, and,
+// when the compaction kept earlier messages, the segment from Keep to that
+// last row, which the loader splices in behind the summary
+// (applyPreservedSegmentRelinks, sessionStorage.ts).
+func encodeBoundary(e transcript.Entry, s *transcript.Session, v *Vendor) (json.RawMessage, error) {
+	r := boundaryRow{
+		row:               stamped(e, s, v, "system"),
+		LogicalParentUUID: e.ParentID,
+		Subtype:           "compact_boundary",
+		Content:           "Conversation compacted",
+		Level:             "info",
+		CompactMetadata:   &compacts{Trigger: "manual"},
+	}
+	r.ParentUUID = nil
+	if keep := e.Compaction.Keep; keep != "" && e.ParentID != "" {
+		anchor := e.ID
+		if sum, ok := v.summaryOf[e.ID]; ok {
+			anchor = sum
+		}
+		r.CompactMetadata.PreservedSegment = &preserved{HeadUUID: keep, AnchorUUID: anchor, TailUUID: e.ParentID}
+	}
 	return json.Marshal(r)
+}
+
+// encodeSummary writes the summary prepare put after a boundary as the user
+// row compact.ts writes: its text as a string, sent, and shown only in the
+// transcript view.
+func encodeSummary(e transcript.Entry, s *transcript.Session, v *Vendor) (json.RawMessage, error) {
+	text, err := json.Marshal(e.Text())
+	if err != nil {
+		return nil, err
+	}
+	r := stamped(e, s, v, "user")
+	r.Message = &message{Role: "user", Content: text}
+	r.IsVisibleInTranscriptOnly = true
+	r.IsCompactSummary = true
+	return json.Marshal(r)
+}
+
+// summaryIntro and keptNote are how getCompactUserSummaryMessage
+// (services/compact/prompt.ts) wraps a summary for the model; Claude stores
+// the wrapped text in the summary row.
+const (
+	summaryIntro = "This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.\n\n"
+	keptNote     = "\n\nRecent messages are preserved verbatim."
+)
+
+// prepare readies a session for writing: compactions from another agent
+// take Claude's form, and new rows get their stamps.
+func prepare(home string, s *transcript.Session) error {
+	compactions(s)
+	return stamp(home, s)
+}
+
+// compactions lays out each compaction marker this write creates the way
+// compact.ts records a compaction: the boundary, then a user row holding the
+// summary, with the conversation continuing from the summary. The boundary
+// names the row before it, which ends the retired history, and the entry
+// the compaction kept, which starts the segment the loader splices in behind
+// the summary. Entries get their ids here, so those names are final.
+func compactions(s *transcript.Session) {
+	type marker struct{ at, keep int }
+	var markers []marker
+	var out []transcript.Entry
+	index := map[string]int{} // entry id to its place in out
+	for _, e := range s.Entries {
+		if e.Raw != nil || e.Compaction == nil {
+			if e.ID != "" {
+				index[e.ID] = len(out)
+			}
+			out = append(out, e)
+			continue
+		}
+		c := *e.Compaction
+		e.Compaction = &c
+		// The kept segment must start on a row that is written: the loader
+		// walks it from its end and loads the whole file when it breaks.
+		keep := -1
+		if at, ok := index[c.Keep]; ok && c.Keep != "" {
+			for k := at; k < len(out) && keep < 0; k++ {
+				if written(out[k], s) {
+					keep = k
+				}
+			}
+		}
+		if !transcript.IsUUID(e.ID) {
+			e.ID = transcript.NewUUID()
+		}
+		markers = append(markers, marker{len(out), keep})
+		out = append(out, e)
+		var text []string
+		for _, m := range e.Compaction.Summary {
+			if t := m.Text(); t != "" {
+				text = append(text, t)
+			}
+		}
+		if len(text) == 0 {
+			continue
+		}
+		body := summaryIntro + strings.Join(text, "\n\n")
+		if keep >= 0 {
+			body += keptNote
+		}
+		v, _ := s.Vendor.(*Vendor)
+		if v == nil {
+			v = &Vendor{}
+			s.Vendor = v
+		}
+		if v.summaryOf == nil {
+			v.summaryOf = map[string]string{}
+		}
+		sum := transcript.Entry{ID: transcript.NewUUID(), ParentID: e.ID, Role: transcript.RoleUser, Time: e.Time,
+			Content: []transcript.Block{{Kind: transcript.BlockText, Text: body}}}
+		v.summaryOf[e.ID] = sum.ID
+		out = append(out, sum)
+	}
+	if len(markers) == 0 {
+		return
+	}
+	s.Entries = out
+	transcript.AssignIDs(s, transcript.UUIDs, true)
+	for _, m := range markers {
+		e := &s.Entries[m.at]
+		if m.at > 0 {
+			e.ParentID = s.Entries[m.at-1].ID
+		}
+		e.Compaction.Keep = ""
+		if m.keep >= 0 {
+			e.Compaction.Keep = s.Entries[m.keep].ID
+		}
+	}
+}
+
+// written reports whether an entry becomes a message row of its own.
+func written(e transcript.Entry, s *transcript.Session) bool {
+	if e.Compaction != nil || e.Role == transcript.RoleOpaque {
+		return false
+	}
+	row, err := encode(e, s)
+	return err == nil && len(row) > 0
 }
 
 // imageTypes are the image types the Messages API accepts. Claude sends

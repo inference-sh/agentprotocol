@@ -255,8 +255,9 @@ type Harness struct {
 }
 
 type DismissAction struct {
-	Pattern string
-	SendUp  bool // send Up arrow before Enter (to select a different menu item)
+	Pattern  string
+	SendUp   bool // send Up arrow before Enter (to select a different menu item)
+	SendDown bool // send Down arrow before Enter (to select the next menu item)
 	// Required: the dialog always appears (e.g. trusting a fresh folder), so
 	// wait for it instead of giving up once the splash screen has drawn;
 	// typing into a startup screen loses the prompt.

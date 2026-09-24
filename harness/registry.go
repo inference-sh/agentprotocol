@@ -341,8 +341,18 @@ var All = map[string]Harness{
 		InteractiveArgs:         []string{"What is the project codename? Reply ONLY the codename."},
 		InteractivePromptInArgs: true,
 		ExitCommand:             "/exit",
+		// --trust-all-tools opens the TUI on a confirmation, "No, exit"
+		// selected, then "Yes, I accept" and "Yes, and don't ask again"
+		// (kiro-cli 2.24). Matching its footer ("navigate", "select") pressed
+		// Enter on "No, exit": kiro had already run the prompt from its
+		// arguments, so the checks passed, and when the dialog drew after the
+		// dismissal loop gave up nothing ran at all. The setting that skips it,
+		// chat.disableTrustAllConfirmation, is the user's to choose, so the
+		// harness answers the dialog instead. The pattern is body text: the
+		// menu lines are redrawn when the selection moves, and matching one
+		// answered the dialog twice.
 		OnboardingDismiss: []DismissAction{
-			{Pattern: "navigate"}, {Pattern: "select"}, {Pattern: "Welcome"},
+			{Pattern: "accept responsibility", SendDown: true, Required: true}, {Pattern: "Welcome"},
 		},
 		ACPCmd:             []string{"kiro-cli", "acp"},
 		ACPArgs:            []string{"--model", "{{.Model}}"},

@@ -8,6 +8,11 @@
 // {"type":"turn_ended"} rows at turn boundaries. This codec reads that
 // transcript.
 //
+// Cursor writes the transcript only for sessions of its TUI and `agent -p`.
+// A session of `cursor-agent acp` lives in ~/.cursor/acp-sessions/<id>/
+// with no transcript, so this codec never sees one; the sqlite module's
+// Cursor codec reads both.
+//
 // It is read-only and lossy. Cursor's transcript writer emits text,
 // reasoning and tool calls but no row for a tool result, so results exist
 // only in the blob store; and Cursor never loads the transcript back, so a
@@ -55,12 +60,27 @@ type block struct {
 	IsError   bool            `json:"is_error,omitempty"`
 }
 
-// ProjectDir is the directory name Cursor gives a working directory: the
-// leading separator dropped and every other separator turned into a dash, so
-// /a/b is a-b. It is not reversible, so the transcript's cwd cannot be
-// recovered from it, and listing for a cwd matches the directory by name.
+// ProjectDir is the directory name Cursor gives a working directory: every
+// run of characters other than ASCII letters and digits turned into one dash,
+// and dashes trimmed from both ends, so /a/my_b is a-my-b (workspace-paths.js
+// in cursor-agent's bundle). It is not reversible, so the transcript's cwd
+// cannot be recovered from it, and listing for a cwd matches the directory
+// by name.
 func ProjectDir(cwd string) string {
-	return strings.NewReplacer("/", "-", "\\", "-", ":", "-").Replace(strings.TrimLeft(cwd, "/\\"))
+	var b strings.Builder
+	dash := false
+	for _, r := range cwd {
+		if r < 0x80 && (r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9') {
+			if dash && b.Len() > 0 {
+				b.WriteByte('-')
+			}
+			b.WriteRune(r)
+			dash = false
+			continue
+		}
+		dash = true
+	}
+	return b.String()
 }
 
 func files(home, cwd string) ([]string, error) {

@@ -21,26 +21,58 @@ import (
 
 func init() { transcript.Register("cursor", Cursor) }
 
-// Cursor is the Cursor CLI session store of record. Each session is a
-// directory ~/.cursor/chats/<md5 of cwd>/<agent id>/ holding meta.json (cwd
-// and times) and store.db, a content-addressed blob store: every message is a
-// JSON blob keyed by the sha256 of its bytes, a root blob lists the message
-// ids in order, and meta row "0" names the latest root.
+// Cursor is the Cursor CLI session store of record, both of its locations
+// (see CursorLocation). Each session is a directory holding meta.json and
+// store.db, a content-addressed blob store: every message is a JSON blob
+// keyed by the sha256 of its bytes, a root blob lists the message ids in
+// order, and meta row "0" names the latest root.
+//
+// It writes a session it did not read under acp-sessions. This module's
+// driver runs Cursor as `cursor-agent acp`, so the agent that loads a written
+// session is ACP session/load, which opens nothing else. Open CursorCodec
+// with New set to CursorCLI to write for `agent --resume` instead.
 //
 // It supersedes the transcript/cursor codec when this module is imported.
-// That codec reads the readable transcript Cursor derives from this store,
-// which drops tool results; this one reads them.
-var Cursor transcript.Codec = cursorCodec{}
+// That codec reads the readable transcript Cursor derives from the chats
+// store, which drops tool results and which Cursor never writes for an ACP
+// session; this one reads both stores, with the results.
+var Cursor transcript.Codec = CursorCodec{New: CursorACP}
 
-const cursorChats = ".cursor/chats"
+// CursorLocation is which of cursor-agent's two session stores a session is
+// kept in. The two hold the same blob store and neither side reads the
+// other's: `cursor-agent acp` creates and loads sessions only under
+// acp-sessions (src/acp/agent-store.ts, which answers session/load with
+// "Session not found" when <id>/store.db is missing there), and the TUI and
+// `agent -p` only under chats.
+type CursorLocation uint8
 
-type cursorCodec struct{}
+const (
+	// CursorACP is ~/.cursor/acp-sessions/<id>/, whose meta.json holds the
+	// cwd and a title (src/acp/acp-storage.ts).
+	CursorACP CursorLocation = iota
+	// CursorCLI is ~/.cursor/chats/<md5 of cwd>/<id>/, whose meta.json holds
+	// the cwd and the session's times.
+	CursorCLI
+)
 
-func (cursorCodec) Open(home string) (transcript.Store, error) {
-	return &cursorStore{root: filepath.Join(home, cursorChats)}, nil
+const (
+	cursorChats = ".cursor/chats"
+	cursorACP   = ".cursor/acp-sessions"
+)
+
+// CursorCodec opens Cursor's session stores. A session read from one is
+// written back to the same one; New is where a session the store did not
+// read goes.
+type CursorCodec struct{ New CursorLocation }
+
+func (c CursorCodec) Open(home string) (transcript.Store, error) {
+	return &cursorStore{chats: filepath.Join(home, cursorChats), acp: filepath.Join(home, cursorACP), new: c.New}, nil
 }
 
-type cursorStore struct{ root string }
+type cursorStore struct {
+	chats, acp string
+	new        CursorLocation
+}
 
 // CursorVendor is what a Cursor session carries in Session.Vendor, so a
 // same-agent write reproduces what this codec does not model: the store's
@@ -55,9 +87,17 @@ type CursorVendor struct {
 	// nil for a session kept without meta.json, and none is added.
 	MetaHex  string
 	MetaFile []byte
-	// ProjectDir is the directory the session was read from, md5 of its cwd,
-	// so a session whose cwd is unknown writes back where it was.
+	// ProjectDir is the directory a CLI session was read from, md5 of its
+	// cwd, so a session whose cwd is unknown writes back where it was.
 	ProjectDir string
+	// Location is the store the session was read from, and so the one a
+	// write puts it back in.
+	Location CursorLocation
+	// Blobs are the store's blobs other than the messages, by id: the turn
+	// and step records the root links, which cursor-agent replays on
+	// session/load, and the roots of earlier checkpoints. A write adds them,
+	// so a session copied to another home keeps what its root refers to.
+	Blobs map[string][]byte
 }
 
 // cursorMeta is the meta.json beside store.db.
@@ -67,6 +107,15 @@ type cursorMeta struct {
 	HasConversation bool   `json:"hasConversation"`
 	UpdatedAtMs     int64  `json:"updatedAtMs"`
 	CWD             string `json:"cwd"`
+}
+
+// cursorACPMeta is the meta.json beside an ACP session's store.db, fields in
+// the order cursor-agent writes them (acp-storage.ts). Its reader keeps no
+// other field.
+type cursorACPMeta struct {
+	SchemaVersion int    `json:"schemaVersion"`
+	CWD           string `json:"cwd"`
+	Title         string `json:"title,omitempty"`
 }
 
 // cursorStoreMeta is store.db's meta row "0", stored hex-encoded.
@@ -161,11 +210,14 @@ func (st *cursorStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 	if cwd != "" {
 		project = cursorDir(cwd)
 	}
-	dirs, err := transcript.Glob(filepath.Join(st.root, project, "*"))
+	dirs, err := transcript.Glob(filepath.Join(st.chats, project, "*"))
 	if err != nil {
 		return nil, err
 	}
-	var out []transcript.Info
+	out, err := st.listACP(cwd)
+	if err != nil {
+		return nil, err
+	}
 	for _, dir := range dirs {
 		if _, err := os.Stat(filepath.Join(dir, "store.db")); err != nil {
 			continue
@@ -193,9 +245,39 @@ func (st *cursorStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 	return out, nil
 }
 
-// readCursorMeta reads meta.json. Older Cursor versions kept sessions
+// listACP lists ACP sessions as cursor-agent's session/list does
+// (src/acp/session-list.ts): a directory with a store.db and a meta.json
+// naming a cwd, updated when store.db was last written. One whose meta.json
+// is missing or unreadable is skipped, not an error; session/load still
+// opens it by id, and so does Read.
+func (st *cursorStore) listACP(cwd string) ([]transcript.Info, error) {
+	dirs, err := transcript.Glob(filepath.Join(st.acp, "*"))
+	if err != nil {
+		return nil, err
+	}
+	var out []transcript.Info
+	for _, dir := range dirs {
+		db := filepath.Join(dir, "store.db")
+		fi, err := os.Stat(db)
+		if err != nil {
+			continue
+		}
+		raw, err := os.ReadFile(filepath.Join(dir, "meta.json"))
+		if err != nil {
+			continue
+		}
+		var m cursorACPMeta
+		if json.Unmarshal(raw, &m) != nil || m.CWD == "" || (cwd != "" && m.CWD != cwd) {
+			continue
+		}
+		out = append(out, transcript.Info{ID: filepath.Base(dir), CWD: m.CWD, Title: m.Title, Updated: fi.ModTime().UTC(), Path: db, Root: dir})
+	}
+	return out, nil
+}
+
+// readCursorMeta reads meta.json. Older Cursor versions kept CLI sessions
 // without one; for those it reports ok false and the store's own meta row is
-// all there is.
+// all there is. An ACP session's meta.json has the cwd and no times.
 func readCursorMeta(dir string) (m cursorMeta, ok bool, err error) {
 	raw, err := os.ReadFile(filepath.Join(dir, "meta.json"))
 	if errors.Is(err, os.ErrNotExist) {
@@ -210,21 +292,30 @@ func readCursorMeta(dir string) (m cursorMeta, ok bool, err error) {
 	return m, true, nil
 }
 
-func (st *cursorStore) sessionDir(id string) (string, error) {
-	dirs, err := transcript.Glob(filepath.Join(st.root, "*", id))
+// sessionDir finds a session in either store. Cursor names sessions by
+// UUID in both, so an id is in one of them.
+func (st *cursorStore) sessionDir(id string) (string, CursorLocation, error) {
+	if id == "" || filepath.Base(id) != id {
+		return "", 0, transcript.ErrNotFound
+	}
+	dir := filepath.Join(st.acp, id)
+	if _, err := os.Stat(filepath.Join(dir, "store.db")); err == nil {
+		return dir, CursorACP, nil
+	}
+	dirs, err := transcript.Glob(filepath.Join(st.chats, "*", id))
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	for _, dir := range dirs {
 		if _, err := os.Stat(filepath.Join(dir, "store.db")); err == nil {
-			return dir, nil
+			return dir, CursorCLI, nil
 		}
 	}
-	return "", transcript.ErrNotFound
+	return "", 0, transcript.ErrNotFound
 }
 
 func (st *cursorStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
-	dir, err := st.sessionDir(id)
+	dir, loc, err := st.sessionDir(id)
 	if err != nil {
 		return nil, err
 	}
@@ -241,8 +332,13 @@ func (st *cursorStore) Read(ctx context.Context, id string) (*transcript.Session
 		if metaJSON, err = rawFields(filepath.Join(dir, "meta.json")); err != nil {
 			return nil, err
 		}
-	} else if fi, err := os.Stat(filepath.Join(dir, "store.db")); err == nil {
-		m.UpdatedAtMs = fi.ModTime().UnixMilli()
+	}
+	if m.UpdatedAtMs == 0 {
+		// No times kept beside the store: an older CLI session, or any ACP
+		// one, which cursor-agent dates by the store's own mtime.
+		if fi, err := os.Stat(filepath.Join(dir, "store.db")); err == nil {
+			m.UpdatedAtMs = fi.ModTime().UnixMilli()
+		}
 	}
 	db, done, err := openRO(filepath.Join(dir, "store.db"))
 	if err != nil {
@@ -285,7 +381,10 @@ func (st *cursorStore) Read(ctx context.Context, id string) (*transcript.Session
 		Created: time.UnixMilli(createdMs(m, sm)).UTC(),
 		Updated: time.UnixMilli(m.UpdatedAtMs).UTC(),
 		Vendor: &CursorVendor{Meta: metaFields, MetaJSON: metaJSON, Root: root, RootIDs: ids, MetaHex: metaHex, MetaFile: metaFile,
-			ProjectDir: filepath.Base(filepath.Dir(dir))},
+			Location: loc},
+	}
+	if loc == CursorCLI {
+		s.Vendor.(*CursorVendor).ProjectDir = filepath.Base(filepath.Dir(dir))
 	}
 	for _, bid := range ids {
 		data, err := blob(ctx, db, bid)
@@ -300,7 +399,35 @@ func (st *cursorStore) Read(ctx context.Context, id string) (*transcript.Session
 		e.Raw = data
 		s.Entries = append(s.Entries, e)
 	}
+	if s.Vendor.(*CursorVendor).Blobs, err = otherBlobs(ctx, db, ids); err != nil {
+		return nil, fmt.Errorf("cursor: %w", err)
+	}
 	return s, nil
+}
+
+// otherBlobs reads every blob but the messages.
+func otherBlobs(ctx context.Context, db *sql.DB, messages []string) (map[string][]byte, error) {
+	skip := make(map[string]bool, len(messages))
+	for _, id := range messages {
+		skip[id] = true
+	}
+	rows, err := db.QueryContext(ctx, `SELECT id, data FROM blobs`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := map[string][]byte{}
+	for rows.Next() {
+		var id string
+		var data []byte
+		if err := rows.Scan(&id, &data); err != nil {
+			return nil, err
+		}
+		if !skip[id] {
+			out[id] = data
+		}
+	}
+	return out, rows.Err()
 }
 
 func blob(ctx context.Context, db *sql.DB, id string) ([]byte, error) {
@@ -527,14 +654,32 @@ func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string
 		return "", err
 	}
 
-	project := cursorDir(s.CWD)
-	if s.CWD == "" {
-		if v == nil || v.ProjectDir == "" {
-			return "", errors.New("cursor: a session needs its working directory: Cursor files sessions under md5(cwd)")
-		}
-		project = v.ProjectDir
+	loc := st.new
+	if v != nil {
+		loc = v.Location
 	}
-	dir := filepath.Join(st.root, project, s.ID)
+	var dir string
+	switch loc {
+	case CursorACP:
+		// session/list finds an ACP session by the cwd in its meta.json, and
+		// cursor-agent refuses to write one that is not absolute. Only a
+		// session read without meta.json is written back without one.
+		if s.CWD == "" && (v == nil || v.MetaFile != nil) || s.CWD != "" && !filepath.IsAbs(s.CWD) {
+			return "", fmt.Errorf("cursor: an ACP session needs an absolute working directory, got %q", s.CWD)
+		}
+		dir = filepath.Join(st.acp, s.ID)
+	case CursorCLI:
+		project := cursorDir(s.CWD)
+		if s.CWD == "" {
+			if v == nil || v.ProjectDir == "" {
+				return "", errors.New("cursor: a session needs its working directory: Cursor files sessions under md5(cwd)")
+			}
+			project = v.ProjectDir
+		}
+		dir = filepath.Join(st.chats, project, s.ID)
+	default:
+		return "", fmt.Errorf("cursor: location %d", loc)
+	}
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return "", err
 	}
@@ -556,6 +701,11 @@ func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string
 		return "", err
 	}
 	defer tx.Rollback()
+	if v != nil {
+		for id, data := range v.Blobs {
+			blobs = append(blobs, stored{id, data})
+		}
+	}
 	for _, b := range append(blobs, stored{rootID, root}) {
 		if _, err := tx.ExecContext(ctx, `INSERT OR IGNORE INTO blobs (id, data) VALUES (?, ?)`, b.id, b.data); err != nil {
 			return "", fmt.Errorf("cursor: blob: %w", err)
@@ -582,25 +732,32 @@ func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string
 		return "", err
 	}
 
-	metaJSON := map[string]json.RawMessage{}
-	if v != nil {
-		for k, val := range v.MetaJSON {
-			metaJSON[k] = val
-		}
-	}
-	if err := mergeFields(metaJSON, cursorMeta{SchemaVersion: 1, CreatedAtMs: s.Created.UnixMilli(), HasConversation: len(ids) > 0, UpdatedAtMs: s.Updated.UnixMilli(), CWD: s.CWD}); err != nil {
-		return "", err
-	}
-	out, err := json.Marshal(metaJSON)
-	if err != nil {
-		return "", err
-	}
-	if unchanged && v.MetaFile != nil {
-		out = v.MetaFile
-	}
-	if unchanged && v.MetaFile == nil {
-		// Kept without meta.json, and nothing changed: add none.
+	var out []byte
+	switch {
+	case unchanged && v.MetaFile == nil, loc == CursorACP && s.CWD == "":
+		// Kept without meta.json, and nothing to put in one: add none.
 		return s.ID, nil
+	case unchanged:
+		out = v.MetaFile
+	case loc == CursorACP:
+		// cursor-agent writes the title as the store's name, trimmed, and
+		// rewrites the whole file on every load, keeping no other field.
+		if out, err = json.Marshal(cursorACPMeta{SchemaVersion: 1, CWD: s.CWD, Title: strings.TrimSpace(s.Title)}); err != nil {
+			return "", err
+		}
+	default:
+		metaJSON := map[string]json.RawMessage{}
+		if v != nil {
+			for k, val := range v.MetaJSON {
+				metaJSON[k] = val
+			}
+		}
+		if err := mergeFields(metaJSON, cursorMeta{SchemaVersion: 1, CreatedAtMs: s.Created.UnixMilli(), HasConversation: len(ids) > 0, UpdatedAtMs: s.Updated.UnixMilli(), CWD: s.CWD}); err != nil {
+			return "", err
+		}
+		if out, err = json.Marshal(metaJSON); err != nil {
+			return "", err
+		}
 	}
 	if err := os.WriteFile(filepath.Join(dir, "meta.json"), out, 0o644); err != nil {
 		return "", err

@@ -32,9 +32,20 @@ func TestRead(t *testing.T) {
 	}
 }
 
+// TestProjectDir checks the names cursor-agent gives (workspace-paths.js in
+// the 2026.09.23 bundle): every run of characters other than letters and
+// digits becomes one dash, trimmed at both ends.
 func TestProjectDir(t *testing.T) {
-	if got := ProjectDir("/home/ok/inference"); got != "home-ok-inference" {
-		t.Errorf("ProjectDir = %q", got)
+	for cwd, want := range map[string]string{
+		"/home/ok/inference":        "home-ok-inference",
+		"/home/ok/my_proj.v2":       "home-ok-my-proj-v2",
+		"/tmp/a--b/c d/":            "tmp-a-b-c-d",
+		`C:\Users\ok\proj`:          "C-Users-ok-proj",
+		"/home/ok/.config/über-app": "home-ok-config-ber-app",
+	} {
+		if got := ProjectDir(cwd); got != want {
+			t.Errorf("ProjectDir(%q) = %q, want %q", cwd, got, want)
+		}
 	}
 }
 

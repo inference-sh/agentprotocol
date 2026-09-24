@@ -51,6 +51,12 @@ const (
 	BlockReasoning  BlockKind = "reasoning"
 	BlockToolUse    BlockKind = "tool_use"
 	BlockToolResult BlockKind = "tool_result"
+	// BlockImage is an image: its bytes in Data, or where the agent keeps it
+	// in URI, with its MediaType.
+	BlockImage BlockKind = "image"
+	// BlockFile is any other attachment (a PDF, a document), shaped like an
+	// image, with its file name in Name when the agent records one.
+	BlockFile BlockKind = "file"
 )
 
 // Status is how a tool call ended.
@@ -66,7 +72,8 @@ type Block struct {
 	Kind BlockKind `json:"kind"`
 	// Text carries text, reasoning and tool result output.
 	Text string `json:"text,omitempty"`
-	// ToolID links a tool_use to its tool_result.
+	// ToolID links a tool_use to its tool_result, and to an image or file
+	// the tool returned, which follows the result in the same entry.
 	ToolID string `json:"tool_id,omitempty"`
 	// Name is the tool name on a tool_use, and on a tool_result when the
 	// vendor records it there.
@@ -75,6 +82,13 @@ type Block struct {
 	Input json.RawMessage `json:"input,omitempty"`
 	// Status is the outcome on a tool_result.
 	Status Status `json:"status,omitempty"`
+	// MediaType is an image's or file's type, such as image/png.
+	MediaType string `json:"media_type,omitempty"`
+	// Data is an image's or file's bytes, when the agent stores them inline.
+	Data []byte `json:"data,omitempty"`
+	// URI is where an image or file is, when the agent stores a reference
+	// (a path, a file: or https: URL) instead of the bytes.
+	URI string `json:"uri,omitempty"`
 }
 
 // Audience is who an entry is for. Agents keep rows the person never sees

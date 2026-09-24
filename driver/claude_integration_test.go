@@ -26,10 +26,11 @@ import (
 // It skips unless two variables are set:
 //
 //	AGENTPROTOCOL_CLAUDE_MOCK_URL      the Messages API base, e.g. http://127.0.0.1:4000
-//	AGENTPROTOCOL_CLAUDE_MOCK_CONTROL  the mock's control port
+//	AGENTPROTOCOL_CLAUDE_MOCK_CONTROL  the mock's control base
 //
-// The mock is harness-test's server package (github.com/belt-sh/harness-test/
-// server) behind a small wrapper that exposes on the control port:
+// The mock is testdata/mock, harness-test's server package (github.com/
+// belt-sh/harness-test/server) behind a small wrapper that serves both on one
+// address, so both variables take the URL it prints. The control endpoints:
 //
 //	POST   /text  {"Text": "..."}               canned reply
 //	POST   /tool  {"Name": "...", "Args": "..."} answer the next request with this tool call
@@ -38,7 +39,8 @@ import (
 //	POST   /mcp                                 an MCP server with one tool, echo
 //	GET    /mcp/calls                           the MCP methods called
 //
-// harness-test depends on this module, so the wrapper cannot live here.
+// harness-test depends on this module, so the wrapper is its own module; its
+// header has the run steps, and .github/workflows/agents.yml runs it in CI.
 func TestClaudeRealBinary(t *testing.T) {
 	mockURL := os.Getenv("AGENTPROTOCOL_CLAUDE_MOCK_URL")
 	control := os.Getenv("AGENTPROTOCOL_CLAUDE_MOCK_CONTROL")

@@ -18,9 +18,9 @@ import (
 
 // The real-binary test drives the installed codex against harness-test's mock
 // Responses API, never the real one. It runs only when CODEX_MOCK_URL names a
-// running mock with the control shim in testdata/codexmock:
+// running mock with the control shim in testdata/mock:
 //
-//	cd driver/testdata/codexmock
+//	cd driver/testdata/mock
 //	go mod edit -replace github.com/belt-sh/harness-test=/path/to/harness-test && go mod tidy
 //	go run . &            # prints the URL
 //	CODEX_MOCK_URL=http://127.0.0.1:PORT go test -race -run CodexReal ./driver/

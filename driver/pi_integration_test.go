@@ -17,9 +17,9 @@ import (
 // The real-binary test drives the installed pi against harness-test's mock
 // OpenAI-compatible endpoint, never a real provider. It runs only when
 // PI_MOCK_URL names a running mock with the control shim in
-// testdata/codexmock (the same shim serves /v1/chat/completions):
+// testdata/mock (the same shim serves /v1/chat/completions):
 //
-//	cd driver/testdata/codexmock
+//	cd driver/testdata/mock
 //	go mod edit -replace github.com/belt-sh/harness-test=/path/to/harness-test && go mod tidy
 //	go run . &            # prints the URL
 //	PI_MOCK_URL=http://127.0.0.1:PORT go test -race -run PiReal ./driver/

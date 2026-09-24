@@ -1,0 +1,143 @@
+name: Agents
+
+# Drives the real claude, codex and pi binaries through the driver backends
+# (TestClaudeRealBinary, TestCodexReal*, TestPiReal*) against harness-test's
+# mock model server, wrapped by driver/testdata/mock. No real API keys: each
+# agent gets a dummy key, a base URL on the mock, and a temp config dir.
+#
+# Two matrix entries:
+#   pinned  the agent versions below. Runs on every push to main and every PR,
+#           and gates PRs (it is the only entry those events run).
+#   latest  whatever npm has today. Runs nightly and on workflow_dispatch next
+#           to pinned, so a new agent release that breaks a backend fails this
+#           entry while pinned stays green. Bump the pins once it passes.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GOWORK: "off"
+  # Pinned agent versions: what harness-test's image runs and what the tests
+  # were last verified on.
+  CLAUDE_VERSION: 2.1.281
+  CODEX_VERSION: 0.156.1
+  PI_VERSION: 0.87.1
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  real-binaries:
+    name: real binaries (${{ matrix.agents }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        agents: ${{ fromJSON((github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '["pinned","latest"]' || '["pinned"]') }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: agentprotocol
+
+      - uses: actions/checkout@v6
+        with:
+          repository: belt-sh/harness-test
+          path: harness-test
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: agentprotocol/go.mod
+          cache-dependency-path: |
+            agentprotocol/go.sum
+            harness-test/go.sum
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install agents (${{ matrix.agents }})
+        run: |
+          if [ "${{ matrix.agents }}" = latest ]; then
+            CLAUDE_VERSION=latest CODEX_VERSION=latest PI_VERSION=latest
+          fi
+          prefix="$RUNNER_TEMP/agents"
+          npm install -g --prefix "$prefix" --no-fund --no-audit \
+            "@anthropic-ai/claude-code@$CLAUDE_VERSION" "@openai/codex@$CODEX_VERSION"
+          # pi's install scripts are not needed to run it (harness-test's
+          # registry installs it the same way).
+          npm install -g --prefix "$prefix" --no-fund --no-audit --ignore-scripts \
+            "@earendil-works/pi-coding-agent@$PI_VERSION"
+          echo "$prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$prefix/bin:$PATH"
+          echo "claude $(claude --version)"
+          echo "codex  $(codex --version)"
+          echo "pi     $(pi --version)"
+
+      - name: Build mock
+        working-directory: agentprotocol/driver/testdata/mock
+        run: |
+          go mod edit -replace "github.com/belt-sh/harness-test=$GITHUB_WORKSPACE/harness-test"
+          go mod tidy
+          go build -o "$RUNNER_TEMP/apmock" .
+
+      - name: Start mocks
+        # One mock per agent so an armed tool call or a delay cannot leak
+        # from one test into the next.
+        run: |
+          for name in claude codex pi; do
+            nohup "$RUNNER_TEMP/apmock" > "$RUNNER_TEMP/mock-$name.out" 2> "$RUNNER_TEMP/mock-$name.err" &
+            echo $! > "$RUNNER_TEMP/mock-$name.pid"
+          done
+          for name in claude codex pi; do
+            url=
+            for _ in $(seq 100); do
+              url=$(head -n1 "$RUNNER_TEMP/mock-$name.out")
+              [ -n "$url" ] && break
+              sleep 0.1
+            done
+            if [ -z "$url" ]; then
+              echo "mock for $name did not start"; cat "$RUNNER_TEMP/mock-$name.err"; exit 1
+            fi
+            echo "$name mock: $url"
+            case $name in
+              claude) echo "AGENTPROTOCOL_CLAUDE_MOCK_URL=$url"; echo "AGENTPROTOCOL_CLAUDE_MOCK_CONTROL=$url" ;;
+              codex)  echo "CODEX_MOCK_URL=$url" ;;
+              pi)     echo "PI_MOCK_URL=$url" ;;
+            esac >> "$GITHUB_ENV"
+          done
+
+      - name: Test
+        working-directory: agentprotocol
+        run: |
+          go test -race -count=1 -v -timeout 15m \
+            -run 'TestClaudeRealBinary|CodexReal|PiReal' ./driver/ 2>&1 | tee "$RUNNER_TEMP/test.log"
+          # A top-level skip (mock URL or binary missing) must not pass as green.
+          for t in TestClaudeRealBinary TestCodexReal TestPiReal; do
+            grep -q "^--- PASS: $t" "$RUNNER_TEMP/test.log" || { echo "$t did not run and pass"; exit 1; }
+          done
+
+      - name: Mock logs
+        if: failure()
+        run: |
+          for name in claude codex pi; do
+            echo "== $name"; cat "$RUNNER_TEMP/mock-$name.err" 2>/dev/null || true
+          done
+
+      - name: Stop mocks
+        if: always()
+        run: |
+          for name in claude codex pi; do
+            f="$RUNNER_TEMP/mock-$name.pid"
+            [ -f "$f" ] && kill "$(cat "$f")" 2>/dev/null || true
+          done

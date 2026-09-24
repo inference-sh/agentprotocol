@@ -292,3 +292,14 @@ func lines(es []transcript.Entry) []string {
 	}
 	return out
 }
+
+// Moved to another agent, a compressed session keeps the summary, the one
+// record of what the compression retired, and leaves the acknowledgement
+// and the files Qwen embeds again.
+func TestPortableKeepsSummary(t *testing.T) {
+	s := read(t, "testdata/home", compactedID)
+	p := s.Portable().Entries
+	if len(p) != 1 || !strings.HasPrefix(p[0].Text(), "Hello from mock server.") || p[0].Role != transcript.RoleUser {
+		t.Errorf("portable = %+v, want the summary alone", p)
+	}
+}

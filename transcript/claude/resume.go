@@ -39,6 +39,8 @@ type meta struct {
 	Attachment  *attach `json:"attachment"`
 
 	CompactMetadata *compactMetadata `json:"compactMetadata"`
+	// IsCompactSummary marks the user row holding a compaction's summary.
+	IsCompactSummary bool `json:"isCompactSummary"`
 
 	// last-prompt rows. leafUuid is absent, null or a uuid, and the three
 	// mean different things.
@@ -160,7 +162,33 @@ func finish(s *transcript.Session) error {
 	}
 	s.Leaf = s.Entries[chain[len(chain)-1]].ID
 	l.mergeSplit(chain)
+	l.summaries(chain)
 	return nil
+}
+
+// summaries turns each compact boundary on the chain into a Compaction
+// carrying the summary row after it. Claude sends that summary and shows it
+// only in the ctrl+o view; as the compaction's Summary it is still what the
+// model gets in that place, and it is also conversation, the one record of
+// what the compaction retired, so it moves with the session to another
+// agent. The row itself is then nobody's.
+func (l *loader) summaries(chain []int) {
+	for k, i := range chain {
+		if !l.rows[i].boundary() {
+			continue
+		}
+		for _, j := range chain[k+1:] {
+			if l.rows[j].conversational() {
+				if l.rows[j].IsCompactSummary {
+					sum := l.s.Entries[j]
+					sum.Raw, sum.Audience = nil, transcript.AudienceAll
+					l.s.Entries[i].Compaction = &transcript.Compaction{Summary: []transcript.Entry{sum}}
+					l.s.Entries[j].Audience = transcript.AudienceNone
+				}
+				break
+			}
+		}
+	}
 }
 
 // bridgeProgress links a row whose parent is a progress row to the progress

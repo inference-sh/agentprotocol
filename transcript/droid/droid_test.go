@@ -188,3 +188,12 @@ func TestCompactionKeepsAfterAnchor(t *testing.T) {
 		t.Errorf("context = %v, want the summary, then u2 onward", got)
 	}
 }
+
+// Moved to another agent, a compacted session keeps the summary, the one
+// record of what the compaction retired.
+func TestPortableKeepsSummary(t *testing.T) {
+	p := readCompact(t, compactChild).Portable().Entries
+	if len(p) == 0 || !strings.HasPrefix(p[0].Text(), "A previous instance of Droid has summarized") {
+		t.Errorf("portable = %+v, want the summary first", p)
+	}
+}

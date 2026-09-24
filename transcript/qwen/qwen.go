@@ -216,9 +216,18 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 			return transcript.Entry{}, false, fmt.Errorf("row %s: compression: %w", r.UUID, err)
 		}
 		if p.CompressedHistory != nil {
+			// composePostCompactHistory lays it out as the summary, a
+			// synthetic acknowledgement, the files and images Qwen embeds
+			// again, and a function call still waiting for its response.
+			// The summary and that call are conversation; the rest is
+			// Qwen's own context.
 			c := &transcript.Compaction{}
-			for _, m := range p.CompressedHistory {
-				c.Summary = append(c.Summary, content(m, transcript.StatusOK))
+			for i, m := range p.CompressedHistory {
+				e := content(m, transcript.StatusOK)
+				if i == 0 || hasCall(e) {
+					e.Audience = transcript.AudienceAll
+				}
+				c.Summary = append(c.Summary, e)
 			}
 			e.Compaction = c
 		}
@@ -478,4 +487,14 @@ func ProjectDir(cwd string) string { return transcript.SanitizedCwd.Name(cwd) }
 // holds only in a form that cannot be reversed, from the cwd its rows carry.
 func peek(path string) (transcript.Info, error) {
 	return transcript.Info{CWD: transcript.PeekField(path, "cwd", 64)}, nil
+}
+
+// hasCall reports whether an entry makes a tool call.
+func hasCall(e transcript.Entry) bool {
+	for _, b := range e.Content {
+		if b.Kind == transcript.BlockToolUse {
+			return true
+		}
+	}
+	return false
 }

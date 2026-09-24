@@ -204,7 +204,10 @@ func summary(id string, at time.Time, c compactionState) transcript.Entry {
 	if c.SummaryKind == "" || c.SummaryKind == "llm_summary" {
 		text = fmt.Sprintf(summaryPreamble, c.SummaryText)
 	}
-	e := transcript.Entry{ID: id, Role: transcript.RoleUser, Time: at, Audience: transcript.AudienceModel,
+	// The summary is conversation, the one record of what it retired, so
+	// it moves with the session; droid sends its environment reminder in
+	// the same message.
+	e := transcript.Entry{ID: id, Role: transcript.RoleUser, Time: at,
 		Content: []transcript.Block{{Kind: transcript.BlockText, Text: text}}}
 	if c.SystemInfoText != "" {
 		e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: c.SystemInfoText})

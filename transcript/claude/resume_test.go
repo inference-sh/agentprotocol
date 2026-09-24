@@ -103,7 +103,7 @@ func TestCompactedResume(t *testing.T) {
 	)
 	all, model := transcript.AudienceAll, transcript.AudienceModel
 	expect(t, "context", s.Context(), []seen{
-		{transcript.RoleUser, model, summary},
+		{transcript.RoleUser, all, summary},
 		{transcript.RoleAssistant, all, hello},
 		{transcript.RoleUser, all, more},
 		{transcript.RoleAssistant, all, hello},
@@ -112,6 +112,16 @@ func TestCompactedResume(t *testing.T) {
 		{transcript.RoleUser, all, stdout},
 	})
 	expect(t, "linearize", s.Linearize(), []seen{
+		{transcript.RoleAssistant, all, hello},
+		{transcript.RoleUser, all, more},
+		{transcript.RoleAssistant, all, hello},
+		{transcript.RoleUser, all, command},
+		{transcript.RoleUser, all, stdout},
+	})
+	// Moved to another agent, the session keeps the summary, the one
+	// record of what the compaction retired, and leaves the caveat.
+	expect(t, "portable", s.Portable().Entries, []seen{
+		{transcript.RoleUser, all, summary},
 		{transcript.RoleAssistant, all, hello},
 		{transcript.RoleUser, all, more},
 		{transcript.RoleAssistant, all, hello},

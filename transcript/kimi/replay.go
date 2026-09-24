@@ -430,6 +430,15 @@ func madeUp(m contextMsg) held {
 	return held{at: -1, msg: m, e: &e}
 }
 
+// madeUpSummary is a compaction's summary. kimi does not show it, but it is
+// conversation, the one record of what the compaction retired, so it moves
+// with the session to another agent.
+func madeUpSummary(m contextMsg) held {
+	h := madeUp(m)
+	h.e.Audience = transcript.AudienceAll
+	return h
+}
+
 // replay is loopEventFold with kimi's context operations around it.
 type replay struct {
 	s    *transcript.Session
@@ -775,7 +784,7 @@ func (r *replay) compact(row wireRow) ([]held, error) {
 		if legacySummary != nil {
 			first = *legacySummary
 		}
-		out := []held{madeUp(first)}
+		out := []held{madeUpSummary(first)}
 		for _, h := range r.hist[min(int(compacted), len(r.hist)):] {
 			e := h.entry(r.s)
 			out = append(out, held{at: -1, msg: h.msg, e: &e})
@@ -802,7 +811,7 @@ func (r *replay) compact(row wireRow) ([]held, error) {
 	for _, h := range tail {
 		out = append(out, h.fixed(r.s))
 	}
-	out = append(out, madeUp(summaryMsg), madeUp(contextMsg{Role: "user",
+	out = append(out, madeUpSummary(summaryMsg), madeUp(contextMsg{Role: "user",
 		Content: []part{{Type: "text", Text: systemReminder("Context compaction is complete — continue the work that was in progress when it began.")}},
 		Origin:  &origin{Kind: "injection", Variant: "compaction_continuation"}}))
 	return out, nil

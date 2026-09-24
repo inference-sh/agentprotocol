@@ -504,3 +504,20 @@ func TestLegacyCompactionUndo(t *testing.T) {
 		t.Errorf("context = %q, want only the summary", got)
 	}
 }
+
+// Moved to another agent, a compacted session keeps the summary, the one
+// record of what the compaction retired.
+func TestPortableKeepsSummary(t *testing.T) {
+	s := read(t, "testdata/home", compactID)
+	var found bool
+	for _, e := range s.Portable().Entries {
+		for _, c := range s.Context() {
+			if c.Text() == e.Text() && c.ID == "" && e.Role == transcript.RoleUser && !strings.Contains(e.Text(), "<system-reminder>") {
+				found = true
+			}
+		}
+	}
+	if !found {
+		t.Errorf("portable carries no summary")
+	}
+}

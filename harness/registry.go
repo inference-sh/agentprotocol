@@ -195,6 +195,9 @@ var All = map[string]Harness{
 		CompactCommand:          "/compact",
 		OnboardingDismiss: []DismissAction{
 			{Pattern: "Yes, continue"},
+			// codex 0.156 asks for folder access before the first prompt:
+			// "1. Trust and continue / 2. Quit", first item selected.
+			{Pattern: "Trust and continue"},
 		},
 		SDKCmd:  []string{"codex", "exec", "--experimental-json"},
 		SDKArgs: append([]string{"--dangerously-bypass-hook-trust", "--dangerously-bypass-approvals-and-sandbox"}, codexProviderArgs...),

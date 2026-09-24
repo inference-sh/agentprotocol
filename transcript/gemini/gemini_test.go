@@ -366,3 +366,53 @@ func TestHookContext(t *testing.T) {
 		}
 	}
 }
+
+// TestThoughtsNotResent: gemini records a turn's thoughts beside it and
+// shows them, but strips every thought part from the history it sends
+// (core/geminiChat.ts getHistoryTurns, stripThoughts), and a turn left with
+// nothing is dropped. The reasoning stays in what the person sees.
+func TestThoughtsNotResent(t *testing.T) {
+	home := t.TempDir()
+	st, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	text := func(s string) transcript.Block { return transcript.Block{Kind: transcript.BlockText, Text: s} }
+	think := func(s string) transcript.Block { return transcript.Block{Kind: transcript.BlockReasoning, Text: s} }
+	id, err := st.Write(t.Context(), &transcript.Session{CWD: "/work/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{text("hi")}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{think("PRIVATE-1"), text("hello")}},
+		{Role: transcript.RoleUser, Content: []transcript.Block{text("and?")}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{think("PRIVATE-2")}},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := st.Read(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, e := range s.Context() {
+		for _, b := range e.Content {
+			if b.Kind == transcript.BlockReasoning {
+				t.Errorf("context carries thought %q", b.Text)
+			}
+		}
+		got = append(got, string(e.Role)+":"+e.Text())
+	}
+	if want := "user:hi,assistant:hello,user:and?"; strings.Join(got, ",") != want {
+		t.Errorf("context = %s, want %s", strings.Join(got, ","), want)
+	}
+	var shown int
+	for _, e := range s.Linearize() {
+		for _, b := range e.Content {
+			if b.Kind == transcript.BlockReasoning {
+				shown++
+			}
+		}
+	}
+	if shown != 2 {
+		t.Errorf("linearize shows %d thoughts, want 2", shown)
+	}
+}

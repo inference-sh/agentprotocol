@@ -27,6 +27,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
 
@@ -889,10 +890,20 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: tc.ID, Name: tc.Name, Input: tc.Args})
 			}
 		}
-		// A turn with nothing to send is dropped from the resumed history,
-		// and the history view has nothing to show for it either.
+		// The history view shows a turn's thoughts, but gemini strips every
+		// thought part from the history it sends (core/geminiChat.ts
+		// getHistoryTurns, stripThoughts, and scrubHistory with context
+		// management on; only a pre-2 Gemini model kept them), so the model
+		// is given the turn without them. A turn with nothing left to send
+		// is dropped from the resumed history, and one with nothing at all
+		// has nothing to show either.
+		e.ModelContent = withoutReasoning(e.Content)
+		sent := len(r.ToolCalls) > 0
+		for _, p := range content {
+			sent = sent || !p.isThought()
+		}
 		extra := len(r.Thoughts) > 0 || len(r.ToolCalls) > 0
-		e.Audience = audience(len(content) > 0 || extra, shown != "" || extra)
+		e.Audience = audience(sent, shown != "" || extra)
 	}
 	return e, true, nil
 }
@@ -1063,6 +1074,21 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 
 func stamp(t time.Time) string {
 	return t.UTC().Format("2006-01-02T15:04:05.000Z")
+}
+
+// withoutReasoning is content without its reasoning blocks, or nil when it
+// has none.
+func withoutReasoning(content []transcript.Block) []transcript.Block {
+	if !slices.ContainsFunc(content, func(b transcript.Block) bool { return b.Kind == transcript.BlockReasoning }) {
+		return nil
+	}
+	out := []transcript.Block{}
+	for _, b := range content {
+		if b.Kind != transcript.BlockReasoning {
+			out = append(out, b)
+		}
+	}
+	return out
 }
 
 // ownContent splits a user record's blocks into what the person wrote and

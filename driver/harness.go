@@ -20,6 +20,8 @@ func ForHarness(h harness.Harness, env []string) (Backend, error) {
 		return &ClaudeBackend{Command: h.Binary, Env: env}, nil
 	case harness.DriverCodex:
 		return &CodexBackend{Command: h.Binary, Env: env}, nil
+	case harness.DriverPi:
+		return &PiBackend{Command: h.Binary, Env: env}, nil
 	case harness.DriverACP:
 		return &ACPBackend{Command: h.ACPCmd[0], Args: append([]string(nil), h.ACPCmd[1:]...), Env: env}, nil
 	case "":

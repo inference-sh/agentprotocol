@@ -232,7 +232,7 @@ type Harness struct {
 	ACPNeedsTempHome bool         // create temp HOME for ACP (isolate provider config)
 
 	// Driver names the agentprotocol driver that runs this agent as a
-	// session: DriverACP, DriverClaudeCode or DriverCodex. Empty means ACP
+	// session: DriverACP, DriverClaudeCode, DriverCodex or DriverPi. Empty means ACP
 	// when the agent has an ACPCmd; DriverKind resolves that.
 	Driver string
 
@@ -279,6 +279,7 @@ const (
 	DriverACP        = "acp"
 	DriverClaudeCode = "claude-code"
 	DriverCodex      = "codex"
+	DriverPi         = "pi"
 )
 
 // DriverKind is the driver that runs this agent as a session, or "" when

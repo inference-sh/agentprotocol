@@ -12,6 +12,7 @@ func TestDriverNamesMatchBackendKinds(t *testing.T) {
 		harness.DriverACP:        driver.KindACP,
 		harness.DriverClaudeCode: driver.KindClaude,
 		harness.DriverCodex:      driver.KindCodex,
+		harness.DriverPi:         driver.KindPi,
 	} {
 		if name != want {
 			t.Errorf("harness driver %q, backend kind %q", name, want)
@@ -45,7 +46,7 @@ func TestForHarness(t *testing.T) {
 			}
 		}
 	}
-	for _, name := range []string{"claude", "codex"} {
+	for _, name := range []string{"claude", "codex", "pi"} {
 		if got := harness.All[name].DriverKind(); got == harness.DriverACP || got == "" {
 			t.Errorf("%s runs on %q, want its native driver", name, got)
 		}

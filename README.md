@@ -91,10 +91,11 @@ agentprotocol      the model above, standard library only
 ├── acp/           Agent Client Protocol client
 ├── codexapp/      `codex app-server` JSON-RPC client, types generated from codex's own schema
 ├── driver/        one interface for running an agent over any transport
+├── pirpc/         `pi --mode rpc` JSONL client
 └── harness/       the registry of coding-agent CLIs: which exist, how to find them, how to drive them
 ```
 
-Imports only ever flow downward. `a2a` and `acp` depend on the root; `codexapp` depends on nothing but the standard library. `driver` depends on all of them. `harness` depends on nothing but the standard library. The transport packages never reference each other, which is deliberate: adapters that translate directly between formats grow as the square of how many formats you support, while adapters that translate to a shared model grow linearly.
+Imports only ever flow downward. `a2a` and `acp` depend on the root; `codexapp` and `pirpc` depend on nothing but the standard library. `driver` depends on all of them. `harness` depends on nothing but the standard library. The transport packages never reference each other, which is deliberate: adapters that translate directly between formats grow as the square of how many formats you support, while adapters that translate to a shared model grow linearly.
 
 ### harness
 
@@ -135,7 +136,7 @@ go func() {
 err = sess.Prompt(ctx, driver.TextInput("what changed in this repo today?"))
 ```
 
-`ACPBackend` drives any agent that speaks ACP. `CodexBackend` drives Codex natively through `codex app-server`, the server its IDE extension uses. `Capabilities()` reports what a backend supports so callers can degrade rather than call something that will fail.
+`ACPBackend` drives any agent that speaks ACP. `CodexBackend` drives Codex natively through `codex app-server`, the server its IDE extension uses. `PiBackend` drives pi over its own RPC mode; pi has no ACP. `Capabilities()` reports what a backend supports so callers can degrade rather than call something that will fail.
 
 ## Notes on the design
 

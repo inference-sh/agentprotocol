@@ -360,7 +360,7 @@ func TestHookContext(t *testing.T) {
 	if !sent {
 		t.Error("the model is not given the hook's context")
 	}
-	for _, e := range s.Portable().Entries {
+	for _, e := range s.Portable().Lower(transcript.Capabilities{}).Entries {
 		if strings.Contains(e.Text(), "<hook_context>") {
 			t.Errorf("gemini's hook context moved with the session: %q", e.Text())
 		}

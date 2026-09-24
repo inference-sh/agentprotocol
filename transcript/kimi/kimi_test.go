@@ -510,7 +510,7 @@ func TestLegacyCompactionUndo(t *testing.T) {
 func TestPortableKeepsSummary(t *testing.T) {
 	s := read(t, "testdata/home", compactID)
 	var found bool
-	for _, e := range s.Portable().Entries {
+	for _, e := range s.Portable().Lower(transcript.Capabilities{}).Entries {
 		for _, c := range s.Context() {
 			if c.Text() == e.Text() && c.ID == "" && e.Role == transcript.RoleUser && !strings.Contains(e.Text(), "<system-reminder>") {
 				found = true

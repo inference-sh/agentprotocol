@@ -189,7 +189,7 @@ func newPlan(s *transcript.Session, shown []json.RawMessage) *plan {
 // the new entries the person is shown, then the summary counting both.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != agent {
-		s = s.Portable()
+		s = s.Portable().Lower(transcript.Capabilities{})
 		s.Agent = agent
 	}
 	// The plan keys new entries by id; grok's rows carry none of them.

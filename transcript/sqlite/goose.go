@@ -389,7 +389,7 @@ func gooseCompactions(s *transcript.Session) {
 // inside the transaction so it can never land on a session goose already has.
 func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != "goose" {
-		s = s.Portable()
+		s = s.Portable().Lower(transcript.Capabilities{})
 	}
 	now := time.Now()
 	if s.Created.IsZero() {

@@ -340,7 +340,17 @@ func Imported(t *testing.T, codec transcript.Codec, sample Sample) {
 	if err != nil {
 		t.Fatalf("read: %v", err)
 	}
-	want := s.Portable().Entries
+	// What may come back: every entry the session carries and every
+	// compaction summary, since a writer records a compaction in its
+	// agent's form or applies it.
+	var want []transcript.Entry
+	for _, e := range s.Portable().Entries {
+		if e.Compaction != nil {
+			want = append(want, e.Compaction.Summary...)
+			continue
+		}
+		want = append(want, e)
+	}
 	// The rows become another agent's: a writer that copies Raw writes rows
 	// its agent cannot read.
 	s.Agent = "elsewhere"
@@ -380,19 +390,14 @@ func Imported(t *testing.T, codec transcript.Codec, sample Sample) {
 			gotText = append(gotText, string(e.Role)+": "+x)
 		}
 	}
-	if !subsequence(gotText, wantText) {
-		t.Errorf("imported conversation reads back as\n  %q\nwant (in order, a subset of)\n  %q", gotText, wantText)
+	have := map[string]bool{}
+	for _, x := range wantText {
+		have[x] = true
 	}
-}
-
-// subsequence reports whether every element of sub appears in seq, in
-// order.
-func subsequence(sub, seq []string) bool {
-	i := 0
-	for _, x := range seq {
-		if i < len(sub) && sub[i] == x {
-			i++
+	for _, x := range gotText {
+		if !have[x] {
+			t.Errorf("imported conversation reads back with %q, which the session did not hold\n  read back: %q\n  carried:   %q", x, gotText, wantText)
+			break
 		}
 	}
-	return i == len(sub)
 }

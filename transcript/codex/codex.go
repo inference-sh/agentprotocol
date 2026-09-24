@@ -276,7 +276,7 @@ func (st *store) rel(path string) string {
 // another home, and then exactly as read.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != files.Agent {
-		s = s.Portable()
+		s = s.Portable().Lower(transcript.Capabilities{})
 	}
 	v, _ := s.Vendor.(*Vendor)
 	at := 0

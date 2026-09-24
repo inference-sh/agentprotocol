@@ -826,7 +826,7 @@ func openColumns(ctx context.Context, q openQuerier, table string) (map[string]b
 // does not have yet gets a session row, bound to its directory's project.
 func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != st.agent {
-		s = s.Portable()
+		s = s.Portable().Lower(transcript.Capabilities{})
 	}
 	if err := os.MkdirAll(filepath.Dir(st.path), 0o755); err != nil {
 		return "", err

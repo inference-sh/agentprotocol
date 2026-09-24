@@ -778,7 +778,7 @@ type hermesVendor struct{ Source string }
 // requires, source and started_at.
 func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != "hermes" {
-		s = s.Portable()
+		s = s.Portable().Lower(transcript.Capabilities{})
 	}
 	if s.ID == "" {
 		s.ID = transcript.NewUUID()

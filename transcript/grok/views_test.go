@@ -85,7 +85,7 @@ func TestCompactedSession(t *testing.T) {
 	}
 
 	var moved []string
-	for _, e := range s.Portable().Entries {
+	for _, e := range s.Portable().Lower(transcript.Capabilities{}).Entries {
 		moved = append(moved, e.Text())
 	}
 	if len(moved) != 3 || !strings.HasPrefix(moved[0], "This session is being continued") || moved[1] != "What was my previous question?" {

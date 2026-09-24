@@ -200,7 +200,7 @@ func TestCompaction(t *testing.T) {
 		"assistant: Hello from mock server.",
 	})
 	// Another agent's writer is given the summary with the turns after it.
-	equal(t, "portable", texts(s.Portable().Entries), []string{
+	equal(t, "portable", texts(s.Portable().Lower(transcript.Capabilities{}).Entries), []string{
 		"user: Compact one: what is the codename?",
 		"user: Compact two: again.",
 		"user: " + summaryPrefix,

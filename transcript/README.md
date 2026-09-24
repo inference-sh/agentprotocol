@@ -137,12 +137,17 @@ session, not as proof.
 
 A session carries the agent it was read from. Written to that agent, its
 rows go back as they were. Written to any other, it goes through
-`Session.Portable`: what the model knows of the conversation (its context,
-compaction summaries in place of retired history) without what the agent
-injected for itself or showed only to the person, re-encoded in the
-target's format and linked in order. One agent's rows mean nothing in
-another's store, and its links may run through rows that do not survive
-the move. `transcripttest.Imported` checks every writer for it.
+`Session.Portable` and then `Session.Lower`. `Portable` carries the whole
+conversation on the active branch, history a compaction retired included,
+with each compaction as a marker holding the summary the model gets; it
+leaves behind undone turns and the context the source agent injected for
+itself, which the target regenerates. `Lower` reduces that to what the
+target writer can record (its `Capabilities`): a writer that records
+compactions in its agent's own form keeps the retired history as history
+the model is no longer given, and one that cannot gets the summary in its
+place, as the model had it. One agent's rows mean nothing in another's
+store, and its links may run through rows that do not survive the move, so
+every entry is encoded afresh and linked in order.
 
 A write never disturbs what it read. Entries read from a store carry their
 vendor row as `Raw`, and every writer keeps those rows exactly: a JSONL

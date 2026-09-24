@@ -258,8 +258,28 @@ func TestPortableCarriesContext(t *testing.T) {
 		text("6", "5", RoleUser, "u2"),
 		text("7", "6", RoleAssistant, "a2"),
 	}}
-	if got := texts(s.Portable().Entries); got != "SUMMARY u2 a2" {
+	p := s.Portable()
+	// Everything the conversation holds travels, the compaction as a
+	// marker; the agent's own context does not.
+	if got := texts(p.Entries); got != "u1 a1  /stats u2 a2" {
 		t.Errorf("portable: %q", got)
+	}
+	// A writer that can record neither a compaction nor a shown-only entry
+	// gets what the model knew.
+	if got := texts(p.Lower(Capabilities{}).Entries); got != "SUMMARY u2 a2" {
+		t.Errorf("lowered for a plain writer: %q", got)
+	}
+	// One that records compactions keeps the retired history.
+	if got := texts(p.Lower(Capabilities{Compaction: true}).Entries); got != "u1 a1  u2 a2" {
+		t.Errorf("lowered for a writer with compactions: %q", got)
+	}
+	if got := texts(p.Lower(Capabilities{Compaction: true, UserOnly: true}).Entries); got != "u1 a1  /stats u2 a2" {
+		t.Errorf("lowered for a writer with both: %q", got)
+	}
+	// Written back, the compaction still gives the model the summary.
+	full := p.Lower(Capabilities{Compaction: true, UserOnly: true})
+	if got := texts(full.Context()); got != "SUMMARY u2 a2" {
+		t.Errorf("context of the carried session: %q", got)
 	}
 }
 
@@ -296,8 +316,12 @@ func TestPortableSummary(t *testing.T) {
 	if got := texts(s.Context()); got != "system prompt SUMMARY u2" {
 		t.Errorf("context: %q", got)
 	}
-	if got := texts(s.Portable().Entries); got != "SUMMARY u2" {
+	if got := texts(s.Portable().Lower(Capabilities{}).Entries); got != "SUMMARY u2" {
 		t.Errorf("portable: %q", got)
+	}
+	c := s.Portable().Entries[1].Compaction
+	if c == nil || len(c.Summary) != 1 || c.Summary[0].Text() != "SUMMARY" {
+		t.Errorf("the marker's summary keeps only conversation: %+v", c)
 	}
 }
 
@@ -316,5 +340,24 @@ func TestModelContent(t *testing.T) {
 	p := s.Portable().Entries
 	if texts(p) != "question" || p[0].ModelContent != nil {
 		t.Errorf("portable: %+v", p)
+	}
+}
+
+// A compaction whose first kept entry does not travel keeps from the next
+// one that does.
+func TestPortableKeepRemapped(t *testing.T) {
+	s := &Session{Entries: []Entry{
+		text("1", "", RoleUser, "u1"),
+		{ID: "2", ParentID: "1", Role: RoleUser, Audience: AudienceModel, Content: []Block{{Kind: BlockText, Text: "<env>"}}},
+		text("3", "2", RoleAssistant, "a1"),
+		{ID: "4", ParentID: "3", Compaction: &Compaction{Summary: []Entry{text("", "", RoleUser, "S")}, Keep: "2"}},
+		text("5", "4", RoleUser, "u2"),
+	}}
+	p := s.Portable()
+	if k := p.Entries[2].Compaction.Keep; k != "3" {
+		t.Errorf("keep = %q, want 3", k)
+	}
+	if got := texts(p.Lower(Capabilities{}).Entries); got != "S a1 u2" {
+		t.Errorf("lowered: %q", got)
 	}
 }

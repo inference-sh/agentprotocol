@@ -450,15 +450,17 @@ func (s *Session) context() []Entry {
 }
 
 // Portable returns the session as a writer for another agent takes it:
-// what the model knows of the conversation, without what the agent put there
-// for itself. That is Context with only the entries meant for everyone, and
-// compaction summaries standing in for the history they retired: injected
-// reminders and environment blocks belong to the agent that wrote them, and
-// a slash command's echo or a notice the agent showed was never
-// conversation. The entries are new, with no vendor rows and no links, so
-// the writer encodes every one in its own format and links them in order.
-// A session's Raw rows are its own agent's format and meaningless anywhere
-// else, and its links may pass through rows that do not survive the move.
+// the whole conversation on the active branch, retired history and
+// compactions included, without what belonged to the agent that wrote it.
+// Undone turns and context the agent injected for itself (system prompts,
+// reminders, environment blocks, a hook's additions to a prompt) are left
+// behind; the target regenerates its own. A compaction stays as a marker:
+// an opaque entry whose Compaction holds the summary the model gets and the
+// first entry it keeps, so a writer can record it the way its agent does.
+// The entries are new, with no vendor rows and no links, so the writer
+// encodes every one in its own format and links them in order. A writer
+// takes the result through Lower, which reduces it to what the writer can
+// express.
 func (s *Session) Portable() *Session {
 	out := *s
 	out.Agent = ""
@@ -466,15 +468,115 @@ func (s *Session) Portable() *Session {
 	out.Restart = false
 	out.Vendor = nil
 	out.Entries = nil
-	for _, e := range s.context() {
-		if e.Audience != AudienceAll {
+	branch := s.Branch()
+	carried := map[string]bool{}
+	// Keep names an entry by ID; if that entry does not travel, the first
+	// one after it that does is where the kept history starts.
+	next := func(at int) string {
+		for _, i := range branch[at:] {
+			if id := s.Entries[i].ID; carried[id] {
+				return id
+			}
+		}
+		return ""
+	}
+	type pending struct {
+		entry int // index into out.Entries
+		keep  int // position of Keep on the branch
+	}
+	var keeps []pending
+	for at, i := range branch {
+		e := s.Entries[i]
+		switch {
+		case e.Compaction != nil:
+			c := &Compaction{}
+			for _, m := range e.Compaction.Summary {
+				if m.Audience == AudienceAll {
+					m.Raw, m.ParentID, m.ModelContent, m.Compaction = nil, "", nil, nil
+					c.Summary = append(c.Summary, m)
+				}
+			}
+			if e.Compaction.Keep != "" {
+				for k := 0; k < at; k++ {
+					if s.Entries[branch[k]].ID == e.Compaction.Keep {
+						keeps = append(keeps, pending{len(out.Entries), k})
+						break
+					}
+				}
+			}
+			out.Entries = append(out.Entries, Entry{ID: e.ID, Time: e.Time, Compaction: c})
+		case e.Role == RoleOpaque || e.Audience == AudienceNone || e.Audience == AudienceModel:
+		default:
+			e.ParentID, e.Raw, e.ModelContent = "", nil, nil
+			carried[e.ID] = e.ID != ""
+			out.Entries = append(out.Entries, e)
+		}
+	}
+	for _, p := range keeps {
+		out.Entries[p.entry].Compaction.Keep = next(p.keep)
+	}
+	return &out
+}
+
+// Capabilities are what a writer can record of a portable session beyond
+// plain messages.
+type Capabilities struct {
+	// Compaction: the writer records a compaction in its agent's own form,
+	// so retired history travels as history the model is no longer given.
+	Compaction bool
+	// UserOnly: the writer can store an entry that is shown and not sent.
+	UserOnly bool
+}
+
+// Lower reduces a portable session to what a writer with these
+// capabilities can record. Without Compaction, each compaction is applied:
+// the history it retired is replaced by its summary, as the model has it.
+// Without UserOnly, entries the model is not given are left out. With
+// both, the session is returned as it is.
+func (s *Session) Lower(c Capabilities) *Session {
+	out := *s
+	keep := func(e Entry) bool { return e.Audience.Model() || c.UserOnly }
+	out.Entries = nil
+	if c.Compaction {
+		for _, e := range s.Entries {
+			if e.Compaction != nil || keep(e) {
+				out.Entries = append(out.Entries, e)
+			}
+		}
+		return &out
+	}
+	type placed struct {
+		at int
+		e  Entry
+	}
+	var got []placed
+	for at, e := range s.Entries {
+		if cp := e.Compaction; cp != nil {
+			from := len(s.Entries)
+			for k := 0; k < at; k++ {
+				if cp.Keep != "" && s.Entries[k].ID == cp.Keep {
+					from = k
+					break
+				}
+			}
+			next := make([]placed, 0, len(cp.Summary)+len(got))
+			for _, m := range cp.Summary {
+				next = append(next, placed{at, m})
+			}
+			for _, p := range got {
+				if p.at >= from {
+					next = append(next, p)
+				}
+			}
+			got = next
 			continue
 		}
-		e.ParentID = ""
-		e.Raw = nil
-		e.Compaction = nil
-		e.ModelContent = nil
-		out.Entries = append(out.Entries, e)
+		if keep(e) {
+			got = append(got, placed{at, e})
+		}
+	}
+	for _, p := range got {
+		out.Entries = append(out.Entries, p.e)
 	}
 	return &out
 }

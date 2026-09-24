@@ -87,7 +87,7 @@ func TestCompactedContext(t *testing.T) {
 		t.Errorf("linearize: %q", shown)
 	}
 	// Another agent gets the summary in place of the turns it retired.
-	if got := lines(s.Portable().Entries); !slices.Equal(got, wantModel) {
+	if got := lines(s.Portable().Lower(transcript.Capabilities{}).Entries); !slices.Equal(got, wantModel) {
 		t.Errorf("portable:\n  %q\nwant\n  %q", got, wantModel)
 	}
 }

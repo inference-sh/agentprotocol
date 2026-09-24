@@ -29,6 +29,10 @@ type JSONL struct {
 	// other session through Session.Portable.
 	Agent string
 
+	// Caps is what the writer records of another agent's session beyond
+	// plain messages; see Session.Lower. The zero value is plain messages.
+	Caps Capabilities
+
 	// Layout locates session files under a home directory.
 	Layout Layout
 
@@ -389,7 +393,7 @@ func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
 		return "", ErrReadOnly
 	}
 	if s.Agent != st.cfg.Agent {
-		s = s.Portable()
+		s = s.Portable().Lower(st.cfg.Caps)
 	}
 	if st.cfg.Prepare != nil {
 		if err := st.cfg.Prepare(st.home, s); err != nil {

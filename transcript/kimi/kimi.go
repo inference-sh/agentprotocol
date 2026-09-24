@@ -236,7 +236,7 @@ func (st *store) Read(ctx context.Context, id string) (*transcript.Session, erro
 // state machine beside them.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != "kimi" {
-		s = s.Portable()
+		s = s.Portable().Lower(transcript.Capabilities{})
 	}
 	// Ids first: the plan names entries by id. A session read with links
 	// (a message kimi delivers out of file order, see link) has its new

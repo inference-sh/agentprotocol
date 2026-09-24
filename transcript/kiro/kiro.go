@@ -63,7 +63,7 @@ type store struct {
 // and the sidecar's message lists name the same messages.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != "kiro" {
-		s = s.Portable()
+		s = s.Portable().Lower(transcript.Capabilities{})
 	}
 	transcript.AssignIDs(s, transcript.UUIDs, false)
 	return st.Store.Write(ctx, s)

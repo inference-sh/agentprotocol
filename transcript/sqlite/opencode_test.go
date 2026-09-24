@@ -185,7 +185,7 @@ func TestOpencodeCompactContext(t *testing.T) {
 			}
 			// The summary moves to another agent; the compaction prompt,
 			// which the person never saw as text, does not.
-			if got := ids(s.Portable().Entries); !slices.Equal(got[:3], []string{c.summary, c.tail, c.tailAnswer}) {
+			if got := ids(s.Portable().Lower(transcript.Capabilities{}).Entries); !slices.Equal(got[:3], []string{c.summary, c.tail, c.tailAnswer}) {
 				t.Errorf("portable starts %v", got[:3])
 			}
 		})
@@ -600,7 +600,7 @@ func TestOpencodeImagesImported(t *testing.T) {
 		t.Run(c.agent, func(t *testing.T) {
 			transcripttest.Imported(t, c.codec, transcripttest.Sample{Home: copyHome(t, c.home), ID: c.id})
 			s := readSample(t, c.codec, c.home, c.id)
-			want := media(s.Portable().Entries)
+			want := media(s.Portable().Lower(transcript.Capabilities{}).Entries)
 			s.Agent = "elsewhere"
 			home := t.TempDir()
 			id, err := mustOpen(t, c.codec, home).Write(t.Context(), s)

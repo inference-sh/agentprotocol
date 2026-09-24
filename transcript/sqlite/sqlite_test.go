@@ -293,7 +293,7 @@ func TestGooseAudience(t *testing.T) {
 	}
 	// The summary moves with the conversation; the history it retired, the
 	// continuation instruction and the turn context stay behind.
-	sameLines(t, "portable", said(s.Portable().Entries), []string{
+	sameLines(t, "portable", said(s.Portable().Lower(transcript.Capabilities{}).Entries), []string{
 		"user: Hello from mock server.",
 		"user: What was the codename?", hello,
 	})
@@ -423,7 +423,7 @@ func TestGooseImages(t *testing.T) {
 func TestGooseImagesImported(t *testing.T) {
 	transcripttest.Imported(t, Goose, transcripttest.Sample{Home: copyHome(t, gooseImageHome), ID: gooseImageID})
 	s := readSample(t, Goose, gooseImageHome, gooseImageID)
-	want := media(s.Portable().Entries)
+	want := media(s.Portable().Lower(transcript.Capabilities{}).Entries)
 	s.Agent = "elsewhere"
 	home := t.TempDir()
 	id, err := mustOpen(t, Goose, home).Write(t.Context(), s)
@@ -535,7 +535,7 @@ func TestHermes019Audience(t *testing.T) {
 		}
 	}
 	// Another agent gets the prompts as the person typed them.
-	port := said(s.Portable().Entries)
+	port := said(s.Portable().Lower(transcript.Capabilities{}).Entries)
 	if len(port) != 6 || port[0] != "user: What is the project codename? Reply ONLY the codename." || port[1] != ctx[1] {
 		t.Errorf("portable: %q", port)
 	}
@@ -569,7 +569,7 @@ func TestHermesAudience(t *testing.T) {
 	if len(ctx) != 8 || !strings.HasPrefix(ctx[0].Text(), hermesSummaryPrefix) || ctx[0].Role != transcript.RoleUser {
 		t.Fatalf("model context: %q", said(ctx))
 	}
-	port := s.Portable().Entries
+	port := s.Portable().Lower(transcript.Capabilities{}).Entries
 	if len(port) != 8 || port[0].Text() != ctx[0].Text() {
 		t.Errorf("portable does not start with the summary: %q", said(port))
 	}
@@ -787,7 +787,7 @@ func TestHermesAPIContent(t *testing.T) {
 	if !sent || !shown {
 		t.Errorf("hook context sent to the model: %v; prompt shown as typed: %v", sent, shown)
 	}
-	for _, e := range s.Portable().Entries {
+	for _, e := range s.Portable().Lower(transcript.Capabilities{}).Entries {
 		if strings.Contains(e.Text(), "HOOK-HERMES-") {
 			t.Errorf("hermes' hook context moved with the session: %q", e.Text())
 		}

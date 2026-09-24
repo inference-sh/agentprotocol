@@ -181,7 +181,7 @@ func TestPiCompactedContext(t *testing.T) {
 	})
 	// Moved to another agent, the session is the summary and what the model
 	// kept, without pi's own system prompt.
-	equal(t, "portable", summary(s.Portable().Entries), []string{
+	equal(t, "portable", summary(s.Portable().Lower(transcript.Capabilities{}).Entries), []string{
 		"user: The conversation history before this poi",
 		"assistant: Hello from mock server.",
 		"user: After compaction.",

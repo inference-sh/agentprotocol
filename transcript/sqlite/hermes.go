@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -190,10 +192,13 @@ func (h *hermesSession) compressionTip(children map[string][]*hermesSession) *he
 // hermesRow is one messages row with the columns that decide who it is for.
 // Stores from before a column existed read it as its default.
 type hermesRow struct {
-	id                           int64
-	role, content, toolID        string
-	toolName, reasoning          string
-	toolCalls                    sql.NullString
+	id                    int64
+	role, content, toolID string
+	toolName, reasoning   string
+	toolCalls             sql.NullString
+	// reasoningContent is what hermes replays as the provider's
+	// reasoning_content, when it pinned one on the row.
+	reasoningContent             sql.NullString
 	ts                           sql.NullFloat64
 	active, compacted, summary   bool
 	displayKind, displayMetadata string
@@ -214,7 +219,7 @@ func hermesMessageColumns(cols map[string]bool) string {
 	}
 	return strings.Join([]string{
 		"id", "role", "COALESCE(content, '')", "COALESCE(tool_call_id, '')", "COALESCE(tool_name, '')",
-		"tool_calls", "COALESCE(reasoning, '')", "timestamp",
+		"tool_calls", "COALESCE(reasoning, '')", col("reasoning_content", "reasoning_content", "NULL"), "timestamp",
 		col("active", "COALESCE(active, 1) != 0", "1"),
 		col("compacted", "COALESCE(compacted, 0) != 0", "0"),
 		col("_compressed_summary", "COALESCE(_compressed_summary, 0) != 0", "0"),
@@ -259,6 +264,10 @@ func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session
 	}
 	s.Vendor = &hermesVendor{Source: source.String}
 
+	echo, err := hermesEchoesReasoning(ctx, db, id, s.Model)
+	if err != nil {
+		return nil, fmt.Errorf("hermes: read session: %w", err)
+	}
 	cols, err := columns(ctx, db, "messages")
 	if err != nil {
 		return nil, fmt.Errorf("hermes: read messages: %w", err)
@@ -271,7 +280,7 @@ func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session
 	var hrows []hermesRow
 	for rows.Next() {
 		var r hermesRow
-		if err := rows.Scan(&r.id, &r.role, &r.content, &r.toolID, &r.toolName, &r.toolCalls, &r.reasoning, &r.ts,
+		if err := rows.Scan(&r.id, &r.role, &r.content, &r.toolID, &r.toolName, &r.toolCalls, &r.reasoning, &r.reasoningContent, &r.ts,
 			&r.active, &r.compacted, &r.summary, &r.displayKind, &r.displayMetadata, &r.apiContent); err != nil {
 			return nil, err
 		}
@@ -280,6 +289,9 @@ func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session
 			return nil, err
 		}
 		e.ModelContent = hermesAPIContent(r, e.Content)
+		if r.role == "assistant" {
+			e.ModelContent = hermesReasoningSent(r, e, echo)
+		}
 		// Raw marks the entry as read; a rewrite keeps its row as is.
 		e.ID = "hermes-row:" + strconv.FormatInt(r.id, 10)
 		e.Raw = json.RawMessage(strconv.Quote(r.content))
@@ -309,6 +321,114 @@ func hermesAPIContent(r hermesRow, content []transcript.Block) []transcript.Bloc
 		if b.Kind != transcript.BlockText {
 			out = append(out, b)
 		}
+	}
+	return out
+}
+
+// hermesEchoesReasoning reports whether the provider a resumed session runs
+// on is one hermes replays reasoning to. The ACP adapter resumes on the
+// provider and base URL in model_config, else the billing columns, and the
+// session's model (acp_adapter/session.py). A session that names no
+// provider runs on the configured one; its model.reasoning_echo opt-in in
+// config.yaml is not consulted.
+func hermesEchoesReasoning(ctx context.Context, q *sql.DB, id, model string) (bool, error) {
+	cols, err := columns(ctx, q, "sessions")
+	if err != nil {
+		return false, err
+	}
+	pick := func(key, column string) string {
+		var parts []string
+		if cols["model_config"] {
+			parts = append(parts, "NULLIF(json_extract(model_config, '$."+key+"'), '')")
+		}
+		if cols[column] {
+			parts = append(parts, "NULLIF("+column+", '')")
+		}
+		return "COALESCE(" + strings.Join(append(parts, "''"), ", ") + ")"
+	}
+	var provider, baseURL string
+	err = q.QueryRowContext(ctx, "SELECT "+pick("provider", "billing_provider")+", "+pick("base_url", "billing_base_url")+" FROM sessions WHERE id = ?", id).
+		Scan(&provider, &baseURL)
+	if err != nil {
+		return false, err
+	}
+	return hermesEchoFamily(provider, model, baseURL), nil
+}
+
+// hermesEchoFamily is hermes's table of the providers that reject a replayed
+// assistant turn without its reasoning_content: Kimi by provider id or host
+// only (aggregators re-exporting its models reject the field), DeepSeek and
+// MiMo by provider, model name or host (agent/message_sanitization.py
+// _REASONING_ECHO_RULES). Every other provider rejects the field, and
+// hermes strips it.
+func hermesEchoFamily(provider, model, baseURL string) bool {
+	host := ""
+	if u, err := url.Parse(baseURL); err == nil && u.Host != "" {
+		host = u.Hostname()
+	} else if u, err := url.Parse("//" + baseURL); err == nil {
+		host = u.Hostname()
+	}
+	host = strings.TrimSuffix(strings.ToLower(host), ".")
+	onHost := func(domains ...string) bool {
+		for _, d := range domains {
+			if host != "" && (host == d || strings.HasSuffix(host, "."+d)) {
+				return true
+			}
+		}
+		return false
+	}
+	lower, model := strings.ToLower(provider), strings.ToLower(model)
+	switch {
+	case provider == "kimi-coding" || provider == "kimi-coding-cn" || onHost("api.kimi.com", "moonshot.ai", "moonshot.cn"):
+		return true
+	case lower == "deepseek" || strings.Contains(model, "deepseek") || onHost("api.deepseek.com"):
+		return true
+	case lower == "xiaomi" || strings.Contains(model, "mimo") || onHost("api.xiaomimimo.com", "xiaomimimo.com"):
+		return true
+	}
+	return false
+}
+
+// hermesReasoningSent is an assistant row's content as the model is given
+// it, with the reasoning hermes replays in place of the reasoning it shows
+// (agent/message_sanitization.py apply_reasoning_content_policy). Without
+// echo the model gets none. With echo it gets the row's reasoning_content
+// verbatim, else the reasoning of a turn without tool calls; a turn with
+// tool calls and no reasoning_content gets a one-space pad instead, so
+// another provider's reasoning is not leaked, and a pad carries nothing.
+// Nil when that is what the entry already says.
+func hermesReasoningSent(r hermesRow, e transcript.Entry, echo bool) []transcript.Block {
+	base := e.ModelContent
+	if base == nil {
+		base = e.Content
+	}
+	sent := ""
+	if echo {
+		calls := slices.ContainsFunc(e.Content, func(b transcript.Block) bool { return b.Kind == transcript.BlockToolUse })
+		switch {
+		case r.reasoningContent.Valid:
+			sent = r.reasoningContent.String
+		case !calls:
+			sent = r.reasoning
+		}
+		if strings.TrimSpace(sent) == "" {
+			sent = ""
+		}
+	}
+	if sent == r.reasoning {
+		return e.ModelContent
+	}
+	var out []transcript.Block
+	if sent != "" {
+		out = append(out, transcript.Block{Kind: transcript.BlockReasoning, Text: sent})
+	}
+	for _, b := range base {
+		if b.Kind != transcript.BlockReasoning {
+			out = append(out, b)
+		}
+	}
+	if out == nil {
+		out = []transcript.Block{}
 	}
 	return out
 }

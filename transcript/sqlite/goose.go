@@ -41,11 +41,14 @@ type gooseContent struct {
 	ToolCall    *gooseToolCall    `json:"toolCall,omitempty"`
 	ToolResult  *gooseToolReslt   `json:"toolResult,omitempty"`
 	Annotations *gooseAnnotations `json:"annotations,omitempty"`
-	// Thinking is a thinking block's text; Msg a system notification's;
+	// Thinking is a thinking block's text and Signature the provider's
+	// signature over it, which goose requires on a thinking item even when
+	// empty (ThinkingContentBlock); Msg is a system notification's text and
 	// Message an error's.
-	Thinking string `json:"thinking,omitempty"`
-	Msg      string `json:"msg,omitempty"`
-	Message  string `json:"message,omitempty"`
+	Thinking  string  `json:"thinking,omitempty"`
+	Signature *string `json:"signature,omitempty"`
+	Msg       string  `json:"msg,omitempty"`
+	Message   string  `json:"message,omitempty"`
 	// Data is an image's or a document's bytes in base64, MimeType its type,
 	// and Name a document's file name (rmcp ImageContent, goose
 	// DocumentContent in conversation/message.rs).
@@ -555,11 +558,12 @@ func gooseRole(r transcript.Role) transcript.Role {
 	return r
 }
 
-// gooseContentJSON encodes an entry as a goose content array. An image or a
-// file becomes an image or document item, and an image a tool returned an
-// item of the tool's result. goose holds their bytes and nothing else, so a
-// block that only points at its content has no item, and MCP tool output
-// has no document item, so neither has a file a tool returned.
+// gooseContentJSON encodes an entry as a goose content array. Reasoning
+// becomes a thinking item with no signature. An image or a file becomes an
+// image or document item, and an image a tool returned an item of the tool's
+// result. goose holds their bytes and nothing else, so a block that only
+// points at its content has no item, and MCP tool output has no document
+// item, so neither has a file a tool returned.
 func gooseContentJSON(e transcript.Entry) (string, error) {
 	var content []gooseContent
 	returned := map[string][]gooseContent{}
@@ -572,6 +576,14 @@ func gooseContentJSON(e transcript.Entry) (string, error) {
 		switch b.Kind {
 		case transcript.BlockText:
 			content = append(content, gooseContent{Type: "text", Text: b.Text})
+		case transcript.BlockReasoning:
+			// goose stores reasoning an OpenAI-compatible model streams with
+			// an empty signature (formats/openai.rs response_to_message) and
+			// sends it back as reasoning_content when the provider preserves
+			// thinking, which a custom provider does unless configured not to
+			// (declarative_providers.rs). The Anthropic format drops an
+			// unsigned one (formats/anthropic.rs), as it would goose's own.
+			content = append(content, gooseContent{Type: "thinking", Thinking: b.Text, Signature: new(string)})
 		case transcript.BlockImage, transcript.BlockFile:
 			if b.ToolID == "" && len(b.Data) > 0 {
 				content = append(content, gooseMedia(b))

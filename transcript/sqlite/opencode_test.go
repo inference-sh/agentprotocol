@@ -670,3 +670,67 @@ func TestOpencodeAttachmentsSent(t *testing.T) {
 		}
 	}
 }
+
+// TestOpencodeReasoningReplay: toModelMessages gives the model an answer's
+// reasoning as text when the answer ran on another model than the session
+// resumes on, and otherwise as reasoning with the part's provider metadata
+// (message-v2.ts). The OpenAI Responses SDK replays reasoning only by the
+// item id or encrypted content OpenAI issued, and skips the rest ("Non-OpenAI
+// reasoning parts are not supported"). An answer left with nothing is not
+// sent. The person is shown every reasoning part. The mock model streams
+// no reasoning, so the parts are built here in the shape opencode's
+// processor writes them, the stream's providerMetadata as the part's
+// metadata (session/processor.ts, reasoning-end).
+func TestOpencodeReasoningReplay(t *testing.T) {
+	for _, c := range []compactSample{compactSamples[0], compactSamples[1]} {
+		t.Run(c.codec.(openCodec).agent, func(t *testing.T) {
+			a := func(parent, extra string) string { return fmt.Sprintf(ocAssistant, parent, extra) }
+			other := strings.Replace(a("msg_3", ""), `"providerID":"openai"`, `"providerID":"anthropic"`, 1)
+			think := func(text, meta string) string {
+				return fmt.Sprintf(`{"type":"reasoning","text":%q%s,"time":{"start":1,"end":2}}`, text, meta)
+			}
+			rows := []ocRow{
+				{"msg_1", ocUser, [][2]string{{"prt_1", ocText("first", "")}}},
+				{"msg_2", a("msg_1", ""), [][2]string{
+					{"prt_2", think("R-PLAIN", "")},
+					{"prt_2b", ocText("a2", "")},
+					{"prt_2c", think("R-ITEM", `,"metadata":{"openai":{"itemId":"rs_1","reasoningEncryptedContent":null}}`)},
+				}},
+				{"msg_3", ocUser, [][2]string{{"prt_3", ocText("second", "")}}},
+				{"msg_4", other, [][2]string{{"prt_4", think("R-OTHER", `,"metadata":{"anthropic":{"signature":"sig"}}`)}, {"prt_4b", ocText("a4", "")}}},
+				{"msg_5", ocUser, [][2]string{{"prt_5", ocText("third", "")}}},
+				{"msg_6", a("msg_5", ""), [][2]string{{"prt_6", think("R-ALONE", "")}}},
+			}
+			home := ocSession(t, c, "ses_fixture", "", rows)
+			s, err := mustOpen(t, c.codec, home).Read(t.Context(), "ses_fixture")
+			if err != nil {
+				t.Fatal(err)
+			}
+			show := func(es []transcript.Entry) []string {
+				var out []string
+				for _, e := range es {
+					for _, b := range e.Content {
+						out = append(out, e.ID+" "+string(b.Kind)+" "+b.Text)
+					}
+				}
+				return out
+			}
+			sameLines(t, "context", show(s.Context()), []string{
+				"msg_1 text first",
+				"msg_2 text a2", "msg_2 reasoning R-ITEM",
+				"msg_3 text second",
+				"msg_4 text R-OTHER", "msg_4 text a4",
+				"msg_5 text third",
+			})
+			var shown []string
+			for _, l := range show(s.Linearize()) {
+				if strings.Contains(l, " reasoning ") {
+					shown = append(shown, l)
+				}
+			}
+			sameLines(t, "shown reasoning", shown, []string{
+				"msg_2 reasoning R-PLAIN", "msg_2 reasoning R-ITEM", "msg_4 reasoning R-OTHER", "msg_6 reasoning R-ALONE",
+			})
+		})
+	}
+}

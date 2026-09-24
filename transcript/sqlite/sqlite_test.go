@@ -433,6 +433,39 @@ func TestGooseImagesImported(t *testing.T) {
 	sameLines(t, "images", media(readSample(t, Goose, home, id).Context()), want)
 }
 
+// TestGooseReasoningImported writes another agent's reasoning as a thinking
+// item with the empty signature goose gives reasoning an OpenAI-compatible
+// model streams, which goose sends back as reasoning_content.
+func TestGooseReasoningImported(t *testing.T) {
+	now := time.Date(2026, 9, 24, 12, 0, 0, 0, time.UTC)
+	s := &transcript.Session{Agent: "elsewhere", CWD: "/work", Created: now, Updated: now, Entries: []transcript.Entry{
+		{ID: "u1", Role: transcript.RoleUser, Time: now, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "hi"}}},
+		{ID: "a1", ParentID: "u1", Role: transcript.RoleAssistant, Time: now.Add(time.Second), Content: []transcript.Block{
+			{Kind: transcript.BlockReasoning, Text: "weighing it"},
+			{Kind: transcript.BlockText, Text: "hello"},
+		}},
+	}}
+	home := t.TempDir()
+	id, err := mustOpen(t, Goose, home).Write(t.Context(), s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := readSample(t, Goose, home, id)
+	var raw string
+	for _, e := range got.Context() {
+		if e.Role == transcript.RoleAssistant {
+			b, _ := json.Marshal(e.Content)
+			raw = string(b)
+			if !strings.Contains(string(e.Raw), `{"type":"thinking","thinking":"weighing it","signature":""}`) {
+				t.Errorf("stored %s, want a thinking item with an empty signature", e.Raw)
+			}
+		}
+	}
+	if want := `[{"kind":"reasoning","text":"weighing it"},{"kind":"text","text":"hello"}]`; raw != want {
+		t.Errorf("assistant %s, want %s", raw, want)
+	}
+}
+
 // TestGooseAppendOrder writes a turn whose time is before the sample's last
 // row. goose reads rows back by created_timestamp, so the turn must still
 // be stored after them, as goose's own append clamps it.
@@ -759,4 +792,67 @@ func TestHermesAPIContent(t *testing.T) {
 			t.Errorf("hermes' hook context moved with the session: %q", e.Text())
 		}
 	}
+}
+
+// TestHermesReasoningReplay: hermes replays an assistant row's reasoning
+// only to a provider that requires it echoed back (DeepSeek, Kimi, MiMo),
+// as reasoning_content: that column verbatim when set, else the reasoning
+// of a turn without tool calls, else a one-space pad
+// (agent/message_sanitization.py apply_reasoning_content_policy). Every
+// other provider is given none. The ACP adapter resumes on the provider
+// the session records (acp_adapter/session.py). What the person sees keeps
+// the reasoning either way. The mock model streams no reasoning; the
+// reasoning_content column is set as hermes pins it on a row
+// (hermes_state_messages.py append_message).
+func TestHermesReasoningReplay(t *testing.T) {
+	home := copyHome(t, "testdata/hermes")
+	st := mustOpen(t, Hermes, home)
+	text := func(s string) transcript.Block { return transcript.Block{Kind: transcript.BlockText, Text: s} }
+	think := func(s string) transcript.Block { return transcript.Block{Kind: transcript.BlockReasoning, Text: s} }
+	id, err := st.Write(t.Context(), &transcript.Session{CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{text("hi")}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{think("THINK-1"), text("hello"),
+			{Kind: transcript.BlockToolUse, ToolID: "c1", Name: "read", Input: json.RawMessage(`{}`)}}},
+		{Role: transcript.RoleTool, Content: []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: "c1", Name: "read", Text: "ok"}}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{think("THINK-2"), text("done")}},
+		{Role: transcript.RoleUser, Content: []transcript.Block{text("again")}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{think("THINK-3"), text("sure")}},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	reasoning := func(es []transcript.Entry) []string {
+		var out []string
+		for _, e := range es {
+			for _, b := range e.Content {
+				if b.Kind == transcript.BlockReasoning {
+					out = append(out, b.Text)
+				}
+			}
+		}
+		return out
+	}
+
+	// The writer names no provider: hermes runs it on the configured one,
+	// here none that asks for reasoning back.
+	s := readSample(t, Hermes, home, id)
+	sameLines(t, "context reasoning, strict provider", reasoning(s.Context()), nil)
+	sameLines(t, "shown reasoning", reasoning(s.Linearize()), []string{"THINK-1", "THINK-2", "THINK-3"})
+
+	db, err := openRW(filepath.Join(home, hermesPath))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	for _, q := range []string{
+		`UPDATE sessions SET model_config = json_set(model_config, '$.provider', 'deepseek') WHERE id = ?`,
+		`UPDATE messages SET reasoning_content = 'SENT-3' WHERE session_id = ? AND reasoning = 'THINK-3'`,
+	} {
+		if _, err := db.Exec(q, id); err != nil {
+			t.Fatal(err)
+		}
+	}
+	s = readSample(t, Hermes, home, id)
+	sameLines(t, "context reasoning, deepseek", reasoning(s.Context()), []string{"THINK-2", "SENT-3"})
+	sameLines(t, "shown reasoning", reasoning(s.Linearize()), []string{"THINK-1", "THINK-2", "THINK-3"})
 }

@@ -48,6 +48,8 @@ type openMessage struct {
 	Agent      string   `json:"agent,omitempty"`
 	ProviderID string   `json:"providerID,omitempty"`
 	ModelID    string   `json:"modelID,omitempty"`
+	// Model is the model a prompt was sent with.
+	Model json.RawMessage `json:"model,omitempty"`
 	// Summary is true on the assistant message a compaction wrote. A user
 	// message keeps an object of file diffs under the same key.
 	Summary json.RawMessage `json:"summary,omitempty"`
@@ -261,7 +263,11 @@ func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, 
 	if err := msgRows.Err(); err != nil {
 		return nil, err
 	}
-	s.Entries = openEntries(msgs, rev, st.agent == "kilo")
+	resume, err := openResumeModel(ctx, db, id, msgs, st.agent == "kilo")
+	if err != nil {
+		return nil, err
+	}
+	s.Entries = openEntries(msgs, rev, st.agent == "kilo", resume)
 	return s, nil
 }
 
@@ -270,6 +276,26 @@ type openView struct {
 	id          string
 	blocks      []transcript.Block
 	model, user bool
+	// sent is what the model gets of the part when that is not blocks;
+	// empty when it gets nothing, nil when it gets blocks.
+	sent []transcript.Block
+}
+
+// addTo appends the view to an entry: its blocks to what the person sees,
+// and what the model gets of it to the entry's ModelContent once any part
+// of the entry reaches the model differently.
+func (v openView) addTo(e *transcript.Entry) {
+	if v.sent != nil && e.ModelContent == nil {
+		e.ModelContent = append([]transcript.Block{}, e.Content...)
+	}
+	if e.ModelContent != nil {
+		if v.sent != nil {
+			e.ModelContent = append(e.ModelContent, v.sent...)
+		} else {
+			e.ModelContent = append(e.ModelContent, v.blocks...)
+		}
+	}
+	e.Content = append(e.Content, v.blocks...)
 }
 
 // openEntries turns messages into entries the way opencode builds the
@@ -280,10 +306,10 @@ type openView struct {
 // reminder appended, becomes one entry per run of parts with the same
 // audience: the first keeps the message id, the others take the id of
 // their first part.
-func openEntries(msgs []openRow, rev *openRevert, kilo bool) []transcript.Entry {
+func openEntries(msgs []openRow, rev *openRevert, kilo bool, resume openModelRef) []transcript.Entry {
 	views := make([][]openView, len(msgs))
 	for i, r := range msgs {
-		views[i] = openViews(r, kilo)
+		views[i] = openViews(r, kilo, resume)
 	}
 
 	// The TUI hides every message from the revert point on, and the next
@@ -349,7 +375,7 @@ func openEntries(msgs []openRow, rev *openRevert, kilo bool) []transcript.Entry 
 			if n := len(out); n > start {
 				last := &out[n-1]
 				if last.Audience == openAudience(v.model, v.user) {
-					last.Content = append(last.Content, v.blocks...)
+					v.addTo(last)
 					continue
 				}
 			}
@@ -357,7 +383,18 @@ func openEntries(msgs []openRow, rev *openRevert, kilo bool) []transcript.Entry 
 			if len(out) > start {
 				id = v.id
 			}
-			out = append(out, openEntry(r, id, v.model, v.user, v.blocks))
+			e := openEntry(r, id, v.model, v.user, nil)
+			v.addTo(&e)
+			out = append(out, e)
+		}
+		// An answer whose every part the model is given as nothing, such as
+		// one that only reasoned, is left out of the request
+		// (toModelMessages keeps a message only with a part to send).
+		for k := start; k < len(out); k++ {
+			if e := &out[k]; e.ModelContent != nil && len(e.ModelContent) == 0 {
+				e.Audience = openAudience(false, e.Audience.User())
+				e.ModelContent = nil
+			}
 		}
 		if len(out) == start {
 			// A message with no part the entry can hold, like an answer that
@@ -460,18 +497,18 @@ func openCompaction(msgs []openRow, views [][]openView) (*transcript.Compaction,
 // openModelView is a message as the model receives it, one entry, for
 // everyone when the person is shown it too.
 func openModelView(r openRow, views []openView) []transcript.Entry {
-	var blocks []transcript.Block
+	e := openEntry(r, r.id, true, false, nil)
 	shown := false
 	for _, v := range views {
 		if v.model {
-			blocks = append(blocks, v.blocks...)
+			v.addTo(&e)
 			shown = shown || v.user && len(v.blocks) > 0
 		}
 	}
-	if len(blocks) == 0 {
+	if len(e.Content) == 0 || e.ModelContent != nil && len(e.ModelContent) == 0 {
 		return nil
 	}
-	e := openEntry(r, r.id, true, shown, blocks)
+	e.Audience = openAudience(true, shown)
 	e.Raw = nil
 	return []transcript.Entry{e}
 }
@@ -480,7 +517,7 @@ func openModelView(r openRow, views []openView) []transcript.Entry {
 const kiloTransient = "kilocode.lifecycle"
 
 // openViews maps each part of a message to its blocks and who gets them.
-func openViews(r openRow, kilo bool) []openView {
+func openViews(r openRow, kilo bool, resume openModelRef) []openView {
 	// The TUI shows a prompt's files beneath its typed text, and shows
 	// nothing of a prompt without any (TUI UserMessage).
 	typed := slices.ContainsFunc(r.parts, func(p openPart) bool { return p.Type == "text" && !p.Synthetic && p.Text != "" })
@@ -528,6 +565,7 @@ func openViews(r openRow, kilo bool) []openView {
 				}
 			case "reasoning":
 				v.blocks = []transcript.Block{{Kind: transcript.BlockReasoning, Text: p.Text}}
+				v.sent = openReasoningSent(p, r.m, resume)
 			case "tool":
 				v.blocks = openToolBlocks(p, kilo)
 			}
@@ -535,6 +573,94 @@ func openViews(r openRow, kilo bool) []openView {
 		out = append(out, v)
 	}
 	return out
+}
+
+// openResumeModel is the model opencode resumes a session on over ACP: the
+// model the session records, else that of its last prompt that names one,
+// else that of its last answer (acp/service.ts restoreSession,
+// restoreFromMessages). Kilo records none on the session and starts from
+// the messages. Either falls back to the configured default when that
+// model is gone; the reader cannot see the configuration and assumes it is
+// still there.
+func openResumeModel(ctx context.Context, db *sql.DB, id string, msgs []openRow, kilo bool) (openModelRef, error) {
+	if !kilo {
+		cols, err := openColumns(ctx, db, "session")
+		if err != nil {
+			return openModelRef{}, err
+		}
+		if cols["model"] {
+			var raw sql.NullString
+			if err := db.QueryRowContext(ctx, "SELECT model FROM session WHERE id = ?", id).Scan(&raw); err != nil {
+				return openModelRef{}, fmt.Errorf("opencode: read session: %w", err)
+			}
+			var m struct {
+				ID         string `json:"id"`
+				ProviderID string `json:"providerID"`
+			}
+			if raw.Valid && json.Unmarshal([]byte(raw.String), &m) == nil && m.ID != "" && m.ProviderID != "" {
+				return openModelRef{ProviderID: m.ProviderID, ModelID: m.ID}, nil
+			}
+		}
+	}
+	for i := len(msgs) - 1; i >= 0; i-- {
+		var m openModelRef
+		if msgs[i].m.Role == "user" && json.Unmarshal(msgs[i].m.Model, &m) == nil && m.ProviderID != "" && m.ModelID != "" {
+			return m, nil
+		}
+	}
+	for i := len(msgs) - 1; i >= 0; i-- {
+		if m := msgs[i].m; m.ProviderID != "" && m.ModelID != "" {
+			return openModelRef{ProviderID: m.ProviderID, ModelID: m.ModelID}, nil
+		}
+	}
+	return openModelRef{}, nil
+}
+
+// openReplayHandles names, for the providers whose SDK replays reasoning
+// only by what the provider issued with it, the part metadata keys that
+// carry it: OpenAI's Responses API an item id or encrypted content, and
+// Anthropic and Bedrock a signature or redacted data. Without one the SDK
+// skips the part ("Non-OpenAI reasoning parts are not supported",
+// "unsupported reasoning metadata"; opencode's transform drops unsigned
+// Bedrock reasoning itself). The other SDKs send the text: OpenAI-compatible
+// ones as reasoning_content, Google as a thought part.
+var openReplayHandles = map[string][]string{
+	"openai":         {"itemId", "reasoningEncryptedContent"},
+	"azure":          {"itemId", "reasoningEncryptedContent"},
+	"anthropic":      {"signature", "redactedData"},
+	"amazon-bedrock": {"signature", "redactedContent", "redactedData"},
+}
+
+// openReasoningSent is what the model gets of a reasoning part, nil when
+// it gets the part as it is (message-v2.ts toModelMessages). An answer
+// that ran on another model than the one the session resumes on gives its
+// reasoning as plain text, when there is any; on the same model the
+// reasoning goes to the provider with the part's metadata, and the
+// provider's SDK decides (openReplayHandles).
+func openReasoningSent(p openPart, m openMessage, resume openModelRef) []transcript.Block {
+	if m.ProviderID != resume.ProviderID || m.ModelID != resume.ModelID {
+		if strings.TrimSpace(p.Text) == "" {
+			return []transcript.Block{}
+		}
+		return []transcript.Block{{Kind: transcript.BlockText, Text: p.Text}}
+	}
+	keys, signed := openReplayHandles[m.ProviderID]
+	if !signed {
+		if p.Text == "" {
+			return []transcript.Block{}
+		}
+		return nil
+	}
+	var meta map[string]map[string]json.RawMessage
+	_ = json.Unmarshal(p.Metadata, &meta)
+	for _, ns := range meta {
+		for _, k := range keys {
+			if v, ok := ns[k]; ok && string(v) != "null" {
+				return nil
+			}
+		}
+	}
+	return []transcript.Block{}
 }
 
 func openTransient(p openPart) bool {
@@ -854,6 +980,7 @@ type openUser struct {
 	Model openModelRef `json:"model"`
 }
 
+// openModelRef names a model the way a prompt does.
 type openModelRef struct {
 	ProviderID string `json:"providerID"`
 	ModelID    string `json:"modelID"`

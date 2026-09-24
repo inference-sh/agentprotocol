@@ -1,20 +1,31 @@
 // Package gemini reads and writes Gemini CLI sessions.
 //
-// Gemini keeps one JSONL per session under
-// ~/.gemini/tmp/<project>/chats/session-<stamp>-<id prefix>.jsonl, where
-// <project> is the last element of the working directory. The file is a
-// patch log: the first row is the conversation header, message rows are
-// appended as they happen, and {"$set": ...} rows patch header fields such
-// as lastUpdated. A message row has type user or gemini; user content is a
-// list of parts, text or functionResponse; gemini content is a string with
-// toolCalls and thoughts beside it.
+// Gemini keeps each session as a JSONL file under
+// ~/.gemini/tmp/<project>/chats/session-<stamp>-<id prefix>.jsonl. <project>
+// is a slug gemini assigns the project root in ~/.gemini/projects.json, the
+// root's base name unless another root already holds it, and a
+// .project_root marker in that directory names the root.
+//
+// The file is a log gemini replays into an ordered map of messages keyed by
+// id (chatRecordingService.ts, loadConversationRecord): the first record is
+// the conversation's metadata; a message record adds a message or replaces
+// the one with its id in place; {"$set": {...}} merges metadata, and when it
+// carries messages it replaces the whole list; {"$rewindTo": id} drops that
+// message and every one after it. A file whose metadata lacks sessionId or
+// projectHash is read as a legacy record, fails, and is deleted by gemini's
+// startup cleanup, so a written file must carry both.
 package gemini
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -22,73 +33,38 @@ import (
 )
 
 // Codec is the Gemini CLI session store.
-var Codec transcript.Codec = wrap{".gemini/tmp"}
+var Codec transcript.Codec = codec{}
 
-// wrap adds cwd recovery to the JSONL store. Gemini writes the working
-// directory nowhere in the file, only as the <project> directory (the
-// working directory's last element), so Read restores that much from the
-// path and a written session lands under the same project directory.
-type wrap struct{ root string }
+const (
+	geminiDir  = ".gemini"
+	marker     = ".project_root"
+	registryFn = "projects.json"
+)
 
-func (w wrap) Open(home string) (transcript.Store, error) {
-	st, err := jsonl(w.root).Open(home)
-	if err != nil {
-		return nil, err
-	}
-	return &store{Store: st, root: filepath.Join(home, w.root)}, nil
+// IDs is the scheme gemini names messages in: UUIDs, or 32 hex digits for
+// the context message it writes itself.
+var IDs = transcript.IDScheme{New: transcript.NewUUID, Valid: func(id string) bool {
+	return transcript.IsUUID(id) || hex32.MatchString(id)
+}}
+
+var hex32 = regexp.MustCompile(`^[0-9a-f]{32}$`)
+
+type codec struct{}
+
+func (codec) Open(home string) (transcript.Store, error) {
+	return &store{home: home}, nil
 }
 
-type store struct {
-	transcript.Store
-	root string
-}
+type store struct{ home string }
 
-func (st *store) Read(ctx context.Context, id string) (*transcript.Session, error) {
-	s, err := st.Store.Read(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	if s.CWD == "" {
-		if infos, err := st.Store.List(ctx, ""); err == nil {
-			for _, in := range infos {
-				if in.ID == id {
-					// <root>/<project>/chats/<file>: the project is two up.
-					s.CWD = filepath.Base(filepath.Dir(filepath.Dir(in.Path)))
-					break
-				}
-			}
-		}
-	}
-	return s, nil
-}
-
-func jsonl(root string) transcript.JSONL {
-	return transcript.JSONL{
-		Layout: transcript.Layout{
-			Files: func(home, cwd string) ([]string, error) {
-				project := "*"
-				if cwd != "" {
-					project = filepath.Base(cwd)
-				}
-				return transcript.Glob(filepath.Join(home, root, project, "chats", "*.jsonl"))
-			},
-			PathFor: func(home string, s *transcript.Session) string {
-				return filepath.Join(home, root, filepath.Base(s.CWD), "chats",
-					"session-"+s.Created.UTC().Format("2006-01-02T15-04")+"-"+prefix(s.ID)+".jsonl")
-			},
-			Peek: peek,
-		},
-		Header:      header,
-		Decode:      decode,
-		Encode:      encode,
-		WriteHeader: writeHeader,
-	}
-}
-
-// Vendor is what a Gemini session carries in Session.Vendor: the header's
-// fields, so a write reproduces the project hash and kind.
+// Vendor is what a gemini session carries in Session.Vendor: the file as
+// read and the message ids its replay produced, so a write can leave the
+// file as it was and append to it.
 type Vendor struct {
-	Header map[string]json.RawMessage
+	FileName string
+	File     []byte
+	IDs      []string
+	Metadata map[string]json.RawMessage
 }
 
 type conversationHeader struct {
@@ -99,6 +75,485 @@ type conversationHeader struct {
 	Kind        string `json:"kind"`
 }
 
+// ProjectHash is the hash gemini stamps a conversation with: sha256 of the
+// project root, in lowercase hex (utils/paths.ts, getProjectHash).
+func ProjectHash(root string) string {
+	sum := sha256.Sum256([]byte(root))
+	return hex.EncodeToString(sum[:])
+}
+
+func (st *store) tmp() string { return filepath.Join(st.home, geminiDir, "tmp") }
+
+func (st *store) List(ctx context.Context, cwd string) ([]transcript.Info, error) {
+	paths, err := transcript.Glob(filepath.Join(st.tmp(), "*", "chats", "*.jsonl"))
+	if err != nil {
+		return nil, err
+	}
+	var out []transcript.Info
+	for _, p := range paths {
+		c, err := replay(p)
+		if err != nil || c.meta.SessionID == "" {
+			continue
+		}
+		root := projectRoot(filepath.Dir(filepath.Dir(p)))
+		if cwd != "" && c.meta.ProjectHash != ProjectHash(cwd) {
+			continue
+		}
+		in := transcript.Info{ID: c.meta.SessionID, CWD: root, Path: p}
+		if t, err := time.Parse(time.RFC3339Nano, c.meta.LastUpdated); err == nil {
+			in.Updated = t
+		} else if fi, err := os.Stat(p); err == nil {
+			in.Updated = fi.ModTime()
+		}
+		out = append(out, in)
+	}
+	transcript.SortNewest(out)
+	return out, nil
+}
+
+// projectRoot reads the .project_root marker gemini keeps in a project
+// directory.
+func projectRoot(dir string) string {
+	raw, err := os.ReadFile(filepath.Join(dir, marker))
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(raw))
+}
+
+func (st *store) Read(ctx context.Context, id string) (*transcript.Session, error) {
+	infos, err := st.List(ctx, "")
+	if err != nil {
+		return nil, err
+	}
+	for _, in := range infos {
+		if in.ID != id {
+			continue
+		}
+		c, err := replay(in.Path)
+		if err != nil {
+			return nil, err
+		}
+		file, err := os.ReadFile(in.Path)
+		if err != nil {
+			return nil, err
+		}
+		s := &transcript.Session{ID: id, Agent: "gemini", CWD: in.CWD, Updated: in.Updated}
+		if t, err := time.Parse(time.RFC3339Nano, c.meta.StartTime); err == nil {
+			s.Created = t
+		}
+		v := &Vendor{FileName: filepath.Base(in.Path), File: file, Metadata: c.fields}
+		for _, m := range c.messages() {
+			e, ok, err := decode(m.raw, s)
+			if err != nil {
+				return nil, err
+			}
+			if !ok {
+				continue
+			}
+			e.Raw = m.raw
+			s.Entries = append(s.Entries, e)
+			v.IDs = append(v.IDs, m.id)
+		}
+		s.Vendor = v
+		return s, nil
+	}
+	return nil, transcript.ErrNotFound
+}
+
+// conversation is a file replayed the way gemini loads it.
+type conversation struct {
+	meta   conversationHeader
+	fields map[string]json.RawMessage
+	order  []string
+	byID   map[string]json.RawMessage
+}
+
+type message struct {
+	id  string
+	raw json.RawMessage
+}
+
+func (c *conversation) messages() []message {
+	out := make([]message, 0, len(c.order))
+	for _, id := range c.order {
+		if raw, ok := c.byID[id]; ok {
+			out = append(out, message{id, raw})
+		}
+	}
+	return out
+}
+
+func (c *conversation) put(id string, raw json.RawMessage) {
+	if _, ok := c.byID[id]; !ok {
+		c.order = append(c.order, id)
+	}
+	c.byID[id] = raw
+}
+
+func (c *conversation) reset() {
+	c.order, c.byID = nil, map[string]json.RawMessage{}
+}
+
+func (c *conversation) merge(fields map[string]json.RawMessage) {
+	for k, v := range fields {
+		if k == "messages" {
+			continue
+		}
+		c.fields[k] = v
+	}
+}
+
+// replay rebuilds a conversation from its file, record by record, as
+// loadConversationRecord does. Lines that do not parse are skipped, as
+// gemini skips them.
+func replay(path string) (*conversation, error) {
+	c := &conversation{fields: map[string]json.RawMessage{}}
+	c.reset()
+	err := transcript.EachLine(path, func(line json.RawMessage) (bool, error) {
+		var rec map[string]json.RawMessage
+		if json.Unmarshal(line, &rec) != nil {
+			return true, nil
+		}
+		switch {
+		case rec["$rewindTo"] != nil:
+			var to string
+			if json.Unmarshal(rec["$rewindTo"], &to) != nil {
+				return true, nil
+			}
+			i := indexOf(c.order, to)
+			if i < 0 {
+				c.reset()
+				return true, nil
+			}
+			for _, id := range c.order[i:] {
+				delete(c.byID, id)
+			}
+			c.order = c.order[:i]
+		case isMessage(rec):
+			var id string
+			_ = json.Unmarshal(rec["id"], &id)
+			c.put(id, append(json.RawMessage(nil), line...))
+		case rec["$set"] != nil:
+			var set map[string]json.RawMessage
+			if json.Unmarshal(rec["$set"], &set) != nil {
+				return true, nil
+			}
+			if msgs, ok := set["messages"]; ok {
+				var list []json.RawMessage
+				if json.Unmarshal(msgs, &list) == nil {
+					c.reset()
+					for _, m := range list {
+						var mr map[string]json.RawMessage
+						if json.Unmarshal(m, &mr) == nil && isMessage(mr) {
+							var id string
+							_ = json.Unmarshal(mr["id"], &id)
+							c.put(id, m)
+						}
+					}
+				}
+			}
+			c.merge(set)
+		default:
+			// The metadata record, which may itself carry messages.
+			c.merge(rec)
+			if msgs, ok := rec["messages"]; ok {
+				var list []json.RawMessage
+				if json.Unmarshal(msgs, &list) == nil {
+					for _, m := range list {
+						var mr map[string]json.RawMessage
+						if json.Unmarshal(m, &mr) == nil && isMessage(mr) {
+							var id string
+							_ = json.Unmarshal(mr["id"], &id)
+							c.put(id, m)
+						}
+					}
+				}
+			}
+		}
+		return true, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	meta, err := json.Marshal(c.fields)
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(meta, &c.meta); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+// isMessage is gemini's test for a message record: an id and a type.
+func isMessage(rec map[string]json.RawMessage) bool {
+	var id, typ string
+	return json.Unmarshal(rec["id"], &id) == nil && id != "" && json.Unmarshal(rec["type"], &typ) == nil && typ != ""
+}
+
+func indexOf(ids []string, id string) int {
+	for i, x := range ids {
+		if x == id {
+			return i
+		}
+	}
+	return -1
+}
+
+// Write persists a session. A session read from the store keeps its file:
+// unchanged, the file is left byte for byte; with entries appended, their
+// records are appended to it, which gemini's replay adds after the rest.
+// Anything else (a session from elsewhere, or one whose read entries were
+// removed or reordered) is written as a new file: the metadata record, with
+// the projectHash gemini requires, then one record per message.
+//
+// Appending races gemini if it has the session open: gemini checkpoints its
+// in-memory list with {"$set": {"messages": ...}}, which would drop records
+// appended after it loaded. Write while gemini is not running the session.
+func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	if s.CWD == "" {
+		return "", errors.New("gemini: a session needs its project root (CWD): gemini files sessions under it")
+	}
+	transcript.AssignIDs(s, IDs, false)
+	if s.ID == "" {
+		s.ID = transcript.NewUUID()
+	}
+	now := time.Now()
+	if s.Created.IsZero() {
+		s.Created = now
+	}
+	if s.Updated.IsZero() {
+		s.Updated = now
+	}
+	slug, err := claimProject(st.home, s.CWD)
+	if err != nil {
+		return "", err
+	}
+	dir := filepath.Join(st.tmp(), slug, "chats")
+	msgs := s.Messages()
+
+	if v, ok := s.Vendor.(*Vendor); ok && v.File != nil && v.FileName != "" && keepsPrefix(msgs, v.IDs) {
+		out := append([]byte(nil), v.File...)
+		added := false
+		for _, e := range msgs[len(v.IDs):] {
+			row, err := encode(e, s)
+			if err != nil {
+				return "", err
+			}
+			if row == nil {
+				continue
+			}
+			out = appendLine(out, row)
+			added = true
+		}
+		if added {
+			set, err := json.Marshal(map[string]map[string]string{"$set": {"lastUpdated": stamp(now)}})
+			if err != nil {
+				return "", err
+			}
+			out = appendLine(out, set)
+		}
+		path := filepath.Join(dir, v.FileName)
+		if cur, err := os.ReadFile(path); err == nil && string(cur) == string(out) {
+			return s.ID, nil
+		}
+		return s.ID, writeFile(path, out)
+	}
+
+	meta := map[string]json.RawMessage{}
+	if v, ok := s.Vendor.(*Vendor); ok {
+		for k, val := range v.Metadata {
+			meta[k] = val
+		}
+	}
+	for k, val := range map[string]string{
+		"sessionId":   s.ID,
+		"projectHash": ProjectHash(s.CWD),
+		"startTime":   stamp(s.Created),
+		"lastUpdated": stamp(s.Updated),
+	} {
+		b, err := json.Marshal(val)
+		if err != nil {
+			return "", err
+		}
+		meta[k] = b
+	}
+	if _, ok := meta["kind"]; !ok {
+		meta["kind"] = json.RawMessage(`"main"`)
+	}
+	first, err := json.Marshal(meta)
+	if err != nil {
+		return "", err
+	}
+	out := appendLine(nil, first)
+	for _, e := range msgs {
+		row := e.Raw
+		if row == nil {
+			if row, err = encode(e, s); err != nil {
+				return "", err
+			}
+		}
+		if row != nil {
+			out = appendLine(out, row)
+		}
+	}
+	name := "session-" + s.Created.UTC().Format("2006-01-02T15-04") + "-" + prefix(s.ID) + ".jsonl"
+	if v, ok := s.Vendor.(*Vendor); ok && v.FileName != "" {
+		name = v.FileName
+	}
+	return s.ID, writeFile(filepath.Join(dir, name), out)
+}
+
+// keepsPrefix reports whether the session's messages begin with the ones read
+// from the file, unchanged and in order.
+func keepsPrefix(msgs []transcript.Entry, ids []string) bool {
+	if len(msgs) < len(ids) {
+		return false
+	}
+	for i, id := range ids {
+		if msgs[i].Raw == nil || msgs[i].ID != id {
+			return false
+		}
+	}
+	for _, e := range msgs[len(ids):] {
+		if e.Raw != nil {
+			return false
+		}
+	}
+	return true
+}
+
+func appendLine(b []byte, row []byte) []byte {
+	if len(b) > 0 && b[len(b)-1] != '\n' {
+		b = append(b, '\n')
+	}
+	b = append(b, row...)
+	return append(b, '\n')
+}
+
+func writeFile(path string, data []byte) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	tmp := path + ".tmp"
+	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+		return err
+	}
+	return os.Rename(tmp, path)
+}
+
+// claimProject returns the directory name gemini uses for a project root,
+// claiming one the way gemini's ProjectRegistry does when the root has none:
+// the root's base name, lowercased with every other character a dash, then
+// -1, -2 and so on past names another root holds in projects.json or by a
+// .project_root marker. The claim is recorded in projects.json and marked in
+// both of gemini's base directories, under projects.json's lock.
+func claimProject(home, root string) (string, error) {
+	gdir := filepath.Join(home, geminiDir)
+	bases := []string{filepath.Join(gdir, "tmp"), filepath.Join(gdir, "history")}
+	registry := filepath.Join(gdir, registryFn)
+	if err := os.MkdirAll(gdir, 0o755); err != nil {
+		return "", err
+	}
+	unlock, err := lockRegistry(registry)
+	if err != nil {
+		return "", err
+	}
+	defer unlock()
+
+	data := struct {
+		Projects map[string]string `json:"projects"`
+	}{Projects: map[string]string{}}
+	switch raw, err := os.ReadFile(registry); {
+	case err == nil:
+		if err := json.Unmarshal(raw, &data); err != nil {
+			return "", fmt.Errorf("gemini: %s: %w", registry, err)
+		}
+		if data.Projects == nil {
+			data.Projects = map[string]string{}
+		}
+	case !errors.Is(err, os.ErrNotExist):
+		return "", err
+	}
+	owner := func(slug string) string {
+		for _, b := range bases {
+			if o := projectRoot(filepath.Join(b, slug)); o != "" {
+				return o
+			}
+		}
+		return ""
+	}
+	slug, ok := data.Projects[root]
+	if !ok || (owner(slug) != "" && owner(slug) != root) {
+		taken := map[string]bool{}
+		for p, s := range data.Projects {
+			if p != root {
+				taken[s] = true
+			}
+		}
+		base := slugify(filepath.Base(root))
+		for n := 0; ; n++ {
+			slug = base
+			if n > 0 {
+				slug = fmt.Sprintf("%s-%d", base, n)
+			}
+			if o := owner(slug); !taken[slug] && (o == "" || o == root) {
+				break
+			}
+		}
+		data.Projects[root] = slug
+		out, err := json.MarshalIndent(data, "", "  ")
+		if err != nil {
+			return "", err
+		}
+		if err := writeFile(registry, out); err != nil {
+			return "", err
+		}
+	}
+	for _, b := range bases {
+		dir := filepath.Join(b, slug)
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			return "", err
+		}
+		if projectRoot(dir) == "" {
+			if err := os.WriteFile(filepath.Join(dir, marker), []byte(root), 0o644); err != nil {
+				return "", err
+			}
+		}
+	}
+	return slug, nil
+}
+
+var nonSlug = regexp.MustCompile(`[^a-z0-9]+`)
+
+// slugify is ProjectRegistry.slugify.
+func slugify(name string) string {
+	s := strings.Trim(nonSlug.ReplaceAllString(strings.ToLower(name), "-"), "-")
+	if s == "" {
+		return "project"
+	}
+	return s
+}
+
+// lockRegistry takes projects.json's lock the way gemini's proper-lockfile
+// does, by creating <file>.lock as a directory, waiting while another
+// process holds it.
+func lockRegistry(path string) (func(), error) {
+	lock := path + ".lock"
+	deadline := time.Now().Add(10 * time.Second)
+	for {
+		err := os.Mkdir(lock, 0o755)
+		if err == nil {
+			return func() { os.Remove(lock) }, nil
+		}
+		if !errors.Is(err, os.ErrExist) || time.Now().After(deadline) {
+			return nil, fmt.Errorf("gemini: lock %s: %w", path, err)
+		}
+		time.Sleep(50 * time.Millisecond)
+	}
+}
+
 type row struct {
 	ID        string          `json:"id"`
 	Timestamp string          `json:"timestamp"`
@@ -107,8 +562,6 @@ type row struct {
 	Thoughts  []thought       `json:"thoughts,omitempty"`
 	ToolCalls []toolCall      `json:"toolCalls,omitempty"`
 	Model     string          `json:"model,omitempty"`
-	Set       json.RawMessage `json:"$set,omitempty"`
-	SessionID string          `json:"sessionId,omitempty"`
 }
 
 type part struct {
@@ -139,43 +592,6 @@ func prefix(id string) string {
 		return id[:8]
 	}
 	return id
-}
-
-func peek(path string) (transcript.Info, error) {
-	return transcript.PeekFirstLine(path, func(raw json.RawMessage) (transcript.Info, error) {
-		var h conversationHeader
-		if err := json.Unmarshal(raw, &h); err != nil {
-			return transcript.Info{}, err
-		}
-		if h.SessionID == "" {
-			return transcript.Info{}, fmt.Errorf("%s: first row is not a conversation header", path)
-		}
-		in := transcript.Info{ID: h.SessionID}
-		if t, err := time.Parse(time.RFC3339Nano, h.LastUpdated); err == nil {
-			in.Updated = t
-		}
-		return in, nil
-	})
-}
-
-func header(raw json.RawMessage, s *transcript.Session) (bool, error) {
-	var h conversationHeader
-	if err := json.Unmarshal(raw, &h); err != nil {
-		return false, err
-	}
-	if h.SessionID == "" {
-		return false, nil
-	}
-	var fields map[string]json.RawMessage
-	if err := json.Unmarshal(raw, &fields); err != nil {
-		return false, err
-	}
-	s.ID = h.SessionID
-	if t, err := time.Parse(time.RFC3339Nano, h.StartTime); err == nil {
-		s.Created = t
-	}
-	s.Vendor = &Vendor{Header: fields}
-	return true, nil
 }
 
 func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool, error) {
@@ -248,39 +664,6 @@ func responseText(raw json.RawMessage) string {
 		return out.Output
 	}
 	return string(raw)
-}
-
-func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
-	fields := map[string]json.RawMessage{}
-	if v, ok := s.Vendor.(*Vendor); ok {
-		for k, val := range v.Header {
-			fields[k] = val
-		}
-	}
-	identity, err := json.Marshal(conversationHeader{
-		SessionID:   s.ID,
-		StartTime:   stamp(s.Created),
-		LastUpdated: stamp(s.Updated),
-		Kind:        "main",
-	})
-	if err != nil {
-		return nil, err
-	}
-	var known map[string]json.RawMessage
-	if err := json.Unmarshal(identity, &known); err != nil {
-		return nil, err
-	}
-	for k, val := range known {
-		fields[k] = val
-	}
-	if _, ok := fields["projectHash"]; !ok {
-		fields["projectHash"] = json.RawMessage(`""`)
-	}
-	h, err := json.Marshal(fields)
-	if err != nil {
-		return nil, err
-	}
-	return []json.RawMessage{h}, nil
 }
 
 func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {

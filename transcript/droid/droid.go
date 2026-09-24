@@ -420,7 +420,75 @@ func finish(s *transcript.Session) error {
 			e.Compaction.Keep = s.Entries[j].ID
 		}
 	}
+	gatherReminders(s)
 	return nil
+}
+
+// contextRowPrefix starts the id of the llm_only row droid writes with a
+// turn's per-turn reminders (Gw in the 0.226 bundle).
+const contextRowPrefix = "context-"
+
+// gatherReminders places the per-turn reminders the way droid sends them
+// after a compaction. With a summary first, droid pulls every per-turn
+// reminder out of the history that follows it and sends them as one message
+// right after the summary (the bundle's message builder: Di, called from en
+// with the summary Wb attaches). The reminders are the blocks of the
+// "context-" rows; the date reminder in the same row is not one of them and
+// stays in place. The gathered message joins the latest compaction's
+// Summary, and a row left with nothing to send is given to no one.
+func gatherReminders(s *transcript.Session) {
+	branch := s.Branch()
+	last := -1
+	for k, i := range branch {
+		if s.Entries[i].Compaction != nil {
+			last = k
+		}
+	}
+	if last < 0 {
+		return
+	}
+	c := s.Entries[branch[last]].Compaction
+	from := last
+	for k := 0; k < last; k++ {
+		if c.Keep != "" && s.Entries[branch[k]].ID == c.Keep {
+			from = k
+			break
+		}
+	}
+	var gathered []transcript.Block
+	seen := map[string]bool{}
+	for _, i := range branch[from:] {
+		e := &s.Entries[i]
+		if e.Compaction != nil || e.Audience != transcript.AudienceModel || !strings.HasPrefix(e.ID, contextRowPrefix) {
+			continue
+		}
+		var kept []transcript.Block
+		for _, b := range e.Content {
+			if b.Kind != transcript.BlockText || isDateReminder(b.Text) {
+				kept = append(kept, b)
+				continue
+			}
+			if !seen[b.Text] {
+				seen[b.Text] = true
+				gathered = append(gathered, b)
+			}
+		}
+		switch {
+		case len(kept) == 0:
+			e.Audience = transcript.AudienceNone
+		case len(kept) < len(e.Content):
+			e.ModelContent = kept
+		}
+	}
+	if gathered != nil {
+		c.Summary = append(c.Summary, transcript.Entry{Role: transcript.RoleUser, Audience: transcript.AudienceModel, Content: gathered})
+	}
+}
+
+// isDateReminder is the bundle's test for the date reminder (PQ), which
+// droid keeps where it is.
+func isDateReminder(text string) bool {
+	return strings.HasPrefix(text, "<system-reminder>Current date: ") || strings.Contains(text, "IMPORTANT - Current date for web search relevance:")
 }
 
 // result reads a tool_result's content: a string, or blocks whose text is

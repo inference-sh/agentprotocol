@@ -47,7 +47,8 @@ func texts(es []transcript.Entry) []string {
 }
 
 // The person sees the whole conversation, the history the compaction
-// retired included, and none of what grok injected for the model; the model
+// retired and the echoes of both /compact runs included, as grok replays
+// updates.jsonl, and none of what grok injected for the model; the model
 // is given the history the compaction built, summary and all.
 func TestCompactedSession(t *testing.T) {
 	s := read(t, "testdata/home", sampleID)
@@ -62,6 +63,9 @@ func TestCompactedSession(t *testing.T) {
 		"user: What was the first thing I asked you?", answer,
 		"user: /compact",
 		"user: What was my previous question?", answer,
+		// The echo of the /compact that succeeded, which grok logged after
+		// its checkpoint and replays ahead of the next prompt.
+		"user: /compact",
 		"user: What was my previous question?", answer,
 	}
 	if got := texts(s.Linearize()); !slices.Equal(got, want) {
@@ -386,5 +390,39 @@ func TestResumedForeignCompaction(t *testing.T) {
 	}
 	if !carried {
 		t.Error("the summary does not move with the session")
+	}
+}
+
+// An entry shown and never sent that follows a compaction, a command's
+// echo, is written to updates.jsonl as a host turn after the checkpoint,
+// and reads back shown in its place and kept from the model.
+func TestEchoAfterCompaction(t *testing.T) {
+	text := func(id string, role transcript.Role, s string) transcript.Entry {
+		return transcript.Entry{ID: id, Role: role, Content: []transcript.Block{{Kind: transcript.BlockText, Text: s}}}
+	}
+	echo := text("e", transcript.RoleUser, "/stats")
+	echo.Audience = transcript.AudienceUser
+	in := &transcript.Session{Agent: "elsewhere", CWD: "/tmp/p", Entries: []transcript.Entry{
+		text("1", transcript.RoleUser, "u1"), text("2", transcript.RoleAssistant, "a1"),
+		{ID: "c", Compaction: &transcript.Compaction{Summary: []transcript.Entry{text("", transcript.RoleUser, "SUMMARY")}}},
+		text("3", transcript.RoleUser, "u2"), text("4", transcript.RoleAssistant, "a2"),
+		echo,
+		text("5", transcript.RoleUser, "u3"), text("6", transcript.RoleAssistant, "a3"),
+	}}
+	home := t.TempDir()
+	st, _ := Codec.Open(home)
+	id, err := st.Write(t.Context(), in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := read(t, home, id)
+	want := []string{"user: u1", "assistant: a1", "user: u2", "assistant: a2", "user: /stats", "user: u3", "assistant: a3"}
+	if got := texts(s.Linearize()); !slices.Equal(got, want) {
+		t.Errorf("linearize %q, want %q", got, want)
+	}
+	for _, e := range s.Context() {
+		if e.Text() == "/stats" {
+			t.Error("the echo reaches the model")
+		}
 	}
 }

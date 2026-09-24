@@ -135,7 +135,7 @@ func (st *store) Read(ctx context.Context, id string) (*transcript.Session, erro
 	shown, err := st.updates.Read(ctx, id)
 	switch {
 	case err == nil:
-		s.Entries = append(shown.Entries, s.Entries...)
+		s.Entries = place(shown.Entries, s.Entries)
 	case !errors.Is(err, transcript.ErrNotFound):
 		return nil, err
 	}

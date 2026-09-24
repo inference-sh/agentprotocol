@@ -116,7 +116,10 @@ func TestCompactedResume(t *testing.T) {
 	if !strings.HasPrefix(ctx[0].Content[1].Text, "<system-reminder>\n\nUser system info") {
 		t.Errorf("summary's second block = %.60q, want the system info reminder", ctx[0].Content[1].Text)
 	}
-	want := []string{"user:<system-reminder>\nThe tools listed below", "user:What was my previous question?", "assistant:Hello from mock server."}
+	// The turn's context row held the per-turn reminders and the date
+	// reminder; droid sent the reminders after the summary and the date
+	// reminder in the row's place.
+	want := []string{"user:<system-reminder>\nThe tools listed below", "user:<system-reminder>Current date: 2026-09-2", "user:What was my previous question?", "assistant:Hello from mock server."}
 	if got := texts(ctx[1:]); strings.Join(got, "|") != strings.Join(want, "|") {
 		t.Errorf("context after the summary = %q, want %q", got, want)
 	}
@@ -334,5 +337,36 @@ func TestWriteCompacted(t *testing.T) {
 		if strings.HasPrefix(e.Text(), "Ran `echo private`") && e.Audience != transcript.AudienceUser {
 			t.Errorf("the private command's output is for audience %d, want the person only", e.Audience)
 		}
+	}
+}
+
+// The carried sample is pi's compacted session written into droid's home in
+// the harness-test container (the writer's compaction_state anchored before
+// the kept answer), then resumed over ACP with one more prompt. droid wrote
+// that turn's context row before the prompt, and sent its per-turn
+// reminders right after the summary and the date reminder in the row's
+// place, which is what Context must return.
+func TestRemindersFollowSummary(t *testing.T) {
+	st, err := Codec.Open("testdata/carried")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := st.Read(t.Context(), "8323efce-c324-4160-a07b-060ae5405c16")
+	if err != nil {
+		t.Fatal(err)
+	}
+	const answer = "assistant:Hello from mock server."
+	want := []string{
+		"user:A previous instance of Droid has summari",
+		"user:<system-reminder>\nThe tools listed below",
+		answer, "user:After compaction.", answer,
+		"user:<system-reminder>Current date: 2026-09-2",
+		"user:What was my previous question?", answer,
+	}
+	if got := texts(s.Context()); strings.Join(got, "|") != strings.Join(want, "|") {
+		t.Errorf("context = %q\nwant %q", got, want)
+	}
+	if n := len(s.Linearize()); n != 12 {
+		t.Errorf("linearize has %d messages, want the 12 of every turn", n)
 	}
 }

@@ -382,13 +382,14 @@ func sameIndex(a, b *int) bool {
 // finishUpdates keeps, of the updates rows, the history the last
 // compaction retired, which the person still sees and chat_history.jsonl no
 // longer holds; every message after it is in chat_history.jsonl too, and
-// its rows here are left opaque. That includes the echo of a command such as
-// /compact, which has no chat row to be placed by and would otherwise be
-// shown ahead of turns it followed. A rewind is applied first: a rewind to
-// prompt N drops everything from prompt N's first chunk up to the marker,
-// as filter_rewind_by does before replaying the file to the client, and a
-// compaction it drops no longer counts. A message grok wrote as several
-// chunk rows is joined into its first row's entry.
+// its rows here are left opaque, except the echo of a command such as
+// /compact, which grok shows and never sends and which has no chat row. The
+// store places such an echo among the chat rows (see place). A rewind is
+// applied first: a rewind to prompt N drops everything from prompt N's
+// first chunk up to the marker, as filter_rewind_by does before replaying
+// the file to the client, and a compaction it drops no longer counts. A
+// message grok wrote as several chunk rows is joined into its first row's
+// entry.
 func finishUpdates(s *transcript.Session) error {
 	joinChunks(s)
 	retired := 0
@@ -398,11 +399,91 @@ func finishUpdates(s *transcript.Session) error {
 		}
 	}
 	for i := retired; i < len(s.Entries); i++ {
-		if e := &s.Entries[i]; e.Audience != transcript.AudienceNone {
+		if e := &s.Entries[i]; e.Audience != transcript.AudienceNone && !isHostTurn(e.Raw) {
 			e.Role, e.Content = transcript.RoleOpaque, nil
 		}
 	}
 	return nil
+}
+
+// isHostTurn reports whether an update row is the echo of a command the
+// host ran: a user chunk marked hostTurn, which is no prompt.
+func isHostTurn(raw json.RawMessage) bool {
+	p, ok := parseUpdate(raw)
+	return ok && !p.xai && p.update.SessionUpdate == "user_message_chunk" && p.update.Meta != nil && p.update.Meta.HostTurn
+}
+
+// lastCheckpoint is the index of the last compaction_checkpoint row a rewind
+// left standing among the updates entries, or -1.
+func lastCheckpoint(shown []transcript.Entry) int {
+	last := -1
+	for i, e := range shown {
+		if e.Audience != transcript.AudienceNone && stepKind(e.Raw) == "compaction_checkpoint" {
+			last = i
+		}
+	}
+	return last
+}
+
+// place lays out a session's entries as grok shows them: the updates rows
+// the last compaction retired, then the chat rows with the updates rows
+// written since merged in where they happened. An updates row goes just
+// before the chat prompt of the next prompt index updates.jsonl records at
+// or after it, or after every chat row when none follows; so a command's
+// echo is shown ahead of the prompt that came after it. Each file's rows
+// keep their order, and a torn line stays behind the row before it, so each
+// file is written back as it was.
+func place(shown, chat []transcript.Entry) []transcript.Entry {
+	cut := lastCheckpoint(shown) + 1
+	out := append([]transcript.Entry(nil), shown[:cut]...)
+	tail := shown[cut:]
+	// Where each chat prompt sits, by its prompt index.
+	at := map[int]int{}
+	for k, e := range chat {
+		var r struct {
+			PromptIndex *int `json:"prompt_index"`
+		}
+		if json.Unmarshal(e.Raw, &r) == nil && r.PromptIndex != nil {
+			if _, ok := at[*r.PromptIndex]; !ok {
+				at[*r.PromptIndex] = k
+			}
+		}
+	}
+	// The chat position each tail row goes before, never behind the row
+	// ahead of it.
+	pos := make([]int, len(tail))
+	next := len(chat)
+	for k := len(tail) - 1; k >= 0; k-- {
+		if st := stepOf(tail[k].Raw); st.user && st.prompt && st.promptIndex != nil {
+			next = len(chat)
+			if c, ok := at[*st.promptIndex]; ok {
+				next = c
+			}
+		}
+		pos[k] = next
+		if !json.Valid(tail[k].Raw) && k > 0 {
+			pos[k] = -1 // settled with the row before it below
+		}
+	}
+	for k := range pos {
+		switch {
+		case pos[k] < 0:
+			pos[k] = pos[k-1]
+		case k > 0 && pos[k] < pos[k-1]:
+			pos[k] = pos[k-1]
+		}
+	}
+	k := 0
+	for c := 0; c <= len(chat); c++ {
+		for k < len(tail) && pos[k] <= c {
+			out = append(out, tail[k])
+			k++
+		}
+		if c < len(chat) {
+			out = append(out, chat[c])
+		}
+	}
+	return out
 }
 
 // joinChunks applies rewinds and joins chunked messages; see finishUpdates.

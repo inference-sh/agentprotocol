@@ -394,6 +394,30 @@ func TestCodexSendsApprovalPolicyThatAsks(t *testing.T) {
 	}
 }
 
+func TestCodexPassesThreadConfigOnStartAndResume(t *testing.T) {
+	for _, resume := range []string{"", "thr_old"} {
+		b, _ := codexBackend(t, "normal")
+		b.Config = map[string]any{"bypass_hook_trust": true, "model_reasoning_effort": "low"}
+		sess, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir(), ResumeSessionID: resume})
+		if err != nil {
+			t.Fatalf("open (resume %q): %v", resume, err)
+		}
+		_ = sess.Prompt(context.Background(), driver.TextInput("config?"))
+		got := deltas(until(t, sess.Events(), ap.AgentEventTurnCompleted))
+		if want := `config={"bypass_hook_trust":true,"model_reasoning_effort":"low"}`; got != want {
+			t.Errorf("resume %q: thread got %s, want %s", resume, got, want)
+		}
+		_ = sess.Close()
+	}
+
+	// No Config sends none, so the user's own configuration stands.
+	sess := openCodex(t, "normal", driver.SessionConfig{})
+	_ = sess.Prompt(context.Background(), driver.TextInput("config?"))
+	if got := deltas(until(t, sess.Events(), ap.AgentEventTurnCompleted)); got != "config=" {
+		t.Errorf("default thread config = %s, want none", got)
+	}
+}
+
 func TestCodexBackendCapabilities(t *testing.T) {
 	b := &driver.CodexBackend{}
 	if b.Kind() != driver.KindCodex {
@@ -414,6 +438,7 @@ type fakeCodex struct {
 	thread string
 	policy json.RawMessage
 	review string
+	config json.RawMessage
 	turns  int
 
 	active     string
@@ -494,9 +519,10 @@ func (f *fakeCodex) handle(m codexapp.Message) {
 			ThreadID          string          `json:"threadId"`
 			ApprovalPolicy    json.RawMessage `json:"approvalPolicy"`
 			ApprovalsReviewer string          `json:"approvalsReviewer"`
+			Config            json.RawMessage `json:"config"`
 		}
 		_ = json.Unmarshal(m.Params, &p)
-		f.policy, f.review = p.ApprovalPolicy, p.ApprovalsReviewer
+		f.policy, f.review, f.config = p.ApprovalPolicy, p.ApprovalsReviewer, p.Config
 		f.thread, f.turns = "thr_fake", 0
 		if m.Method == codexapp.MethodThreadResume {
 			if p.ThreadID != "thr_old" {
@@ -575,6 +601,8 @@ func (f *fakeCodex) handle(m codexapp.Message) {
 				f.finish(turn, "decision="+string(r.Decision))
 			})
 			return
+		case text == "config?":
+			f.finish(turn, "config="+string(f.config))
 		case text == "policy?":
 			f.finish(turn, "policy="+string(f.policy)+" reviewer="+f.review)
 		default:

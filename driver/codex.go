@@ -58,6 +58,18 @@ type CodexBackend struct {
 	// being decided by codex's automatic reviewer.
 	ApprovalsReviewer string
 
+	// Config is codex configuration for this session's thread, sent as the
+	// config of thread/start and thread/resume. Keys are dotted config paths
+	// as in `-c key=value` ("model_reasoning_effort",
+	// "features.some_flag"); values are anything that encodes to JSON.
+	//
+	// Unlike Args, which configure the whole app-server process, this is
+	// scoped to the thread, and it reaches settings codex accepts only per
+	// thread. bypass_hook_trust is one: codex 0.156.1 honours it here and
+	// ignores it as `-c` on app-server. It runs hooks nobody reviewed, so it
+	// is the caller's decision and never set by this package. Nil sends none.
+	Config map[string]any
+
 	// Stderr receives codex's own logs. Nil discards them.
 	Stderr io.Writer
 
@@ -99,6 +111,11 @@ func (b *CodexBackend) diagnose(msg string) {
 
 // Open implements Backend.
 func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error) {
+	threadConfig, err := encodeConfig(b.Config)
+	if err != nil {
+		return nil, err
+	}
+
 	s := &codexSession{
 		backend:   b,
 		runID:     cfg.RunID,
@@ -160,6 +177,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 			ApprovalPolicy:        policy,
 			ApprovalsReviewer:     &reviewer,
 			Sandbox:               sandbox,
+			Config:                threadConfig,
 		})
 		if err != nil {
 			_ = proc.Kill()
@@ -175,6 +193,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 			ApprovalPolicy:        policy,
 			ApprovalsReviewer:     &reviewer,
 			Sandbox:               sandbox,
+			Config:                threadConfig,
 		})
 		if err != nil {
 			_ = proc.Kill()
@@ -191,6 +210,22 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 	go s.sendLoop()
 	go s.watch()
 	return s, nil
+}
+
+// encodeConfig turns CodexBackend.Config into the thread params' shape.
+func encodeConfig(cfg map[string]any) (map[string]json.RawMessage, error) {
+	if len(cfg) == 0 {
+		return nil, nil
+	}
+	out := make(map[string]json.RawMessage, len(cfg))
+	for k, v := range cfg {
+		raw, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("driver: codex config %q: %w", k, err)
+		}
+		out[k] = raw
+	}
+	return out, nil
 }
 
 // codexApproval is one server request waiting on a human.

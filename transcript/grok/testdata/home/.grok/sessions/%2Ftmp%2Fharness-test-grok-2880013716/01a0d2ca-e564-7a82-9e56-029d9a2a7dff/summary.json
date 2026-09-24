@@ -1,0 +1,24 @@
+{
+  "info": {
+    "id": "01a0d2ca-e564-7a82-9e56-029d9a2a7dff",
+    "cwd": "/tmp/harness-test-grok-2880013716"
+  },
+  "agent_id": "ag1.e406b1c44f3d46e988bd7c4f2bc5c6a6",
+  "attempt_id": "at1.30dfd1b832c046a4a54af68c1edb27f3",
+  "session_summary": "Mock value",
+  "created_at": "2026-09-24T09:41:47.493354891Z",
+  "updated_at": "2026-09-24T09:41:47.641687595Z",
+  "num_messages": 6,
+  "num_chat_messages": 5,
+  "current_model_id": "mock-model",
+  "next_trace_turn": 1,
+  "chat_format_version": 1,
+  "request_id": "d1de6434-0d0a-4338-8251-26fdbf65f0c7",
+  "grok_home": "/tmp/harness-test-grok-2880013716/.grok",
+  "last_active_at": "2026-09-24T09:41:47.637221852Z",
+  "generated_title": "Mock value",
+  "agent_name": "grok-build-plan",
+  "sandbox_profile": "off",
+  "last_turn_summary": "Hello from mock server.",
+  "last_turn_summary_prompt_id": "d1de6434-0d0a-4338-8251-26fdbf65f0c7"
+}

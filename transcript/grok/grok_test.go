@@ -10,11 +10,18 @@ import (
 	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
-// The sample is one ACP run of Grok CLI in the harness-test container: a
-// system prompt, context, a prompt, a mock read_file call, an answer.
+// The samples are ACP runs of Grok CLI in the harness-test container. The
+// first is the --probe compact run's session, compacted once more over ACP
+// with a mock summary long enough for grok to accept: five prompts, a mock
+// read_file call, a failed and a successful /compact, then one more prompt.
+// The second ran three prompts, rewound to the second with
+// x.ai/rewind/execute, and ran one more. The third is one prompt with a
+// PNG attached.
 const (
-	sampleCWD = "/tmp/harness-test-grok-3224857346"
-	sampleID  = "01a0cadd-6736-7120-a28a-90c4bbe16a34"
+	sampleCWD = "/tmp/harness-test-grok-2119806780"
+	sampleID  = "01a0d2bc-f56f-78f1-a37e-8fd0135a718e"
+	rewoundID = "01a0d2ca-0758-7b20-a275-8f5e8de76245"
+	imageID   = "01a0d2ca-e564-7a82-9e56-029d9a2a7dff"
 )
 
 func TestRoundTrip(t *testing.T) {

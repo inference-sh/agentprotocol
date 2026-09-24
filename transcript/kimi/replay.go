@@ -210,11 +210,13 @@ func finish(s *transcript.Session) error {
 		}
 	}
 	r.settleOpen()
+	r.flush()
 	for _, i := range r.abandoned {
 		if len(s.Entries[i].Content) == 0 {
 			s.Entries[i].Role = transcript.RoleOpaque
 		}
 	}
+	r.link()
 	return nil
 }
 
@@ -407,6 +409,10 @@ type held struct {
 	at  int // index into Entries, or -1
 	msg contextMsg
 	e   *transcript.Entry // the made-up message's entry when at is -1
+	// summary marks a message of the latest compaction's Summary, at slot
+	// in the Summary of the compaction entry from.
+	summary    bool
+	from, slot int
 }
 
 func (h held) entry(s *transcript.Session) transcript.Entry {
@@ -437,6 +443,30 @@ type replay struct {
 	pending     []string       // tool calls awaiting a result, in call order
 	callRow     map[string]int // tool call id -> its tool.call row
 	abandoned   map[string]int // step uuid -> step.begin entry, off the chain
+	deferred    []int          // messages held back until the pending results arrive
+
+	// order is the entries in the order kimi delivers them to its context,
+	// compaction rows included.
+	order []int
+}
+
+// deliver puts an entry into the context.
+func (r *replay) deliver(i int, m contextMsg) {
+	r.hist = append(r.hist, held{at: i, msg: m})
+	r.order = append(r.order, i)
+}
+
+// flush delivers the held-back messages once no call is waiting
+// (loopEventFold.ts flushDeferred).
+func (r *replay) flush() {
+	if len(r.pending) > 0 {
+		return
+	}
+	for _, i := range r.deferred {
+		m, _ := appendedMessage(r.rows[i])
+		r.deliver(i, m)
+	}
+	r.deferred = nil
 }
 
 func (r *replay) apply(i int) error {
@@ -444,11 +474,15 @@ func (r *replay) apply(i int) error {
 	e := &r.s.Entries[i]
 	switch row.Type {
 	case "context.append_message":
-		// Kimi defers a message appended while tool calls await results until
-		// they arrive (loopEventFold.ts appendMessage). Entries keep store
-		// order, so such a message stays ahead of the results in Context().
+		// Kimi holds back a message appended while tool calls await results
+		// until they arrive (loopEventFold.ts appendMessage); link puts it
+		// after them.
 		if m, ok := appendedMessage(row); ok && e.Role != transcript.RoleOpaque {
-			r.hist = append(r.hist, held{at: i, msg: m})
+			if len(r.pending) > 0 {
+				r.deferred = append(r.deferred, i)
+			} else {
+				r.deliver(i, m)
+			}
 		}
 	case "context.append_loop_event":
 		var ev loopEvent
@@ -460,18 +494,21 @@ func (r *replay) apply(i int) error {
 		r.reset()
 		r.hist = nil
 		e.Compaction = &transcript.Compaction{}
+		r.order = append(r.order, i)
 	case "context.apply_compaction":
 		next, err := r.compact(row)
 		if err != nil {
 			return err
 		}
 		r.reset()
-		r.hist = next
 		c := &transcript.Compaction{}
-		for _, h := range next {
-			c.Summary = append(c.Summary, h.entry(r.s))
+		for k := range next {
+			c.Summary = append(c.Summary, next[k].entry(r.s))
+			next[k].summary, next[k].from, next[k].slot = true, i, k
 		}
+		r.hist = next
 		e.Compaction = c
+		r.order = append(r.order, i)
 	case "context.undo":
 		// Only an undo no agent.switched pairs with reaches here: a paired
 		// one is off the restorable chain.
@@ -488,7 +525,7 @@ func (r *replay) loopEvent(i int, ev loopEvent) {
 	case "step.begin":
 		r.settleOpen()
 		r.open, r.openUUID, r.openCalls, r.openVacuous = i, ev.UUID, false, true
-		r.hist = append(r.hist, held{at: i, msg: contextMsg{Role: "assistant"}})
+		r.deliver(i, contextMsg{Role: "assistant"})
 	case "step.end":
 		// An interrupted or failed step stays open: its partial content is
 		// kept when the next step settles it.
@@ -496,6 +533,7 @@ func (r *replay) loopEvent(i int, ev loopEvent) {
 			return
 		}
 		r.settleOpen()
+		r.flush()
 	case "content.part":
 		if r.open < 0 || ev.StepUUID != r.openUUID {
 			return
@@ -520,7 +558,8 @@ func (r *replay) loopEvent(i int, ev loopEvent) {
 			return
 		}
 		r.pending = append(r.pending[:k], r.pending[k+1:]...)
-		r.hist = append(r.hist, held{at: i, msg: contextMsg{Role: "tool"}})
+		r.deliver(i, contextMsg{Role: "tool"})
+		r.flush()
 	}
 }
 
@@ -537,9 +576,10 @@ func (r *replay) settleOpen() {
 		c := &r.s.Entries[at]
 		*c = transcript.Entry{Role: transcript.RoleTool, Time: c.Time, Raw: c.Raw,
 			Content: []transcript.Block{toolResult(id, interruptedOutput, true)}}
-		r.hist = append(r.hist, held{at: at, msg: contextMsg{Role: "tool"}})
+		r.deliver(at, contextMsg{Role: "tool"})
 	}
 	r.pending = nil
+	r.flush()
 	if !r.openCalls && r.openVacuous {
 		o := &r.s.Entries[r.open]
 		*o = transcript.Entry{Time: o.Time, Raw: o.Raw}
@@ -549,12 +589,24 @@ func (r *replay) settleOpen() {
 				break
 			}
 		}
+		for k, at := range r.order {
+			if at == r.open {
+				r.order = append(r.order[:k], r.order[k+1:]...)
+				break
+			}
+		}
 	}
 	r.open = -1
 }
 
+// reset starts the fold over, as kimi does after it replaces the context.
+// A message still held back never reaches the context.
 func (r *replay) reset() {
 	r.open, r.pending, r.openCalls = -1, nil, false
+	for _, i := range r.deferred {
+		r.s.Entries[i].Audience = transcript.AudienceNone
+	}
+	r.deferred = nil
 }
 
 // abandon marks a row off the restorable chain. Its message is kept for the
@@ -615,10 +667,29 @@ func (r *replay) undo(count int) {
 	if cut < 0 || removed < count {
 		return
 	}
+	// A legacy compaction keeps history after its summary, so the cut can
+	// reach into the compaction's Summary.
+	cutSummary := map[int]map[int]bool{}
 	for _, h := range r.hist[cut:] {
-		if h.at >= 0 {
+		switch {
+		case h.at >= 0:
 			r.s.Entries[h.at].Audience = transcript.AudienceNone
+		case h.summary:
+			if cutSummary[h.from] == nil {
+				cutSummary[h.from] = map[int]bool{}
+			}
+			cutSummary[h.from][h.slot] = true
 		}
+	}
+	for from, slots := range cutSummary {
+		c := r.s.Entries[from].Compaction
+		var kept []transcript.Entry
+		for k, e := range c.Summary {
+			if !slots[k] {
+				kept = append(kept, e)
+			}
+		}
+		c.Summary = kept
 	}
 	r.hist = r.hist[:cut]
 	r.reset()
@@ -910,4 +981,40 @@ func truncateFromEnd(s string, maxTokens int) string {
 		start = i
 	}
 	return s[start:]
+}
+
+// link threads the entries in the order kimi delivers them, when that is
+// not the order of the file: a message held back behind tool results
+// reaches the model after them. The links are the model's only; the rows
+// keep theirs. Entries without an id get one for the chain, and Leaf pins
+// the last delivered entry, so an appended turn continues from it.
+func (r *replay) link() {
+	sorted := true
+	for k := 1; k < len(r.order); k++ {
+		if r.order[k] < r.order[k-1] {
+			sorted = false
+			break
+		}
+	}
+	if sorted {
+		return
+	}
+	prev := ""
+	for _, i := range r.order {
+		e := &r.s.Entries[i]
+		if e.ID == "" {
+			e.ID = fmt.Sprintf("kimi-row-%d", i)
+		}
+		e.ParentID = prev
+		prev = e.ID
+	}
+	last := ""
+	for _, e := range r.s.Entries {
+		if e.ID != "" {
+			last = e.ID
+		}
+	}
+	if prev != last {
+		r.s.Leaf = prev
+	}
 }

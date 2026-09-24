@@ -446,3 +446,61 @@ func TestAudienceOf(t *testing.T) {
 		}
 	}
 }
+
+// TestHeldBackMessage checks a message appended while a tool call waits for
+// its result. Kimi appends context messages whenever something produces one
+// (agent/contextMemory/contextMemoryService.ts:52-60), a notification in
+// the middle of a tool call included, and its fold holds such a message back
+// until the results are in (loopEventFold.ts:141-147, 184-200), so the model
+// sees it after the result.
+func TestHeldBackMessage(t *testing.T) {
+	home, id := stage(t, metaRow, promptA,
+		`{"type":"context.append_loop_event","event":{"type":"step.begin","uuid":"sa"}}`,
+		`{"type":"context.append_loop_event","event":{"type":"tool.call","uuid":"ca","stepUuid":"sa","toolCallId":"call_1","name":"Read","args":{}}}`,
+		`{"type":"context.append_message","message":{"role":"user","content":[{"type":"text","text":"N"}],"toolCalls":[],"origin":{"kind":"task","taskId":"t1","status":"completed","notificationId":"n1"}}}`,
+		`{"type":"context.append_loop_event","event":{"type":"tool.result","parentUuid":"ca","toolCallId":"call_1","result":{"output":"R"}}}`,
+		`{"type":"context.append_loop_event","event":{"type":"step.end","uuid":"sa","finishReason":"tool_use"}}`,
+		answerB)
+	s := read(t, home, id)
+	want := "A||result:R|N|b"
+	if got := texts(s.Context()); strings.Join(got, "|") != want {
+		t.Errorf("context = %q, want %q", got, want)
+	}
+	if got := texts(s.Linearize()); strings.Join(got, "|") != want {
+		t.Errorf("linearize = %q, want %q", got, want)
+	}
+
+	// An appended turn continues after the last message delivered.
+	s.Entries = append(s.Entries,
+		transcript.Entry{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "C"}}},
+		transcript.Entry{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "c"}}},
+	)
+	st, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := st.Write(t.Context(), s); err != nil {
+		t.Fatal(err)
+	}
+	if got := texts(s.Context()); strings.Join(got, "|") != want+"|C|c" {
+		t.Errorf("context of the written session = %q, want %q", got, want+"|C|c")
+	}
+	if got := texts(read(t, home, id).Context()); strings.Join(got, "|") != want+"|C|c" {
+		t.Errorf("context after append = %q, want %q", got, want+"|C|c")
+	}
+}
+
+// TestLegacyCompactionUndo checks an undo that cuts into the history a
+// legacy compaction kept. Kimi wrote context.apply_compaction without
+// keptUserMessageCount before 2.0 (the legacy tail, contextOps.ts:145), and
+// its undo removes the kept prompt with everything after it
+// (contextOps.ts:91-96).
+func TestLegacyCompactionUndo(t *testing.T) {
+	home, id := stage(t, metaRow, promptA, answerA, promptB, answerB,
+		`{"type":"context.apply_compaction","summary":"S","compactedCount":2}`,
+		`{"type":"context.undo","count":1}`)
+	s := read(t, home, id)
+	if got := texts(s.Context()); strings.Join(got, "|") != "S" {
+		t.Errorf("context = %q, want only the summary", got)
+	}
+}

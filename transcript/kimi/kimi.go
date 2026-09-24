@@ -200,8 +200,15 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 	if s.Agent != "kimi" {
 		s = s.Portable()
 	}
-	// Ids first: the plan names entries by id.
-	transcript.AssignIDs(s, files.IDs, false)
+	// Ids first: the plan names entries by id. A session read with links
+	// (a message kimi delivers out of file order, see link) has its new
+	// entries linked on from the last one delivered, so the session stays
+	// whole in memory; the rows carry no links either way.
+	tree := false
+	for _, e := range s.Entries {
+		tree = tree || e.ParentID != ""
+	}
+	transcript.AssignIDs(s, files.IDs, tree)
 	w := files
 	w.Encode = newPlan(s).encoder()
 	ws, err := w.Open(st.home)

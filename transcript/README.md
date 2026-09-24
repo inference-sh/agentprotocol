@@ -93,6 +93,10 @@ pi), and for processes that predate an agent's registry. Listing a real
 home with a dozen Claude Code sessions open proves all but a handful of
 answers either way.
 
+A session file copied into place just now reads as `recent-write`, since
+its modification time is the copy's. Tests that list a copied sample should
+backdate it (`os.Chtimes`) to see the evidence a real idle session gives.
+
 It reads only metadata: process arguments, working directories, HOME, open
 file paths, and the agents' registries and markers. The process table is
 read from /proc, so off Linux only markers (their pids checked with signal

@@ -826,7 +826,7 @@ func openColumns(ctx context.Context, q openQuerier, table string) (map[string]b
 // does not have yet gets a session row, bound to its directory's project.
 func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != st.agent {
-		s = s.Portable().Lower(transcript.Capabilities{})
+		s = s.Portable().Lower(openCaps)
 	}
 	if err := os.MkdirAll(filepath.Dir(st.path), 0o755); err != nil {
 		return "", err
@@ -912,30 +912,12 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 	results := toolResults(s)
 	at := now
 	added := false
-	for _, e := range s.Messages() {
-		if e.Raw != nil || e.Role == transcript.RoleTool || e.Role == transcript.RoleSystem {
-			// Read rows stay; tool results fold into the assistant part that
-			// called them; opencode has no system messages.
-			continue
-		}
+	kilo := st.agent == "kilo"
+	insert := func(data func(ms int64) any, parts func(msgID string, ms int64) []openPartOut) (string, error) {
 		at = at.Add(time.Millisecond)
 		ms := at.UnixMilli()
 		msgID := ids.next("msg", at, false)
-		var data any
-		switch e.Role {
-		case transcript.RoleUser:
-			data = openUser{Role: "user", Time: openTime{Created: ms}, Agent: d.agent, Model: openModelRef{ProviderID: d.provider, ModelID: d.model}}
-			lastUser = msgID
-		case transcript.RoleAssistant:
-			data = openAssistant{
-				ParentID: lastUser, Role: "assistant", Mode: d.agent, Agent: d.agent,
-				Path: openPath{CWD: s.CWD, Root: s.CWD}, Tokens: openTokens{Cache: openCache{}},
-				ModelID: d.model, ProviderID: d.provider, Time: openTime{Created: ms, Completed: ms}, Finish: "stop",
-			}
-		default:
-			continue
-		}
-		raw, err := json.Marshal(data)
+		raw, err := json.Marshal(data(ms))
 		if err != nil {
 			return "", err
 		}
@@ -944,10 +926,7 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 			msgID, s.ID, ms, ms, string(raw)); err != nil {
 			return "", fmt.Errorf("opencode: write message: %w", err)
 		}
-		newPart := func() openAttachment {
-			return openAttachment{ID: ids.next("prt", at, false), SessionID: s.ID, MessageID: msgID}
-		}
-		for _, part := range openParts(e, results, ms, newPart) {
+		for _, part := range parts(msgID, ms) {
 			pd, err := json.Marshal(part)
 			if err != nil {
 				return "", err
@@ -959,6 +938,94 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 			}
 		}
 		added = true
+		return msgID, nil
+	}
+	user := func(ms int64) any {
+		return openUser{Role: "user", Time: openTime{Created: ms}, Agent: d.agent, Model: openModelRef{ProviderID: d.provider, ModelID: d.model}}
+	}
+	answer := func(parent, agent string, summary bool) func(ms int64) any {
+		return func(ms int64) any {
+			return openAssistant{
+				ParentID: parent, Role: "assistant", Mode: agent, Agent: agent, Summary: summary,
+				Path: openPath{CWD: s.CWD, Root: s.CWD}, Tokens: openTokens{Cache: openCache{}},
+				ModelID: d.model, ProviderID: d.provider, Time: openTime{Created: ms, Completed: ms}, Finish: "stop",
+			}
+		}
+	}
+	// held maps each written entry to the message holding it, a tool result
+	// to the answer whose tool part holds it, so a compaction can name the
+	// first message it keeps.
+	held := map[string]string{}
+	lastAnswer := ""
+	for i, e := range s.Entries {
+		if e.Raw != nil {
+			continue
+		}
+		if e.Role == transcript.RoleOpaque && e.Compaction != nil {
+			// A compaction is a prompt holding a compaction part and the
+			// summary answering it (compaction.ts create, process), placed
+			// after the tail it keeps (message-v2.ts filterCompacted).
+			tail := openKept(s.Entries[:i], e.Compaction.Keep, held)
+			auto := false
+			prompt, err := insert(user, func(string, int64) []openPartOut {
+				return []openPartOut{{Type: "compaction", Auto: &auto, TailStartID: tail}}
+			})
+			if err != nil {
+				return "", err
+			}
+			lastUser = prompt
+			summary := summaryText(e.Compaction.Summary)
+			if _, err := insert(answer(prompt, "compaction", true), func(string, int64) []openPartOut {
+				return []openPartOut{{Type: "text", Text: &summary}}
+			}); err != nil {
+				return "", err
+			}
+			continue
+		}
+		var data func(ms int64) any
+		// An entry shown and not sent is its text, marked ignored, which
+		// the model is not given and the TUI shows (message-v2.ts
+		// toModelMessages). Only a prompt can be one in opencode; Kilo
+		// also ignores an answer's text.
+		shownOnly := e.Audience == transcript.AudienceUser
+		if shownOnly && (len(openIgnored(e)) == 0 || e.Role == transcript.RoleAssistant && !kilo) {
+			continue
+		}
+		switch e.Role {
+		case transcript.RoleUser:
+			data = user
+		case transcript.RoleAssistant:
+			data = answer(lastUser, d.agent, false)
+		case transcript.RoleTool:
+			// Tool results fold into the answer's part that called them.
+			if e.ID != "" {
+				held[e.ID] = lastAnswer
+			}
+			continue
+		default:
+			// opencode has no system messages.
+			continue
+		}
+		msgID, err := insert(data, func(msgID string, ms int64) []openPartOut {
+			newPart := func() openAttachment {
+				return openAttachment{ID: ids.next("prt", at, false), SessionID: s.ID, MessageID: msgID}
+			}
+			if shownOnly {
+				return openIgnored(e)
+			}
+			return openParts(e, results, ms, newPart)
+		})
+		if err != nil {
+			return "", err
+		}
+		if e.ID != "" {
+			held[e.ID] = msgID
+		}
+		if e.Role == transcript.RoleUser {
+			lastUser = msgID
+		} else {
+			lastAnswer = msgID
+		}
 	}
 	if added && exists {
 		if _, err := tx.ExecContext(ctx, "UPDATE session SET time_updated = ? WHERE id = ?", at.UnixMilli(), s.ID); err != nil {
@@ -969,6 +1036,42 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 		return "", err
 	}
 	return s.ID, nil
+}
+
+// openCaps is what opencode and Kilo record of another agent's session: a
+// compaction as their own, and a prompt shown and not sent as ignored text.
+var openCaps = transcript.Capabilities{Compaction: true, UserOnly: true}
+
+// openKept is the message a compaction's tail starts at: the one holding
+// the entry keep names, or the first message written after it. Empty when
+// the compaction keeps nothing written.
+func openKept(before []transcript.Entry, keep string, held map[string]string) string {
+	if keep == "" {
+		return ""
+	}
+	i := slices.IndexFunc(before, func(e transcript.Entry) bool { return e.ID == keep })
+	if i < 0 {
+		return ""
+	}
+	for _, e := range before[i:] {
+		if id := held[e.ID]; e.ID != "" && id != "" {
+			return id
+		}
+	}
+	return ""
+}
+
+// openIgnored is a shown-only entry as parts: its text, ignored. Its images
+// and files have no ignored form and are left out.
+func openIgnored(e transcript.Entry) []openPartOut {
+	var parts []openPartOut
+	for _, b := range e.Content {
+		if b.Kind == transcript.BlockText && b.Text != "" {
+			text := b.Text
+			parts = append(parts, openPartOut{Type: "text", Text: &text, Ignored: true})
+		}
+	}
+	return parts
 }
 
 // The message and part payloads opencode validates on load. The id,
@@ -998,6 +1101,8 @@ type openAssistant struct {
 	ProviderID string     `json:"providerID"`
 	Time       openTime   `json:"time"`
 	Finish     string     `json:"finish,omitempty"`
+	// Summary marks the answer a compaction wrote.
+	Summary bool `json:"summary,omitempty"`
 }
 
 type openPath struct {
@@ -1023,12 +1128,16 @@ type openSpan struct {
 }
 
 type openPartOut struct {
-	Type   string        `json:"type"`
-	Text   *string       `json:"text,omitempty"`
-	Time   *openSpan     `json:"time,omitempty"`
-	CallID string        `json:"callID,omitempty"`
-	Tool   string        `json:"tool,omitempty"`
-	State  *openStateOut `json:"state,omitempty"`
+	Type    string  `json:"type"`
+	Text    *string `json:"text,omitempty"`
+	Ignored bool    `json:"ignored,omitempty"`
+	// Auto and TailStartID are a compaction part's.
+	Auto        *bool         `json:"auto,omitempty"`
+	TailStartID string        `json:"tail_start_id,omitempty"`
+	Time        *openSpan     `json:"time,omitempty"`
+	CallID      string        `json:"callID,omitempty"`
+	Tool        string        `json:"tool,omitempty"`
+	State       *openStateOut `json:"state,omitempty"`
 	openFile
 }
 

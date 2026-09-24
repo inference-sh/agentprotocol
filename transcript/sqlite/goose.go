@@ -354,6 +354,17 @@ var gooseContinuations = []string{
 	"Your context was compacted at the user's request. The previous message contains a summary of the conversation so far.",
 }
 
+// gooseContinuation is the whole continuation of a compaction the person
+// asked for (MANUAL_COMPACT_CONTINUATION_TEXT), which a carried compaction
+// is written with.
+const gooseContinuation = "Your context was compacted at the user's request. The previous message contains a summary of the conversation so far.\n" +
+	"Do not mention that you read a summary or that conversation summarization occurred.\n" +
+	"Just continue the conversation naturally based on the summarized context."
+
+// gooseCaps is what goose records of another agent's session: a compaction
+// as its own, and a row shown and not sent (userVisible only).
+var gooseCaps = transcript.Capabilities{Compaction: true, UserOnly: true}
+
 // gooseCompactions finds the summaries goose's compaction wrote. A
 // compaction keeps every earlier row for the person only, then adds the
 // summary and a continuation message for the model only
@@ -389,7 +400,8 @@ func gooseCompactions(s *transcript.Session) {
 // inside the transaction so it can never land on a session goose already has.
 func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != "goose" {
-		s = s.Portable().Lower(transcript.Capabilities{})
+		s = s.Portable().Lower(gooseCaps)
+		s.Entries = unkept(s.Entries)
 	}
 	now := time.Now()
 	if s.Created.IsZero() {
@@ -481,13 +493,10 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		return "", err
 	}
 	added := false
-	for _, e := range s.Messages() {
-		if e.Raw != nil {
-			continue
-		}
+	insert := func(e transcript.Entry) error {
 		content, err := gooseContentJSON(e)
 		if err != nil {
-			return "", err
+			return err
 		}
 		ts := now.Unix()
 		if !e.Time.IsZero() {
@@ -499,14 +508,57 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		latest = sql.NullInt64{Int64: ts, Valid: true}
 		meta, err := json.Marshal(map[string]bool{"userVisible": e.Audience.User(), "agentVisible": e.Audience.Model()})
 		if err != nil {
-			return "", err
+			return err
 		}
 		if _, err := tx.ExecContext(ctx,
 			`INSERT INTO messages (message_id, session_id, role, content_json, created_timestamp, metadata_json) VALUES (?, ?, ?, ?, ?, ?)`,
 			"msg_"+s.ID+"_"+transcript.NewUUID(), s.ID, string(gooseRole(e.Role)), content, ts, string(meta)); err != nil {
-			return "", fmt.Errorf("goose: write message: %w", err)
+			return fmt.Errorf("goose: write message: %w", err)
 		}
 		added = true
+		return nil
+	}
+	// A compaction leaves every row before it shown and no longer sent,
+	// its own summary included once a later compaction replaces it
+	// (context_mgmt/mod.rs compact_messages), so what a new compaction
+	// retires is everything written before the last one.
+	last := -1
+	for i, e := range s.Entries {
+		if e.Raw == nil && e.Role == transcript.RoleOpaque && e.Compaction != nil {
+			last = i
+		}
+	}
+	for i, e := range s.Entries {
+		if e.Raw != nil {
+			continue
+		}
+		retired := i < last
+		if e.Role == transcript.RoleOpaque {
+			if e.Compaction == nil {
+				continue
+			}
+			// The summary is a user message and the continuation an
+			// assistant one, both for the model only.
+			audience := transcript.AudienceModel
+			if retired {
+				audience = transcript.AudienceNone
+			}
+			for _, row := range []transcript.Entry{
+				{Role: transcript.RoleUser, Time: e.Time, Audience: audience, Content: []transcript.Block{{Kind: transcript.BlockText, Text: summaryText(e.Compaction.Summary)}}},
+				{Role: transcript.RoleAssistant, Time: e.Time, Audience: audience, Content: []transcript.Block{{Kind: transcript.BlockText, Text: gooseContinuation}}},
+			} {
+				if err := insert(row); err != nil {
+					return "", err
+				}
+			}
+			continue
+		}
+		if retired {
+			e.Audience = audienceOf(e.Audience.User(), false)
+		}
+		if err := insert(e); err != nil {
+			return "", err
+		}
 	}
 	if added && exists {
 		if _, err := tx.ExecContext(ctx, "UPDATE sessions SET updated_at = CURRENT_TIMESTAMP WHERE id = ?", s.ID); err != nil {

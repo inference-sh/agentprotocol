@@ -297,6 +297,9 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 	}
 	head := *s
 	head.Entries = append([]transcript.Entry(nil), s.Entries[at:]...)
+	// The plan names compaction markers and the entries they keep by id, so
+	// ids are settled first; the engine's own pass then changes nothing.
+	transcript.AssignIDs(&head, files.IDs, files.Tree)
 	p := newPlan(&head)
 	w := files
 	w.Encode = p.encode

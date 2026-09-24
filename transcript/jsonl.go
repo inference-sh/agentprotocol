@@ -568,7 +568,8 @@ type IDScheme struct {
 // UUIDs is the scheme most agents use for entry ids.
 var UUIDs = IDScheme{New: NewUUID, Valid: IsUUID}
 
-// AssignIDs gives every entry a write creates (no Raw, not opaque) an id in
+// AssignIDs gives every entry a write creates (no Raw, and a message or a
+// compaction marker) an id in
 // the agent's scheme, and keeps links between entries intact. An entry keeps
 // its id only if the scheme accepts it: a session imported from another
 // agent carries that agent's ids, which this agent may reject (Copilot
@@ -584,10 +585,15 @@ func AssignIDs(s *Session, scheme IDScheme, tree bool) {
 	if scheme.New == nil {
 		scheme = UUIDs
 	}
+	// An entry this write creates is a message without Raw, or a
+	// compaction marker, which a tree writer links into the chain like one.
+	created := func(e *Entry) bool {
+		return e.Raw == nil && (e.Role != RoleOpaque || e.Compaction != nil)
+	}
 	remap := map[string]string{}
 	for i := range s.Entries {
 		e := &s.Entries[i]
-		if e.Raw != nil || e.Role == RoleOpaque {
+		if !created(e) {
 			continue
 		}
 		if e.ID == "" || (scheme.Valid != nil && !scheme.Valid(e.ID)) {
@@ -610,7 +616,7 @@ func AssignIDs(s *Session, scheme IDScheme, tree bool) {
 	prev, first := "", true
 	for i := range s.Entries {
 		e := &s.Entries[i]
-		if e.Raw == nil && e.Role != RoleOpaque {
+		if created(e) {
 			if to, ok := remap[e.ParentID]; ok {
 				e.ParentID = to
 			}

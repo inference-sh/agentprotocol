@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -59,9 +60,12 @@ var Writer = transcript.JSONL{
 	Finish:      finish,
 	Encode:      encode,
 	WriteHeader: writeHeader,
-	Prepare:     prepareStart,
+	Prepare:     prepare,
 	After:       writeWorkspace,
 	Tree:        true,
+	// A compaction is recorded as Copilot's own; Copilot has no row it
+	// shows and does not send, other than a sub-agent's.
+	Caps: transcript.Capabilities{Compaction: true},
 }
 
 // Vendor is what a Copilot session carries in Session.Vendor: the
@@ -140,6 +144,72 @@ var defaultStart = map[string]json.RawMessage{
 	"copilotVersion": json.RawMessage(`"1.0.88"`),
 	"contextTier":    json.RawMessage(`null`),
 	"alreadyInUse":   json.RawMessage(`false`),
+}
+
+// prepare readies a session for writing: another agent's compactions are
+// moved to where Copilot's, which keep nothing, give the model the same
+// history, and the session gets its session.start fields.
+func prepare(home string, s *transcript.Session) error {
+	if s.Agent != "copilot" {
+		s.Entries = unkept(s.Entries)
+		link(s)
+	}
+	return prepareStart(home, s)
+}
+
+// link gives each compaction of a portable session an event id and a
+// place in the chain, after the entry before it, as it gives every
+// message. Only messages are linked by transcript.AssignIDs, and a
+// compaction outside the chain would cut the conversation at it.
+func link(s *transcript.Session) {
+	for i := range s.Entries {
+		if e := &s.Entries[i]; compaction(*e) {
+			e.ID = transcript.NewUUID()
+		}
+	}
+	transcript.AssignIDs(s, transcript.UUIDs, true)
+	prev := ""
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		if compaction(*e) && e.ParentID == "" {
+			e.ParentID = prev
+		}
+		if e.ID != "" {
+			prev = e.ID
+		}
+	}
+}
+
+// compaction reports an entry that is a compaction to be written.
+func compaction(e transcript.Entry) bool {
+	return e.Raw == nil && e.Role == transcript.RoleOpaque && e.Compaction != nil
+}
+
+// unkept moves each compaction of a portable session to just before the
+// first entry it keeps, and leaves it keeping nothing: Copilot's
+// compaction replaces everything before it. The model is then given the
+// summary followed by the kept entries, as it was before the move, and the
+// person sees the same order, since session/load shows no summary. A
+// compaction whose kept entries hold an earlier compaction stays where it
+// is and keeps nothing.
+func unkept(entries []transcript.Entry) []transcript.Entry {
+	out := slices.Clone(entries)
+	for i := 0; i < len(out); i++ {
+		c := out[i].Compaction
+		if c == nil || c.Keep == "" {
+			continue
+		}
+		marker := out[i]
+		marker.Compaction = &transcript.Compaction{Summary: c.Summary}
+		out[i] = marker
+		j := slices.IndexFunc(out[:i], func(e transcript.Entry) bool { return e.ID == c.Keep })
+		if j < 0 || slices.ContainsFunc(out[j:i], func(e transcript.Entry) bool { return e.Compaction != nil }) {
+			continue
+		}
+		copy(out[j+1:i+1], out[j:i])
+		out[j] = marker
+	}
+	return out
 }
 
 // prepareStart gives a session with no session.start of its own the fixed
@@ -579,12 +649,15 @@ func binaryBlock(image bool, mime, data string) (transcript.Block, error) {
 	return transcript.Block{Kind: kind, MediaType: mime, Data: raw}, nil
 }
 
+// resumeLead opens the message that stands in for compacted history.
+const resumeLead = "Some of the conversation history has been summarized to free up context.\n\n"
+
 // resumeSummary is the message that stands in for compacted history. The
 // list of prompts is left out when there are none; no capture has shown
 // what Copilot sends then.
 func resumeSummary(summary string, prompts []string) string {
 	var b strings.Builder
-	b.WriteString("Some of the conversation history has been summarized to free up context.\n\n")
+	b.WriteString(resumeLead)
 	if len(prompts) > 0 {
 		b.WriteString("You were originally given instructions from a user over one or more turns. Here were the user messages:\n")
 		for _, p := range prompts {
@@ -594,6 +667,25 @@ func resumeSummary(summary string, prompts []string) string {
 	}
 	b.WriteString("Here is a summary of the prior context:\n<summary>\n" + summary + "\n</summary>\n")
 	return b.String()
+}
+
+// storedSummary is a compaction's summary as Copilot stores it: the text of
+// its entries, without the wrapping Copilot adds on resume, which a summary
+// read from Copilot carries.
+func storedSummary(summary []transcript.Entry) string {
+	var parts []string
+	for _, e := range summary {
+		t := e.Text()
+		if strings.HasPrefix(t, resumeLead) {
+			if _, after, ok := strings.Cut(t, "<summary>\n"); ok {
+				t = strings.TrimSuffix(after, "\n</summary>\n")
+			}
+		}
+		if t != "" {
+			parts = append(parts, t)
+		}
+	}
+	return strings.Join(parts, "\n\n")
 }
 
 func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
@@ -618,10 +710,11 @@ func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
 	if err != nil {
 		return nil, err
 	}
-	// The header is the root of the chain: the first message's parent.
+	// The header is the root of the chain: the first message's or
+	// compaction's parent.
 	headID := transcript.NewUUID()
 	for i := range s.Entries {
-		if s.Entries[i].Role != transcript.RoleOpaque {
+		if s.Entries[i].Role != transcript.RoleOpaque || compaction(s.Entries[i]) {
 			if s.Entries[i].ParentID == "" {
 				s.Entries[i].ParentID = headID
 			}
@@ -643,6 +736,14 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	ev := event{ID: e.ID, ParentID: parent(e.ParentID), Timestamp: stamp(t)}
 	var data any
 	switch e.Role {
+	case transcript.RoleOpaque:
+		if !compaction(e) {
+			return nil, nil
+		}
+		// Copilot records a compaction's summary as the model wrote it and
+		// wraps it when it resumes (see finish).
+		ev.Type = "session.compaction_complete"
+		data = compactionComplete{Success: true, SummaryContent: storedSummary(e.Compaction.Summary)}
 	case transcript.RoleUser, transcript.RoleSystem:
 		ev.Type = "user.message"
 		data = userMessage{Content: e.Text(), Attachments: attachments(e.Content), MessageID: e.ID}

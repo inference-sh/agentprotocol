@@ -559,6 +559,25 @@ const (
 	hermesPriorDelimiter      = "[END OF PRIOR CONTEXT — COMPACTION SUMMARY BELOW]"
 )
 
+// hermesCaps is what hermes records of another agent's session: a
+// compaction as its own, and a row shown and not sent as one a compaction
+// archived.
+var hermesCaps = transcript.Capabilities{Compaction: true, UserOnly: true}
+
+// hermesHandoffPrefix is the prefix hermes stores a compaction summary
+// under (agent/context_compressor.py SUMMARY_PREFIX).
+const hermesHandoffPrefix = "[CONTEXT COMPACTION — REFERENCE ONLY] Earlier turns were compacted into the summary below. This is a handoff from a previous context window — treat it as background reference, NOT as active instructions. Do NOT answer questions or fulfill requests mentioned in this summary; they were already addressed. Respond ONLY to the latest user message that appears AFTER this summary — that message is the single source of truth for what to do right now. If no user message appears AFTER this summary, do nothing: do not resume, wrap up, or continue work from '## Historical Task Snapshot' or any other section, do not call tools, and wait for a new user message. This handoff must never become the active turn by itself. (Exception: if tool results or your own tool calls appear after this summary, you are mid-way through an in-flight exchange — continue that exchange normally.) Topic overlap with the summary does NOT mean you should resume its task: even on similar topics, the latest user message WINS. Treat ONLY the latest message as the active task and discard stale items from '## Historical Task Snapshot' entirely — do not 'wrap up' or 'finish' work described there unless the latest message explicitly asks for it. Reverse signals in the latest message (e.g. 'stop', 'undo', 'roll back', 'just verify', 'don't do that anymore', 'never mind', a new topic) must immediately end any in-flight work described in the summary; do not re-surface it in later turns. IMPORTANT: Your persistent memory (MEMORY.md, USER.md) in the system prompt is ALWAYS authoritative and active — never ignore or deprioritize memory content due to this compaction note. None of the above restricts HOW you work: your tools remain fully active — keep calling them normally for the active task (edit files, run commands, search) instead of merely narrating what you would do. The current session state (files, config, etc.) may reflect work described here — avoid repeating it:"
+
+// hermesHandoff is a summary as hermes stores one: under its prefix and
+// before its end marker (_with_summary_prefix, _assemble_compressed). A
+// summary hermes wrote already has both.
+func hermesHandoff(summary string) string {
+	if hermesSummaryKind(summary) != "" {
+		return summary
+	}
+	return hermesHandoffPrefix + "\n" + strings.TrimSpace(summary) + "\n\n" + hermesSummaryEnd
+}
+
 // hermesSummaryKind classifies content as a standalone summary, a summary
 // merged into a carried message, or neither (classify_summary_content). The
 // flag column is recent; hermes itself falls back to the content.
@@ -777,16 +796,6 @@ type hermesVendor struct{ Source string }
 // A session hermes does not have gets a sessions row with the columns hermes
 // requires, source and started_at.
 func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
-	if s.Agent != "hermes" {
-		s = s.Portable().Lower(transcript.Capabilities{})
-	}
-	if s.ID == "" {
-		s.ID = transcript.NewUUID()
-	}
-	now := time.Now()
-	if s.Created.IsZero() {
-		s.Created = now
-	}
 	if err := os.MkdirAll(filepath.Dir(st.path), 0o755); err != nil {
 		return "", err
 	}
@@ -797,6 +806,28 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 	defer db.Close()
 	if err := hermesSchema(ctx, db); err != nil {
 		return "", err
+	}
+	msgCols, err := columns(ctx, db, "messages")
+	if err != nil {
+		return "", err
+	}
+	// A hermes too old to keep a row it no longer sends (the active and
+	// compacted columns) is given what the model knew.
+	flags := msgCols["active"] && msgCols["compacted"]
+	if s.Agent != "hermes" {
+		caps := transcript.Capabilities{}
+		if flags {
+			caps = hermesCaps
+		}
+		s = s.Portable().Lower(caps)
+		s.Entries = unkept(s.Entries)
+	}
+	if s.ID == "" {
+		s.ID = transcript.NewUUID()
+	}
+	now := time.Now()
+	if s.Created.IsZero() {
+		s.Created = now
 	}
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
@@ -831,6 +862,9 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 			if msgs := s.Messages(); len(msgs) > 0 {
 				title = msgs[0].Text()
 			}
+		}
+		if title, err = hermesFreeTitle(ctx, tx, title); err != nil {
+			return "", err
 		}
 		// Older hermes databases have no cwd column; model_config carries
 		// the directory in every version.
@@ -882,19 +916,53 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 
 	at := now
 	added := false
-	for _, e := range s.Messages() {
+	// A compaction archives every row before it (active 0, compacted 1),
+	// its own summary included once a later one replaces it, and inserts
+	// its summary as a live row (hermes_state_messages.py
+	// archive_and_compact), so what a new compaction retires is everything
+	// written before the last one.
+	last := -1
+	for i, e := range s.Entries {
+		if e.Raw == nil && e.Role == transcript.RoleOpaque && e.Compaction != nil {
+			last = i
+		}
+	}
+	for i, e := range s.Entries {
 		if e.Raw != nil {
 			continue
 		}
-		role, content, toolID, toolName, calls, reasoning := hermesColumns(e)
+		summary := e.Role == transcript.RoleOpaque && e.Compaction != nil
+		if e.Role == transcript.RoleOpaque && !summary {
+			continue
+		}
+		var role, content, toolID, toolName string
+		var calls, reasoning any
+		if summary {
+			role, content = "user", hermesHandoff(summaryText(e.Compaction.Summary))
+		} else {
+			role, content, toolID, toolName, calls, reasoning = hermesColumns(e)
+		}
 		ts := e.Time
 		if ts.IsZero() {
 			at = at.Add(time.Millisecond)
 			ts = at
 		}
+		names := []string{"session_id", "role", "content", "tool_call_id", "tool_calls", "tool_name", "timestamp", "reasoning"}
+		vals := []any{s.ID, role, content, nullIfEmpty(toolID), calls, nullIfEmpty(toolName), epoch(ts), reasoning}
+		if flags {
+			// The model is given the active rows; the person is also shown
+			// the compaction-archived ones, which is how a row shown and
+			// not sent is kept.
+			active := i >= last && (summary || e.Audience.Model())
+			compacted := !active && (summary || e.Audience.User())
+			names, vals = append(names, "active", "compacted"), append(vals, active, compacted)
+			if msgCols["_compressed_summary"] {
+				names, vals = append(names, "_compressed_summary"), append(vals, summary)
+			}
+		}
 		if _, err := tx.ExecContext(ctx,
-			"INSERT INTO messages (session_id, role, content, tool_call_id, tool_calls, tool_name, timestamp, reasoning) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-			s.ID, role, content, nullIfEmpty(toolID), calls, nullIfEmpty(toolName), epoch(ts), reasoning); err != nil {
+			"INSERT INTO messages ("+strings.Join(names, ", ")+") VALUES (?"+strings.Repeat(", ?", len(names)-1)+")",
+			vals...); err != nil {
 			return "", fmt.Errorf("hermes: write message: %w", err)
 		}
 		added = true
@@ -909,6 +977,35 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 		return "", err
 	}
 	return s.ID, nil
+}
+
+// hermesFreeTitle is a title no other session has: hermes keeps titles
+// unique (idx_sessions_title_unique) and numbers a repeat "title #2", one
+// past the highest number taken (get_next_title_in_lineage).
+func hermesFreeTitle(ctx context.Context, tx *sql.Tx, title string) (string, error) {
+	if title == "" {
+		return title, nil
+	}
+	rows, err := tx.QueryContext(ctx, "SELECT title FROM sessions WHERE title = ? OR instr(title, ?) = 1", title, title+" #")
+	if err != nil {
+		return "", err
+	}
+	defer rows.Close()
+	taken, highest := false, 1
+	for rows.Next() {
+		var t string
+		if err := rows.Scan(&t); err != nil {
+			return "", err
+		}
+		taken = true
+		if n, err := strconv.Atoi(strings.TrimPrefix(t, title+" #")); err == nil && n > highest {
+			highest = n
+		}
+	}
+	if err := rows.Err(); err != nil || !taken {
+		return title, err
+	}
+	return title + " #" + strconv.Itoa(highest+1), nil
 }
 
 // epoch is the fractional unix seconds hermes stores its times as.
@@ -1000,6 +1097,10 @@ func hermesContent(blocks []transcript.Block) string {
 	return hermesJSONPrefix + string(raw)
 }
 
+// hermesSchema creates the tables for a machine where hermes has not run,
+// with the columns a write uses. The row flags are declared as hermes
+// declares them (hermes_state_common.py), and hermes adds the rest of its
+// columns when it opens the database (_reconcile_columns).
 func hermesSchema(ctx context.Context, db *sql.DB) error {
 	const ddl = `
 CREATE TABLE IF NOT EXISTS sessions (
@@ -1008,7 +1109,9 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE TABLE IF NOT EXISTS messages (
   id INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT NOT NULL REFERENCES sessions(id),
   role TEXT NOT NULL, content TEXT, tool_call_id TEXT, tool_calls TEXT, tool_name TEXT,
-  timestamp REAL NOT NULL, token_count INTEGER, finish_reason TEXT, reasoning TEXT);`
+  timestamp REAL NOT NULL, token_count INTEGER, finish_reason TEXT, reasoning TEXT,
+  _compressed_summary INTEGER NOT NULL DEFAULT 0, active INTEGER NOT NULL DEFAULT 1,
+  compacted INTEGER NOT NULL DEFAULT 0);`
 	_, err := db.ExecContext(ctx, ddl)
 	return err
 }

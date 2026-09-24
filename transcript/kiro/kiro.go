@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"strings"
 	"time"
@@ -36,10 +37,14 @@ var files = transcript.JSONL{
 		Ext:  ".jsonl",
 		Peek: peek,
 	},
-	Decode: decode,
-	Finish: compacted,
-	Encode: encode,
-	After:  writeSidecar,
+	Decode:  decode,
+	Finish:  compacted,
+	Encode:  encode,
+	Prepare: prepare,
+	After:   writeSidecar,
+	// kiro records a compaction as its own; it keeps no row it shows and
+	// does not send.
+	Caps: transcript.Capabilities{Compaction: true},
 }
 
 // codec wraps the JSONL store so Read also loads the sidecar, which the
@@ -59,14 +64,92 @@ type store struct {
 	home string
 }
 
-// Write gives new entries their ids before writing, so the transcript rows
-// and the sidecar's message lists name the same messages.
+// Write gives new entries of a kiro session their ids before writing, so
+// the transcript rows and the sidecar's message lists name the same
+// messages. Another agent's session is left to the JSONL store, which
+// takes it through Portable and prepare, where its ids are assigned once
+// each compaction is matched to the entries it keeps.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
-	if s.Agent != "kiro" {
-		s = s.Portable().Lower(transcript.Capabilities{})
+	if s.Agent == "kiro" {
+		transcript.AssignIDs(s, transcript.UUIDs, false)
 	}
-	transcript.AssignIDs(s, transcript.UUIDs, false)
 	return st.Store.Write(ctx, s)
+}
+
+// prepare puts another agent's compactions in the form a Compaction row
+// holds: the messages each keeps are copied into it, with the ids their
+// own rows get.
+func prepare(home string, s *transcript.Session) error {
+	if s.Agent != "kiro" {
+		kept := keptFrom(s)
+		transcript.AssignIDs(s, transcript.UUIDs, false)
+		snapshot(s, kept)
+	}
+	return nil
+}
+
+// keptFrom finds, for each compaction of a portable session, the index of
+// the first entry it keeps, before ids are assigned and Keep can no longer
+// be matched. A compaction keeping nothing maps to itself.
+func keptFrom(s *transcript.Session) map[int]int {
+	out := map[int]int{}
+	for i, e := range s.Entries {
+		if e.Compaction == nil {
+			continue
+		}
+		out[i] = i
+		k := e.Compaction.Keep
+		if k == "" {
+			continue
+		}
+		j := slices.IndexFunc(s.Entries[:i], func(x transcript.Entry) bool { return x.ID == k })
+		if j < 0 {
+			continue
+		}
+		// kiro keeps whole turns, each opening with a prompt, and sends
+		// the summary at the head of the first one; a history opening
+		// with an answer gets no reply. Kept history that starts inside a
+		// turn keeps that turn's prompt too.
+		for j > 0 && s.Entries[j].Role != transcript.RoleUser && s.Entries[j-1].Compaction == nil {
+			j--
+		}
+		out[i] = j
+	}
+	return out
+}
+
+// snapshot puts each compaction in the form a Compaction row holds, as
+// the reader gives it: its summary as one entry, followed by copies of the
+// messages it keeps, which kiro gives the model after the summary.
+func snapshot(s *transcript.Session, kept map[int]int) {
+	for i, from := range kept {
+		c := s.Entries[i].Compaction
+		summary := transcript.Entry{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: storedSummary(c.Summary)}}}
+		next := &transcript.Compaction{Summary: []transcript.Entry{summary}}
+		for _, e := range s.Entries[from:i] {
+			if e.Role != transcript.RoleOpaque {
+				next.Summary = append(next.Summary, e)
+			}
+		}
+		s.Entries[i].Compaction = next
+	}
+}
+
+// storedSummary is a summary as a Compaction row stores it: the text of its
+// entries, without the context entry kiro wraps it in on resume, which a
+// summary read from kiro carries.
+func storedSummary(summary []transcript.Entry) string {
+	var parts []string
+	for _, e := range summary {
+		t := e.Text()
+		if inner, ok := strings.CutPrefix(t, summaryPrefix); ok {
+			t = strings.TrimSuffix(inner, summarySuffix)
+		}
+		if t != "" {
+			parts = append(parts, t)
+		}
+	}
+	return strings.Join(parts, "\n\n")
 }
 
 func (st *store) Read(ctx context.Context, id string) (*transcript.Session, error) {
@@ -391,9 +474,41 @@ func compacted(s *transcript.Session) error {
 				kept = append(kept, k)
 			}
 			e.Compaction = &transcript.Compaction{Summary: kept}
+			if keep, ok := inPlace(s.Entries[:i], kept[1:]); ok {
+				e.Compaction = &transcript.Compaction{Summary: kept[:1], Keep: keep}
+			}
 		}
 	}
 	return nil
+}
+
+// inPlace reports whether a Compaction row's snapshot is the messages
+// right before the row, unchanged, as kiro copies the turns it keeps, and
+// returns the id of the first. The compaction then keeps those messages
+// rather than copies of them, so the history they belong to is told from
+// the history the compaction retired. A snapshot kiro truncated or
+// otherwise changed stays copies.
+func inPlace(before, snap []transcript.Entry) (string, bool) {
+	if len(snap) == 0 {
+		return "", false
+	}
+	var msgs []transcript.Entry
+	for _, e := range before {
+		if e.Role != transcript.RoleOpaque {
+			msgs = append(msgs, e)
+		}
+	}
+	if len(msgs) < len(snap) {
+		return "", false
+	}
+	msgs = msgs[len(msgs)-len(snap):]
+	for i, k := range snap {
+		m := msgs[i]
+		if m.ID != k.ID || m.Role != k.Role || !reflect.DeepEqual(m.Content, k.Content) {
+			return "", false
+		}
+	}
+	return msgs[0].ID, true
 }
 
 // SummaryMessage is the message kiro gives the model in place of the
@@ -411,6 +526,61 @@ const (
 )
 
 func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+	if e.Role == transcript.RoleOpaque && e.Compaction != nil {
+		return encodeCompaction(*e.Compaction, s)
+	}
+	kind, d, err := message(e, s)
+	if kind == "" || err != nil {
+		return nil, err
+	}
+	return json.Marshal(row{Version: "v1", Kind: kind, Data: d})
+}
+
+// strategy is how kiro 2.24.0 compacted the sample session, which a
+// Compaction row records beside its summary.
+var strategy = json.RawMessage(`{"message_pairs_to_exclude":2,"context_window_percent_to_exclude":2,"truncate_large_messages":false,"max_message_length":25000}`)
+
+// encodeCompaction writes a Compaction row from a compaction in the form
+// snapshot gives it: the summary, then the messages kept, each copied into
+// the row's snapshot with the id of its own row, as kiro copies them.
+func encodeCompaction(c transcript.Compaction, s *transcript.Session) (json.RawMessage, error) {
+	type compactionOut struct {
+		Summary          string            `json:"summary"`
+		Strategy         json.RawMessage   `json:"strategy"`
+		MessagesSnapshot []snapshotMessage `json:"messages_snapshot"`
+	}
+	out := compactionOut{Strategy: strategy, MessagesSnapshot: []snapshotMessage{}}
+	if len(c.Summary) > 0 {
+		out.Summary = c.Summary[0].Text()
+	}
+	for _, e := range c.Summary[min(1, len(c.Summary)):] {
+		kind, d, err := message(e, s)
+		if err != nil {
+			return nil, err
+		}
+		role := "user"
+		switch kind {
+		case "":
+			continue
+		case "AssistantMessage":
+			role = "assistant"
+		}
+		out.MessagesSnapshot = append(out.MessagesSnapshot, snapshotMessage{ID: d.MessageID, Role: role, Content: d.Content, Meta: d.Meta})
+	}
+	d, err := json.Marshal(out)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(struct {
+		Version string          `json:"version"`
+		Kind    string          `json:"kind"`
+		Data    json.RawMessage `json:"data"`
+	}{"v1", "Compaction", d})
+}
+
+// message is an entry as a message row's kind and data. The kind is empty
+// for an entry that is not a message.
+func message(e transcript.Entry, s *transcript.Session) (string, data, error) {
 	var kind string
 	switch e.Role {
 	case transcript.RoleUser:
@@ -420,7 +590,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	case transcript.RoleTool:
 		kind = "ToolResults"
 	default:
-		return nil, nil
+		return "", data{}, nil
 	}
 	if e.ID == "" {
 		e.ID = transcript.NewUUID()
@@ -438,7 +608,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		case transcript.BlockText:
 			bd, err := json.Marshal(b.Text)
 			if err != nil {
-				return nil, err
+				return "", data{}, err
 			}
 			d.Content = append(d.Content, block{Kind: "text", Data: bd})
 		case transcript.BlockToolUse:
@@ -448,13 +618,13 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			}
 			bd, err := json.Marshal(toolUse{ToolUseID: b.ToolID, Name: b.Name, Input: in})
 			if err != nil {
-				return nil, err
+				return "", data{}, err
 			}
 			d.Content = append(d.Content, block{Kind: "toolUse", Data: bd})
 		case transcript.BlockToolResult:
 			td, err := json.Marshal(b.Text)
 			if err != nil {
-				return nil, err
+				return "", data{}, err
 			}
 			status := "success"
 			if b.Status == transcript.StatusError {
@@ -467,7 +637,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 				}
 				ib, ok, err := encodeImage(im)
 				if err != nil {
-					return nil, err
+					return "", data{}, err
 				}
 				if ok {
 					rc = append(rc, ib)
@@ -475,7 +645,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			}
 			bd, err := json.Marshal(toolResult{ToolUseID: b.ToolID, Content: rc, Status: status})
 			if err != nil {
-				return nil, err
+				return "", data{}, err
 			}
 			d.Content = append(d.Content, block{Kind: "toolResult", Data: bd})
 			out := toolOutcome{Tool: json.RawMessage(`null`)}
@@ -501,7 +671,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			}
 			ib, ok, err := encodeImage(b)
 			if err != nil {
-				return nil, err
+				return "", data{}, err
 			}
 			if ok {
 				d.Content = append(d.Content, ib)
@@ -518,11 +688,11 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	case "ToolResults":
 		rj, err := json.Marshal(results)
 		if err != nil {
-			return nil, err
+			return "", data{}, err
 		}
 		d.Results = rj
 	}
-	return json.Marshal(row{Version: "v1", Kind: kind, Data: d})
+	return kind, d, nil
 }
 
 // writeSidecar writes <id>.json beside the transcript. A session read from

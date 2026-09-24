@@ -396,3 +396,18 @@ func TestAssignIDsFollowsKeep(t *testing.T) {
 		t.Errorf("keep = %q, want %q", k, s.Entries[1].ID)
 	}
 }
+
+// A compaction marker a tree writer records sits in the chain: it gets an
+// id and a parent, and the entry after it names it.
+func TestAssignIDsLinksMarker(t *testing.T) {
+	s := &Session{Entries: []Entry{
+		text("", "", RoleUser, "u1"),
+		{Compaction: &Compaction{}},
+		text("", "", RoleUser, "u2"),
+	}}
+	AssignIDs(s, UUIDs, true)
+	m := s.Entries[1]
+	if m.ID == "" || m.ParentID != s.Entries[0].ID || s.Entries[2].ParentID != m.ID {
+		t.Errorf("chain: %q <- %q (%q) <- %q", s.Entries[0].ID, m.ID, m.ParentID, s.Entries[2].ParentID)
+	}
+}

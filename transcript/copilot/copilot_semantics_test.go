@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"testing"
 
@@ -28,9 +29,13 @@ const (
 	twiceID  = "ec590b04-5e2b-4203-a931-5ba7ebbd85d8"
 )
 
+// stamp is the time Copilot puts before each prompt it gives the model.
+var datetime = regexp.MustCompile(`^<current_datetime>[^<]*</current_datetime>\n\n`)
+
 // lines renders entries as role and text, a tool call as its name and a tool
 // result as its output, skipping content-free rows the way the agent's own
-// replay skips an assistant message with no text.
+// replay skips an assistant message with no text. The time before a prompt
+// is left out; TestModelContent checks it.
 func lines(es []transcript.Entry) []string {
 	var out []string
 	for _, e := range es {
@@ -38,7 +43,7 @@ func lines(es []transcript.Entry) []string {
 			switch b.Kind {
 			case transcript.BlockText:
 				if b.Text != "" {
-					out = append(out, string(e.Role)+": "+b.Text)
+					out = append(out, string(e.Role)+": "+datetime.ReplaceAllString(b.Text, ""))
 				}
 			case transcript.BlockToolUse:
 				out = append(out, "call: "+b.Name)

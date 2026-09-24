@@ -147,9 +147,29 @@ type toolResult struct {
 	Status    string  `json:"status"`
 }
 
-type resultSummary struct {
-	Tool   string `json:"tool"`
-	Status string `json:"status"`
+// toolOutcome is a ToolResults row's record of one tool's run, keyed by
+// the tool use id: the tool as kiro parsed it, which kiro accepts as null,
+// and the result as {"Success": {"items": [...]}} or {"Error": {"Custom":
+// message}}. kiro rejects a history whose record has any other shape
+// ("invalid conversation history received" on the next request).
+type toolOutcome struct {
+	Tool   json.RawMessage `json:"tool"`
+	Result toolOutput      `json:"result"`
+}
+
+type toolOutput struct {
+	Success *toolItems `json:"Success,omitempty"`
+	Error   *toolError `json:"Error,omitempty"`
+}
+
+// toolItems is a successful run's output, each item {"Text": ...} or
+// {"Image": ...}.
+type toolItems struct {
+	Items []map[string]json.RawMessage `json:"items"`
+}
+
+type toolError struct {
+	Custom string `json:"Custom"`
 }
 
 func peek(path string) (transcript.Info, error) {
@@ -239,9 +259,92 @@ func content(id string, bs []block) ([]transcript.Block, error) {
 				st = transcript.StatusError
 			}
 			out = append(out, transcript.Block{Kind: transcript.BlockToolResult, ToolID: tr.ToolUseID, Text: text.String(), Status: st})
+			// An image the tool returned is in the result's own content; it
+			// follows the result here.
+			for _, c := range tr.Content {
+				if c.Kind != "image" {
+					continue
+				}
+				b, ok, err := imageBlock(c.Data)
+				if err != nil {
+					return nil, fmt.Errorf("message %s: toolResult image: %w", id, err)
+				}
+				if ok {
+					b.ToolID = tr.ToolUseID
+					out = append(out, b)
+				}
+			}
+		case "image":
+			b, ok, err := imageBlock(b.Data)
+			if err != nil {
+				return nil, fmt.Errorf("message %s: image: %w", id, err)
+			}
+			if ok {
+				out = append(out, b)
+			}
 		}
 	}
 	return out, nil
+}
+
+// image is an image block's data as kiro's v2 engine writes it: the format
+// ("png", "jpeg", "gif", "webp") and its bytes as an array of numbers.
+type image struct {
+	Format string `json:"format"`
+	Source struct {
+		Kind string `json:"kind"`
+		Data []int  `json:"data"`
+	} `json:"source"`
+}
+
+// imageBlock reads an image block. A source other than bytes has not been
+// seen and is skipped.
+func imageBlock(raw json.RawMessage) (transcript.Block, bool, error) {
+	var im image
+	if err := json.Unmarshal(raw, &im); err != nil {
+		return transcript.Block{}, false, err
+	}
+	if im.Source.Kind != "bytes" {
+		return transcript.Block{}, false, nil
+	}
+	return transcript.Block{Kind: transcript.BlockImage, MediaType: ImageType(im.Format), Data: Bytes(im.Source.Data)}, true, nil
+}
+
+// ImageType is the media type of an image format as kiro names it, in
+// either engine ("png" in v2, "Png" in v1).
+func ImageType(format string) string {
+	return "image/" + strings.ToLower(format)
+}
+
+// Bytes turns kiro's array of byte values into bytes.
+func Bytes(vals []int) []byte {
+	out := make([]byte, len(vals))
+	for i, v := range vals {
+		out[i] = byte(v)
+	}
+	return out
+}
+
+// imageFormats are the formats kiro takes, by media type.
+var imageFormats = map[string]string{"image/png": "png", "image/jpeg": "jpeg", "image/gif": "gif", "image/webp": "webp"}
+
+// encodeImage writes an image block the way kiro's v2 engine does. An image
+// known only by reference, or in a format kiro does not take, has no form
+// there and is left out.
+func encodeImage(b transcript.Block) (block, bool, error) {
+	format, ok := imageFormats[b.MediaType]
+	if !ok || len(b.Data) == 0 {
+		return block{}, false, nil
+	}
+	var im image
+	im.Format = format
+	im.Source.Kind = "bytes"
+	im.Source.Data = make([]int, len(b.Data))
+	for i, c := range b.Data {
+		im.Source.Data[i] = int(c)
+	}
+	raw, err := json.Marshal(im)
+	return block{Kind: "image", Data: raw}, err == nil, err
 }
 
 // compacted applies the rows that change what the model is given. On resume
@@ -278,7 +381,7 @@ func compacted(s *transcript.Session) error {
 				}
 				if m.Role == "user" {
 					k.Role = transcript.RoleUser
-					if len(k.Content) > 0 && !slices.ContainsFunc(k.Content, func(b transcript.Block) bool { return b.Kind != transcript.BlockToolResult }) {
+					if slices.ContainsFunc(k.Content, func(b transcript.Block) bool { return b.Kind == transcript.BlockToolResult }) {
 						k.Role = transcript.RoleTool
 					}
 				}
@@ -323,7 +426,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		e.ID = transcript.NewUUID()
 	}
 	d := data{MessageID: e.ID, Content: []block{}}
-	results := map[string]resultSummary{}
+	results := map[string]toolOutcome{}
 	for _, b := range e.Content {
 		switch b.Kind {
 		case transcript.BlockText:
@@ -351,12 +454,52 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			if b.Status == transcript.StatusError {
 				status = "error"
 			}
-			bd, err := json.Marshal(toolResult{ToolUseID: b.ToolID, Content: []block{{Kind: "text", Data: td}}, Status: status})
+			rc := []block{{Kind: "text", Data: td}}
+			for _, im := range e.Content {
+				if im.Kind != transcript.BlockImage || im.ToolID != b.ToolID {
+					continue
+				}
+				ib, ok, err := encodeImage(im)
+				if err != nil {
+					return nil, err
+				}
+				if ok {
+					rc = append(rc, ib)
+				}
+			}
+			bd, err := json.Marshal(toolResult{ToolUseID: b.ToolID, Content: rc, Status: status})
 			if err != nil {
 				return nil, err
 			}
 			d.Content = append(d.Content, block{Kind: "toolResult", Data: bd})
-			results[b.ToolID] = resultSummary{Tool: b.Name, Status: status}
+			out := toolOutcome{Tool: json.RawMessage(`null`)}
+			if b.Status == transcript.StatusError {
+				out.Result.Error = &toolError{Custom: b.Text}
+			} else {
+				out.Result.Success = &toolItems{}
+				for _, c := range rc {
+					item := "Text"
+					if c.Kind == "image" {
+						item = "Image"
+					}
+					out.Result.Success.Items = append(out.Result.Success.Items, map[string]json.RawMessage{item: c.Data})
+				}
+			}
+			results[b.ToolID] = out
+		case transcript.BlockImage:
+			// A tool's image went into its result above. Only a prompt
+			// carries an image of its own, and kiro has no block for any
+			// other file.
+			if b.ToolID != "" || kind != "Prompt" {
+				continue
+			}
+			ib, ok, err := encodeImage(b)
+			if err != nil {
+				return nil, err
+			}
+			if ok {
+				d.Content = append(d.Content, ib)
+			}
 		}
 	}
 	switch kind {

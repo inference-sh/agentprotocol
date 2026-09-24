@@ -6,12 +6,14 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"database/sql"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -90,6 +92,52 @@ type cursorPart struct {
 	Args       json.RawMessage `json:"args,omitempty"`
 	Result     json.RawMessage `json:"result,omitempty"`
 	IsError    bool            `json:"isError,omitempty"`
+	// An image part carries Image and a file part Data, each base64, a
+	// data: URL or a URL, with the type in MimeType (MediaType in later
+	// versions of the AI SDK these messages follow) and a file's name in
+	// Filename.
+	Image     string `json:"image,omitempty"`
+	Data      string `json:"data,omitempty"`
+	MimeType  string `json:"mimeType,omitempty"`
+	MediaType string `json:"mediaType,omitempty"`
+	Filename  string `json:"filename,omitempty"`
+}
+
+// media reads an image or file part. Cursor's transcript writer names the
+// two part types and a file's filename (the "[Image]" and "[File: name]"
+// lines TranscriptStore writes for them); the rest of the shape is the AI
+// SDK's message parts, whose layout the other parts follow.
+func (p cursorPart) media() (transcript.Block, bool) {
+	b := transcript.Block{Kind: transcript.BlockImage, MediaType: p.MimeType}
+	src := p.Image
+	if p.Type == "file" {
+		b.Kind, b.Name, src = transcript.BlockFile, p.Filename, p.Data
+	}
+	if b.MediaType == "" {
+		b.MediaType = p.MediaType
+	}
+	switch {
+	case strings.HasPrefix(src, "data:"):
+		mt, data, ok := transcript.ParseDataURL(src)
+		if !ok {
+			return transcript.Block{}, false
+		}
+		b.Data = data
+		if b.MediaType == "" {
+			b.MediaType = mt
+		}
+	case strings.Contains(src, "://"):
+		b.URI = src
+	case src != "":
+		data, err := base64.StdEncoding.DecodeString(src)
+		if err != nil {
+			return transcript.Block{}, false
+		}
+		b.Data = data
+	default:
+		return transcript.Block{}, false
+	}
+	return b, true
 }
 
 // createdMs is a session's creation time: meta.json's, or the store's own
@@ -371,6 +419,10 @@ func cursorEntry(data []byte) (transcript.Entry, error) {
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
 		case "reasoning":
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: p.Text})
+		case "image", "file":
+			if b, ok := p.media(); ok {
+				e.Content = append(e.Content, b)
+			}
 		case "tool-call":
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: p.ToolCallID, Name: p.ToolName, Input: p.Args})
 		case "tool-result":
@@ -586,6 +638,9 @@ func cursorBlob(e transcript.Entry) ([]byte, error) {
 			}
 			parts = append(parts, p)
 		}
+		// Images and files are left out: Cursor's own code shows only the
+		// part types and a file's filename, not how the bytes are laid out
+		// in a part its backend reads back.
 	}
 	if role == "user" && len(parts) == 1 && parts[0]["type"] == "text" {
 		return json.Marshal(map[string]any{"role": role, "content": parts[0]["text"]})

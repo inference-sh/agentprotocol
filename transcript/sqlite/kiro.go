@@ -127,6 +127,10 @@ type kiroV1Doc struct {
 		User struct {
 			Content   json.RawMessage `json:"content"`
 			Timestamp *string         `json:"timestamp"`
+			// Images are the images sent with the item: pasted into a
+			// prompt, or read by a tool (fs_read in Image mode) and sent
+			// with its results.
+			Images []kiroV1Image `json:"images"`
 		} `json:"user"`
 		Assistant       json.RawMessage `json:"assistant"`
 		RequestMetadata *struct {
@@ -142,6 +146,15 @@ type kiroV1Doc struct {
 	// that made it, a two-element array. History then holds only what the
 	// compaction kept, so the summary stands in for all that came before.
 	LatestSummary []json.RawMessage `json:"latest_summary"`
+}
+
+// kiroV1Image is an image as the v1 engine stores it: {"format": "Png",
+// "source": {"Bytes": [...]}}.
+type kiroV1Image struct {
+	Format string `json:"format"`
+	Source struct {
+		Bytes []int `json:"Bytes"`
+	} `json:"source"`
 }
 
 type kiroV1ToolUse struct {
@@ -216,6 +229,19 @@ func (st *kiroStore) readV1(ctx context.Context, id string) (*transcript.Session
 			return nil, fmt.Errorf("kiro v1: conversation %s, turn %d: %w", id, i, err)
 		}
 		user.ID = fmt.Sprintf("%s:%d:user", id, i)
+		// An image a tool read travels with the results, not with one of
+		// them; it is the tool's when there is one result.
+		var toolID string
+		if user.Role == transcript.RoleTool && len(user.Content) == 1 {
+			toolID = user.Content[0].ToolID
+		}
+		for _, im := range h.User.Images {
+			if len(im.Source.Bytes) == 0 {
+				continue
+			}
+			user.Content = append(user.Content, transcript.Block{Kind: transcript.BlockImage, ToolID: toolID,
+				MediaType: kiro.ImageType(im.Format), Data: kiro.Bytes(im.Source.Bytes)})
+		}
 		if h.User.Timestamp != nil {
 			if t, err := time.Parse(time.RFC3339Nano, *h.User.Timestamp); err == nil {
 				user.Time = t

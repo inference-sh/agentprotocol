@@ -16,6 +16,7 @@ package copilot
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -191,8 +192,39 @@ type context_ struct {
 }
 
 type userMessage struct {
-	Content   string `json:"content"`
-	MessageID string `json:"messageId"`
+	Content string `json:"content"`
+	// TransformedContent is the prompt as the model is given it: the
+	// person's text behind the context Copilot adds, such as the time.
+	TransformedContent string       `json:"transformedContent,omitempty"`
+	Attachments        []attachment `json:"attachments,omitempty"`
+	MessageID          string       `json:"messageId"`
+}
+
+// attachment is a file or blob attached to a prompt (Attachment in
+// Copilot's session-events schema). Copilot persists an image's bytes in a
+// session.binary_asset event and names it by AssetID; an attachment it does
+// not send natively is listed in the prompt's <tagged_files> block, whose
+// line it keeps in TaggedFilesEntry. Other attachment types (a selection, a
+// GitHub reference) hold no file and are not read.
+type attachment struct {
+	Type             string `json:"type"`
+	Path             string `json:"path,omitempty"`
+	DisplayName      string `json:"displayName,omitempty"`
+	AssetID          string `json:"assetId,omitempty"`
+	MimeType         string `json:"mimeType,omitempty"`
+	Data             string `json:"data,omitempty"`
+	TaggedFilesEntry string `json:"taggedFilesEntry,omitempty"`
+}
+
+// binary is an image or other binary a tool returned for the model
+// (PersistedBinaryResult), inline or by asset, and a session.binary_asset
+// event's data (BinaryAssetData).
+type binary struct {
+	Type        string `json:"type"`
+	AssetID     string `json:"assetId,omitempty"`
+	MimeType    string `json:"mimeType"`
+	Data        string `json:"data,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 
 // compactionComplete is the data of a session.compaction_complete event.
@@ -218,7 +250,8 @@ type toolResult struct {
 	ToolCallID string `json:"toolCallId"`
 	Success    bool   `json:"success"`
 	Result     struct {
-		Content string `json:"content"`
+		Content             string   `json:"content"`
+		BinaryResultsForLlm []binary `json:"binaryResultsForLlm,omitempty"`
 	} `json:"result"`
 }
 
@@ -379,6 +412,9 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 // (Copilot CLI 1.0.88). A session a rewind cut short needs nothing: the
 // rewind removes the events from the log.
 func finish(s *transcript.Session) error {
+	if err := attach(s); err != nil {
+		return err
+	}
 	var prompts []string
 	for _, i := range s.Branch() {
 		e := &s.Entries[i]
@@ -404,6 +440,143 @@ func finish(s *transcript.Session) error {
 		}
 	}
 	return nil
+}
+
+// attach adds the images and files of prompts and tool results to their
+// entries. Their bytes are in session.binary_asset events, which may be
+// anywhere in the log, so this runs once every row is read. A prompt's
+// entry also gets what the model is given for it: the transformed text, the
+// <tagged_files> block naming the files not sent natively, and each image
+// behind a line naming its path (or "Attached image" for one pasted as
+// bytes), as Copilot CLI 1.0.88 sent them on resume.
+// An image a tool returned is kept after the tool's result; Copilot sent the
+// model only the result's text for it, over an OpenAI-compatible provider.
+func attach(s *transcript.Session) error {
+	assets := map[string]binary{}
+	for _, e := range s.Entries {
+		var ev event
+		if json.Unmarshal(e.Raw, &ev) != nil || ev.Type != "session.binary_asset" {
+			continue
+		}
+		var b binary
+		if json.Unmarshal(ev.Data, &b) == nil && b.AssetID != "" {
+			assets[b.AssetID] = b
+		}
+	}
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		var ev event
+		if json.Unmarshal(e.Raw, &ev) != nil {
+			continue
+		}
+		switch ev.Type {
+		case "user.message":
+			var m userMessage
+			if err := json.Unmarshal(ev.Data, &m); err != nil {
+				return fmt.Errorf("event %s: %w", ev.ID, err)
+			}
+			if m.TransformedContent == "" && len(m.Attachments) == 0 {
+				continue
+			}
+			text := m.TransformedContent
+			if text == "" {
+				text = m.Content
+			}
+			var tagged []string
+			var native []transcript.Block
+			for _, a := range m.Attachments {
+				b, ok, err := a.block(assets)
+				if err != nil {
+					return fmt.Errorf("event %s: %w", ev.ID, err)
+				}
+				if !ok {
+					continue
+				}
+				e.Content = append(e.Content, b)
+				if a.TaggedFilesEntry != "" {
+					tagged = append(tagged, a.TaggedFilesEntry)
+					continue
+				}
+				if b.Kind == transcript.BlockImage {
+					label := "Attached image"
+					if a.Path != "" {
+						label = "Image file at path " + a.Path
+					}
+					native = append(native, transcript.Block{Kind: transcript.BlockText, Text: label})
+				}
+				native = append(native, b)
+			}
+			if len(tagged) > 0 {
+				text += "\n\n\n\n<tagged_files>\n" + strings.Join(tagged, "\n") + "\n</tagged_files>"
+			}
+			e.ModelContent = append([]transcript.Block{{Kind: transcript.BlockText, Text: text}}, native...)
+		case "tool.execution_complete":
+			var tr toolResult
+			if err := json.Unmarshal(ev.Data, &tr); err != nil {
+				return fmt.Errorf("event %s: %w", ev.ID, err)
+			}
+			for _, r := range tr.Result.BinaryResultsForLlm {
+				if a, ok := assets[r.AssetID]; ok && r.Data == "" {
+					r.Data = a.Data
+				}
+				if r.Data == "" {
+					continue // omitted: too large, or its asset is gone
+				}
+				b, err := binaryBlock(r.Type == "image", r.MimeType, r.Data)
+				if err != nil {
+					return fmt.Errorf("event %s: %w", ev.ID, err)
+				}
+				b.ToolID = tr.ToolCallID
+				e.Content = append(e.Content, b)
+			}
+		}
+	}
+	return nil
+}
+
+// block is an attachment as an image or file block: its bytes when Copilot
+// kept them, else its path. A file keeps its display name.
+func (a attachment) block(assets map[string]binary) (transcript.Block, bool, error) {
+	if a.Type != "file" && a.Type != "blob" {
+		return transcript.Block{}, false, nil
+	}
+	data, mime := a.Data, a.MimeType
+	if asset, ok := assets[a.AssetID]; ok && data == "" {
+		data, mime = asset.Data, asset.MimeType
+	}
+	image := strings.HasPrefix(mime, "image/")
+	var b transcript.Block
+	switch {
+	case data != "":
+		var err error
+		if b, err = binaryBlock(image, mime, data); err != nil {
+			return transcript.Block{}, false, err
+		}
+	case a.Path != "":
+		b = transcript.Block{Kind: transcript.BlockFile, MediaType: mime, URI: a.Path}
+		if image {
+			b.Kind = transcript.BlockImage
+		}
+	default:
+		return transcript.Block{}, false, nil
+	}
+	if !image {
+		b.Name = a.DisplayName
+	}
+	return b, true, nil
+}
+
+// binaryBlock decodes base64 bytes into an image or file block.
+func binaryBlock(image bool, mime, data string) (transcript.Block, error) {
+	raw, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		return transcript.Block{}, fmt.Errorf("binary data: %w", err)
+	}
+	kind := transcript.BlockFile
+	if image {
+		kind = transcript.BlockImage
+	}
+	return transcript.Block{Kind: kind, MediaType: mime, Data: raw}, nil
 }
 
 // resumeSummary is the message that stands in for compacted history. The
@@ -472,7 +645,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	switch e.Role {
 	case transcript.RoleUser, transcript.RoleSystem:
 		ev.Type = "user.message"
-		data = userMessage{Content: e.Text(), MessageID: e.ID}
+		data = userMessage{Content: e.Text(), Attachments: attachments(e.Content), MessageID: e.ID}
 	case transcript.RoleAssistant:
 		ev.Type = "assistant.message"
 		m := assistantMessage{MessageID: e.ID, Content: e.Text(), ToolRequests: []toolRequest{}}
@@ -498,6 +671,18 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			tr.Success = b.Status != transcript.StatusError
 			tr.Result.Content = b.Text
 		}
+		// A tool's image or file goes to the model as a binary result held
+		// inline (PersistedBinaryImage); one known only by reference has no
+		// such form and is left out.
+		for _, b := range e.Content {
+			if (b.Kind == transcript.BlockImage || b.Kind == transcript.BlockFile) && len(b.Data) > 0 {
+				typ := "resource"
+				if b.Kind == transcript.BlockImage {
+					typ = "image"
+				}
+				tr.Result.BinaryResultsForLlm = append(tr.Result.BinaryResultsForLlm, binary{Type: typ, MimeType: b.MediaType, Data: base64.StdEncoding.EncodeToString(b.Data)})
+			}
+		}
 		data = tr
 	default:
 		return nil, nil
@@ -508,6 +693,33 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	}
 	ev.Data = raw
 	return json.Marshal(ev)
+}
+
+// attachments encodes a prompt's images and files the way Copilot takes
+// them: bytes as a blob attachment, whose data Copilot interns into an
+// asset when it next writes the session, and a local file as a file
+// attachment by path. A remote URL has no attachment form and is left out;
+// so is an image in an assistant message, which Copilot's format has no
+// place for.
+func attachments(content []transcript.Block) []attachment {
+	var out []attachment
+	for _, b := range content {
+		if b.Kind != transcript.BlockImage && b.Kind != transcript.BlockFile {
+			continue
+		}
+		switch {
+		case len(b.Data) > 0:
+			out = append(out, attachment{Type: "blob", Data: base64.StdEncoding.EncodeToString(b.Data), MimeType: b.MediaType, DisplayName: b.Name})
+		case strings.HasPrefix(b.URI, "/") || strings.HasPrefix(b.URI, "file://"):
+			path := strings.TrimPrefix(b.URI, "file://")
+			name := b.Name
+			if name == "" {
+				name = filepath.Base(path)
+			}
+			out = append(out, attachment{Type: "file", Path: path, DisplayName: name})
+		}
+	}
+	return out
 }
 
 // writeWorkspace writes workspace.yaml beside events.jsonl. The file is a

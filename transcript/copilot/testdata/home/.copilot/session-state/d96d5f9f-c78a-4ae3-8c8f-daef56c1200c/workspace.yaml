@@ -1,0 +1,11 @@
+id: d96d5f9f-c78a-4ae3-8c8f-daef56c1200c
+cwd: /tmp/harness-test-copilot-image/test-repo
+git_root: /tmp/harness-test-copilot-image/test-repo
+branch: master
+client_name: github/acp
+name: what is in this image
+user_named: false
+summary_count: 0
+fork_count: 0
+created_at: 2026-09-24T10:09:42.749Z
+updated_at: 2026-09-24T10:09:52.546Z

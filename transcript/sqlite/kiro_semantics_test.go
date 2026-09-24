@@ -58,3 +58,31 @@ func TestKiroV1Compacted(t *testing.T) {
 		t.Errorf("the conversation before /compact: %s", got)
 	}
 }
+
+// TestKiroV1Image: a headless v1 run in the harness-test container where
+// the mock had fs_read open a PNG in Image mode. v1 keeps the image on the
+// item that carries the tool's results.
+func TestKiroV1Image(t *testing.T) {
+	st, err := Kiro.Open("testdata/kiro-image")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := st.Read(t.Context(), "2aa7d002-7d01-4d2d-9020-1fb676a66f72")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var found bool
+	for _, e := range s.Messages() {
+		for _, b := range e.Content {
+			if b.Kind == transcript.BlockImage {
+				found = true
+				if e.Role != transcript.RoleTool || b.ToolID != "mock-tool-1" || b.MediaType != "image/png" || !strings.HasPrefix(string(b.Data), "\x89PNG") {
+					t.Errorf("image in %s: %s %s %d bytes", e.Role, b.ToolID, b.MediaType, len(b.Data))
+				}
+			}
+		}
+	}
+	if !found {
+		t.Error("no image read")
+	}
+}

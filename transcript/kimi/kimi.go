@@ -5,17 +5,17 @@
 // last element of the working directory and <hash> the first twelve hex
 // digits of its SHA-256. agents/main/wire.jsonl is the conversation as a
 // wire log; state.json beside it is the session's identity; and
-// ~/.kimi-code/session_index.jsonl lists every session. The wire log mixes
-// context and telemetry with messages: agent.message.appended rows carry
-// user and assistant messages, tool results arrive as
-// context.append_loop_event rows of type tool.result, and everything else
-// is opaque.
+// ~/.kimi-code/session_index.jsonl lists every session.
 //
-// Kimi keeps two views of a conversation in the wire log. The context rows,
-// context.append_message and context.append_loop_event, are what it rebuilds
-// the model's context from on resume. The agent.message.appended rows are the
-// transcript it shows. A written session needs both: with only the transcript
-// rows, kimi resumes it and the model sees none of it.
+// The wire log mixes the conversation with telemetry and bookkeeping. Kimi
+// rebuilds both the model's context and the transcript it shows from the
+// context rows alone: context.append_message carries a whole message, and
+// context.append_loop_event carries the pieces of an assistant step
+// (step.begin, content.part, tool.call, step.end) and the tool results that
+// answer it. context.apply_compaction and context.clear replace the history,
+// and an undo moves the conversation to a new branch with agent.switched.
+// The agent.message.appended rows are the journal of kimi's input state
+// machine and are read as opaque. A written session carries both.
 package kimi
 
 import (
@@ -27,7 +27,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -60,6 +59,7 @@ var files = transcript.JSONL{
 	Header:      header,
 	IDs:         transcript.IDScheme{New: messageID, Valid: validMessageID},
 	Decode:      decode,
+	Finish:      finish,
 	WriteHeader: writeHeader,
 	After:       writeState,
 	NewID:       func() string { return "session_" + transcript.NewUUID() },
@@ -108,15 +108,20 @@ type appended struct {
 }
 
 type message struct {
-	Role       string     `json:"role"`
-	Content    []part     `json:"content"`
-	ToolCalls  []toolCall `json:"toolCalls,omitempty"`
+	Role    string `json:"role"`
+	Content []part `json:"content"`
+	// ToolCalls is written even when empty: kimi's input state machine
+	// rejects an assistant row without it (assistantMessageSchema), and the
+	// other roles ignore it.
+	ToolCalls  []toolCall `json:"toolCalls"`
 	ToolCallID string     `json:"toolCallId,omitempty"`
 }
 
 type part struct {
-	Type string `json:"type"`
-	Text string `json:"text"`
+	Type      string  `json:"type"`
+	Text      string  `json:"text"`
+	Think     string  `json:"think,omitempty"`
+	Encrypted *string `json:"encrypted,omitempty"`
 }
 
 type toolCall struct {
@@ -130,6 +135,17 @@ type meta struct {
 	Source    string `json:"source"`
 	MessageID string `json:"messageId,omitempty"`
 	PromptID  string `json:"promptId,omitempty"`
+	// Usage is required on an assistant entry: kimi's input state machine
+	// rejects an assistant agent.message.appended row without it
+	// (human/agent/historySchema.ts assistantMetaSchema).
+	Usage *usage `json:"usage,omitempty"`
+}
+
+type usage struct {
+	InputOther         int `json:"inputOther"`
+	Output             int `json:"output"`
+	InputCacheRead     int `json:"inputCacheRead"`
+	InputCacheCreation int `json:"inputCacheCreation"`
 }
 
 func workspaceDir(cwd string) string {
@@ -177,8 +193,9 @@ func (st *store) Read(ctx context.Context, id string) (*transcript.Session, erro
 	return s, nil
 }
 
-// Write plans the session's new entries and writes them with the rows kimi
-// rebuilds the model's context from as well as its transcript rows.
+// Write plans the session's new entries and writes them as the context rows
+// kimi rebuilds the conversation from, with the journal rows of its input
+// state machine beside them.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != "kimi" {
 		s = s.Portable()
@@ -267,49 +284,43 @@ func header(raw json.RawMessage, s *transcript.Session) (bool, error) {
 	return r.Type == "metadata", nil
 }
 
-// decode reads the transcript rows, which hold the whole conversation in
-// order: user and assistant messages, and each tool result as a tool message.
-// The context rows describe the same conversation for the model and are kept
-// opaque.
+// decode maps a row that is one message on its own: a context message, the
+// step.begin an assistant message is folded onto, a tool result. finish
+// fills in the rest from the rows around them.
 func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool, error) {
-	var r row
-	if err := json.Unmarshal(raw, &r); err != nil {
-		return transcript.Entry{}, false, err
-	}
-	if r.Type != "agent.message.appended" {
+	var r wireRow
+	if json.Unmarshal(raw, &r) != nil {
 		return transcript.Entry{}, false, nil
 	}
-	var a appended
-	if err := json.Unmarshal(r.Message, &a); err != nil {
-		return transcript.Entry{}, false, fmt.Errorf("agent.message.appended: %w", err)
-	}
-	e := transcript.Entry{ID: a.Meta.MessageID}
-	if r.Time > 0 {
-		e.Time = time.UnixMilli(r.Time).UTC()
-	}
-	switch a.Message.Role {
-	case "user":
-		e.Role = transcript.RoleUser
-	case "assistant":
-		e.Role = transcript.RoleAssistant
-	case "tool":
-		e.Role = transcript.RoleTool
-		var text strings.Builder
-		for _, p := range a.Message.Content {
-			text.WriteString(p.Text)
+	var e transcript.Entry
+	switch r.Type {
+	case "context.append_message":
+		m, ok := appendedMessage(r)
+		if !ok {
+			return transcript.Entry{}, false, nil
 		}
-		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: a.Message.ToolCallID, Text: text.String(), Status: transcript.StatusOK}}
-		return e, true, nil
+		e = messageEntry(m)
+	case "context.append_loop_event":
+		var ev loopEvent
+		if json.Unmarshal(r.Event, &ev) != nil {
+			return transcript.Entry{}, false, nil
+		}
+		switch ev.Type {
+		case "step.begin":
+			e = transcript.Entry{ID: ev.UUID, Role: transcript.RoleAssistant}
+		case "tool.result":
+			e = transcript.Entry{Role: transcript.RoleTool, Content: []transcript.Block{toolResult(ev.ToolCallID, outputText(ev.Result.Output), ev.Result.IsError)}}
+		default:
+			return transcript.Entry{}, false, nil
+		}
 	default:
 		return transcript.Entry{}, false, nil
 	}
-	for _, p := range a.Message.Content {
-		if p.Type == "text" {
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
-		}
+	if e.Role == transcript.RoleOpaque {
+		return transcript.Entry{}, false, nil
 	}
-	for _, tc := range a.Message.ToolCalls {
-		e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: tc.ID, Name: tc.Name, Input: arguments(tc.Arguments)})
+	if ms, ok := number(r.Time); ok && ms > 0 {
+		e.Time = time.UnixMilli(int64(ms)).UTC()
 	}
 	return e, true, nil
 }
@@ -335,23 +346,51 @@ func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
 }
 
 // plan is what writing a session's new entries needs to know across them:
-// the turn and step each entry belongs to, and the uuid of each tool call
-// event, which the result that answers it points at.
+// the turn and step each entry belongs to, the uuid of each step and tool
+// call event, and which entry closes each step.
+//
+// Kimi records a step's tool results before its step.end (loop/machine
+// tools.ts). The order matters on resume: step.end settles the step, and the
+// fold answers every call still waiting with "Tool execution was
+// interrupted" and ignores a result that arrives later
+// (loopEventFold.ts settleOpen). So a step whose calls are answered ends
+// after the last entry that answers them.
 type plan struct {
-	turn map[string]int // entry id -> turn index
-	step map[string]int // entry id -> step within the turn
-	last map[string]bool
-	call map[string]string // tool call id -> tool.call event uuid
+	turn  map[string]int // entry id -> turn index
+	step  map[string]int // entry id -> step within the turn
+	last  map[string]bool
+	call  map[string]string   // tool call id -> tool.call event uuid
+	uuid  map[string]string   // assistant entry id -> step uuid
+	calls map[string]bool     // assistant entry id -> it calls tools
+	ends  map[string][]string // entry id -> assistant entries whose step.end follows it
 }
 
 // newPlan numbers the session's new entries (those without Raw). Turns
-// continue from the user turns already in the log; each assistant entry is
-// one step of its turn.
+// continue from the turns already in the log; each assistant entry is one
+// step of its turn.
 func newPlan(s *transcript.Session) plan {
-	p := plan{turn: map[string]int{}, step: map[string]int{}, last: map[string]bool{}, call: map[string]string{}}
+	p := plan{turn: map[string]int{}, step: map[string]int{}, last: map[string]bool{}, call: map[string]string{}, uuid: map[string]string{}, calls: map[string]bool{}, ends: map[string][]string{}}
 	turn, step := -1, 0
+	for _, e := range s.Entries {
+		if e.Raw == nil {
+			continue
+		}
+		var r struct {
+			Type   string `json:"type"`
+			TurnID *int   `json:"turnId"`
+		}
+		if json.Unmarshal(e.Raw, &r) == nil && r.TurnID != nil && (r.Type == "turn.prompt" || r.Type == "turn.ended") {
+			turn = max(turn, *r.TurnID)
+		}
+	}
 	var prev string
-	for _, e := range s.Messages() {
+	owner := map[string]string{} // tool call id -> assistant entry id
+	closer := map[string]string{}
+	var steps []string
+	for _, e := range s.Entries {
+		if e.Raw != nil || e.Role == transcript.RoleOpaque {
+			continue
+		}
 		if e.Role == transcript.RoleUser {
 			if prev != "" {
 				p.last[prev] = true
@@ -359,15 +398,24 @@ func newPlan(s *transcript.Session) plan {
 			turn++
 			step = 0
 		}
-		if e.Raw != nil {
-			continue
-		}
 		p.turn[e.ID] = max(turn, 0)
-		if e.Role == transcript.RoleAssistant {
+		switch e.Role {
+		case transcript.RoleAssistant:
 			step++
+			p.uuid[e.ID] = transcript.NewUUID()
+			closer[e.ID] = e.ID
+			steps = append(steps, e.ID)
 			for _, b := range e.Content {
 				if b.Kind == transcript.BlockToolUse {
 					p.call[b.ToolID] = transcript.NewUUID()
+					p.calls[e.ID] = true
+					owner[b.ToolID] = e.ID
+				}
+			}
+		case transcript.RoleTool:
+			for _, b := range e.Content {
+				if a, ok := owner[b.ToolID]; ok && b.Kind == transcript.BlockToolResult {
+					closer[a] = e.ID
 				}
 			}
 		}
@@ -377,12 +425,15 @@ func newPlan(s *transcript.Session) plan {
 	if prev != "" {
 		p.last[prev] = true
 	}
+	for _, a := range steps {
+		p.ends[closer[a]] = append(p.ends[closer[a]], a)
+	}
 	return p
 }
 
 // encoder returns the Encode for one write: it emits, for each new entry, the
-// context rows the model's context is rebuilt from and the transcript row
-// kimi shows, and closes a turn after its last entry.
+// context rows the model's context is rebuilt from and the journal row kimi's
+// input state machine keeps, and closes a turn after its last entry.
 func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMessage, error) {
 	return func(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
 		t := e.Time
@@ -405,11 +456,10 @@ func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMes
 					Meta:    meta{Source: "input", MessageID: e.ID},
 				})})
 		case transcript.RoleAssistant:
-			stepUUID := transcript.NewUUID()
+			stepUUID := p.uuid[e.ID]
 			step := p.step[e.ID]
 			rows = append(rows, loopRow(ms, stepEvent{Type: "step.begin", UUID: stepUUID, TurnID: turnID, Step: step}))
 			var calls []toolCall
-			finish := "end_turn"
 			for _, b := range e.Content {
 				switch b.Kind {
 				case transcript.BlockText:
@@ -421,16 +471,14 @@ func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMes
 					}
 					rows = append(rows, loopRow(ms, toolCallEvent{Type: "tool.call", UUID: p.call[b.ToolID], TurnID: turnID, Step: step, StepUUID: stepUUID, ToolCallID: b.ToolID, Name: b.Name, Args: args}))
 					calls = append(calls, toolCall{Type: "function", ID: b.ToolID, Name: b.Name, Arguments: string(args)})
-					finish = "tool_use"
 				}
 			}
-			rows = append(rows, loopRow(ms, stepEvent{Type: "step.end", UUID: stepUUID, TurnID: turnID, Step: step, FinishReason: finish}))
 			if calls == nil {
 				calls = []toolCall{}
 			}
 			rows = append(rows, row{Type: "agent.message.appended", Kind: "event", Time: ms, Message: mustJSON(appended{
 				Message: message{Role: "assistant", Content: textParts(e), ToolCalls: calls},
-				Meta:    meta{Source: "llm", MessageID: e.ID},
+				Meta:    meta{Source: "llm", MessageID: e.ID, Usage: &usage{}},
 			})})
 		case transcript.RoleTool:
 			for _, b := range e.Content {
@@ -439,16 +487,21 @@ func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMes
 				}
 				ev := toolResultEvent{Type: "tool.result", ParentUUID: p.call[b.ToolID], ToolCallID: b.ToolID}
 				ev.Result.Output = b.Text
-				if b.Status == transcript.StatusError {
-					ev.Result.Error = b.Text
-				}
+				ev.Result.IsError = b.Status == transcript.StatusError
 				rows = append(rows, loopRow(ms, ev), row{Type: "agent.message.appended", Kind: "event", Time: ms, Message: mustJSON(appended{
-					Message: message{Role: "tool", Content: []part{{Type: "text", Text: b.Text}}, ToolCallID: b.ToolID},
+					Message: message{Role: "tool", Content: []part{{Type: "text", Text: b.Text}}, ToolCalls: []toolCall{}, ToolCallID: b.ToolID},
 					Meta:    meta{Source: "tool"},
 				})})
 			}
 		default:
 			return nil, nil
+		}
+		for _, a := range p.ends[e.ID] {
+			reason := "end_turn"
+			if p.calls[a] {
+				reason = "tool_use"
+			}
+			rows = append(rows, loopRow(ms, stepEvent{Type: "step.end", UUID: p.uuid[a], TurnID: turnID, Step: p.step[a], FinishReason: reason}))
 		}
 		if p.last[e.ID] {
 			rows = append(rows, row{Type: "turn.ended", AgentID: "main", TurnID: &turn, Reason: "completed", Time: ms})
@@ -477,8 +530,14 @@ type contextMessage struct {
 	Origin    origin     `json:"origin"`
 }
 
+// origin is where a context message came from (PromptOrigin in
+// agent/contextMemory/types.ts), as far as the reader needs it.
 type origin struct {
-	Kind string `json:"kind"`
+	Kind          string `json:"kind"`
+	Variant       string `json:"variant,omitempty"`
+	OwnerPromptID string `json:"ownerPromptId,omitempty"`
+	Trigger       string `json:"trigger,omitempty"`
+	InTurn        bool   `json:"inTurn,omitempty"`
 }
 
 type stepEvent struct {
@@ -514,8 +573,8 @@ type toolResultEvent struct {
 	ParentUUID string `json:"parentUuid"`
 	ToolCallID string `json:"toolCallId"`
 	Result     struct {
-		Output string `json:"output"`
-		Error  string `json:"error,omitempty"`
+		Output  string `json:"output"`
+		IsError bool   `json:"isError,omitempty"`
 	} `json:"result"`
 }
 
@@ -585,7 +644,24 @@ func writeState(ctx context.Context, path string, s *transcript.Session) error {
 	if err := os.WriteFile(filepath.Join(dir, "state.json"), out, 0o644); err != nil {
 		return err
 	}
-	return addToIndex(filepath.Join(dir, "..", "..", "..", "session_index.jsonl"), indexRow{SessionID: s.ID, SessionDir: dir, WorkDir: s.CWD})
+	if err := addToIndex(filepath.Join(dir, "..", "..", "..", "session_index.jsonl"), indexRow{SessionID: s.ID, SessionDir: dir, WorkDir: s.CWD}); err != nil {
+		return err
+	}
+	return markDirty(filepath.Join(dir, "..", ".."), s.ID)
+}
+
+// markDirty tells kimi its cached session list is stale. Kimi serves
+// /sessions from a cache it trusts while no mark is present and no workspace
+// directory's mtime moved (sessionIndexService.ts manifestFresh), and
+// rewriting a session that already exists moves neither. A mark is an empty
+// file sessions/.index-dirty/<id>.<ms> (sessionIndexDirtyJournal.ts:11-18);
+// kimi clears the marks when it rebuilds the list.
+func markDirty(sessions, id string) error {
+	dir := filepath.Join(sessions, ".index-dirty")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(dir, id+"."+strconv.FormatInt(time.Now().UnixMilli(), 10)), nil, 0o644)
 }
 
 // addToIndex appends a row to session_index.jsonl unless the session is

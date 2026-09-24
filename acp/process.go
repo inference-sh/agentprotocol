@@ -17,7 +17,8 @@ import (
 // test, should use NewClient directly instead.
 type Process struct {
 	*Client
-	cmd *exec.Cmd
+	cmd   *exec.Cmd
+	state *os.ProcessState
 
 	// ShutdownGrace is how long Wait lets the agent finish after
 	// session/close before the stream is closed. Zero means
@@ -151,15 +152,24 @@ func (p *Process) Wait() error {
 	return p.cmd.Wait()
 }
 
-// Kill terminates the child without waiting for it to shut down cleanly. Use
-// it when the agent is unresponsive or when a launch failed partway.
+// Kill terminates the child without waiting for it to shut down cleanly and
+// reaps it. Use it when the agent is unresponsive, when a launch failed
+// partway, or to reap an agent that has already exited on its own; in that
+// last case ExitState reports how it ended rather than the kill.
 func (p *Process) Kill() error {
 	_ = p.Close()
 	if p.cmd.Process != nil {
 		_ = p.cmd.Process.Kill()
 	}
-	_, err := p.cmd.Process.Wait()
+	st, err := p.cmd.Process.Wait()
+	p.state = st
 	return err
+}
+
+// ExitState is how the child ended, once Kill has reaped it; nil before that
+// or after Wait, which reports the exit through its error instead.
+func (p *Process) ExitState() *os.ProcessState {
+	return p.state
 }
 
 // Pid is the child's process id, useful for logging and for a supervisor that

@@ -320,9 +320,95 @@ func TestKillEndsAWedgedAgentAtOnce(t *testing.T) {
 	}
 	p, _ := ap.PayloadAs[ap.ApprovalRequiredPayload](approval, ap.AgentEventApprovalRequired)
 
-	killMidWork(t, sess)
+	after := killMidWork(t, sess)
+	if ev, ok := findEvent(after, ap.AgentEventError); !ok {
+		t.Errorf("killing a session mid-turn reported no error; got %v", typesOf(after))
+	} else if p, _ := ap.PayloadAs[ap.ErrorPayload](ev, ap.AgentEventError); p.Code != "process_exited" {
+		t.Errorf("error code = %q, want process_exited", p.Code)
+	}
 	if err := sess.Resolve(context.Background(), p.ToolInvocationID, driver.Allow()); err == nil {
 		t.Error("resolving a request of a killed agent succeeded")
+	}
+}
+
+// untilClosed reads every event until the channel closes.
+func untilClosed(t *testing.T, ch <-chan ap.AgentEvent, timeout time.Duration) []ap.AgentEvent {
+	t.Helper()
+	var got []ap.AgentEvent
+	deadline := time.After(timeout)
+	for {
+		select {
+		case ev, ok := <-ch:
+			if !ok {
+				return got
+			}
+			got = append(got, ev)
+		case <-deadline:
+			t.Fatalf("events never closed; the dead agent looks alive. got %v", typesOf(got))
+		}
+	}
+}
+
+func TestAgentDyingMidTurnEndsTheSession(t *testing.T) {
+	b := backendRunning(t, "crash-mid-turn")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir(),
+	})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+	if err := sess.Prompt(context.Background(), driver.TextInput("go")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+
+	got := untilClosed(t, sess.Events(), 5*time.Second)
+	var errs []ap.ErrorPayload
+	for _, ev := range got {
+		if ev.Type == ap.AgentEventError {
+			p, _ := ap.PayloadAs[ap.ErrorPayload](ev, ap.AgentEventError)
+			errs = append(errs, p)
+		}
+		if ev.Type == ap.AgentEventTurnCompleted {
+			t.Error("a turn the agent died in was reported completed")
+		}
+	}
+	if len(errs) != 1 {
+		t.Fatalf("got %d error events, want exactly one; events %v", len(errs), typesOf(got))
+	}
+	if errs[0].Code != "process_exited" {
+		t.Errorf("error code = %q, want process_exited", errs[0].Code)
+	}
+	if !strings.Contains(errs[0].Message, "exit status 3") {
+		t.Errorf("error message %q does not carry the agent's exit status", errs[0].Message)
+	}
+	if err := sess.Prompt(context.Background(), driver.TextInput("again")); err == nil {
+		t.Error("prompting a dead agent succeeded")
+	}
+	if err := sess.Close(); err != nil {
+		t.Errorf("close after the agent died: %v", err)
+	}
+}
+
+func TestAgentExitingWhileIdleClosesEventsWithoutAnError(t *testing.T) {
+	b := backendRunning(t, "exit-after-turn")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir(),
+	})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+	if err := sess.Prompt(context.Background(), driver.TextInput("go")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+
+	got := untilClosed(t, sess.Events(), 5*time.Second)
+	if _, ok := findEvent(got, ap.AgentEventTurnCompleted); !ok {
+		t.Errorf("the finished turn was not reported; got %v", typesOf(got))
+	}
+	if ev, ok := findEvent(got, ap.AgentEventError); ok {
+		t.Errorf("an idle agent exiting reported an error: %+v", ev)
 	}
 }
 
@@ -523,6 +609,22 @@ func runFakeAgent(script string) {
 				})
 				reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
 				continue
+			}
+
+			if script == "crash-mid-turn" {
+				// Start answering, then die with the turn unfinished.
+				update(acp.SessionUpdate{
+					Kind:    acp.UpdateKindAgentMessageChunk,
+					Content: json.RawMessage(`{"type":"text","text":"working"}`),
+				})
+				os.Exit(3)
+			}
+
+			if script == "exit-after-turn" {
+				// Finish the turn properly, then quit while idle.
+				reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
+				time.Sleep(100 * time.Millisecond)
+				os.Exit(0)
 			}
 
 			if script == "permission" {

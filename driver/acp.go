@@ -21,6 +21,15 @@ const KindACP = "acp"
 // The credential never passes through here. The agent is already logged in as
 // the user; selecting which account it uses is a matter of pointing its own
 // config-directory variable at a profile, which is what Env is for.
+//
+// The client offers the agent no filesystem: fs/read_text_file and
+// fs/write_text_file are not advertised, so the agent reads and writes the
+// working directory itself. This is deliberate. Serving those calls would put
+// this process between the agent and the user's files for no gain when both
+// run on the same machine.
+//
+// An agent that exits on its own ends the session the way Kill does: a turn
+// still running reports an error with code process_exited, and Events closes.
 type ACPBackend struct {
 	// Command and Args launch the agent in ACP mode.
 	Command string
@@ -162,6 +171,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 	}
 
 	s.emit(ap.NewEvent(ap.AgentEventRunStarted, s.runID, s.chatID, ap.RunStartedPayload{}))
+	go s.watch()
 	return s, nil
 }
 
@@ -188,6 +198,8 @@ type acpSession struct {
 
 	mu      sync.Mutex
 	pending map[string]*pendingPermission
+	// turns counts prompts still waiting on the agent's answer.
+	turns int
 }
 
 func (s *acpSession) ID() string { return s.id }
@@ -195,10 +207,31 @@ func (s *acpSession) ID() string { return s.id }
 func (s *acpSession) Events() <-chan ap.AgentEvent { return s.events }
 
 func (s *acpSession) Prompt(ctx context.Context, in Input) error {
+	select {
+	case <-s.proc.Done():
+		return errors.New("driver: acp session has ended")
+	default:
+	}
+	s.mu.Lock()
+	s.turns++
+	s.mu.Unlock()
 	s.emit(ap.NewEvent(ap.AgentEventTurnStarted, s.runID, s.chatID, ap.TurnStartedPayload{}))
 
 	go func() {
 		_, err := s.proc.Prompt(context.WithoutCancel(ctx), in.Text)
+		if err != nil {
+			select {
+			case <-s.proc.Done():
+				// The stream is gone: the agent died or the session is
+				// closing. Whoever ends the session reports the turn, so
+				// it is left open for them to see.
+				return
+			default:
+			}
+		}
+		s.mu.Lock()
+		s.turns--
+		s.mu.Unlock()
 		if err != nil {
 			s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{
 				Message: err.Error(),
@@ -258,15 +291,48 @@ func (s *acpSession) Close() error {
 }
 
 // Kill implements Killer. The agent gets no session/close and no grace; any
-// request parked on a person is cancelled. After Close it does nothing.
+// request parked on a person is cancelled. The session then ends as it does
+// when the agent crashes: a turn still running reports process_exited, and
+// Events closes. After Close it does nothing.
 func (s *acpSession) Kill() error {
 	var err error
 	s.closeOnce.Do(func() {
 		s.failPending()
 		err = s.proc.Kill()
+		s.reportExit()
 		s.closeEvents()
 	})
 	return err
+}
+
+// watch ends the session when the agent's stream ends without Close or Kill
+// having asked for it: the agent crashed, was killed from outside, or quit.
+// Without this a dead agent would look alive, with Events open forever.
+func (s *acpSession) watch() {
+	<-s.proc.Done()
+	s.closeOnce.Do(func() {
+		s.failPending()
+		_ = s.proc.Kill() // reaps it; ExitState is then its own exit
+		s.reportExit()
+		s.closeEvents()
+	})
+}
+
+// reportExit tells the caller a turn died with the agent. An idle agent that
+// exits is reported only by Events closing, as with the other backends.
+func (s *acpSession) reportExit() {
+	s.mu.Lock()
+	open := s.turns > 0
+	s.turns = 0
+	s.mu.Unlock()
+	if !open {
+		return
+	}
+	msg := "agent exited before the turn finished"
+	if st := s.proc.ExitState(); st != nil {
+		msg += ": " + st.String()
+	}
+	s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{Message: msg, Code: "process_exited"}))
 }
 
 var _ Killer = (*acpSession)(nil)

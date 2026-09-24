@@ -651,3 +651,32 @@ func TestProtocolCallStillUsesTheShortBudget(t *testing.T) {
 		t.Fatal("protocol call did not time out")
 	}
 }
+
+func TestPromptHasNoTotalBoundByDefault(t *testing.T) {
+	// A long turn that is still working must not be cut off. Dead agents are
+	// caught by the stream ending, silent ones by the driver's first-event
+	// bound; the prompt itself waits as long as the turn takes.
+	client, agent := newPair(t, acp.Handler{})
+	handshake(t, client, agent, "sess_1")
+	if client.PromptTimeout != 0 {
+		t.Fatalf("default PromptTimeout = %s, want none", client.PromptTimeout)
+	}
+	client.CallTimeout = 50 * time.Millisecond
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := client.Prompt(context.Background(), "long work")
+		done <- err
+	}()
+	prompt := agent.next()
+	time.Sleep(400 * time.Millisecond)
+	agent.reply(*prompt.ID, map[string]any{"stopReason": "end_turn"})
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatalf("prompt: %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("prompt never returned")
+	}
+}

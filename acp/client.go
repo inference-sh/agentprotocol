@@ -17,14 +17,18 @@ import (
 // return in well under this.
 const DefaultCallTimeout = 60 * time.Second
 
-// DefaultPromptTimeout bounds a prompt.
+// DefaultPromptTimeout is the default bound on a whole prompt: none.
 //
-// It is much longer than DefaultCallTimeout because it measures something
-// different. Every other call is protocol chatter whose duration is the
-// agent's own bookkeeping, but session/prompt does not return until the model
-// has finished the turn, which for an agent running tools can be many minutes.
-// Timing a prompt out on a protocol budget kills work that was progressing.
-const DefaultPromptTimeout = 10 * time.Minute
+// Every other call is protocol chatter whose duration is the agent's own
+// bookkeeping, but session/prompt does not return until the model has
+// finished the turn, which for an agent running tools can take far longer
+// than any fixed budget: a 10-minute cap used to cut off coding turns that
+// were still working. What a prompt must not do is wait forever on an agent
+// that has stopped, and that is covered elsewhere: a process or stream that
+// ends fails the call, and driver.ACPBackend.FirstEventTimeout fails a
+// prompt that never shows a first sign of work. A caller that wants a total
+// bound sets PromptTimeout or passes a context with a deadline.
+const DefaultPromptTimeout time.Duration = 0
 
 // maxLineBytes caps one JSON-RPC line. Agents inline file contents and tool
 // output into updates, so the default scanner limit is far too small.
@@ -130,8 +134,9 @@ type Client struct {
 	// CallTimeout bounds a protocol call. Zero means DefaultCallTimeout.
 	CallTimeout time.Duration
 
-	// PromptTimeout bounds a prompt specifically, whose duration belongs to
-	// the model rather than the protocol. Zero means DefaultPromptTimeout.
+	// PromptTimeout bounds a whole prompt, whose duration belongs to the
+	// model rather than the protocol. Zero or negative means no bound (the
+	// default); see DefaultPromptTimeout.
 	PromptTimeout time.Duration
 
 	// ReplayIdleGap is how long session/update must stay quiet during a load
@@ -533,7 +538,7 @@ func (c *Client) promptTimeout() time.Duration {
 	if c.PromptTimeout > 0 {
 		return c.PromptTimeout
 	}
-	return DefaultPromptTimeout
+	return 0
 }
 
 func (c *Client) call(ctx context.Context, method string, params any, budget time.Duration) (json.RawMessage, error) {
@@ -554,8 +559,13 @@ func (c *Client) call(ctx context.Context, method string, params any, budget tim
 		return nil, err
 	}
 
-	timer := time.NewTimer(budget)
-	defer timer.Stop()
+	// A budget of zero or less is no bound: the timer channel stays nil.
+	var expired <-chan time.Time
+	if budget > 0 {
+		timer := time.NewTimer(budget)
+		defer timer.Stop()
+		expired = timer.C
+	}
 
 	select {
 	case msg := <-ch:
@@ -565,7 +575,7 @@ func (c *Client) call(ctx context.Context, method string, params any, budget tim
 		return msg.Result, nil
 	case <-ctx.Done():
 		return nil, ctx.Err()
-	case <-timer.C:
+	case <-expired:
 		return nil, fmt.Errorf("acp: timeout after %s waiting for %s", budget, method)
 	case <-c.done:
 		if c.readErr != nil {

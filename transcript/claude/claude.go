@@ -11,6 +11,10 @@ package claude
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -27,6 +31,10 @@ var Codec = transcript.JSONL{
 		Project: transcript.MangledCwd,
 		Ext:     ".jsonl",
 		Peek:    peek,
+		Holders: holders,
+		Serving: func(home string) map[int]string {
+			return running.serving(filepath.Join(home, ".claude", "sessions"))
+		},
 	},
 	Decode: decode,
 	Encode: encode,
@@ -298,4 +306,69 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 // holds only in a form that cannot be reversed, from the cwd its rows carry.
 func peek(path string) (transcript.Info, error) {
 	return transcript.Info{CWD: transcript.PeekField(path, "cwd", 64)}, nil
+}
+
+// holders reads Claude Code's registry of running sessions,
+// ~/.claude/sessions/<pid>.json, each naming the session a process holds
+// ({"pid", "sessionId", "cwd", ...}), and returns the pids that name the
+// session in this file. A file can outlive its process; the caller checks
+// each pid. path is <home>/.claude/projects/<dir>/<id>.jsonl.
+func holders(path string) []int {
+	id := strings.TrimSuffix(filepath.Base(path), ".jsonl")
+	dir := filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir(path))), "sessions")
+	return running.pids(dir)[id]
+}
+
+// running caches the registry per directory, keyed on its modification
+// time, so listing hundreds of sessions reads it once.
+var running = &registryCache{byDir: map[string]registryEntry{}}
+
+type registryCache struct {
+	mu    sync.Mutex
+	byDir map[string]registryEntry
+}
+
+type registryEntry struct {
+	mod     time.Time
+	pids    map[string][]int
+	serving map[int]string
+}
+
+// serving is the whole registry as pid to session id.
+func (c *registryCache) serving(dir string) map[int]string {
+	c.pids(dir)
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.byDir[dir].serving
+}
+
+func (c *registryCache) pids(dir string) map[string][]int {
+	fi, err := os.Stat(dir)
+	if err != nil {
+		return nil
+	}
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if e, ok := c.byDir[dir]; ok && e.mod.Equal(fi.ModTime()) {
+		return e.pids
+	}
+	out := map[string][]int{}
+	serving := map[int]string{}
+	files, _ := filepath.Glob(filepath.Join(dir, "*.json"))
+	for _, f := range files {
+		raw, err := os.ReadFile(f)
+		if err != nil {
+			continue
+		}
+		var rec struct {
+			PID       int    `json:"pid"`
+			SessionID string `json:"sessionId"`
+		}
+		if json.Unmarshal(raw, &rec) == nil && rec.PID > 0 && rec.SessionID != "" {
+			out[rec.SessionID] = append(out[rec.SessionID], rec.PID)
+			serving[rec.PID] = rec.SessionID
+		}
+	}
+	c.byDir[dir] = registryEntry{mod: fi.ModTime(), pids: out, serving: serving}
+	return out
 }

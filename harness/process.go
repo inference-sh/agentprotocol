@@ -30,29 +30,22 @@ func (h Harness) ProcessNames() []string {
 var interpreters = map[string]bool{"node": true, "bun": true, "deno": true, "python": true, "python3": true}
 
 // Runs reports whether a process with this argv and executable path is one
-// of the agent's. It matches a name against the executable's base name, the
-// first argument's, or, under a script interpreter, the script's; or a
-// directory named for it in either path (npm keeps cursor-agent's script in
-// .../cursor-agent/versions/...).
+// of the agent's. A process is named by its first argument (its title, which
+// agents like Claude Code set), or, when that is a script interpreter, by the
+// script it runs; a name matches the base name or a directory in that path
+// (npm keeps cursor-agent's script in .../cursor-agent/versions/...). The
+// executable path is not a name: Claude Code runs its search helper as a
+// child of its own binary with argv[0] "ugrep", which is not a session.
 func (h Harness) Runs(argv []string, exe string) bool {
-	var cands, paths []string
-	add := func(p string) {
-		if p == "" {
-			return
-		}
-		paths = append(paths, p)
-		cands = append(cands, strings.TrimSuffix(filepath.Base(p), ".exe"))
+	if len(argv) == 0 {
+		return false
 	}
-	add(exe)
-	if len(argv) > 0 {
-		add(argv[0])
-		base := filepath.Base(argv[0])
-		if interpreters[base] || interpreters[filepath.Base(exe)] {
-			for _, a := range argv[1:] {
-				if !strings.HasPrefix(a, "-") {
-					add(a)
-					break
-				}
+	paths := []string{argv[0]}
+	if interpreters[filepath.Base(argv[0])] || interpreters[filepath.Base(exe)] {
+		for _, a := range argv[1:] {
+			if !strings.HasPrefix(a, "-") {
+				paths = append(paths, a)
+				break
 			}
 		}
 	}
@@ -60,13 +53,8 @@ func (h Harness) Runs(argv []string, exe string) bool {
 		if name == "" {
 			continue
 		}
-		for _, c := range cands {
-			if c == name {
-				return true
-			}
-		}
 		for _, p := range paths {
-			if strings.Contains(p, "/"+name+"/") {
+			if strings.TrimSuffix(filepath.Base(p), ".exe") == name || strings.Contains(p, "/"+name+"/") {
 				return true
 			}
 		}

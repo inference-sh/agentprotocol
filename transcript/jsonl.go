@@ -109,6 +109,9 @@ type Layout struct {
 	// Holders lists the pids the agent's in-use markers name for the session
 	// with this file; see Info.Holders. Optional.
 	Holders func(path string) []int
+	// Serving reads the agent's whole registry of which process holds which
+	// session under home; see ServingLister. Optional.
+	Serving func(home string) map[int]string
 }
 
 // ProjectDir is how an agent derives a per-project directory name from the
@@ -234,6 +237,15 @@ func (st *jsonlStore) List(ctx context.Context, cwd string) ([]Info, error) {
 	}
 	SortNewest(out)
 	return out, nil
+}
+
+// Serving implements ServingLister when the layout knows the agent's
+// registry, and reports nothing otherwise.
+func (st *jsonlStore) Serving(ctx context.Context) (map[int]string, error) {
+	if st.cfg.Layout.Serving == nil {
+		return nil, nil
+	}
+	return st.cfg.Layout.Serving(st.home), nil
 }
 
 func (st *jsonlStore) find(ctx context.Context, id string) (string, error) {

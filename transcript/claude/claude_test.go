@@ -1,6 +1,9 @@
 package claude
 
 import (
+	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -45,4 +48,44 @@ func TestForeignIDs(t *testing.T) {
 
 func TestListsCWD(t *testing.T) {
 	transcripttest.ListsCWD(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}
+
+// TestHolders: Claude Code's ~/.claude/sessions/<pid>.json names the session
+// each running process holds, and the listing carries those pids for that
+// session only.
+func TestHolders(t *testing.T) {
+	home := t.TempDir()
+	src := filepath.Join("testdata/home/.claude/projects", transcript.MangledCwd.Name(sampleCWD))
+	dst := filepath.Join(home, ".claude", "projects", transcript.MangledCwd.Name(sampleCWD))
+	if err := os.MkdirAll(dst, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(filepath.Join(src, sampleID+".jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dst, sampleID+".jsonl"), raw, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	reg := filepath.Join(home, ".claude", "sessions")
+	if err := os.MkdirAll(reg, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for pid, sid := range map[int]string{4242: sampleID, 4343: "some-other-session"} {
+		body := fmt.Sprintf(`{"pid":%d,"sessionId":%q,"cwd":%q,"kind":"interactive"}`, pid, sid, sampleCWD)
+		if err := os.WriteFile(filepath.Join(reg, fmt.Sprintf("%d.json", pid)), []byte(body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	st, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	infos, err := st.List(t.Context(), "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(infos) != 1 || len(infos[0].Holders) != 1 || infos[0].Holders[0] != 4242 {
+		t.Errorf("holders = %+v, want [4242]", infos)
+	}
 }

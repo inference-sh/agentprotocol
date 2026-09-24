@@ -47,6 +47,7 @@ var Writer = transcript.JSONL{
 		Peek:        peek,
 		SessionRoot: filepath.Dir,
 		Holders:     holders,
+		Serving:     serving,
 	},
 	Header:      header,
 	Decode:      decode,
@@ -207,6 +208,18 @@ func holders(path string) []int {
 		}
 	}
 	return pids
+}
+
+// serving reads every session's in-use markers as pid to session id.
+func serving(home string) map[int]string {
+	out := map[int]string{}
+	marks, _ := filepath.Glob(filepath.Join(home, root, "*", "inuse.*.hold"))
+	for _, m := range marks {
+		for _, pid := range holders(filepath.Join(filepath.Dir(m), "events.jsonl")) {
+			out[pid] = filepath.Base(filepath.Dir(m))
+		}
+	}
+	return out
 }
 
 func pathFor(home string, s *transcript.Session) string {

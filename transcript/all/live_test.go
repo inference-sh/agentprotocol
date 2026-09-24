@@ -166,3 +166,55 @@ func deadPID(t *testing.T) int {
 	}
 	return cmd.Process.Pid
 }
+
+// TestLiveHolderReused: where the process table can be read, a marker whose
+// pid is alive but no longer the agent's (a reused pid) proves nothing.
+func TestLiveHolderReused(t *testing.T) {
+	withTestAgent(t)
+	p := &Probe{home: "/h", ok: true, now: time.Now(), procs: []proc.Process{
+		{PID: os.Getpid(), Argv: []string{"some-editor"}, Home: "/h"},
+	}}
+	s := Session{Agent: testAgent, Info: transcript.Info{ID: "s", CWD: "/w", Holders: []int{os.Getpid()}, Updated: time.Now().Add(-time.Hour)}}
+	if l := p.Live(s); l.Evidence == transcript.EvidenceLockFile {
+		t.Errorf("reused pid counted as the agent's marker: %+v", l)
+	}
+	p.procs[0].Argv = []string{"livetest-agent"}
+	if l := p.Live(s); l.State != transcript.LiveActive || l.Evidence != transcript.EvidenceLockFile {
+		t.Errorf("the agent's own pid = %+v, want lock-file proof", l)
+	}
+}
+
+// TestLiveHeldElsewhere: an agent process in the session's directory that
+// the agent's markers tie to another session does not make this one live.
+func TestLiveHeldElsewhere(t *testing.T) {
+	withTestAgent(t)
+	pid := os.Getpid()
+	p := &Probe{home: "/h", ok: true, now: time.Now(), procs: []proc.Process{
+		{PID: pid, Argv: []string{"livetest-agent"}, CWD: "/w", Home: "/h"},
+	}}
+	busy := Session{Agent: testAgent, Info: transcript.Info{ID: "busy", CWD: "/w", Holders: []int{pid}, Updated: time.Now().Add(-time.Hour)}}
+	quiet := Session{Agent: testAgent, Info: transcript.Info{ID: "quiet", CWD: "/w", Updated: time.Now().Add(-time.Hour)}}
+	if l := p.Live(quiet); l.Evidence != transcript.EvidenceProcessInCwd || !l.Heuristic {
+		t.Errorf("before Known = %+v, want the process-in-cwd heuristic", l)
+	}
+	p.Known([]Session{busy, quiet})
+	if l := p.Live(quiet); l.State != transcript.LiveIdle || l.Evidence != transcript.EvidenceHeldElsewhere || l.Heuristic {
+		t.Errorf("after Known = %+v, want idle: the only process holds another session", l)
+	}
+	if l := p.Live(busy); l.State != transcript.LiveActive || l.Evidence != transcript.EvidenceLockFile {
+		t.Errorf("the held session = %+v", l)
+	}
+}
+
+// TestLiveSubdirectory: an agent process started in a subdirectory of the
+// session's directory serves that subdirectory's sessions, not this one.
+func TestLiveSubdirectory(t *testing.T) {
+	withTestAgent(t)
+	p := &Probe{home: "/h", ok: true, now: time.Now(), procs: []proc.Process{
+		{PID: 7, Argv: []string{"livetest-agent"}, CWD: "/w/sub", Home: "/h"},
+	}}
+	s := Session{Agent: testAgent, Info: transcript.Info{ID: "s", CWD: "/w", Updated: time.Now().Add(-time.Hour)}}
+	if l := p.Live(s); l.State != transcript.LiveIdle || l.Evidence != transcript.EvidenceNoProcessInCwd {
+		t.Errorf("process in a subdirectory = %+v, want heuristic idle", l)
+	}
+}

@@ -40,6 +40,11 @@ func TestRuns(t *testing.T) {
 			}
 		}
 	}
+	// Claude Code's search helper runs from Claude's own binary under
+	// another name; it is not a session.
+	if All["claude"].Runs([]string{"ugrep", "-G", "--ignore-files"}, "/home/u/.local/share/claude/versions/2.1.280") {
+		t.Error("claude claims its ugrep helper")
+	}
 	// A node process running something else is nobody's agent.
 	for name, h := range All {
 		if h.Runs([]string{"node", "/h/.npm-global/lib/node_modules/typescript-language-server/lib/cli.mjs", "--stdio"}, "/usr/local/bin/node") {

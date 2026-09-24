@@ -63,34 +63,42 @@ codec cannot exist without a sample.
 
 ## Listing and liveness
 
-`all.List(ctx, home, cwd)` lists every agent's sessions under a home in one
-call, newest first, each with its agent. An agent with no store contributes
-nothing; a store that fails is reported beside the results and does not stop
-the others.
+`all.ListLive(ctx, home, cwd)` lists every agent's sessions under a home,
+newest first, each with its agent and whether a process is using it now. An
+agent with no store contributes nothing; a store that fails is reported
+beside the results and does not stop the others. `all.List` is the listing
+alone, and `all.NewProbe(home)` checks sessions one at a time from one read
+of the process table.
 
-`all.Live(home, session)`, or `all.NewProbe(home).Live(session)` to check
-many sessions from one read of the process table, says whether a process is
-using a session now, and what the answer rests on:
+Each answer carries the evidence it rests on:
 
 | Evidence | Meaning | Proof? |
 |---|---|---|
-| `lock-file` | the agent's in-use marker for the session names a running process (Copilot's `inuse.<pid>.hold`) | yes |
+| `lock-file` | the agent's own record names a running process of it as holding the session: Claude Code's `~/.claude/sessions/<pid>.json`, Copilot's `inuse.<pid>.hold` | yes |
 | `open-file` | an agent process holds the session's own file or directory open (codex, grok, qwen, omp, cursor's blob store) | yes |
 | `no-process` | no process of the agent is running | yes, idle |
-| `process-in-cwd` | an agent process runs in the session's directory, and may be serving another session there | heuristic |
+| `held-elsewhere` | every agent process in the session's directory holds another session by the agent's own record | yes, idle |
+| `process-in-cwd` | an agent process started in the session's directory, and may be serving another session there | heuristic |
 | `recent-write` | the session was written in the last two minutes | heuristic |
-| `no-process-in-cwd` | the agent runs, but elsewhere | heuristic, idle |
+| `no-process-in-cwd` | the agent runs, but not in the session's directory | heuristic, idle |
 
-Which of these each agent produces was measured by recording its processes
-and open files while a harness-test session was live. Agents that keep every
-session in one database (goose, opencode, kilo, hermes) or open and close
-their transcript per write (claude, gemini, droid, kimi, pi) give no
-per-session proof; for them the answer is the labelled directory heuristic.
+What each agent leaves while a session is live was measured by recording
+its processes and open files during a harness-test session. A process is
+named by its first argument, or by the script under an interpreter, never
+by its executable (Claude Code's search helper runs from Claude's own
+binary). The heuristic answers remain for agents that record nothing per
+session and keep every session in one database or open and close their
+transcript per write (goose, opencode, kilo, hermes, gemini, droid, kimi,
+pi), and for processes that predate an agent's registry. Listing a real
+home with a dozen Claude Code sessions open proves all but a handful of
+answers either way.
+
 It reads only metadata: process arguments, working directories, HOME, open
-file paths, and in-use markers. The process table is read from /proc, so
-off Linux only in-use markers and recent writes apply, and anything else is
-`unknown`. Treat a heuristic or unknown answer as a reason to warn before
-continuing a session, not as proof.
+file paths, and the agents' registries and markers. The process table is
+read from /proc, so off Linux only markers (their pids checked with signal
+0) and recent writes apply, and anything else is `unknown`. Treat a
+heuristic or unknown answer as a reason to warn before continuing a
+session, not as proof.
 
 ## Writing back
 

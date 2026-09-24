@@ -1,6 +1,7 @@
 package all
 
 import (
+	"context"
 	"path/filepath"
 	"strings"
 	"time"
@@ -23,6 +24,26 @@ type Probe struct {
 	procs []proc.Process
 	ok    bool
 	now   time.Time
+	// serving maps a pid to the session its agent's in-use markers say it
+	// holds, from Known.
+	serving map[int]string
+}
+
+// Known tells the probe every session the caller has listed, so a process
+// the agent's markers tie to one session is not taken as possibly serving
+// another in the same directory. Claude Code, for one, registers every
+// running process with the session it holds.
+func (p *Probe) Known(sessions []Session) {
+	if p.serving == nil {
+		p.serving = map[int]string{}
+	}
+	for _, s := range sessions {
+		for _, pid := range s.Holders {
+			if proc.Alive(pid) {
+				p.serving[pid] = s.Agent + "\x00" + s.ID
+			}
+		}
+	}
 }
 
 // NewProbe reads the agent processes running as home's user now. Off Linux
@@ -40,6 +61,54 @@ func NewProbe(home string) *Probe {
 	return &Probe{home: filepath.Clean(home), procs: procs, ok: ok, now: time.Now()}
 }
 
+// Status is a listed session with whether it is in use.
+type Status struct {
+	Session
+	Live transcript.Liveness
+}
+
+// Serving tells the probe an agent's registry of which process holds which
+// session (see transcript.ServingLister), including sessions the caller did
+// not list.
+func (p *Probe) Serving(agent string, pids map[int]string) {
+	if p.serving == nil {
+		p.serving = map[int]string{}
+	}
+	for pid, id := range pids {
+		if proc.Alive(pid) {
+			p.serving[pid] = agent + "\x00" + id
+		}
+	}
+}
+
+// ListLive lists every agent's sessions like List and says for each whether
+// it is in use, from one read of the process table and each agent's own
+// registry of which process holds which session.
+func ListLive(ctx context.Context, home, cwd string) ([]Status, []AgentError) {
+	sessions, errs := List(ctx, home, cwd)
+	p := NewProbe(home)
+	p.Known(sessions)
+	for _, agent := range Agents() {
+		st, ok, err := Open(agent, home)
+		if !ok || err != nil {
+			continue
+		}
+		if sl, ok := st.(transcript.ServingLister); ok {
+			pids, err := sl.Serving(ctx)
+			if err != nil {
+				errs = append(errs, AgentError{agent, err})
+				continue
+			}
+			p.Serving(agent, pids)
+		}
+	}
+	out := make([]Status, len(sessions))
+	for i, s := range sessions {
+		out[i] = Status{Session: s, Live: p.Live(s)}
+	}
+	return out, errs
+}
+
 // Live reports whether one session is in use, from a fresh probe.
 func Live(home string, s Session) transcript.Liveness {
 	return NewProbe(home).Live(s)
@@ -52,7 +121,8 @@ func Live(home string, s Session) transcript.Liveness {
 //  2. an agent process holds the session's own file or directory open;
 //  3. no process of the agent runs at all (idle);
 //  4. an agent process runs in the session's directory (heuristic: it may be
-//     serving another session there);
+//     serving another session there), unless every such process holds
+//     another session by the agent's markers (idle; see Known);
 //  5. the session was written within RecentWindow (heuristic);
 //  6. the agent runs only elsewhere (heuristic idle).
 //
@@ -60,11 +130,18 @@ func Live(home string, s Session) transcript.Liveness {
 // unknown. A caller should treat a heuristic or unknown answer as reason to
 // warn before continuing the session, not as proof either way.
 func (p *Probe) Live(s Session) transcript.Liveness {
+	h, known := harness.All[s.Agent]
 	for _, pid := range s.Holders {
-		if proc.Alive(pid) {
-			return transcript.Liveness{State: transcript.LiveActive, Evidence: transcript.EvidenceLockFile, PID: pid,
-				Detail: "the agent's in-use marker for this session names a running process"}
+		if !proc.Alive(pid) {
+			continue
 		}
+		// A marker can outlive its process and the pid be reused. Where the
+		// process table can be read, the pid must be the agent's.
+		if p.ok && !p.runs(h, known, pid) {
+			continue
+		}
+		return transcript.Liveness{State: transcript.LiveActive, Evidence: transcript.EvidenceLockFile, PID: pid,
+			Detail: "the agent's in-use marker for this session names a running process"}
 	}
 	recent := !s.Updated.IsZero() && p.now.Sub(s.Updated) < RecentWindow
 	if !p.ok {
@@ -75,7 +152,6 @@ func (p *Probe) Live(s Session) transcript.Liveness {
 		return transcript.Liveness{State: transcript.LiveUnknown, Evidence: transcript.EvidenceNone,
 			Detail: "no process table on this platform and no in-use marker"}
 	}
-	h, known := harness.All[s.Agent]
 	var mine []proc.Process
 	for _, pr := range p.procs {
 		if known && h.Runs(pr.Argv, pr.Exe) && (pr.Home == "" || filepath.Clean(pr.Home) == p.home) {
@@ -97,11 +173,25 @@ func (p *Probe) Live(s Session) transcript.Liveness {
 			Detail: "no process of " + s.Agent + " is running"}
 	}
 	if s.CWD != "" {
+		inCwd, elsewhere := 0, 0
 		for _, pr := range mine {
-			if pr.CWD != "" && within(pr.CWD, s.CWD) {
-				return transcript.Liveness{State: transcript.LiveActive, Evidence: transcript.EvidenceProcessInCwd, Heuristic: true, PID: pr.PID,
-					Detail: s.Agent + " is running in the session's directory; it may be serving another session there"}
+			// An agent process keeps the directory it started in, which is
+			// its session's; one started in a subdirectory serves that
+			// directory's sessions, not this one's.
+			if pr.CWD == "" || filepath.Clean(pr.CWD) != filepath.Clean(s.CWD) {
+				continue
 			}
+			inCwd++
+			if held, ok := p.serving[pr.PID]; ok && held != s.Agent+"\x00"+s.ID {
+				elsewhere++
+				continue
+			}
+			return transcript.Liveness{State: transcript.LiveActive, Evidence: transcript.EvidenceProcessInCwd, Heuristic: true, PID: pr.PID,
+				Detail: s.Agent + " is running in the session's directory; it may be serving another session there"}
+		}
+		if inCwd > 0 && inCwd == elsewhere {
+			return transcript.Liveness{State: transcript.LiveIdle, Evidence: transcript.EvidenceHeldElsewhere,
+				Detail: "every " + s.Agent + " process in the session's directory holds another session"}
 		}
 	}
 	if recent {
@@ -114,6 +204,19 @@ func (p *Probe) Live(s Session) transcript.Liveness {
 	}
 	return transcript.Liveness{State: transcript.LiveIdle, Evidence: transcript.EvidenceNoProcessInCwd, Heuristic: true,
 		Detail: s.Agent + " is running, but not in the session's directory"}
+}
+
+// runs reports whether pid is a running process of the agent.
+func (p *Probe) runs(h harness.Harness, known bool, pid int) bool {
+	if !known {
+		return false
+	}
+	for _, pr := range p.procs {
+		if pr.PID == pid && h.Runs(pr.Argv, pr.Exe) {
+			return true
+		}
+	}
+	return false
 }
 
 // within reports whether path is dir or inside it.

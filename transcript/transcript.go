@@ -181,6 +181,9 @@ const (
 	// EvidenceNoProcessInCwd: the agent runs, but not in the session's
 	// directory. Heuristic: agents rarely serve a session from elsewhere.
 	EvidenceNoProcessInCwd Evidence = "no-process-in-cwd"
+	// EvidenceHeldElsewhere: every agent process in the session's directory
+	// holds another session by the agent's own in-use markers. Proof of idle.
+	EvidenceHeldElsewhere Evidence = "held-elsewhere"
 	// EvidenceRecentWrite: the session was written within the recent window.
 	// Heuristic.
 	EvidenceRecentWrite Evidence = "recent-write"
@@ -218,6 +221,16 @@ type Store interface {
 	// the agent will know it by. A session with an empty ID is given one. A
 	// store that cannot be written returns ErrReadOnly.
 	Write(ctx context.Context, s *Session) (string, error)
+}
+
+// ServingLister is implemented by stores whose agent keeps a registry of
+// which running process holds which session (Claude Code's
+// ~/.claude/sessions, Copilot's inuse.<pid>.hold markers). Serving returns
+// that registry as pid to session id, including sessions whose transcript
+// is not listed, so a liveness check can tell a process is busy with a
+// session it would otherwise not know about.
+type ServingLister interface {
+	Serving(ctx context.Context) (map[int]string, error)
 }
 
 // Codec opens an agent's store under a home directory. The registry holds a

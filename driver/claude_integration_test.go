@@ -311,6 +311,65 @@ func TestClaudeRealBinary(t *testing.T) {
 			t.Error("the resumed request does not carry the earlier conversation")
 		}
 	})
+
+	t.Run("kill mid-turn, then resume", func(t *testing.T) {
+		cfg.ResumeSessionID = id
+		cfg.Metadata = nil
+		victim, err := b.Open(context.Background(), cfg)
+		if err != nil {
+			t.Fatalf("resume: %v", err)
+		}
+		mock.tool("Bash", `{"command":"touch killed.txt","description":"create a file"}`)
+		if err := victim.Prompt(context.Background(), driver.TextInput("create killed.txt")); err != nil {
+			t.Fatalf("prompt: %v", err)
+		}
+		untilLong(t, victim.Events(), ap.AgentEventApprovalRequired)
+		if err := victim.(driver.Killer).Kill(); err != nil {
+			t.Fatalf("kill: %v", err)
+		}
+		evs := drainAll(t, victim.Events(), 10*time.Second)
+		if e, ok := findEvent(evs, ap.AgentEventError); !ok {
+			t.Errorf("no error event after the kill: %v", typesOf(evs))
+		} else if p, _ := ap.PayloadAs[ap.ErrorPayload](e, ap.AgentEventError); p.Code != "process_exited" {
+			t.Errorf("error = %+v", p)
+		}
+		_ = victim.Close()
+
+		mock.clear()
+		mock.text("AFTER-KILL-REPLY")
+		again, err := b.Open(context.Background(), cfg)
+		if err != nil {
+			t.Fatalf("resume after kill: %v", err)
+		}
+		defer again.Close()
+		if err := again.Prompt(context.Background(), driver.TextInput("AFTER-KILL-PROMPT")); err != nil {
+			t.Fatalf("prompt: %v", err)
+		}
+		if got := textOf(untilLong(t, again.Events(), ap.AgentEventTurnCompleted)); got != "AFTER-KILL-REPLY" {
+			t.Errorf("text = %q", got)
+		}
+		if !strings.Contains(mock.lastRequest(), "FIRST-PROMPT-MARKER") {
+			t.Error("the session resumed after a kill lost the earlier conversation")
+		}
+	})
+}
+
+// drainAll reads events until the channel closes.
+func drainAll(t *testing.T, ch <-chan ap.AgentEvent, d time.Duration) []ap.AgentEvent {
+	t.Helper()
+	var got []ap.AgentEvent
+	deadline := time.After(d)
+	for {
+		select {
+		case ev, ok := <-ch:
+			if !ok {
+				return got
+			}
+			got = append(got, ev)
+		case <-deadline:
+			t.Fatalf("events still open after %s; got %v", d, typesOf(got))
+		}
+	}
 }
 
 func untilLong(t *testing.T, ch <-chan ap.AgentEvent, want ap.AgentEventType) []ap.AgentEvent {

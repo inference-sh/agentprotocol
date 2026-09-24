@@ -289,4 +289,39 @@ func TestCodexRealTurnApprovalInterruptSteerResume(t *testing.T) {
 			t.Errorf("the resumed request does not carry the earlier turn")
 		}
 	})
+
+	t.Run("kill mid-turn, then resume", func(t *testing.T) {
+		victim, err := b.Open(context.Background(), driver.SessionConfig{RunID: "run_3", WorkDir: work, ResumeSessionID: threadID})
+		if err != nil {
+			t.Fatalf("resume: %v", err)
+		}
+		untilWithin(t, victim.Events(), ap.AgentEventRunStarted, 10*time.Second)
+		mockCtl(t, mock, "POST", "/ctl/toolcall", map[string]any{"Name": "exec_command", "Args": `{"cmd":"touch killed.txt"}`})
+		_ = victim.Prompt(context.Background(), driver.TextInput("create killed.txt"))
+		untilWithin(t, victim.Events(), ap.AgentEventApprovalRequired, 60*time.Second)
+		if err := victim.(driver.Killer).Kill(); err != nil {
+			t.Fatalf("kill: %v", err)
+		}
+		evs := drainAll(t, victim.Events(), 10*time.Second)
+		if e, ok := findEvent(evs, ap.AgentEventError); !ok {
+			t.Errorf("no error event after the kill: %v", typesOf(evs))
+		} else if p, _ := ap.PayloadAs[ap.ErrorPayload](e, ap.AgentEventError); p.Code != "process_exited" {
+			t.Errorf("error = %+v", p)
+		}
+		_ = victim.Close()
+
+		mockCtl(t, mock, "DELETE", "/log", nil)
+		again, err := b.Open(context.Background(), driver.SessionConfig{RunID: "run_4", WorkDir: work, ResumeSessionID: threadID})
+		if err != nil {
+			t.Fatalf("resume after kill: %v", err)
+		}
+		defer again.Close()
+		untilWithin(t, again.Events(), ap.AgentEventRunStarted, 10*time.Second)
+		_ = again.Prompt(context.Background(), driver.TextInput("still there?"))
+		untilWithin(t, again.Events(), ap.AgentEventTurnCompleted, 60*time.Second)
+		reqs := mockRequests(t, mock)
+		if len(reqs) == 0 || !strings.Contains(reqs[len(reqs)-1], "PINEAPPLE") {
+			t.Errorf("the thread resumed after a kill lost the earlier turns")
+		}
+	})
 }

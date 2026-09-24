@@ -309,6 +309,12 @@ func (st *jsonlStore) decodeAll(r *os.File, s *Session) error {
 			continue
 		}
 		row := json.RawMessage(append([]byte(nil), line...))
+		if !json.Valid(row) {
+			// A line cut short by a crash mid-write. Agents skip it when they
+			// load; it stays in place so a rewrite changes nothing.
+			s.Entries = append(s.Entries, Entry{Role: RoleOpaque, Raw: row})
+			continue
+		}
 		if first && st.cfg.Header != nil {
 			first = false
 			isHeader, err := st.cfg.Header(row, s)

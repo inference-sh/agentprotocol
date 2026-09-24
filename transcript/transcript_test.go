@@ -221,3 +221,26 @@ func TestAppendFollowsLeaf(t *testing.T) {
 		t.Errorf("after append: %q", got)
 	}
 }
+
+// A line cut short by a crash does not make the session unreadable.
+func TestReadSkipsTornLine(t *testing.T) {
+	home := t.TempDir()
+	dir := filepath.Join(home, "s")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	file := `{"id":"1","role":"user","text":"u1"}
+{"id":"2","parent":"1","role":"assistant","text":"a1"}
+{"id":"3","parent":"2","role":"us`
+	if err := os.WriteFile(filepath.Join(dir, "x.jsonl"), []byte(file), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	st, _ := testCodec.Open(home)
+	s, err := st.Read(context.Background(), "x")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := texts(s.Linearize()); got != "u1 a1" {
+		t.Errorf("read %q", got)
+	}
+}

@@ -18,8 +18,29 @@ to the same agent is byte-for-byte what it was, whatever the mapping did or
 did not understand. Only a session that came from somewhere else goes through
 the encoder, and that is where any loss lives.
 
-`Session.Events()` projects the entries onto the `agentprotocol` event stream
-every other consumer already reads. It is a projection, not a second model.
+A store is not the conversation. Agents keep rows the person never sees
+(context they inject, the summary a compaction leaves), rows the model is no
+longer given (history a compaction retired, a turn the person undid), and
+rows whose meaning depends on others (one message split across rows, a
+marker that pins the leaf). A codec maps each agent's own rules onto the
+entries, taken from the agent's loader, so three views stay distinct:
+
+| View | What it is |
+|---|---|
+| `Messages()` | every message row the store holds, in store order |
+| `Linearize()` | the conversation the person sees: the active branch, without undone turns or model-only context |
+| `Context()` | what the agent gives the model when it resumes: the active branch for the model, every compaction applied |
+
+`Entry.Audience` says who an entry is for (everyone, the model, the person,
+or nobody). `Entry.Compaction` marks a row that replaces the history before
+it with a summary, keeping the entries from `Keep` on. `Session.Leaf` pins
+the entry a tree store resumes from, when the agent's rule is not "the last
+linked row". A JSONL codec sets them in `Finish`, which runs after every row
+is decoded.
+
+`Session.Events()` projects the conversation the person sees onto the
+`agentprotocol` event stream every other consumer already reads. It is a
+projection, not a second model.
 
 ## Adding an agent
 
@@ -60,6 +81,12 @@ Every codec ships one session captured from a real run under `testdata` and
 runs the shared conformance check in `transcripttest`: read it, write it,
 read it again, require the file is unchanged and the events hold a turn. A
 codec cannot exist without a sample.
+
+A one-turn sample proves the rows decode; it cannot show what the agent does
+with them when a session is compacted, rewound, undone or forked. The rules
+for that come from the agent's own session loader, read at the source (or,
+for a closed-source agent, from what it replays over ACP `session/load`),
+and each codec carries samples of those sessions captured the same way.
 
 ## Listing and liveness
 
@@ -105,6 +132,13 @@ heuristic or unknown answer as a reason to warn before continuing a
 session, not as proof.
 
 ## Writing back
+
+A session carries the agent it was read from. Written to that agent, its
+rows go back as they were. Written to any other, it goes through
+`Session.Portable`: the conversation the person sees, re-encoded in the
+target's format and linked in order, since one agent's rows mean nothing in
+another's store and its links may run through rows that do not survive the
+move. `transcripttest.Imported` checks every writer for it.
 
 A write never disturbs what it read. Entries read from a store carry their
 vendor row as `Raw`, and every writer keeps those rows exactly: a JSONL

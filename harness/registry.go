@@ -306,9 +306,11 @@ var All = map[string]Harness{
 		ExitCommand:       "/exit",
 		SDKCmd:            []string{"pi", "--mode", "json"},
 		SDKArgs:           []string{"--provider", "openrouter", "--model", "{{.Model}}", "--no-session"},
-		// pi has no ACP; driver.PiBackend speaks its own RPC mode.
-		Driver:        DriverPi,
-		ToolCallGated: ToolCall{Name: "bash", Args: gatedShellArgs},
+		// pi has no ACP; driver.PiBackend speaks its own RPC mode, and sends
+		// /compact as RPC's compact command.
+		Driver:         DriverPi,
+		CompactCommand: "/compact",
+		ToolCallGated:  ToolCall{Name: "bash", Args: gatedShellArgs},
 	},
 	"kiro": {
 		Name: "kiro", Binary: "kiro-cli",

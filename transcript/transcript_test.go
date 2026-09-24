@@ -244,3 +244,21 @@ func TestReadSkipsTornLine(t *testing.T) {
 		t.Errorf("read %q", got)
 	}
 }
+
+// A session moves as what the model knew: the summary in place of retired
+// history, without the agent's own injected context or the person's
+// slash commands.
+func TestPortableCarriesContext(t *testing.T) {
+	s := &Session{Agent: "a", Entries: []Entry{
+		text("1", "", RoleUser, "u1"),
+		text("2", "1", RoleAssistant, "a1"),
+		{ID: "3", ParentID: "2", Compaction: &Compaction{Summary: []Entry{text("", "", RoleUser, "SUMMARY")}}},
+		{ID: "4", ParentID: "3", Role: RoleUser, Audience: AudienceUser, Content: []Block{{Kind: BlockText, Text: "/stats"}}},
+		{ID: "5", ParentID: "4", Role: RoleUser, Audience: AudienceModel, Content: []Block{{Kind: BlockText, Text: "<env>"}}},
+		text("6", "5", RoleUser, "u2"),
+		text("7", "6", RoleAssistant, "a2"),
+	}}
+	if got := texts(s.Portable().Entries); got != "SUMMARY u2 a2" {
+		t.Errorf("portable: %q", got)
+	}
+}

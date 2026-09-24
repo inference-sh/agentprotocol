@@ -135,10 +135,12 @@ session, not as proof.
 
 A session carries the agent it was read from. Written to that agent, its
 rows go back as they were. Written to any other, it goes through
-`Session.Portable`: the conversation the person sees, re-encoded in the
-target's format and linked in order, since one agent's rows mean nothing in
-another's store and its links may run through rows that do not survive the
-move. `transcripttest.Imported` checks every writer for it.
+`Session.Portable`: what the model knows of the conversation (its context,
+compaction summaries in place of retired history) without what the agent
+injected for itself or showed only to the person, re-encoded in the
+target's format and linked in order. One agent's rows mean nothing in
+another's store, and its links may run through rows that do not survive
+the move. `transcripttest.Imported` checks every writer for it.
 
 A write never disturbs what it read. Entries read from a store carry their
 vendor row as `Raw`, and every writer keeps those rows exactly: a JSONL

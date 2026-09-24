@@ -406,25 +406,30 @@ func (s *Session) Context() []Entry {
 	return out
 }
 
-// Portable returns the session as a writer for another agent takes it: the
-// conversation the person sees, as new entries with no vendor rows and no
-// links, so the writer encodes every entry in its own format and links them
-// in order. A session's Raw rows are its own agent's format and meaningless
-// anywhere else, and its links may pass through rows that do not survive
-// the move.
+// Portable returns the session as a writer for another agent takes it:
+// what the model knows of the conversation, without what the agent put there
+// for itself. That is Context with only the entries meant for everyone, and
+// compaction summaries standing in for the history they retired: injected
+// reminders and environment blocks belong to the agent that wrote them, and
+// a slash command's echo or a notice the agent showed was never
+// conversation. The entries are new, with no vendor rows and no links, so
+// the writer encodes every one in its own format and links them in order.
+// A session's Raw rows are its own agent's format and meaningless anywhere
+// else, and its links may pass through rows that do not survive the move.
 func (s *Session) Portable() *Session {
 	out := *s
 	out.Agent = ""
 	out.Leaf = ""
 	out.Vendor = nil
-	lin := s.Linearize()
-	out.Entries = make([]Entry, len(lin))
-	for i, e := range lin {
+	out.Entries = nil
+	for _, e := range s.Context() {
+		if e.Audience != AudienceAll {
+			continue
+		}
 		e.ParentID = ""
 		e.Raw = nil
-		e.Audience = AudienceAll
 		e.Compaction = nil
-		out.Entries[i] = e
+		out.Entries = append(out.Entries, e)
 	}
 	return &out
 }

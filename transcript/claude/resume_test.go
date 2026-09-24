@@ -454,4 +454,21 @@ func TestRewindToStart(t *testing.T) {
 	if ctx, lin := s.Context(), s.Linearize(); len(ctx) != 0 || len(lin) != 0 {
 		t.Errorf("context %d, linearize %d entries, want none", len(ctx), len(lin))
 	}
+	// The next prompt starts over, as Claude's would, rather than bringing
+	// the rewound history back.
+	s.Entries = append(s.Entries, transcript.Entry{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "again"}}})
+	st, err := Codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := st.Write(t.Context(), s); err != nil {
+		t.Fatal(err)
+	}
+	back, err := st.Read(t.Context(), fixtureID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if lin := back.Linearize(); len(lin) != 1 || lin[0].Text() != "again" {
+		t.Errorf("after the rewind, an appended prompt reads back as %d entries", len(lin))
+	}
 }

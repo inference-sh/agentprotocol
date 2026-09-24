@@ -262,3 +262,23 @@ func TestPortableCarriesContext(t *testing.T) {
 		t.Errorf("portable: %q", got)
 	}
 }
+
+// A session the agent resumes from nothing has no branch, and an append
+// starts a new root instead of continuing the history it left.
+func TestRestart(t *testing.T) {
+	s := &Session{Restart: true, Entries: []Entry{
+		text("1", "", RoleUser, "u1"),
+		text("2", "1", RoleAssistant, "a1"),
+	}}
+	for i := range s.Entries {
+		s.Entries[i].Raw = json.RawMessage(`{}`)
+	}
+	if got := s.Linearize(); len(got) != 0 {
+		t.Errorf("linearize: %q", texts(got))
+	}
+	s.Entries = append(s.Entries, text("", "", RoleUser, "u2"))
+	AssignIDs(s, UUIDs, true)
+	if p := s.Entries[2].ParentID; p != "" {
+		t.Errorf("appended entry linked to %q", p)
+	}
+}

@@ -138,12 +138,9 @@ func finish(s *transcript.Session) error {
 	}
 	p := l.scan()
 	if p.cleared {
-		// A rewind to before the first prompt: Claude resumes with nothing.
-		for i := range s.Entries {
-			if s.Entries[i].Role != transcript.RoleOpaque {
-				s.Entries[i].Audience = transcript.AudienceNone
-			}
-		}
+		// A rewind to before the first prompt: Claude resumes with nothing,
+		// and the next prompt starts a new root.
+		s.Restart = true
 		return nil
 	}
 	kept := l.relinkPreserved()

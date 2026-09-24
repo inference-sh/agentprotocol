@@ -166,6 +166,10 @@ type Session struct {
 	// store whose agent can pin one that is not the last linked row (Claude
 	// Code after a rewind). Empty means the last linked row.
 	Leaf string `json:"leaf,omitempty"`
+	// Restart is set when the agent resumes the session from nothing
+	// (Claude Code after a rewind to before the first prompt): the active
+	// branch is empty, and the next entry written starts a new root.
+	Restart bool `json:"restart,omitempty"`
 	// Vendor is state the codec that read the session needs to write it
 	// back and no other codec can use: a version stamp, a sidecar, an index
 	// row. Each codec documents its own type. Nil on a session built by
@@ -301,6 +305,9 @@ type Codec interface {
 // attachments, markers and compaction rows through the same links. A session
 // without parent links is one branch, every entry in store order.
 func (s *Session) Branch() []int {
+	if s.Restart {
+		return nil
+	}
 	byID := make(map[string]int, len(s.Entries))
 	tree := false
 	leaf := -1
@@ -420,6 +427,7 @@ func (s *Session) Portable() *Session {
 	out := *s
 	out.Agent = ""
 	out.Leaf = ""
+	out.Restart = false
 	out.Vendor = nil
 	out.Entries = nil
 	for _, e := range s.Context() {

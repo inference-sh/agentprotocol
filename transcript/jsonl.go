@@ -571,8 +571,8 @@ var UUIDs = IDScheme{New: NewUUID, Valid: IsUUID}
 // rejects an event whose id is not a UUID). Each replaced id is remapped in
 // every ParentID that named it. With tree set, a new entry with no ParentID
 // is linked to the entry before it that has an id: the previous new entry,
-// or, for the first, the session's Leaf when it pins one and otherwise the
-// last row read back with an id.
+// or, for the first, the session's Leaf when it pins one, no entry when the
+// session restarts, and otherwise the last row read back with an id.
 //
 // Codecs that plan a write across entries before encoding call it
 // themselves; the JSONL engine calls it for the rest.
@@ -601,7 +601,9 @@ func AssignIDs(s *Session, scheme IDScheme, tree bool) {
 			if to, ok := remap[e.ParentID]; ok {
 				e.ParentID = to
 			}
-			if first && s.Leaf != "" {
+			if first && s.Restart {
+				prev = ""
+			} else if first && s.Leaf != "" {
 				prev = s.Leaf
 			}
 			first = false

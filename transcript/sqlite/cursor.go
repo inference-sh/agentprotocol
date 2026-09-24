@@ -116,7 +116,9 @@ func (st *cursorStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 		if !m.HasConversation {
 			continue
 		}
-		out = append(out, transcript.Info{ID: filepath.Base(dir), CWD: m.CWD, Updated: time.UnixMilli(m.UpdatedAtMs).UTC(), Path: filepath.Join(dir, "store.db")})
+		// Cursor holds the session's store.db open while it serves the
+		// session, so the directory is this session's alone.
+		out = append(out, transcript.Info{ID: filepath.Base(dir), CWD: m.CWD, Updated: time.UnixMilli(m.UpdatedAtMs).UTC(), Path: filepath.Join(dir, "store.db"), Root: dir})
 	}
 	transcript.SortNewest(out)
 	return out, nil

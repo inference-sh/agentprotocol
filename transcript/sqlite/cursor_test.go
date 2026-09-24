@@ -30,6 +30,9 @@ func TestCursorRead(t *testing.T) {
 	if len(infos) != 1 || infos[0].ID != cursorID || infos[0].CWD != cursorCWD {
 		t.Fatalf("list = %+v", infos)
 	}
+	if infos[0].Root != filepath.Dir(infos[0].Path) {
+		t.Errorf("root = %q, want the session directory", infos[0].Root)
+	}
 	s, err := st.Read(t.Context(), cursorID)
 	if err != nil {
 		t.Fatal(err)

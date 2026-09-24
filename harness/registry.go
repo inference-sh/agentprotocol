@@ -186,6 +186,7 @@ var All = map[string]Harness{
 		KnownIssues: map[string]string{
 			"headless:event:PRE_COMPACT": "/compact is TUI-only (slash_dispatch.rs); codex exec never auto-compacts",
 			"sdk:event:PRE_COMPACT":      "SDK mode is codex exec, where /compact is only a user message and nothing auto-compacts (same investigation as headless)",
+			"acp:event:PRE_COMPACT":      "the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call",
 		},
 		Events:      standardEvents,
 		SkillsDir:   ".agents/skills",

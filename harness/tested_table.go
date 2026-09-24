@@ -9,6 +9,12 @@ package harness
 // agentprotocol release harness-test required that day.
 const ciGreen = "harness-test CI green, session job included, 2026-09-20..24"
 
+// pinnedGreen is the evidence for a version below what CI installed: every
+// job of the agent's harness-test workflow (each mode from --modes-for, with
+// mock hooks and with belt hooks) passed in harness-test's container with
+// that version installed by `harness-test --agent-version`, 2026-09-25.
+const pinnedGreen = "harness-test's CI jobs green with --agent-version, 2026-09-25"
+
 // testedTable is Tested per agent. Min is the oldest version with evidence,
 // Max the newest; nothing between is claimed beyond what the Evidence says.
 // Raise Max when harness-test's CI or nightly is green on a newer release;
@@ -22,8 +28,12 @@ var testedTable = map[string]TestedVersions{
 		Evidence: ciGreen + " (0.156.1; 0.155.1 passed only in runs without the session job); agentprotocol CI pins 0.156.1; codexapp is generated from 0.156.1"},
 	"copilot": {Min: "1.0.86", Max: "1.0.88",
 		Evidence: ciGreen + " (1.0.86, 1.0.87, 1.0.88)"},
-	"cursor": {Min: "2026.09.23", Max: "2026.09.23",
-		Evidence: ciGreen + " (2026.09.23-86fc751; 2026.09.18-9a7762b passed only in runs without the session job)"},
+	"cursor": {Min: "2026.07.23", Max: "2026.09.23",
+		Evidence: ciGreen + " (2026.09.23-86fc751; 2026.09.18-9a7762b passed only in runs without the session job); " +
+			pinnedGreen + " (2026.07.23-e383d2b; the session job alone also for 2026.08.04-aaa8809, 2026.08.25-3e8eec8 and 2026.09.18-9a7762b). " +
+			"Before 2026.07.23 --endpoint defaults to https://api2.cursor.sh and does not read CURSOR_API_ENDPOINT (.env() added in 2026.07.23), " +
+			"so harness-test's mock is never reached: 2026.05.16-0338208 to 2026.07.01-41b2de7 fail session/new with \"Failed to initialize session services\". " +
+			"Pointed at the mock with -e, 2026.05.16-0338208 completes an ACP turn, but its prompt and stop hooks do not fire"},
 	"droid": {Min: "0.223.0", Max: "0.226.2",
 		Evidence: ciGreen + " (0.223.0, 0.223.2, 0.225.1, 0.225.2, 0.226.1, 0.226.2)"},
 	"gemini": {Min: "0.60.0", Max: "0.61.0",
@@ -32,8 +42,9 @@ var testedTable = map[string]TestedVersions{
 		Evidence: ciGreen + " (1.51.0, 1.52.0)"},
 	"grok": {Min: "1.0.34", Max: "1.0.41",
 		Evidence: ciGreen + " (1.0.34, 1.0.40, 1.0.41)"},
-	"hermes": {Min: "0.19.0", Max: "0.19.0",
-		Evidence: ciGreen + " (0.19.0 only)"},
+	"hermes": {Min: "0.13.0", Max: "0.19.0",
+		Evidence: ciGreen + " (0.19.0); " + pinnedGreen + " (0.13.0, the first release on PyPI, and 0.14.0). " +
+			"Before 0.18.0 a turn whose model call fails ends with end_turn and no update, the provider's error on stderr only"},
 	"kilo": {Min: "7.7.5", Max: "7.7.9",
 		Evidence: ciGreen + " (7.7.5, 7.7.6, 7.7.7, 7.7.9)"},
 	"kimi": {Min: "2.0.2", Max: "2.1.1",
@@ -59,9 +70,9 @@ var requiresTable = map[string]Requirement{
 		Evidence: "pi CHANGELOG 0.80.4: \"Added extension and RPC agent_settled events\"; driver/pi.go closes a turn only on agent_settled"},
 	"codex": {Version: "0.56.0", Capability: "app-server thread and turn API (thread/start, turn/start)",
 		Evidence: "codex-rs/app-server-protocol/src/protocol/common.rs: thread/start, thread/resume, turn/start, turn/interrupt, turn/completed and item/* are at tag rust-v0.56.0 and absent at rust-v0.55.0"},
-	// cursor: not set. `cursor-agent acp` (hidden) is in the 2026.05.16-0338208,
-	// 2026.09.18-9a7762b and 2026.09.23-86fc751 bundles (dist-package/index.js,
-	// command("acp")); no version without it has been found.
+	// cursor: not set. `cursor-agent acp` (hidden, command("acp")) is in every
+	// bundle read, 2025.12.17-996666f through 2026.09.23-86fc751; no version
+	// without it has been found.
 }
 
 // upgradeCmds are UpgradeCmd where InstallCmd does not upgrade.

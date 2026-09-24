@@ -567,6 +567,11 @@ func runFakeAgent(script string) {
 
 		switch {
 		case msg.Method == acp.MethodInitialize:
+			if script == "die-on-init" {
+				// A launch failure whose only explanation is on stderr.
+				os.Stderr.WriteString("fatal: config.yaml: unknown provider\n")
+				os.Exit(2)
+			}
 			reply(*msg.ID, map[string]any{"protocolVersion": acp.ProtocolVersion})
 
 		case msg.Method == acp.MethodSessionNew:
@@ -611,12 +616,50 @@ func runFakeAgent(script string) {
 				continue
 			}
 
+			if script == "silent" {
+				// Session bookkeeping, then nothing: an agent waiting on a
+				// backend that never answers. It ignores session/cancel.
+				os.Stderr.WriteString("waiting for backend\n")
+				update(acp.SessionUpdate{Kind: acp.UpdateKindAvailableCommands})
+				update(acp.SessionUpdate{
+					Kind:    acp.UpdateKindUserMessageChunk,
+					Content: json.RawMessage(`{"type":"text","text":"` + text + `"}`),
+				})
+				continue
+			}
+
+			if script == "slow-turn" {
+				// The first sign of work comes late but inside the bound,
+				// then the turn runs well past it.
+				time.Sleep(150 * time.Millisecond)
+				update(acp.SessionUpdate{
+					Kind:    acp.UpdateKindAgentThoughtChunk,
+					Content: json.RawMessage(`{"type":"text","text":"thinking"}`),
+				})
+				time.Sleep(600 * time.Millisecond)
+				update(acp.SessionUpdate{
+					Kind:    acp.UpdateKindAgentMessageChunk,
+					Content: json.RawMessage(`{"type":"text","text":"done"}`),
+				})
+				reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
+				continue
+			}
+
+			if script == "no-work" {
+				// hermes before 0.18.0 after a failed model call: the error
+				// on stderr, end_turn with nothing in the turn.
+				os.Stderr.WriteString("HTTP 401: User not found.\n")
+				reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
+				continue
+			}
+
 			if script == "crash-mid-turn" {
 				// Start answering, then die with the turn unfinished.
 				update(acp.SessionUpdate{
 					Kind:    acp.UpdateKindAgentMessageChunk,
 					Content: json.RawMessage(`{"type":"text","text":"working"}`),
 				})
+				os.Stderr.WriteString("panic: backend went away\n")
 				os.Exit(3)
 			}
 
@@ -756,5 +799,167 @@ func TestDiagnosticsAreOptional(t *testing.T) {
 	collect(t, sess.Events(), 4, 3*time.Second)
 	if err := sess.Close(); err != nil {
 		t.Logf("close: %v", err)
+	}
+}
+
+// errorsIn is the error payloads among events.
+func errorsIn(events []ap.AgentEvent) []ap.ErrorPayload {
+	var out []ap.ErrorPayload
+	for _, ev := range events {
+		if ev.Type == ap.AgentEventError {
+			p, _ := ap.PayloadAs[ap.ErrorPayload](ev, ap.AgentEventError)
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+func TestAPromptThatNeverStartsFailsInsteadOfHanging(t *testing.T) {
+	b := backendRunning(t, "silent")
+	b.FirstEventTimeout = 300 * time.Millisecond
+	sess, err := b.Open(context.Background(), driver.SessionConfig{RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir()})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.(driver.Killer).Kill()
+	start := time.Now()
+	if err := sess.Prompt(context.Background(), driver.TextInput("hello")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	var got []ap.AgentEvent
+	deadline := time.After(5 * time.Second)
+	for len(errorsIn(got)) == 0 {
+		select {
+		case ev := <-sess.Events():
+			got = append(got, ev)
+		case <-deadline:
+			t.Fatalf("no error within 5s of a prompt the agent never answered; events %v", typesOf(got))
+		}
+	}
+	if took := time.Since(start); took < 300*time.Millisecond {
+		t.Errorf("failed after %s, before the bound", took)
+	}
+	e := errorsIn(got)[0]
+	if e.Code != driver.CodeNoResponse {
+		t.Errorf("code = %q, want %q", e.Code, driver.CodeNoResponse)
+	}
+	if !strings.Contains(e.Message, "300ms") || !strings.Contains(e.Message, "waiting for backend") {
+		t.Errorf("message %q names neither the bound nor the agent's stderr", e.Message)
+	}
+	// The turn is reported once: nothing more arrives for it.
+	for _, ev := range collect(t, sess.Events(), 1, 300*time.Millisecond) {
+		if ev.Type == ap.AgentEventError || ev.Type == ap.AgentEventTurnCompleted {
+			t.Errorf("turn reported again: %s", ev.Type)
+		}
+	}
+}
+
+func TestTheFirstEventBoundDoesNotCutAWorkingTurn(t *testing.T) {
+	b := backendRunning(t, "slow-turn")
+	b.FirstEventTimeout = 400 * time.Millisecond
+	sess, err := b.Open(context.Background(), driver.SessionConfig{RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir()})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+	if err := sess.Prompt(context.Background(), driver.TextInput("hello")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	var got []ap.AgentEvent
+	deadline := time.After(5 * time.Second)
+	for {
+		select {
+		case ev := <-sess.Events():
+			got = append(got, ev)
+			if ev.Type == ap.AgentEventTurnCompleted {
+				if errs := errorsIn(got); len(errs) > 0 {
+					t.Errorf("a turn that started within the bound failed: %+v", errs)
+				}
+				return
+			}
+		case <-deadline:
+			t.Fatalf("turn did not complete; events %v", typesOf(got))
+		}
+	}
+}
+
+func TestATurnWithNothingInItIsDiagnosedWithStderr(t *testing.T) {
+	b := backendRunning(t, "no-work")
+	var mu sync.Mutex
+	var diags []string
+	b.OnDiagnostic = func(s string) { mu.Lock(); diags = append(diags, s); mu.Unlock() }
+	sess, err := b.Open(context.Background(), driver.SessionConfig{RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir()})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+	if err := sess.Prompt(context.Background(), driver.TextInput("hello")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	got := collect(t, sess.Events(), 3, 5*time.Second)
+	if _, ok := findEvent(got, ap.AgentEventTurnCompleted); !ok {
+		t.Fatalf("turn did not complete; events %v", typesOf(got))
+	}
+	mu.Lock()
+	defer mu.Unlock()
+	for _, d := range diags {
+		if strings.Contains(d, "stopReason end_turn") && strings.Contains(d, "HTTP 401: User not found.") {
+			return
+		}
+	}
+	t.Errorf("no diagnostic names the empty turn and the agent's stderr: %q", diags)
+}
+
+// lockedBuffer is a strings.Builder safe for the stderr copier and a reader.
+type lockedBuffer struct {
+	mu sync.Mutex
+	b  strings.Builder
+}
+
+func (l *lockedBuffer) Write(p []byte) (int, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.b.Write(p)
+}
+
+func (l *lockedBuffer) String() string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.b.String()
+}
+
+func TestAFailedOpenQuotesTheAgentsStderr(t *testing.T) {
+	b := backendRunning(t, "die-on-init")
+	var buf lockedBuffer
+	b.Stderr = &buf
+	_, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir()})
+	if err == nil {
+		t.Fatal("open succeeded against an agent that died")
+	}
+	if !strings.Contains(err.Error(), "unknown provider") {
+		t.Errorf("error %q does not quote the agent's stderr", err)
+	}
+	deadline := time.Now().Add(2 * time.Second)
+	for !strings.Contains(buf.String(), "unknown provider") && time.Now().Before(deadline) {
+		time.Sleep(10 * time.Millisecond)
+	}
+	if !strings.Contains(buf.String(), "unknown provider") {
+		t.Errorf("Stderr received %q, not the agent's stderr", buf.String())
+	}
+}
+
+func TestAnAgentDyingMidTurnQuotesItsStderr(t *testing.T) {
+	b := backendRunning(t, "crash-mid-turn")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir()})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+	if err := sess.Prompt(context.Background(), driver.TextInput("go")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	errs := errorsIn(untilClosed(t, sess.Events(), 5*time.Second))
+	if len(errs) != 1 || !strings.Contains(errs[0].Message, "backend went away") {
+		t.Errorf("errors %+v do not quote the agent's stderr", errs)
 	}
 }

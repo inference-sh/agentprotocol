@@ -428,8 +428,8 @@ func TestClaudeProcessExitClosesEvents(t *testing.T) {
 					t.Fatalf("turn cut short with no error event: %v", typesOf(got))
 				}
 				p, _ := ap.PayloadAs[ap.ErrorPayload](errEv, ap.AgentEventError)
-				if p.Code != "process_exited" {
-					t.Errorf("error = %+v", p)
+				if p.Code != "process_exited" || !strings.Contains(p.Message, "backend went away") {
+					t.Errorf("error = %+v, want process_exited quoting claude's stderr", p)
 				}
 				if got[len(got)-1].Type != ap.AgentEventError {
 					t.Errorf("error is not the last event: %v", typesOf(got))
@@ -686,6 +686,7 @@ func runFakeClaude(script string) {
 					"request": map[string]any{"subtype": "future_request"}})
 			case "exit":
 				reply("partial")
+				os.Stderr.WriteString("claude: backend went away\n")
 				os.Exit(3)
 			default:
 				reply("you said " + text)

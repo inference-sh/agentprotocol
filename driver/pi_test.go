@@ -203,6 +203,7 @@ func (f *fakePi) prompt(id, msg string) {
 	switch msg {
 	case "die":
 		f.out.Flush()
+		os.Stderr.WriteString("pi: backend went away\n")
 		os.Exit(3)
 	case "hang":
 		return
@@ -626,7 +627,7 @@ func TestPiExitMidTurn(t *testing.T) {
 	if !ok {
 		t.Fatalf("no error after exit: %v", typesOf(evs))
 	}
-	if p, _ := ap.PayloadAs[ap.ErrorPayload](e, ap.AgentEventError); p.Code != "process_exited" || !strings.Contains(p.Message, "exit status 3") {
+	if p, _ := ap.PayloadAs[ap.ErrorPayload](e, ap.AgentEventError); p.Code != "process_exited" || !strings.Contains(p.Message, "exit status 3") || !strings.Contains(p.Message, "backend went away") {
 		t.Errorf("error = %+v", p)
 	}
 }

@@ -53,8 +53,9 @@ type ClaudeBackend struct {
 	// authenticated. Nil discards them.
 	OnDiagnostic func(string)
 
-	// Stderr receives the CLI's stderr. Nil keeps only a short tail, which is
-	// quoted in the error when a launch fails.
+	// Stderr receives the CLI's stderr as it is written. Nil keeps only a
+	// short tail. The tail is kept either way and quoted in the error when
+	// Open fails and when claude exits mid-turn.
 	Stderr io.Writer
 
 	// InitTimeout bounds the initialize handshake. Zero means 60 seconds.
@@ -140,12 +141,7 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 		opts.SessionID = s.id
 	}
 
-	tail := &tailBuffer{max: 4 << 10}
-	if b.Stderr != nil {
-		opts.Stderr = io.MultiWriter(b.Stderr, tail)
-	} else {
-		opts.Stderr = tail
-	}
+	opts.Stderr, s.stderr = agentStderr(b.Stderr)
 
 	proc, err := claudecode.Spawn(opts, claudecode.Handler{
 		OnMessage:    s.onMessage,
@@ -158,7 +154,7 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 		},
 	})
 	if err != nil {
-		return nil, fmt.Errorf("driver: launch claude: %w", err)
+		return nil, s.stderr.quoteErr(fmt.Errorf("driver: launch claude: %w", err))
 	}
 	s.proc = proc
 
@@ -172,11 +168,7 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 	if err != nil {
 		_ = proc.Kill()
 		_ = proc.ExitErr()
-		msg := fmt.Sprintf("driver: initialize claude: %v", err)
-		if t := strings.TrimSpace(tail.String()); t != "" {
-			msg += ": " + t
-		}
-		return nil, errors.New(msg)
+		return nil, errors.New(s.stderr.quote(fmt.Sprintf("driver: initialize claude: %v", err)))
 	}
 	b.diagnose(fmt.Sprintf("claude session %s ready (pid %d, permission mode %s, auth token=%s api key=%s)",
 		s.id, init.PID, init.CurrentPermissionMode, orNone(init.Account.TokenSource), orNone(init.Account.APIKeySource)))
@@ -200,6 +192,7 @@ type claudeSession struct {
 	runID   string
 	chatID  string
 	pump    *eventPump
+	stderr  *tailBuffer
 
 	closeOnce sync.Once
 	closeErr  error
@@ -394,6 +387,7 @@ func (s *claudeSession) watch() {
 		if exitErr != nil {
 			msg += ": " + exitErr.Error()
 		}
+		msg = s.stderr.quote(msg)
 		s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{Message: msg, Code: "process_exited"}))
 	}
 	s.pump.end()
@@ -839,27 +833,4 @@ func (p *eventPump) run() {
 			return
 		}
 	}
-}
-
-// tailBuffer keeps the last max bytes written to it.
-type tailBuffer struct {
-	mu  sync.Mutex
-	max int
-	buf []byte
-}
-
-func (t *tailBuffer) Write(b []byte) (int, error) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	t.buf = append(t.buf, b...)
-	if len(t.buf) > t.max {
-		t.buf = t.buf[len(t.buf)-t.max:]
-	}
-	return len(b), nil
-}
-
-func (t *tailBuffer) String() string {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	return string(t.buf)
 }

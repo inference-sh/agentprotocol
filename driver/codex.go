@@ -77,7 +77,9 @@ type CodexBackend struct {
 	// is the caller's decision and never set by this package. Nil sends none.
 	Config map[string]any
 
-	// Stderr receives codex's own logs. Nil discards them.
+	// Stderr receives codex's stderr (its own logs) as it is written. Nil
+	// keeps only a short tail. The tail is kept either way and quoted in the
+	// error when Open fails and when codex exits on its own.
 	Stderr io.Writer
 
 	// OnDiagnostic receives protocol-level observations that are not events:
@@ -151,18 +153,20 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 		version = "0"
 	}
 
+	var stderr io.Writer
+	stderr, s.stderr = agentStderr(b.Stderr)
 	proc, err := codexapp.Spawn(ctx, codexapp.ProcessConfig{
 		Command: b.Command,
 		Args:    b.Args,
 		Dir:     cfg.WorkDir,
 		Env:     b.Env,
-		Stderr:  b.Stderr,
+		Stderr:  stderr,
 	}, codexapp.ClientInfo{Name: name, Version: version}, codexapp.Handler{
 		OnNotification: s.onNotification,
 		OnRequest:      s.onRequest,
 	})
 	if err != nil {
-		return nil, err
+		return nil, s.stderr.quoteErr(err)
 	}
 	s.proc = proc
 
@@ -194,7 +198,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 		})
 		if err != nil {
 			_ = proc.Kill()
-			return nil, fmt.Errorf("driver: resume codex thread %s: %w", cfg.ResumeSessionID, err)
+			return nil, s.stderr.quoteErr(fmt.Errorf("driver: resume codex thread %s: %w", cfg.ResumeSessionID, err))
 		}
 		thread, s.model = res.Thread, res.Model
 		b.diagnose(fmt.Sprintf("resumed codex thread %s with %d turn(s) of history", thread.ID, len(thread.Turns)))
@@ -210,7 +214,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 		})
 		if err != nil {
 			_ = proc.Kill()
-			return nil, fmt.Errorf("driver: start codex thread: %w", err)
+			return nil, s.stderr.quoteErr(fmt.Errorf("driver: start codex thread: %w", err))
 		}
 		thread, s.model = res.Thread, res.Model
 	}
@@ -260,6 +264,7 @@ type codexSession struct {
 	runID   string
 	chatID  string
 	model   string
+	stderr  *tailBuffer
 
 	prompts chan Input
 	stop    chan struct{}
@@ -575,6 +580,7 @@ func (s *codexSession) watch() {
 		if err := s.proc.Err(); err != nil {
 			msg += ": " + err.Error()
 		}
+		msg = s.stderr.quote(msg)
 		s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{Message: msg, Code: "process_exited"}))
 	}
 	<-s.proc.Exited()

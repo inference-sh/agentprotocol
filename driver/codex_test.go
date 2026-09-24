@@ -322,8 +322,11 @@ func TestCodexProcessExitClosesEvents(t *testing.T) {
 		select {
 		case ev, ok := <-sess.Events():
 			if !ok {
-				if _, found := findEvent(got, ap.AgentEventError); !found {
+				e, found := findEvent(got, ap.AgentEventError)
+				if !found {
 					t.Errorf("stream closed without saying why; got %v", typesOf(got))
+				} else if p, _ := ap.PayloadAs[ap.ErrorPayload](e, ap.AgentEventError); !strings.Contains(p.Message, "backend went away") {
+					t.Errorf("exit error %q does not quote codex's stderr", p.Message)
 				}
 				return
 			}
@@ -544,6 +547,7 @@ func (f *fakeCodex) handle(m codexapp.Message) {
 		turn := "turn_" + text
 		f.reply(m.ID, map[string]any{"turn": map[string]any{"id": turn, "items": []any{}, "status": "inProgress"}})
 		if f.mode == "exit-on-turn" {
+			os.Stderr.WriteString("codex: backend went away\n")
 			os.Exit(3)
 		}
 		f.active = turn

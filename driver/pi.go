@@ -49,8 +49,9 @@ type PiBackend struct {
 	// notifications, a line that is not JSON. Nil discards them.
 	OnDiagnostic func(string)
 
-	// Stderr receives pi's stderr. Nil keeps only a short tail, which is
-	// quoted in the error when a launch fails.
+	// Stderr receives pi's stderr as it is written. Nil keeps only a short
+	// tail. The tail is kept either way and quoted in the error when Open
+	// fails and when pi exits mid-turn.
 	Stderr io.Writer
 
 	// InitTimeout bounds startup: pi loads its extensions, skills and model
@@ -138,12 +139,7 @@ func (b *PiBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error
 		AppendSystemPrompt: cfg.Instructions,
 		ExtraArgs:          b.Args,
 	}
-	tail := &tailBuffer{max: 4 << 10}
-	if b.Stderr != nil {
-		opts.Stderr = io.MultiWriter(b.Stderr, tail)
-	} else {
-		opts.Stderr = tail
-	}
+	opts.Stderr, s.stderr = agentStderr(b.Stderr)
 
 	proc, err := pirpc.Spawn(opts, pirpc.Handler{
 		OnRecord: s.onRecord,
@@ -152,18 +148,14 @@ func (b *PiBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error
 		},
 	})
 	if err != nil {
-		return nil, fmt.Errorf("driver: launch pi: %w", err)
+		return nil, s.stderr.quoteErr(fmt.Errorf("driver: launch pi: %w", err))
 	}
 	s.proc = proc
 
 	fail := func(format string, args ...any) (Session, error) {
 		_ = proc.Kill()
 		_ = proc.ExitErr()
-		msg := fmt.Sprintf(format, args...)
-		if t := strings.TrimSpace(tail.String()); t != "" {
-			msg += ": " + t
-		}
-		return nil, errors.New(msg)
+		return nil, errors.New(s.stderr.quote(fmt.Sprintf(format, args...)))
 	}
 
 	timeout := b.InitTimeout
@@ -215,6 +207,7 @@ type piSession struct {
 	chatID  string
 	id      string
 	pump    *eventPump
+	stderr  *tailBuffer
 
 	closeOnce sync.Once
 	closeErr  error
@@ -544,6 +537,7 @@ func (s *piSession) watch() {
 		if exitErr != nil {
 			msg += ": " + exitErr.Error()
 		}
+		msg = s.stderr.quote(msg)
 		s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{Message: msg, Code: "process_exited"}))
 	}
 	s.mu.Unlock()

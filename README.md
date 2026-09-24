@@ -151,12 +151,12 @@ Windsurf is IDE-only and has no entry.
 | claude | 2.1.281 | 2.1.282 | harness-test CI; agentprotocol CI pins 2.1.281 | — | |
 | codex | 0.156.1 | 0.156.1 | harness-test CI; agentprotocol CI pins 0.156.1; codexapp generated from it | 0.56.0 | app-server `thread/start`, `thread/resume`, `turn/start`, `turn/interrupt`, `turn/completed`, `item/*` are in `app-server-protocol/src/protocol/common.rs` at `rust-v0.56.0` and absent at `rust-v0.55.0` |
 | copilot | 1.0.86 | 1.0.88 | harness-test CI | — | |
-| cursor | 2026.09.23 | 2026.09.23 | harness-test CI | — | `cursor-agent acp` is in the 2026.05.16, 2026.09.18 and 2026.09.23 bundles; no version without it found |
+| cursor | 2026.07.23 | 2026.09.23 | harness-test CI; `--agent-version` runs for 2026.07.23 | — | `cursor-agent acp` is in every bundle read, 2025.12.17 through 2026.09.23; no version without it found |
 | droid | 0.223.0 | 0.226.2 | harness-test CI | — | |
 | gemini | 0.60.0 | 0.61.0 | harness-test CI | — | |
 | goose | 1.51.0 | 1.52.0 | harness-test CI | — | |
 | grok | 1.0.34 | 1.0.41 | harness-test CI | — | |
-| hermes | 0.19.0 | 0.19.0 | harness-test CI | — | |
+| hermes | 0.13.0 | 0.19.0 | harness-test CI; `--agent-version` runs for 0.13.0 and 0.14.0 | — | |
 | kilo | 7.7.5 | 7.7.9 | harness-test CI | — | |
 | kimi | 2.0.2 | 2.1.1 | harness-test CI | — | |
 | kiro | 2.22.1 | 2.24.0 | harness-test CI | — | |
@@ -167,11 +167,11 @@ Windsurf is IDE-only and has no entry.
 
 A floor of — refuses no version.
 
-"harness-test CI" means the agent's workflow in belt-sh/harness-test finished green, every job including the session job that drives the agent through its `DriverKind` backend, with that version installed; versions come from the runs' `→ version:` log lines, 2026-09-20 to 2026-09-24. Claude, codex, cursor and pi have had the session job only since 2026-09-24, so older versions that passed their other modes are not counted (`Tested.Evidence` lists them). Nothing between two tested versions is claimed beyond that.
+"`--agent-version` runs" means every job of that workflow passed in harness-test's container with the version pinned (2026-09-25). Cursor before 2026.07.23 does not read `CURSOR_API_ENDPOINT` (its `--endpoint` defaults to api2.cursor.sh), so harness-test's mock cannot reach it; that is a limit of the test setup, not of the driver. "harness-test CI" means the agent's workflow in belt-sh/harness-test finished green, every job including the session job that drives the agent through its `DriverKind` backend, with that version installed; versions come from the runs' `→ version:` log lines, 2026-09-20 to 2026-09-24. Claude, codex, cursor and pi have had the session job only since 2026-09-24, so older versions that passed their other modes are not counted (`Tested.Evidence` lists them). Nothing between two tested versions is claimed beyond that.
 
 **Raising `Tested.Max`.** harness-test installs each agent with its `InstallCmd`, which takes the latest release, on every push and in the nightly; agentprotocol's `Agents` workflow runs a `latest` entry nightly next to its pins. When those are green on a newer release, set `Max` to it and add it to the evidence.
 
-**Extending `Tested.Min`.** It needs a green harness-test run with the older version installed, and harness-test has no way to pin an agent's version per run: the image installs whatever `InstallCmd` fetches. That is the missing piece (a per-agent version override for the install step, as agentprotocol's `Agents` workflow does with `CLAUDE_VERSION`/`CODEX_VERSION`/`PI_VERSION` for its three drivers). Until it exists, `Min` only moves down with evidence like that workflow's pinned entry.
+**Extending `Tested.Min`.** It needs a green harness-test run with the older version installed: every CI job (each mode from `--modes-for`, mock and belt hooks) with `harness-test --agent-version <v>`, which installs that exact version (npm `pkg@v`, pip `pkg==v`, or the agent's pinned installer for cursor, grok, kiro and goose), or the `Pinned agent version` workflow in belt-sh/harness-test, which runs the same jobs. Add the version and the run to the evidence.
 
 #### Version-specific behaviour
 
@@ -211,6 +211,10 @@ err = sess.Prompt(ctx, driver.TextInput("what changed in this repo today?"))
 ```
 
 `ACPBackend` drives any agent that speaks ACP. `CodexBackend` drives Codex natively through `codex app-server`, the server its IDE extension uses. `PiBackend` drives pi over its own RPC mode; pi has no ACP. `Capabilities()` reports what a backend supports so callers can degrade rather than call something that will fail.
+
+**Agent stderr.** `ACPBackend`, `ClaudeBackend`, `CodexBackend` and `PiBackend` each have `Stderr io.Writer`, with one meaning: it receives the agent's stderr as it is written, and nil keeps only a tail. The last 4 KiB are kept either way and quoted (`; agent stderr: ...`) in the error when `Open` fails and in the `process_exited` error when the agent dies; `ACPBackend` also quotes them in a `no_response` error.
+
+**No turn waits forever on a silent ACP agent.** `initialize` and `session/new` are bounded by `acp.DefaultCallTimeout` (60s) and a resume by `ACPBackend.LoadTimeout`. A prompt is bounded only up to the agent's first sign of work (a message, thought, tool call or plan update, a permission request, or the prompt's response) by `ACPBackend.FirstEventTimeout`, default `DefaultFirstEventTimeout` (2 minutes), negative to disable. Past it the turn fails with an error event of code `no_response` and `session/cancel` is sent; the session stays open for the caller to close or kill. Session bookkeeping updates (available commands, mode, usage) and echoes of the user's prompt do not count as work. After the first sign the turn runs until the agent answers, up to `acp.DefaultPromptTimeout` (10 minutes) for the whole prompt. Against harness-test's mock the 13 ACP agents sent their first sign 0.01s to 2.07s after `session/prompt` and answered `session/new` within 2.53s (2026-09-25, two runs), and a real model adds its time to first token. A turn that ends with no message, thought, tool call or plan at all is reported through `OnDiagnostic` with the stderr tail: hermes before 0.18.0 ends a turn whose model call failed that way, the provider's error on stderr only.
 
 ## Notes on the design
 

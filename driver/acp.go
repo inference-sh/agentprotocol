@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
@@ -38,6 +40,12 @@ type ACPBackend struct {
 	// Env is the child environment, and is where an account profile is
 	// selected. Nil inherits the parent's.
 	Env []string
+
+	// Stderr receives the agent's stderr as it is written. Nil keeps only a
+	// short tail. The tail is kept either way and quoted in the error when
+	// Open fails, when the agent exits mid-turn and when a prompt gets no
+	// answer (FirstEventTimeout): it is usually the only clue to why.
+	Stderr io.Writer
 
 	// ClientName identifies us to the agent during the handshake.
 	ClientName string
@@ -75,7 +83,44 @@ type ACPBackend struct {
 
 	// LoadTimeout bounds a whole resume. Zero means acp's default.
 	LoadTimeout time.Duration
+
+	// FirstEventTimeout bounds how long a prompt may wait for the agent's
+	// first sign of work: a message, thought, tool call or plan update, a
+	// permission request, or the prompt's own response. When it passes
+	// with none of them, the turn fails with an error event of code
+	// no_response (the message quotes the agent's stderr tail) and
+	// session/cancel is sent; the session stays open for the caller to
+	// Close or Kill. An agent waiting on a backend that will never answer
+	// otherwise leaves the turn open for acp's whole-prompt timeout.
+	//
+	// Only the time to the first sign is bounded; after it the turn runs as
+	// long as the agent works. Session bookkeeping updates (available
+	// commands, mode, usage, config options) and echoes of the user's own
+	// prompt do not count: agents send those without the model having
+	// started. Zero means DefaultFirstEventTimeout; negative disables the
+	// bound.
+	//
+	// initialize and session/new are bounded separately, by acp's
+	// DefaultCallTimeout, and a resume by LoadTimeout.
+	FirstEventTimeout time.Duration
 }
+
+// DefaultFirstEventTimeout is ACPBackend.FirstEventTimeout's default.
+//
+// Measured in harness-test's container against its mock model (2026-09-25,
+// the 13 ACP agents at their latest release, two runs, one prompt per run
+// and a second for droid, gemini, grok and qwen), the first sign of work
+// came 0.01s to 2.07s after session/prompt (cursor slowest, then opencode at
+// 1.32s); session/new took at most 2.53s (hermes). A
+// real model adds its own time to first token, and an agent may start MCP
+// servers or index the repository before it sends anything, so the default
+// is some sixty times the slowest measurement: it exists to turn a turn that
+// would never end into an error, not to police slow ones.
+const DefaultFirstEventTimeout = 2 * time.Minute
+
+// CodeNoResponse is the error code of a turn the agent never started
+// answering within ACPBackend.FirstEventTimeout.
+const CodeNoResponse = "no_response"
 
 // Kind implements Backend.
 func (b *ACPBackend) Kind() string { return KindACP }
@@ -119,6 +164,12 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		events:     make(chan ap.AgentEvent, 64),
 		pending:    make(map[string]*pendingPermission),
 		emitReplay: b.EmitReplay,
+		firstEvent: b.FirstEventTimeout,
+		diagnose:   b.diagnose,
+		waiting:    make(map[chan struct{}]struct{}),
+	}
+	if s.firstEvent == 0 {
+		s.firstEvent = DefaultFirstEventTimeout
 	}
 
 	name := b.ClientName
@@ -126,11 +177,15 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		name = "agentprotocol"
 	}
 
+	var stderr io.Writer
+	stderr, s.stderr = agentStderr(b.Stderr)
+
 	proc, err := acp.Spawn(ctx, acp.ProcessConfig{
 		Command: b.Command,
 		Args:    b.Args,
 		Dir:     cfg.WorkDir,
 		Env:     b.Env,
+		Stderr:  stderr,
 	}, acp.ClientInfo{Name: name, Version: b.ClientVersion}, acp.Handler{
 		OnUpdate:     s.onUpdate,
 		OnPermission: s.onPermission,
@@ -142,7 +197,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		},
 	})
 	if err != nil {
-		return nil, err
+		return nil, s.stderr.quoteErr(err)
 	}
 	s.proc = proc
 
@@ -154,7 +209,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		res, err := proc.LoadSession(ctx, cfg.ResumeSessionID, cfg.WorkDir, servers)
 		if err != nil {
 			_ = proc.Kill()
-			return nil, fmt.Errorf("driver: resume acp session: %w", err)
+			return nil, s.stderr.quoteErr(fmt.Errorf("driver: resume acp session: %w", err))
 		}
 		s.id = cfg.ResumeSessionID
 		b.diagnose(fmt.Sprintf("resumed session %s in %s: %d update(s) replayed, %d of them conversation, %s; agent %s",
@@ -165,7 +220,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		sid, err := proc.NewSession(ctx, cfg.WorkDir, servers)
 		if err != nil {
 			_ = proc.Kill()
-			return nil, fmt.Errorf("driver: open acp session: %w", err)
+			return nil, s.stderr.quoteErr(fmt.Errorf("driver: open acp session: %w", err))
 		}
 		s.id = sid
 	}
@@ -195,11 +250,21 @@ type acpSession struct {
 	evClosed   bool
 	closeOnce  sync.Once
 	emitReplay bool
+	// stderr is the last of the agent's stderr, for error messages.
+	stderr *tailBuffer
+
+	// firstEvent is the resolved FirstEventTimeout; <= 0 means unbounded.
+	firstEvent time.Duration
+	diagnose   func(string)
 
 	mu      sync.Mutex
 	pending map[string]*pendingPermission
 	// turns counts prompts still waiting on the agent's answer.
 	turns int
+	// waiting holds a channel per prompt that has not yet seen a sign of
+	// work; alive closes and removes them all. A prompt still in it when
+	// its answer arrives ended without doing anything visible.
+	waiting map[chan struct{}]struct{}
 }
 
 func (s *acpSession) ID() string { return s.id }
@@ -212,13 +277,21 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 		return errors.New("driver: acp session has ended")
 	default:
 	}
+	life := make(chan struct{})
 	s.mu.Lock()
 	s.turns++
+	s.waiting[life] = struct{}{}
 	s.mu.Unlock()
 	s.emit(ap.NewEvent(ap.AgentEventTurnStarted, s.runID, s.chatID, ap.TurnStartedPayload{}))
 
+	// settle lets exactly one of the prompt's answer and the first-event
+	// timeout report the turn.
+	var settled atomic.Bool
+	settle := func() bool { return settled.CompareAndSwap(false, true) }
+
 	go func() {
-		_, err := s.proc.Prompt(context.WithoutCancel(ctx), in.Text)
+		res, err := s.proc.Prompt(context.WithoutCancel(ctx), in.Text)
+		silent := s.release(life)
 		if err != nil {
 			select {
 			case <-s.proc.Done():
@@ -229,6 +302,9 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 			default:
 			}
 		}
+		if !settle() {
+			return // already reported as no_response
+		}
 		s.mu.Lock()
 		s.turns--
 		s.mu.Unlock()
@@ -238,9 +314,93 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 			}))
 			return
 		}
+		if silent {
+			// hermes before 0.18.0 ends a turn whose model call failed this
+			// way, with the provider's error on stderr only.
+			s.diagnose(s.stderr.quote(fmt.Sprintf("turn ended (%s) with no message, thought, tool call or plan from the agent", stopReason(res))))
+		}
 		s.emit(ap.NewEvent(ap.AgentEventTurnCompleted, s.runID, s.chatID, ap.TurnCompletedPayload{}))
 	}()
+	if s.firstEvent > 0 {
+		go s.awaitFirstEvent(life, settle)
+	}
 	return nil
+}
+
+// awaitFirstEvent fails the turn when the agent shows no sign of work within
+// firstEvent of the prompt.
+func (s *acpSession) awaitFirstEvent(life chan struct{}, settle func() bool) {
+	timer := time.NewTimer(s.firstEvent)
+	defer timer.Stop()
+	select {
+	case <-life:
+		return
+	case <-s.proc.Done():
+		return
+	case <-timer.C:
+	}
+	s.mu.Lock()
+	_, still := s.waiting[life]
+	delete(s.waiting, life)
+	s.mu.Unlock()
+	if !still || !settle() {
+		return
+	}
+	s.mu.Lock()
+	s.turns--
+	s.mu.Unlock()
+	_ = s.proc.Cancel(context.Background())
+	msg := fmt.Sprintf("agent sent nothing for %s after session/prompt: no message, tool call, permission request or response; session/cancel sent", s.firstEvent)
+	s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{
+		Message: s.stderr.quote(msg), Code: CodeNoResponse,
+	}))
+}
+
+// release ends the wait of the prompt that owns life, whose answer has
+// arrived, and reports whether it had seen no sign of work until then.
+func (s *acpSession) release(life chan struct{}) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	_, ok := s.waiting[life]
+	if ok {
+		close(life)
+		delete(s.waiting, life)
+	}
+	return ok
+}
+
+// stopReason reads session/prompt's stopReason, "no stopReason" when the
+// result has none.
+func stopReason(res json.RawMessage) string {
+	var r struct {
+		StopReason string `json:"stopReason"`
+	}
+	if json.Unmarshal(res, &r) != nil || r.StopReason == "" {
+		return "no stopReason"
+	}
+	return "stopReason " + r.StopReason
+}
+
+// alive records a sign of work from the agent, releasing every prompt still
+// waiting for its first one.
+func (s *acpSession) alive() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for ch := range s.waiting {
+		close(ch)
+		delete(s.waiting, ch)
+	}
+}
+
+// isWork reports whether an update shows the agent working on a prompt, as
+// opposed to describing the session (commands, mode, usage, config) or
+// echoing what the user said, which agents send without the model having
+// started.
+func isWork(u acp.SessionUpdate) bool {
+	if acp.IsUserTurn(u) {
+		return false
+	}
+	return acp.IsConversation(u) || u.Kind == acp.UpdateKindPlan || acp.IsTurnDone(u)
 }
 
 func (s *acpSession) Interrupt(ctx context.Context) error {
@@ -332,6 +492,7 @@ func (s *acpSession) reportExit() {
 	if st := s.proc.ExitState(); st != nil {
 		msg += ": " + st.String()
 	}
+	msg = s.stderr.quote(msg)
 	s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{Message: msg, Code: "process_exited"}))
 }
 
@@ -357,6 +518,9 @@ func (s *acpSession) onUpdate(n acp.UpdateNotification) {
 		// tool use. The updates are still delivered to a caller that asks for
 		// them by setting EmitReplay.
 		return
+	}
+	if !n.Replay && isWork(n.Update) {
+		s.alive()
 	}
 	if ev, ok := acp.EventForUpdate(n.Update, s.runID, s.chatID); ok {
 		s.emit(ev)
@@ -388,6 +552,9 @@ func answeredWord(answered bool) string {
 // for as long as this call takes, which is what lets a human on a different
 // machine decide whether a tool runs.
 func (s *acpSession) onPermission(ctx context.Context, req acp.PermissionRequest) (acp.PermissionResponse, error) {
+	if !req.DuringLoad {
+		s.alive()
+	}
 	payload := acp.ApprovalForPermission(req)
 	id := payload.ToolInvocationID
 	if id == "" {

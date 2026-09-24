@@ -96,10 +96,15 @@ type copilotTurn struct {
 }
 
 // copilotTurns pairs each user message with the assistant text that answers
-// it, up to the next user message.
+// it, up to the next user message. A sub-agent's messages, which the person
+// is shown but the main agent's model never gets, are left out, as Copilot
+// leaves them out of its own index.
 func copilotTurns(s *transcript.Session) []copilotTurn {
 	var out []copilotTurn
 	for _, e := range s.Linearize() {
+		if e.Audience != transcript.AudienceAll {
+			continue
+		}
 		switch e.Role {
 		case transcript.RoleUser:
 			out = append(out, copilotTurn{user: e.Text()})

@@ -1,0 +1,11 @@
+id: 92371bbf-c936-4cea-ae4b-32090b3e29f8
+cwd: /tmp/harness-test-copilot-compact/test-repo
+git_root: /tmp/harness-test-copilot-compact/test-repo
+branch: master
+client_name: github/acp
+name: first question alpha
+user_named: false
+summary_count: 1
+fork_count: 0
+created_at: 2026-09-24T09:39:38.164Z
+updated_at: 2026-09-24T09:39:48.922Z

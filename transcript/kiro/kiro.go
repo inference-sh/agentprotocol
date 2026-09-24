@@ -4,6 +4,10 @@
 // with one message per row, and <id>.json, a sidecar with the session's
 // metadata and, per user turn, the ids of the messages that made it up. A
 // written session needs both.
+//
+// The transcript is kiro's event log: besides the messages it holds the
+// rows /compact and /clear write, which change what the model is given on
+// resume and not what session/load replays; see compacted.
 package kiro
 
 import (
@@ -15,6 +19,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -32,6 +37,7 @@ var files = transcript.JSONL{
 		Peek: peek,
 	},
 	Decode: decode,
+	Finish: compacted,
 	Encode: encode,
 	After:  writeSidecar,
 }
@@ -104,6 +110,22 @@ type data struct {
 	Results   json.RawMessage `json:"results,omitempty"`
 }
 
+// compaction is the data of a Compaction row: the summary, and the messages
+// the model keeps after it, as the engine held them once it had compacted.
+type compaction struct {
+	Summary          string            `json:"summary"`
+	MessagesSnapshot []snapshotMessage `json:"messages_snapshot"`
+}
+
+// snapshotMessage is a message in a Compaction row's snapshot. It carries
+// the id of the row it was copied from.
+type snapshotMessage struct {
+	ID      string  `json:"id"`
+	Role    string  `json:"role"`
+	Content []block `json:"content"`
+	Meta    *meta   `json:"meta,omitempty"`
+}
+
 type meta struct {
 	Timestamp int64 `json:"timestamp"`
 }
@@ -170,26 +192,36 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	if r.Data.Meta != nil && r.Data.Meta.Timestamp > 0 {
 		e.Time = time.Unix(r.Data.Meta.Timestamp, 0).UTC()
 	}
-	for _, b := range r.Data.Content {
+	var err error
+	if e.Content, err = content(e.ID, r.Data.Content); err != nil {
+		return transcript.Entry{}, false, err
+	}
+	return e, true, nil
+}
+
+// content decodes a message's blocks.
+func content(id string, bs []block) ([]transcript.Block, error) {
+	var out []transcript.Block
+	for _, b := range bs {
 		switch b.Kind {
 		case "text":
 			var t string
 			if err := json.Unmarshal(b.Data, &t); err != nil {
-				return transcript.Entry{}, false, fmt.Errorf("message %s: text: %w", e.ID, err)
+				return nil, fmt.Errorf("message %s: text: %w", id, err)
 			}
 			if t != "" {
-				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: t})
+				out = append(out, transcript.Block{Kind: transcript.BlockText, Text: t})
 			}
 		case "toolUse":
 			var tu toolUse
 			if err := json.Unmarshal(b.Data, &tu); err != nil {
-				return transcript.Entry{}, false, fmt.Errorf("message %s: toolUse: %w", e.ID, err)
+				return nil, fmt.Errorf("message %s: toolUse: %w", id, err)
 			}
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: tu.ToolUseID, Name: tu.Name, Input: tu.Input})
+			out = append(out, transcript.Block{Kind: transcript.BlockToolUse, ToolID: tu.ToolUseID, Name: tu.Name, Input: tu.Input})
 		case "toolResult":
 			var tr toolResult
 			if err := json.Unmarshal(b.Data, &tr); err != nil {
-				return transcript.Entry{}, false, fmt.Errorf("message %s: toolResult: %w", e.ID, err)
+				return nil, fmt.Errorf("message %s: toolResult: %w", id, err)
 			}
 			var text strings.Builder
 			for _, c := range tr.Content {
@@ -198,7 +230,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 				}
 				var t string
 				if err := json.Unmarshal(c.Data, &t); err != nil {
-					return transcript.Entry{}, false, fmt.Errorf("message %s: toolResult text: %w", e.ID, err)
+					return nil, fmt.Errorf("message %s: toolResult text: %w", id, err)
 				}
 				text.WriteString(t)
 			}
@@ -206,11 +238,74 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 			if tr.Status != "success" {
 				st = transcript.StatusError
 			}
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolResult, ToolID: tr.ToolUseID, Text: text.String(), Status: st})
+			out = append(out, transcript.Block{Kind: transcript.BlockToolResult, ToolID: tr.ToolUseID, Text: text.String(), Status: st})
 		}
 	}
-	return e, true, nil
+	return out, nil
 }
+
+// compacted applies the rows that change what the model is given. On resume
+// kiro gives the model, after a Compaction row, a context entry holding the
+// row's summary and then the messages the row's snapshot kept; after a Clear
+// row, nothing from before it. session/load replays every message either
+// way. The Rewind command forks into a new session and leaves this one as it
+// was, and a cancelled prompt is answered with an ordinary message, so
+// neither needs anything here.
+func compacted(s *transcript.Session) error {
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		var r struct {
+			Kind string          `json:"kind"`
+			Data json.RawMessage `json:"data"`
+		}
+		if json.Unmarshal(e.Raw, &r) != nil {
+			continue
+		}
+		switch r.Kind {
+		case "Clear":
+			e.Compaction = &transcript.Compaction{}
+		case "Compaction":
+			var c compaction
+			if err := json.Unmarshal(r.Data, &c); err != nil {
+				return fmt.Errorf("compaction: %w", err)
+			}
+			kept := []transcript.Entry{SummaryMessage(c.Summary)}
+			for _, m := range c.MessagesSnapshot {
+				k := transcript.Entry{ID: m.ID, Role: transcript.RoleAssistant}
+				var err error
+				if k.Content, err = content(m.ID, m.Content); err != nil {
+					return err
+				}
+				if m.Role == "user" {
+					k.Role = transcript.RoleUser
+					if len(k.Content) > 0 && !slices.ContainsFunc(k.Content, func(b transcript.Block) bool { return b.Kind != transcript.BlockToolResult }) {
+						k.Role = transcript.RoleTool
+					}
+				}
+				if m.Meta != nil && m.Meta.Timestamp > 0 {
+					k.Time = time.Unix(m.Meta.Timestamp, 0).UTC()
+				}
+				kept = append(kept, k)
+			}
+			e.Compaction = &transcript.Compaction{Summary: kept}
+		}
+	}
+	return nil
+}
+
+// SummaryMessage is the message kiro gives the model in place of the
+// history a compaction summarized: the summary in a context entry, which
+// kiro sends at the head of the first user message, ahead of the context
+// entries it builds for every request (agent instructions, workspace
+// files). Both of kiro's engines send it.
+func SummaryMessage(summary string) transcript.Entry {
+	return transcript.Entry{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: summaryPrefix + summary + summarySuffix}}}
+}
+
+const (
+	summaryPrefix = "--- CONTEXT ENTRY BEGIN ---\nThis summary contains ALL relevant information from our previous conversation including tool uses, results, code analysis, and file operations. YOU MUST reference this information when answering questions and explicitly acknowledge specific details from the summary when they're relevant to the current question.\n\nSUMMARY CONTENT:\n"
+	summarySuffix = "\n--- CONTEXT ENTRY END ---"
+)
 
 func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
 	var kind string

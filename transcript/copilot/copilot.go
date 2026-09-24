@@ -4,7 +4,10 @@
 // with events.jsonl, the conversation as an event log, and workspace.yaml,
 // the session's identity. Events link to their parent through id and
 // parentId. user.message and assistant.message rows are the conversation;
-// hook, model change and turn boundary rows stay opaque in the chain.
+// hook, model change and turn boundary rows stay opaque in the chain. A
+// sub-agent's events go into the same log and chain, marked with its
+// agentId, and a session.compaction_complete row replaces the history
+// before it; see finish.
 //
 // Copilot finds sessions through an index, ~/.copilot/session-store.db, so a
 // session it will load needs a row there too. Codec here is read-only;
@@ -52,6 +55,7 @@ var Writer = transcript.JSONL{
 	},
 	Header:      header,
 	Decode:      decode,
+	Finish:      finish,
 	Encode:      encode,
 	WriteHeader: writeHeader,
 	Prepare:     prepareStart,
@@ -78,6 +82,27 @@ type event struct {
 	ID        string          `json:"id"`
 	Timestamp string          `json:"timestamp"`
 	ParentID  *string         `json:"parentId"`
+	// AgentID names the sub-agent an event belongs to. It is absent on the
+	// main agent's events, and on every event this codec writes.
+	AgentID string `json:"agentId,omitempty"`
+}
+
+// owner is the part of an event's data that also ties it to a sub-agent.
+type owner struct {
+	AgentID          string `json:"agentId"`
+	ParentToolCallID string `json:"parentToolCallId"`
+}
+
+// subagent reports whether an event is a sub-agent's, by the rule Copilot's
+// own readers use (a non-empty agentId on the event or its data, or a
+// parentToolCallId on its data).
+func (ev event) subagent() bool {
+	if ev.AgentID != "" {
+		return true
+	}
+	var o owner
+	_ = json.Unmarshal(ev.Data, &o)
+	return o.AgentID != "" || o.ParentToolCallID != ""
 }
 
 func parent(id string) *string {
@@ -168,6 +193,12 @@ type context_ struct {
 type userMessage struct {
 	Content   string `json:"content"`
 	MessageID string `json:"messageId"`
+}
+
+// compactionComplete is the data of a session.compaction_complete event.
+type compactionComplete struct {
+	Success        bool   `json:"success"`
+	SummaryContent string `json:"summaryContent"`
 }
 
 type assistantMessage struct {
@@ -326,7 +357,70 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		e.Role = transcript.RoleTool
 		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: tr.ToolCallID, Text: tr.Result.Content, Status: st}}
 	}
+	if e.Role != transcript.RoleOpaque && ev.subagent() {
+		// A sub-agent's turn runs in a context of its own, and the main
+		// agent's model gets only the task tool's result. session/load
+		// replays the sub-agent's answers and tool calls but skips its
+		// prompt (mapEventForReplay drops a user.message with an agentId).
+		e.Audience = transcript.AudienceUser
+		if e.Role == transcript.RoleUser {
+			e.Audience = transcript.AudienceNone
+		}
+	}
 	return e, true, nil
+}
+
+// finish applies each successful compaction on the active branch. Copilot
+// resumes a compacted session with one user message in place of everything
+// before the compaction: the summary the compaction recorded, after the
+// prompts the person gave the main agent until then. What follows the
+// compaction is kept. Copilot builds the message from a template in its
+// native runtime; the wording here is what it sent the model on resume
+// (Copilot CLI 1.0.88). A session a rewind cut short needs nothing: the
+// rewind removes the events from the log.
+func finish(s *transcript.Session) error {
+	var prompts []string
+	for _, i := range s.Branch() {
+		e := &s.Entries[i]
+		var ev event
+		if json.Unmarshal(e.Raw, &ev) != nil || ev.subagent() {
+			continue
+		}
+		switch ev.Type {
+		case "user.message":
+			prompts = append(prompts, e.Text())
+		case "session.compaction_complete":
+			var c compactionComplete
+			if err := json.Unmarshal(ev.Data, &c); err != nil {
+				return fmt.Errorf("event %s: %w", ev.ID, err)
+			}
+			if !c.Success {
+				continue
+			}
+			e.Compaction = &transcript.Compaction{Summary: []transcript.Entry{{
+				ID: e.ID, Role: transcript.RoleUser, Time: e.Time,
+				Content: []transcript.Block{{Kind: transcript.BlockText, Text: resumeSummary(c.SummaryContent, prompts)}},
+			}}}
+		}
+	}
+	return nil
+}
+
+// resumeSummary is the message that stands in for compacted history. The
+// list of prompts is left out when there are none; no capture has shown
+// what Copilot sends then.
+func resumeSummary(summary string, prompts []string) string {
+	var b strings.Builder
+	b.WriteString("Some of the conversation history has been summarized to free up context.\n\n")
+	if len(prompts) > 0 {
+		b.WriteString("You were originally given instructions from a user over one or more turns. Here were the user messages:\n")
+		for _, p := range prompts {
+			b.WriteString("<user_message>\n" + p + "\n</user_message>\n")
+		}
+		b.WriteString("\n")
+	}
+	b.WriteString("Here is a summary of the prior context:\n<summary>\n" + summary + "\n</summary>\n")
+	return b.String()
 }
 
 func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {

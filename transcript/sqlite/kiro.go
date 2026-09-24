@@ -138,6 +138,10 @@ type kiroV1Doc struct {
 	ModelInfo *struct {
 		ModelID string `json:"model_id"`
 	} `json:"model_info"`
+	// LatestSummary is the newest compaction's summary and the request
+	// that made it, a two-element array. History then holds only what the
+	// compaction kept, so the summary stands in for all that came before.
+	LatestSummary []json.RawMessage `json:"latest_summary"`
 }
 
 type kiroV1ToolUse struct {
@@ -192,6 +196,19 @@ func (st *kiroStore) readV1(ctx context.Context, id string) (*transcript.Session
 	}
 	if doc.ModelInfo != nil {
 		s.Model = doc.ModelInfo.ModelID
+	}
+	if len(doc.LatestSummary) > 0 {
+		// /compact writes the compacted conversation under a new id, with
+		// the summary beside the history it kept. The model gets the summary
+		// first, then that history.
+		var summary string
+		if err := json.Unmarshal(doc.LatestSummary[0], &summary); err != nil {
+			return nil, fmt.Errorf("kiro v1: conversation %s: latest_summary: %w", id, err)
+		}
+		s.Entries = append(s.Entries, transcript.Entry{
+			ID:         id + ":summary",
+			Compaction: &transcript.Compaction{Summary: []transcript.Entry{kiro.SummaryMessage(summary)}},
+		})
 	}
 	for i, h := range doc.History {
 		user, err := kiroV1User(h.User.Content)

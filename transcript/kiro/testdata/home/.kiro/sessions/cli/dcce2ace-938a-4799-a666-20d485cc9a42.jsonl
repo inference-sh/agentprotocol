@@ -1,0 +1,9 @@
+{"version":"v1","kind":"Prompt","data":{"message_id":"a9a9ae46-9538-44bb-a39c-41de1739bf57","content":[{"kind":"text","data":"first question alpha"}],"meta":{"timestamp":1790243529}}}
+{"version":"v1","kind":"AssistantMessage","data":{"message_id":"5c2623ff-b5c3-43b6-8d9b-313de6383f7d","content":[{"kind":"text","data":"ANSWER-ONE"}]}}
+{"version":"v1","kind":"Prompt","data":{"message_id":"7cb67b0d-e031-497f-98be-d7bbb09971c0","content":[{"kind":"text","data":"second question beta"}],"meta":{"timestamp":1790243530}}}
+{"version":"v1","kind":"AssistantMessage","data":{"message_id":"e7d6a99a-9436-49f9-9750-8922a8595d69","content":[{"kind":"text","data":"ANSWER-TWO"}]}}
+{"version":"v1","kind":"Clear"}
+{"version":"v1","kind":"Prompt","data":{"message_id":"c138fbda-0483-42d8-99bc-9eb2842e7cec","content":[{"kind":"text","data":"third question gamma"}],"meta":{"timestamp":1790243532}}}
+{"version":"v1","kind":"AssistantMessage","data":{"message_id":"cdfcabbf-f06d-4dbb-9d08-2ba0c0d9874b","content":[{"kind":"text","data":"ANSWER-THREE"}]}}
+{"version":"v1","kind":"Prompt","data":{"message_id":"3b3d110f-512f-4141-bd4b-a6d5c48a5f7b","content":[{"kind":"text","data":"fourth question delta"}],"meta":{"timestamp":1790243542}}}
+{"version":"v1","kind":"AssistantMessage","data":{"message_id":"b19e5e49-8906-4e03-af1e-727595b22597","content":[{"kind":"text","data":"ANSWER-FOUR"}]}}

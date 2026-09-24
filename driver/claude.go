@@ -557,6 +557,21 @@ func (s *claudeSession) onResult(r claudecode.ResultMessage) {
 	s.turnActive = false
 	s.interrupting = false
 
+	// A request still parked when the turn ends was withdrawn with it.
+	// onPermission notices that too, but on its own goroutine, which can lose
+	// the race with this one and report the withdrawal after turn.completed,
+	// when a caller has stopped reading the turn's events. Close them here,
+	// on the reader, so they always precede the end of the turn.
+	for id, p := range s.pending {
+		delete(s.pending, id)
+		s.emit(ap.NewEvent(ap.AgentEventApprovalResolved, s.runID, s.chatID, ap.ApprovalResolvedPayload{
+			ToolInvocationID: id,
+			ToolName:         p.req.ToolName,
+			Decision:         string(ap.InterruptResolutionDeny),
+			Reason:           "withdrawn by claude",
+		}))
+	}
+
 	u := r.Usage
 	prompt := u.InputTokens + u.CacheCreationInputTokens + u.CacheReadInputTokens
 	s.emit(ap.NewEvent(ap.AgentEventUsageUpdated, s.runID, s.chatID, ap.UsageUpdatedPayload{

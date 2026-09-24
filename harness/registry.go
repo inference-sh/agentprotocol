@@ -110,6 +110,7 @@ var codexProviderArgs = []string{
 var All = map[string]Harness{
 	"claude": {
 		Name: "claude", Binary: "claude",
+		Driver:        DriverClaudeCode,
 		Sessions:      claude.Codec,
 		InstallCmd:    []string{"npm", "install", "-g", "@anthropic-ai/claude-code"},
 		DetectEnvVars: []string{"CLAUDECODE", "CLAUDE_CODE", "CLAUDE_CODE_ENTRYPOINT"},
@@ -150,6 +151,7 @@ var All = map[string]Harness{
 	"codex": {
 		Sessions: codex.Codec,
 		Name:     "codex", Binary: "codex",
+		Driver:        DriverCodex,
 		InstallCmd:    []string{"npm", "install", "-g", "@openai/codex"},
 		DetectEnvVars: []string{"CODEX_SANDBOX", "CODEX_THREAD_ID", "CODEX_MANAGED_BY_NPM"},
 		PostInstall: [][]string{

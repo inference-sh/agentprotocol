@@ -348,7 +348,11 @@ func (c *Client) shutdown() {
 	c.closed = true
 	pending := c.pending
 	c.pending = map[string]chan ControlResponseBody{}
+	// Swap the map out under the lock, as with pending: request goroutines
+	// delete their own entry when they finish, and ranging over the live map
+	// here raced with that.
 	inflight := c.inflight
+	c.inflight = map[string]context.CancelFunc{}
 	c.mu.Unlock()
 
 	for _, ch := range pending {

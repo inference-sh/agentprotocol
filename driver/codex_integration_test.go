@@ -290,13 +290,3 @@ func TestCodexRealTurnApprovalInterruptSteerResume(t *testing.T) {
 		}
 	})
 }
-
-func countType(events []ap.AgentEvent, want ap.AgentEventType) int {
-	n := 0
-	for _, e := range events {
-		if e.Type == want {
-			n++
-		}
-	}
-	return n
-}

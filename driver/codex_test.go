@@ -66,27 +66,6 @@ func openCodex(t *testing.T, mode string, cfg driver.SessionConfig) driver.Sessi
 	return sess
 }
 
-// until reads events until one of the wanted type arrives.
-func until(t *testing.T, ch <-chan ap.AgentEvent, want ap.AgentEventType) []ap.AgentEvent {
-	t.Helper()
-	var got []ap.AgentEvent
-	deadline := time.After(5 * time.Second)
-	for {
-		select {
-		case ev, ok := <-ch:
-			if !ok {
-				t.Fatalf("events closed before %s; got %v", want, typesOf(got))
-			}
-			got = append(got, ev)
-			if ev.Type == want {
-				return got
-			}
-		case <-deadline:
-			t.Fatalf("no %s within deadline; got %v", want, typesOf(got))
-		}
-	}
-}
-
 func deltas(events []ap.AgentEvent) string {
 	var b strings.Builder
 	for _, e := range events {

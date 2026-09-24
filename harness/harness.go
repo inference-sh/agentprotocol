@@ -231,6 +231,11 @@ type Harness struct {
 	ACPConfigFiles   []ConfigFile // extra config files for ACP mode (provider overrides)
 	ACPNeedsTempHome bool         // create temp HOME for ACP (isolate provider config)
 
+	// Driver names the agentprotocol driver that runs this agent as a
+	// session: DriverACP, DriverClaudeCode or DriverCodex. Empty means ACP
+	// when the agent has an ACPCmd; DriverKind resolves that.
+	Driver string
+
 	// SDK mode — agent-specific programmatic protocol over stdio (e.g. claude stream-json)
 	SDKCmd  []string // command to start agent in SDK mode
 	SDKArgs []string // extra args for SDK mode
@@ -266,4 +271,23 @@ type Events struct {
 	PostToolUse  string
 	Stop         string
 	PreCompact   string
+}
+
+// Session drivers, matching the Kind of the driver package's backends.
+const (
+	DriverACP        = "acp"
+	DriverClaudeCode = "claude-code"
+	DriverCodex      = "codex"
+)
+
+// DriverKind is the driver that runs this agent as a session, or "" when
+// nothing can: the agent has neither a native driver nor an ACP command.
+func (h Harness) DriverKind() string {
+	if h.Driver != "" {
+		return h.Driver
+	}
+	if len(h.ACPCmd) > 0 {
+		return DriverACP
+	}
+	return ""
 }

@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/pi"
 )
 
 func read(t *testing.T, home, id string) *transcript.Session {
@@ -135,7 +136,7 @@ func TestRewind(t *testing.T) {
 
 // Both files come back byte for byte, and the summary keeps its counts.
 func TestRoundTripBothFiles(t *testing.T) {
-	for _, id := range []string{sampleID, rewoundID} {
+	for _, id := range []string{sampleID, rewoundID, resumedID} {
 		s := read(t, "testdata/home", id)
 		home := t.TempDir()
 		st, _ := Codec.Open(home)
@@ -276,5 +277,114 @@ func TestForeignWritesUpdates(t *testing.T) {
 	want := []string{"user: hi", "assistant: call read_file", "tool: result out", "user: again"}
 	if got := texts(back.Linearize()); !slices.Equal(got, want) {
 		t.Errorf("read back %q", got)
+	}
+}
+
+// A compacted session from another agent, pi's compaction probe in the
+// harness-test container (four prompts, one run as a private shell command,
+// a compaction keeping the last answer, a prompt after it), is recorded the
+// way grok compacts: updates.jsonl holds the whole history with a
+// compaction_checkpoint after the retired part, whose checkpoint file holds
+// the compacted history, and chat_history.jsonl holds the kept answer, then
+// the summary, then the turn after. The private command's output is in
+// updates.jsonl alone.
+func TestWriteCompacted(t *testing.T) {
+	src, err := pi.Codec.Open("../pi/testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	in, err := src.Read(t.Context(), "01a0d2bd-7043-757c-80b2-3f24970d3f7c")
+	if err != nil {
+		t.Fatal(err)
+	}
+	in.Agent = "elsewhere"
+	home := t.TempDir()
+	st, _ := Codec.Open(home)
+	id, err := st.Write(t.Context(), in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := read(t, home, id)
+	const answer = "assistant: Hello from mock server."
+	want := []string{
+		"user: What is the project codename? Reply ONLY the codename.", answer,
+		"user: Ran `ls`\n```\nnotes.md\n\n```", "user: Ran `echo private`\n```\nprivate\n\n```",
+		"user: Second question.", answer,
+		"user: Third question.", answer,
+		"user: After compaction.", answer,
+	}
+	if got := texts(s.Linearize()); !slices.Equal(got, want) {
+		t.Errorf("linearize:\n  %q\nwant\n  %q", got, want)
+	}
+	ctx := s.Context()
+	if len(ctx) != 4 || !strings.HasPrefix(ctx[1].Text(), "The conversation history before this point was compacted") {
+		t.Fatalf("context = %.60q, want the kept answer, then the summary", texts(ctx))
+	}
+	if got := texts([]transcript.Entry{ctx[0], ctx[2], ctx[3]}); !slices.Equal(got, []string{answer, "user: After compaction.", answer}) {
+		t.Errorf("context around the summary = %q", got)
+	}
+
+	dir := sessionDir(t, home, id)
+	var checkpoint struct {
+		Update struct {
+			SessionUpdate  string `json:"sessionUpdate"`
+			CheckpointID   string `json:"checkpoint_id"`
+			PromptIndex    int    `json:"prompt_index_at_compaction"`
+			CheckpointFile string `json:"checkpoint_file"`
+		} `json:"update"`
+	}
+	for _, row := range lines(t, filepath.Join(dir, updatesFile)) {
+		var line updateLine
+		if json.Unmarshal(row, &line) == nil && line.Method == xaiMethod && json.Unmarshal(line.Params, &checkpoint) == nil {
+			break
+		}
+	}
+	if checkpoint.Update.SessionUpdate != "compaction_checkpoint" || checkpoint.Update.PromptIndex != 4 {
+		t.Fatalf("checkpoint update %+v, want one before prompt 4", checkpoint.Update)
+	}
+	raw, err := os.ReadFile(filepath.Join(dir, checkpoint.Update.CheckpointFile))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var file struct {
+		CheckpointID string            `json:"checkpoint_id"`
+		History      []json.RawMessage `json:"compacted_history"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		t.Fatal(err)
+	}
+	if len(file.History) != 2 || file.CheckpointID != checkpoint.Update.CheckpointID {
+		t.Errorf("checkpoint file %s, want the kept answer and the summary", raw)
+	}
+}
+
+// resumedID is qwen's compacted sample (four turns, /compress, one turn
+// after) written into grok's home in the harness-test container, then
+// resumed over ACP with one more prompt. grok rewrote chat_history.jsonl
+// with its system prompt ahead of the summary the codec wrote, and nothing
+// kept between them.
+const resumedID = "69722182-94aa-4598-a445-42cdcbf44bd9"
+
+// The summary is found after grok's system prompt, so the model's context
+// is the summary and the turns since, the person sees every turn, and the
+// summary moves on with the session.
+func TestResumedForeignCompaction(t *testing.T) {
+	s := read(t, "testdata/home", resumedID)
+	ctx := s.Context()
+	if len(ctx) != 6 || ctx[0].Role != transcript.RoleSystem || !strings.HasPrefix(ctx[1].Text(), "Hello from mock server.\n\nResume the prior task") {
+		t.Fatalf("context = %.60q, want the system prompt, the summary, the turns since", texts(ctx))
+	}
+	lin := texts(s.Linearize())
+	if len(lin) != 15 || lin[4] != "user: What files are in this repository?" || slices.Contains(lin, "user: "+ctx[1].Text()) {
+		t.Errorf("linearize = %.60q, want every turn and no summary", lin)
+	}
+	var carried bool
+	for _, e := range s.Portable().Entries {
+		if c := e.Compaction; c != nil && len(c.Summary) == 1 && c.Summary[0].Text() == ctx[1].Text() {
+			carried = true
+		}
+	}
+	if !carried {
+		t.Error("the summary does not move with the session")
 	}
 }

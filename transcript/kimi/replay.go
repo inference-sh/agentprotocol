@@ -219,6 +219,25 @@ func output(raw json.RawMessage, toolID string) (string, []transcript.Block) {
 // abandoned, folds loop events into assistant and tool messages, and applies
 // compactions, clears and legacy undos to the model's context.
 func finish(s *transcript.Session) error {
+	r, err := fold(s)
+	if err != nil {
+		return err
+	}
+	r.settleOpen()
+	r.flush()
+	for _, i := range r.abandoned {
+		if len(s.Entries[i].Content) == 0 {
+			s.Entries[i].Role = transcript.RoleOpaque
+		}
+	}
+	r.link()
+	return nil
+}
+
+// fold replays the rows the way kimi restores them, up to the last, and
+// returns the replay with the model's context as it stands there: a step
+// still open stays open.
+func fold(s *transcript.Session) (*replay, error) {
 	rows := make([]wireRow, len(s.Entries))
 	lines := make([]int, len(s.Entries))
 	n := 0
@@ -232,7 +251,7 @@ func finish(s *transcript.Session) error {
 	}
 	live, err := restorable(rows, lines)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	r := &replay{s: s, rows: rows, open: -1, callRow: map[string]int{}, abandoned: map[string]int{}}
 	for i := range s.Entries {
@@ -241,21 +260,13 @@ func finish(s *transcript.Session) error {
 		}
 		if live[i] {
 			if err := r.apply(i); err != nil {
-				return err
+				return nil, err
 			}
 		} else {
 			r.abandon(i)
 		}
 	}
-	r.settleOpen()
-	r.flush()
-	for _, i := range r.abandoned {
-		if len(s.Entries[i].Content) == 0 {
-			s.Entries[i].Role = transcript.RoleOpaque
-		}
-	}
-	r.link()
-	return nil
+	return r, nil
 }
 
 // switchEdge is an agent.switched row: an undo that moved the conversation to
@@ -444,7 +455,10 @@ func isPromptOwnedInjection(m, prompt contextMsg) bool {
 // held is one message of the model's context as the replay folds it: an
 // entry of the session, or a message kimi made when it compacted.
 type held struct {
-	at  int // index into Entries, or -1
+	at int // index into Entries, or -1
+	// src is the entry the message was first delivered from, which a
+	// compaction's copy keeps; -1 for a message kimi made.
+	src int
 	msg contextMsg
 	e   *transcript.Entry // the made-up message's entry when at is -1
 	// summary marks a message of the latest compaction's Summary, at slot
@@ -465,7 +479,7 @@ func (h held) entry(s *transcript.Session) transcript.Entry {
 
 func madeUp(m contextMsg) held {
 	e := messageEntry(m)
-	return held{at: -1, msg: m, e: &e}
+	return held{at: -1, src: -1, msg: m, e: &e}
 }
 
 // madeUpSummary is a compaction's summary. kimi does not show it, but it is
@@ -499,7 +513,7 @@ type replay struct {
 
 // deliver puts an entry into the context.
 func (r *replay) deliver(i int, m contextMsg) {
-	r.hist = append(r.hist, held{at: i, msg: m})
+	r.hist = append(r.hist, held{at: i, src: i, msg: m})
 	r.order = append(r.order, i)
 }
 
@@ -825,7 +839,7 @@ func (r *replay) compact(row wireRow) ([]held, error) {
 		out := []held{madeUpSummary(first)}
 		for _, h := range r.hist[min(int(compacted), len(r.hist)):] {
 			e := h.entry(r.s)
-			out = append(out, held{at: -1, msg: h.msg, e: &e})
+			out = append(out, held{at: -1, src: h.src, msg: h.msg, e: &e})
 		}
 		return out, nil
 	}
@@ -859,7 +873,7 @@ func (r *replay) compact(row wireRow) ([]held, error) {
 // does not reach back to the entry it came from.
 func (h held) fixed(s *transcript.Session) held {
 	e := h.entry(s)
-	return held{at: -1, msg: h.msg, e: &e}
+	return held{at: -1, src: h.src, msg: h.msg, e: &e}
 }
 
 func systemReminder(s string) string {

@@ -159,10 +159,27 @@ func (st *store) Read(ctx context.Context, id string) (*transcript.Session, erro
 }
 
 // plan is what one write needs to continue the session the way grok would:
-// the prompt index of each new prompt and the last event id in the log.
+// the prompt index of each new prompt, the last event id in the log, and the
+// compactions it records.
 type plan struct {
 	prompt map[string]int
 	seq    int
+	// meta marks the summary entries a compaction puts in chat_history.jsonl,
+	// written as grok writes its own summary.
+	meta map[string]bool
+	// compactions holds, by the compaction entry's id, what the compaction
+	// records.
+	compactions map[string]*compaction
+}
+
+// compaction is a compaction another agent recorded, as grok records one
+// (persist_compaction_checkpoint in session/compaction.rs): a checkpoint
+// file holding the compacted history, and a compaction_checkpoint update
+// naming it and the prompt index the next prompt takes.
+type compaction struct {
+	id      string
+	prompt  int
+	history []transcript.Entry
 }
 
 // newPlan numbers the new prompts on from the prompts grok already lists
@@ -170,13 +187,17 @@ type plan struct {
 // the person's; one only sent or only shown is context or an echo, which
 // grok does not count.
 func newPlan(s *transcript.Session, shown []json.RawMessage) *plan {
-	p := &plan{prompt: map[string]int{}}
+	p := &plan{prompt: map[string]int{}, meta: map[string]bool{}, compactions: map[string]*compaction{}}
 	for _, raw := range shown {
 		p.seq = max(p.seq, eventSeq(raw))
 	}
 	n := len(prompts(shown))
 	for _, e := range s.Entries {
-		if e.Raw == nil && e.Role == transcript.RoleUser && e.Audience == transcript.AudienceAll {
+		switch {
+		case e.Raw != nil:
+		case e.Compaction != nil:
+			p.compactions[e.ID] = &compaction{id: transcript.NewUUID(), prompt: n}
+		case e.Role == transcript.RoleUser && e.Audience == transcript.AudienceAll:
 			p.prompt[e.ID] = n
 			n++
 		}
@@ -184,49 +205,82 @@ func newPlan(s *transcript.Session, shown []json.RawMessage) *plan {
 	return p
 }
 
+// caps is what a write records of another agent's session. A compaction is
+// recorded as grok records its own: updates.jsonl keeps the history it
+// retired, then the checkpoint, and chat_history.jsonl holds the compacted
+// history in its place. An entry the model is not given goes to
+// updates.jsonl alone, which grok replays to the person and never sends, as
+// it does the echo of a command.
+var caps = transcript.Capabilities{Compaction: true, UserOnly: true}
+
 // Write writes chat_history.jsonl from the session's chat rows and the new
 // entries the model is given, and updates.jsonl from its update rows and
 // the new entries the person is shown, then the summary counting both.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != agent {
-		s = s.Portable().Lower(transcript.Capabilities{})
+		s = s.Portable().Lower(caps)
 		s.Agent = agent
 	}
 	// The plan keys new entries by id; grok's rows carry none of them.
-	transcript.AssignIDs(s, transcript.UUIDs, false)
+	assignIDs(s)
 	if s.Updated.IsZero() {
 		s.Updated = time.Now()
 	}
 
-	model := *s
-	model.Entries = nil
-	var shown []transcript.Entry
 	var shownRaw []json.RawMessage
 	// A torn line is attributed to the file of the row before it: a crash
 	// cuts a file's last line, and updates rows come first.
 	inUpdates := true
-	for _, e := range s.Entries {
+	updateRow := make([]bool, len(s.Entries))
+	for i, e := range s.Entries {
 		if e.Raw == nil {
+			continue
+		}
+		if json.Valid(e.Raw) {
+			inUpdates = isUpdateRow(e.Raw)
+		}
+		if updateRow[i] = inUpdates; inUpdates {
+			shownRaw = append(shownRaw, e.Raw)
+		}
+	}
+	p := newPlan(s, shownRaw)
+
+	model := *s
+	model.Entries = nil
+	var shown []transcript.Entry
+	for i, e := range s.Entries {
+		switch {
+		case e.Raw != nil && updateRow[i]:
+			shown = append(shown, e)
+		case e.Raw != nil:
+			model.Entries = append(model.Entries, e)
+		case e.Compaction != nil:
+			// grok compacts to the messages it keeps and then the summary
+			// (build_compacted_history in xai-chat-state compaction_utils.rs).
+			c := p.compactions[e.ID]
+			for k, m := range model.Entries {
+				if e.Compaction.Keep != "" && m.ID == e.Compaction.Keep {
+					c.history = append(c.history, model.Entries[k:]...)
+					break
+				}
+			}
+			for _, m := range e.Compaction.Summary {
+				m.ID = transcript.NewUUID()
+				p.meta[m.ID] = m.Role == transcript.RoleUser
+				c.history = append(c.history, m)
+			}
+			model.Entries = append([]transcript.Entry(nil), c.history...)
+			shown = append(shown, e)
+		default:
 			if e.Audience.Model() {
 				model.Entries = append(model.Entries, e)
 			}
 			if e.Audience.User() {
 				shown = append(shown, e)
 			}
-			continue
-		}
-		if json.Valid(e.Raw) {
-			inUpdates = isUpdateRow(e.Raw)
-		}
-		if inUpdates {
-			shown = append(shown, e)
-			shownRaw = append(shownRaw, e.Raw)
-		} else {
-			model.Entries = append(model.Entries, e)
 		}
 	}
 
-	p := newPlan(s, shownRaw)
 	w := chat
 	w.Encode = p.encodeChat
 	ws, err := w.Open(st.home)
@@ -260,11 +314,71 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 			return "", err
 		}
 	}
+	for _, c := range p.compactions {
+		if err := p.writeCheckpoint(dir, c, s); err != nil {
+			return "", err
+		}
+	}
 	chatRows, err := countRows(filepath.Join(dir, chatFile))
 	if err != nil {
 		return "", err
 	}
 	return id, writeSummary(dir, s, numUpdates, chatRows)
+}
+
+// assignIDs gives the session's new entries ids, and a compaction one if it
+// has none: the plan keys both by id.
+func assignIDs(s *transcript.Session) {
+	transcript.AssignIDs(s, transcript.UUIDs, false)
+	for i := range s.Entries {
+		if e := &s.Entries[i]; e.Compaction != nil && e.Raw == nil && e.ID == "" {
+			e.ID = transcript.NewUUID()
+		}
+	}
+}
+
+// checkpointFile is a compaction checkpoint file
+// (CompactionCheckpointFile in extensions/notification.rs), which grok
+// reads back when a rewind crosses the compaction.
+type checkpointFile struct {
+	CheckpointID     string            `json:"checkpoint_id"`
+	PromptIndex      int               `json:"prompt_index_at_compaction"`
+	History          []json.RawMessage `json:"compacted_history"`
+	SchemaVersion    int               `json:"schema_version"`
+	CreatedAt        string            `json:"created_at"`
+	OriginalUserInfo *string           `json:"original_user_info"`
+	RereadFilePaths  []string          `json:"reread_file_paths"`
+}
+
+func (c *compaction) file() string {
+	return "compaction_checkpoints/" + c.id + ".json"
+}
+
+// writeCheckpoint writes a compaction's checkpoint file: the chat items of
+// the history it compacted to.
+func (p *plan) writeCheckpoint(dir string, c *compaction, s *transcript.Session) error {
+	items := []json.RawMessage{}
+	for _, e := range c.history {
+		rows, err := p.encodeChat(e, s)
+		if err != nil {
+			return err
+		}
+		for _, line := range bytes.Split(rows, []byte("\n")) {
+			if len(line) > 0 {
+				items = append(items, line)
+			}
+		}
+	}
+	out, err := json.MarshalIndent(checkpointFile{CheckpointID: c.id, PromptIndex: c.prompt, History: items, SchemaVersion: 1,
+		CreatedAt: s.Updated.UTC().Format(time.RFC3339Nano), RereadFilePaths: []string{}}, "", "  ")
+	if err != nil {
+		return err
+	}
+	path := filepath.Join(dir, c.file())
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	return writeFile(path, out)
 }
 
 // countRows counts the items in a written chat_history.jsonl: its lines that

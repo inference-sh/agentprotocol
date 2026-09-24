@@ -229,35 +229,52 @@ func userQuery(text string) (string, bool) {
 // which is what the conversation was.
 //
 // grok marks no row as the summary (is_compaction_summary in
-// conversation.rs says so); build_compacted_history makes the prefix the
-// first compaction_meta row and the summary the second.
+// conversation.rs says so). build_compacted_history writes the prefix as a
+// compaction_meta row right after the system prompt, and the summary as the
+// next one. A compaction this codec records for another agent's session has
+// no prefix to repeat, and its summary is the first compaction_meta row,
+// right after the system prompt once grok has resumed the session and put
+// its own ahead of it.
 func finishChat(s *transcript.Session) error {
-	metas := 0
+	var metas []int
 	for i := range s.Entries {
 		var r chatRow
-		if json.Unmarshal(s.Entries[i].Raw, &r) != nil || r.SyntheticReason != "compaction_meta" {
-			continue
+		if json.Unmarshal(s.Entries[i].Raw, &r) == nil && r.SyntheticReason == compactionMeta {
+			metas = append(metas, i)
 		}
-		if metas++; metas < 2 {
-			continue
-		}
-		var history []transcript.Entry
-		for j := range s.Entries[:i] {
-			e := &s.Entries[j]
-			if e.Role == transcript.RoleOpaque {
-				continue
-			}
-			e.Audience = transcript.AudienceModel
-			history = append(history, *e)
-		}
-		sum := &s.Entries[i]
-		sum.Audience = transcript.AudienceModel
-		self := *sum
-		self.Audience = transcript.AudienceAll
-		sum.Compaction = &transcript.Compaction{Summary: append(history, self)}
+	}
+	if len(metas) == 0 {
 		return nil
 	}
+	i := metas[0]
+	if len(metas) > 1 && i > 0 && isSystemRow(s.Entries[i-1].Raw) {
+		i = metas[1]
+	}
+	var history []transcript.Entry
+	for j := range s.Entries[:i] {
+		e := &s.Entries[j]
+		if e.Role == transcript.RoleOpaque {
+			continue
+		}
+		e.Audience = transcript.AudienceModel
+		history = append(history, *e)
+	}
+	sum := &s.Entries[i]
+	sum.Audience = transcript.AudienceModel
+	self := *sum
+	self.Audience = transcript.AudienceAll
+	sum.Compaction = &transcript.Compaction{Summary: append(history, self)}
 	return nil
+}
+
+// compactionMeta is the synthetic_reason of the rows a compaction writes
+// (SyntheticReason::CompactionMeta, ConversationItem::user_meta).
+const compactionMeta = "compaction_meta"
+
+// isSystemRow reports whether a chat row is the system prompt.
+func isSystemRow(raw json.RawMessage) bool {
+	var r chatRow
+	return json.Unmarshal(raw, &r) == nil && (r.Type == "system" || r.Type == "" && r.Role == "system")
 }
 
 // contentText is the text of a content field: a plain string, or the text
@@ -423,7 +440,10 @@ func (p *plan) encodeChat(e transcript.Entry, s *transcript.Session) (json.RawMe
 			return nil, nil
 		}
 		row := userItem{Type: "user"}
-		if n, ok := p.prompt[e.ID]; ok {
+		if p.meta[e.ID] {
+			row.Content = []any{textPart{Type: "text", Text: e.Text()}}
+			row.SyntheticReason = compactionMeta
+		} else if n, ok := p.prompt[e.ID]; ok {
 			row.Content = []any{textPart{Type: "text", Text: "<user_query>\n" + e.Text() + "\n</user_query>"}}
 			row.PromptIndex = &n
 		} else {

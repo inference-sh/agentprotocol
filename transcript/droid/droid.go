@@ -47,6 +47,10 @@ var Codec = transcript.JSONL{
 	Encode:      encode,
 	WriteHeader: writeHeader,
 	Tree:        true,
+	// droid keeps the messages a compaction retired in the file, behind a
+	// compaction_state row anchored after them, and keeps a message the
+	// person sees and the model never gets as user_only.
+	Caps: transcript.Capabilities{Compaction: true, UserOnly: true},
 }
 
 // Vendor is what a droid session carries in Session.Vendor: the
@@ -493,6 +497,9 @@ func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
 }
 
 func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+	if e.Compaction != nil {
+		return encodeCompaction(e, s)
+	}
 	role := e.Role
 	if role == transcript.RoleTool {
 		role = transcript.RoleUser
@@ -565,6 +572,9 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		return nil, nil
 	}
 	m := &message{Role: string(role), Content: content}
+	if e.Audience == transcript.AudienceUser {
+		m.Visibility = visibilityUser
+	}
 	if reasoning != "" {
 		m.ChatCompletionReasoningField, m.ChatCompletionReasoningContent = "reasoning_content", reasoning
 	}
@@ -575,8 +585,109 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	return json.Marshal(row{
 		Type:      "message",
 		ID:        e.ID,
-		ParentID:  e.ParentID,
-		Timestamp: t.UTC().Format("2006-01-02T15:04:05.000Z"),
+		ParentID:  messageParent(e.ParentID, s),
+		Timestamp: t.UTC().Format(timestamp),
 		Message:   m,
 	})
+}
+
+const timestamp = "2006-01-02T15:04:05.000Z"
+
+// messageParent is the parent a written message names. Nothing links to a
+// compaction_state row, so a message after one names the message before it.
+func messageParent(id string, s *transcript.Session) string {
+	for i, e := range s.Entries {
+		if e.ID != id || e.Compaction == nil {
+			continue
+		}
+		for j := i - 1; j >= 0; j-- {
+			if s.Entries[j].Role != transcript.RoleOpaque {
+				return s.Entries[j].ID
+			}
+		}
+		return ""
+	}
+	return id
+}
+
+// compactionRow is the compaction_state row droid writes when it compacts a
+// session in place (saveCompactionSummary in the 0.226 bundle).
+type compactionRow struct {
+	Type          string         `json:"type"`
+	ID            string         `json:"id"`
+	Timestamp     string         `json:"timestamp"`
+	SummaryText   string         `json:"summaryText"`
+	SummaryTokens int            `json:"summaryTokens"`
+	SummaryKind   string         `json:"summaryKind"`
+	AnchorMessage *anchorMessage `json:"anchorMessage,omitempty"`
+	RemovedCount  int            `json:"removedCount"`
+}
+
+// anchorMessage is the last message a summary replaces: its id, and its
+// index among the session's message rows, which droid falls back on when
+// the id is not in the loaded history.
+type anchorMessage struct {
+	ID    string `json:"id"`
+	Index int    `json:"index"`
+}
+
+// encodeCompaction records a compaction as droid does one in place: the
+// summary as an llm_summary, which droid wraps in its preamble when it loads
+// it, anchored at the last message before the first one kept. droid gives
+// the model the summary and every message after the anchor, less tool
+// results whose call it replaced, and keeps the retired messages in the
+// file.
+func encodeCompaction(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
+	var texts []string
+	for _, m := range e.Compaction.Summary {
+		if t := m.Text(); t != "" {
+			texts = append(texts, t)
+		}
+	}
+	text := strings.Join(texts, "\n\n")
+	end := -1
+	for i := range s.Entries {
+		if s.Entries[i].Compaction == e.Compaction {
+			end = i
+			break
+		}
+	}
+	if keep := e.Compaction.Keep; keep != "" {
+		for i := 0; i < end; i++ {
+			if s.Entries[i].ID == keep {
+				end = i
+				break
+			}
+		}
+	}
+	var anchor *anchorMessage
+	written := 0
+	for _, m := range s.Entries[:max(end, 0)] {
+		if m.Role == transcript.RoleOpaque {
+			continue
+		}
+		row, err := encode(m, s)
+		if err != nil {
+			return nil, err
+		}
+		if len(row) > 0 {
+			anchor = &anchorMessage{ID: m.ID, Index: written}
+			written++
+		}
+	}
+	id := e.ID
+	if !transcript.IsUUID(id) {
+		id = transcript.NewUUID()
+	}
+	t := e.Time
+	if t.IsZero() {
+		t = s.Updated
+	}
+	c := compactionRow{Type: "compaction_state", ID: id, Timestamp: t.UTC().Format(timestamp), SummaryText: text,
+		// droid's own estimate: a token per four characters.
+		SummaryTokens: (len(text) + 3) / 4, SummaryKind: "llm_summary", AnchorMessage: anchor}
+	if anchor != nil {
+		c.RemovedCount = anchor.Index + 1
+	}
+	return json.Marshal(c)
 }

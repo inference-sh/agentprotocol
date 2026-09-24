@@ -555,6 +555,9 @@ func eventSeq(raw json.RawMessage) int {
 // the model is not given is written as a host turn, which grok shows and
 // does not count as a prompt.
 func (p *plan) encodeUpdates(e transcript.Entry, s *transcript.Session) ([]json.RawMessage, error) {
+	if c := p.compactions[e.ID]; c != nil && e.Compaction != nil {
+		return p.checkpointRow(c, e, s)
+	}
 	var updates []update
 	switch e.Role {
 	case transcript.RoleUser:
@@ -634,4 +637,43 @@ func mustJSON(v any) json.RawMessage {
 		panic("grok: marshal " + err.Error())
 	}
 	return b
+}
+
+// checkpointParams is the compaction_checkpoint update grok sends itself
+// once a compaction completes (CompactionCheckpointInfo in
+// extensions/notification.rs). Every update row before it in the log shows
+// history the model no longer has.
+type checkpointParams struct {
+	SessionID string `json:"sessionId"`
+	Update    struct {
+		SessionUpdate  string `json:"sessionUpdate"`
+		CheckpointID   string `json:"checkpoint_id"`
+		PromptIndex    int    `json:"prompt_index_at_compaction"`
+		CheckpointFile string `json:"checkpoint_file"`
+		SchemaVersion  int    `json:"schema_version"`
+		CreatedAt      string `json:"created_at"`
+	} `json:"update"`
+	Meta updateTrace `json:"_meta"`
+}
+
+func (p *plan) checkpointRow(c *compaction, e transcript.Entry, s *transcript.Session) ([]json.RawMessage, error) {
+	t := e.Time
+	if t.IsZero() {
+		t = s.Updated
+	}
+	p.seq++
+	var params checkpointParams
+	params.SessionID = s.ID
+	params.Update.SessionUpdate = "compaction_checkpoint"
+	params.Update.CheckpointID = c.id
+	params.Update.PromptIndex = c.prompt
+	params.Update.CheckpointFile = c.file()
+	params.Update.SchemaVersion = 1
+	params.Update.CreatedAt = t.UTC().Format(time.RFC3339Nano)
+	params.Meta = updateTrace{EventID: s.ID + "-" + strconv.Itoa(p.seq), AgentTimestampMs: t.UnixMilli()}
+	row, err := json.Marshal(updateLine{Timestamp: t.Unix(), Method: xaiMethod, Params: mustJSON(params)})
+	if err != nil {
+		return nil, err
+	}
+	return []json.RawMessage{row}, nil
 }

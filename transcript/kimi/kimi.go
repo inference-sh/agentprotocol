@@ -62,6 +62,7 @@ var files = transcript.JSONL{
 	Finish:      finish,
 	WriteHeader: writeHeader,
 	After:       writeState,
+	Caps:        caps,
 	NewID:       func() string { return "session_" + transcript.NewUUID() },
 }
 
@@ -236,7 +237,12 @@ func (st *store) Read(ctx context.Context, id string) (*transcript.Session, erro
 // state machine beside them.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != "kimi" {
-		s = s.Portable().Lower(transcript.Capabilities{})
+		s = s.Portable().Lower(caps)
+		// kimi names a session session_<uuid> and lists only directories
+		// named so; another agent's id gets a new one.
+		if rest, ok := strings.CutPrefix(s.ID, "session_"); !ok || !transcript.IsUUID(rest) {
+			s.ID = ""
+		}
 	}
 	// Ids first: the plan names entries by id. A session read with links
 	// (a message kimi delivers out of file order, see link) has its new
@@ -255,6 +261,12 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 	}
 	return ws.Write(ctx, s)
 }
+
+// caps is what a write records of another agent's session: its compactions,
+// as context.apply_compaction rows after the history they retire, which
+// stays in the log for kimi's transcript (contextTranscript.ts). Kimi has no
+// message it shows and never sends.
+var caps = transcript.Capabilities{Compaction: true}
 
 // messageID mints an id in kimi's form: msg_ and a 26-character ULID-style
 // string.
@@ -402,6 +414,10 @@ func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
 // (loopEventFold.ts settleOpen). So a step whose calls are answered ends
 // after the last entry that answers them.
 type plan struct {
+	// rows is every row written so far, and first the first of them each
+	// entry wrote: what a compaction counts the history it retires in.
+	rows  []json.RawMessage
+	first map[string]int
 	turn  map[string]int // entry id -> turn index
 	step  map[string]int // entry id -> step within the turn
 	last  map[string]bool
@@ -414,8 +430,8 @@ type plan struct {
 // newPlan numbers the session's new entries (those without Raw). Turns
 // continue from the turns already in the log; each assistant entry is one
 // step of its turn.
-func newPlan(s *transcript.Session) plan {
-	p := plan{turn: map[string]int{}, step: map[string]int{}, last: map[string]bool{}, call: map[string]string{}, uuid: map[string]string{}, calls: map[string]bool{}, ends: map[string][]string{}}
+func newPlan(s *transcript.Session) *plan {
+	p := &plan{first: map[string]int{}, turn: map[string]int{}, step: map[string]int{}, last: map[string]bool{}, call: map[string]string{}, uuid: map[string]string{}, calls: map[string]bool{}, ends: map[string][]string{}}
 	turn, step := -1, 0
 	for _, e := range s.Entries {
 		if e.Raw == nil {
@@ -480,13 +496,16 @@ func newPlan(s *transcript.Session) plan {
 // encoder returns the Encode for one write: it emits, for each new entry, the
 // context rows the model's context is rebuilt from and the journal row kimi's
 // input state machine keeps, and closes a turn after its last entry.
-func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMessage, error) {
+func (p *plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMessage, error) {
 	return func(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
 		t := e.Time
 		if t.IsZero() {
 			t = s.Updated
 		}
 		ms := t.UnixMilli()
+		if e.Compaction != nil {
+			return p.compaction(e, ms)
+		}
 		turn := p.turn[e.ID]
 		turnID := strconv.Itoa(turn)
 		var rows []any
@@ -563,19 +582,86 @@ func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMes
 		if p.last[e.ID] {
 			rows = append(rows, row{Type: "turn.ended", AgentID: "main", TurnID: &turn, Reason: "completed", Time: ms})
 		}
-		var b strings.Builder
-		for i, r := range rows {
-			line, err := json.Marshal(r)
-			if err != nil {
-				return nil, err
-			}
-			if i > 0 {
-				b.WriteByte('\n')
-			}
-			b.Write(line)
-		}
-		return json.RawMessage(b.String()), nil
+		return p.emit(e.ID, rows)
 	}
+}
+
+// emit joins an entry's rows into what the engine writes, and remembers
+// them.
+func (p *plan) emit(id string, rows []any) (json.RawMessage, error) {
+	if _, ok := p.first[id]; !ok && id != "" {
+		p.first[id] = len(p.rows)
+	}
+	var b strings.Builder
+	for i, r := range rows {
+		line, err := json.Marshal(r)
+		if err != nil {
+			return nil, err
+		}
+		p.rows = append(p.rows, line)
+		if i > 0 {
+			b.WriteByte('\n')
+		}
+		b.Write(line)
+	}
+	return json.RawMessage(b.String()), nil
+}
+
+// compactionRow is a context.apply_compaction row in the shape kimi wrote
+// before 2.0 and still restores (contextOps.ts readContextCompactionShapeInput,
+// compactionHandoff.ts usesLegacyTailShape): the model's context becomes the
+// summary followed by the history from compactedCount on. The current shape
+// instead keeps every prompt the person typed, which is not what the
+// compaction being recorded kept.
+type compactionRow struct {
+	Type           string `json:"type"`
+	AgentID        string `json:"agentId"`
+	Summary        string `json:"summary"`
+	CompactedCount int    `json:"compactedCount"`
+	LegacyTail     bool   `json:"legacyTail"`
+	Time           int64  `json:"time"`
+}
+
+// compaction is the row for a compaction another agent recorded. Its
+// summary is sent as kimi sends one, as a user message of its own, and
+// compactedCount is how many messages of the context, as kimi folds the rows
+// written so far, come before the first kept entry's: every one of them when
+// nothing is kept. Only a session from another agent has such an entry, and
+// all its rows pass through here.
+func (p *plan) compaction(e transcript.Entry, ms int64) (json.RawMessage, error) {
+	folded := &transcript.Session{}
+	for _, row := range p.rows {
+		en, ok, err := decode(row, folded)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			en = transcript.Entry{}
+		}
+		en.Raw = row
+		folded.Entries = append(folded.Entries, en)
+	}
+	r, err := fold(folded)
+	if err != nil {
+		return nil, err
+	}
+	count := len(r.hist)
+	if from, ok := p.first[e.Compaction.Keep]; ok && e.Compaction.Keep != "" {
+		for k, h := range r.hist {
+			if h.src >= from {
+				count = k
+				break
+			}
+		}
+	}
+	var texts []string
+	for _, m := range e.Compaction.Summary {
+		if t := m.Text(); t != "" {
+			texts = append(texts, t)
+		}
+	}
+	return p.emit(e.ID, []any{compactionRow{Type: "context.apply_compaction", AgentID: "main",
+		Summary: strings.Join(texts, "\n\n"), CompactedCount: count, LegacyTail: true, Time: ms}})
 }
 
 // The context-row payloads, as kimi writes them.

@@ -359,6 +359,13 @@ func indexOf(ids []string, id string) int {
 // in-memory list with {"$set": {"messages": ...}}, which would drop records
 // appended after it loaded. Write while gemini is not running the session.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	// gemini records neither a compaction nor an entry it shows and never
+	// sends in a form that lasts: when it compresses, and when it loads a
+	// session, it rewrites the message list from the history it sends the
+	// model (geminiChat.ts initialize and setHistory,
+	// chatRecordingService.ts updateMessagesFromHistory), dropping every
+	// record the model is not given. So another agent's compaction is
+	// applied, the summary in place of what it retired.
 	if s.Agent != "gemini" {
 		s = s.Portable().Lower(transcript.Capabilities{})
 	}

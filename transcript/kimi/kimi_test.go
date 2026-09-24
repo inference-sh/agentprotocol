@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/pi"
 	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
@@ -569,5 +570,72 @@ func TestWriteReasoning(t *testing.T) {
 		if !strings.Contains(raw.String(), row) {
 			t.Errorf("no %s in\n%s", row, raw.String())
 		}
+	}
+}
+
+// A compacted session from another agent, pi's compaction probe in the
+// harness-test container (four prompts, one run as a private shell command,
+// a compaction keeping the last answer, a prompt after it), keeps its whole
+// history in the log, the private command's output with it, and a
+// context.apply_compaction after it gives the model the summary, the kept
+// answer and what followed.
+func TestWriteCompacted(t *testing.T) {
+	src, err := pi.Codec.Open("../pi/testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	in, err := src.Read(t.Context(), "01a0d2bd-7043-757c-80b2-3f24970d3f7c")
+	if err != nil {
+		t.Fatal(err)
+	}
+	in.Agent, in.ID = "elsewhere", ""
+	home := t.TempDir()
+	st, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := read(t, home, id)
+	const answer = "Hello from mock server."
+	want := []string{
+		"What is the project codename? Reply ONLY", answer,
+		"Ran `ls`\n```\nnotes.md\n\n```", "Ran `echo private`\n```\nprivate\n\n```",
+		"Second question.", answer,
+		"Third question.", answer,
+		"After compaction.", answer,
+	}
+	if got := texts(s.Linearize()); strings.Join(got, "|") != strings.Join(want, "|") {
+		t.Errorf("linearize = %q\nwant %q", got, want)
+	}
+	want = []string{"The conversation history before this poi", answer, "After compaction.", answer}
+	if got := texts(s.Context()); strings.Join(got, "|") != strings.Join(want, "|") {
+		t.Errorf("context = %q\nwant %q", got, want)
+	}
+}
+
+// A session from another agent carries that agent's id, which kimi, listing
+// only session_<uuid> directories (createSessionId in
+// sessionLifecycleService.ts), would never find; it is written under a new
+// one.
+func TestForeignSessionID(t *testing.T) {
+	home := t.TempDir()
+	st, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), &transcript.Session{ID: "01a0d2bd-7043-757c-80b2-3f24970d3f7c", Agent: "elsewhere", CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "hi"}}},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rest, ok := strings.CutPrefix(id, "session_"); !ok || !transcript.IsUUID(rest) {
+		t.Errorf("written as %q, want session_<uuid>", id)
+	}
+	if got := texts(read(t, home, id).Linearize()); strings.Join(got, "|") != "hi" {
+		t.Errorf("read back %q", got)
 	}
 }

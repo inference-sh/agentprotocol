@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/pi"
 	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
@@ -280,5 +281,58 @@ func TestThinkingBlocks(t *testing.T) {
 	want := []string{"u1 text first", "a1 reasoning signed thought", "a1 text one", "u2 text second", "a2 reasoning streamed thought", "a2 text two"}
 	if strings.Join(got, "\n") != strings.Join(want, "\n") {
 		t.Errorf("context\n  %q\nwant\n  %q", got, want)
+	}
+}
+
+// A compacted session from another agent, pi's compaction probe in the
+// harness-test container (four prompts, one run as a private shell command,
+// a compaction keeping the last answer, a prompt after it), is recorded the
+// way droid compacts in place: every message stays in the file, the private
+// one as user_only, and a compaction_state anchored before the kept answer
+// gives the model the summary, that answer and what followed.
+func TestWriteCompacted(t *testing.T) {
+	src, err := pi.Codec.Open("../pi/testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	in, err := src.Read(t.Context(), "01a0d2bd-7043-757c-80b2-3f24970d3f7c")
+	if err != nil {
+		t.Fatal(err)
+	}
+	in.Agent = "elsewhere"
+	st, err := Codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := st.Read(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	const answer = "assistant:Hello from mock server."
+	want := []string{
+		"user:What is the project codename? Reply ONLY", answer,
+		"user:Ran `ls`\n```\nnotes.md\n\n```", "user:Ran `echo private`\n```\nprivate\n\n```",
+		"user:Second question.", answer,
+		"user:Third question.", answer,
+		"user:After compaction.", answer,
+	}
+	if got := texts(s.Linearize()); strings.Join(got, "|") != strings.Join(want, "|") {
+		t.Errorf("linearize = %q\nwant %q", got, want)
+	}
+	ctx := s.Context()
+	if len(ctx) != 4 || !strings.HasPrefix(ctx[0].Text(), "A previous instance of Droid has summarized the conversation thus far as follows:\n\n<summary>\nThe conversation history before this point was compacted") {
+		t.Fatalf("context = %q, want the summary first", texts(ctx))
+	}
+	if got := texts(ctx[1:]); strings.Join(got, "|") != strings.Join([]string{answer, "user:After compaction.", answer}, "|") {
+		t.Errorf("context after the summary = %q, want the kept answer and the turn after", got)
+	}
+	for _, e := range s.Messages() {
+		if strings.HasPrefix(e.Text(), "Ran `echo private`") && e.Audience != transcript.AudienceUser {
+			t.Errorf("the private command's output is for audience %d, want the person only", e.Audience)
+		}
 	}
 }

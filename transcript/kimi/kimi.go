@@ -53,6 +53,8 @@ var files = transcript.JSONL{
 			return filepath.Join(sessionDir(home, s), "agents", "main", "wire.jsonl")
 		},
 		Peek: peek,
+		// The session directory, three levels above agents/main/wire.jsonl.
+		SessionRoot: func(path string) string { return filepath.Dir(filepath.Dir(filepath.Dir(path))) },
 	},
 	Header:      header,
 	IDs:         transcript.IDScheme{New: messageID, Valid: validMessageID},

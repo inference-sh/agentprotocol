@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -41,9 +42,11 @@ var Codec = func() transcript.JSONL {
 // not load; the sqlite module's Copilot codec wraps it and adds the index.
 var Writer = transcript.JSONL{
 	Layout: transcript.Layout{
-		Files:   files,
-		PathFor: pathFor,
-		Peek:    peek,
+		Files:       files,
+		PathFor:     pathFor,
+		Peek:        peek,
+		SessionRoot: filepath.Dir,
+		Holders:     holders,
 	},
 	Header:      header,
 	Decode:      decode,
@@ -188,6 +191,22 @@ type toolResult struct {
 
 func files(home, cwd string) ([]string, error) {
 	return transcript.Glob(filepath.Join(home, root, "*", "events.jsonl"))
+}
+
+// holders reads the in-use markers Copilot keeps in a session's directory
+// while a process has the session open: inuse.<pid>.hold, one per process.
+// Measured on Copilot CLI 1.0.88, which holds the file open for as long as
+// it serves the session.
+func holders(path string) []int {
+	marks, _ := filepath.Glob(filepath.Join(filepath.Dir(path), "inuse.*.hold"))
+	var pids []int
+	for _, m := range marks {
+		name := strings.TrimSuffix(strings.TrimPrefix(filepath.Base(m), "inuse."), ".hold")
+		if pid, err := strconv.Atoi(name); err == nil && pid > 0 {
+			pids = append(pids, pid)
+		}
+	}
+	return pids
 }
 
 func pathFor(home string, s *transcript.Session) string {

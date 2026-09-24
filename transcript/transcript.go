@@ -140,6 +140,63 @@ type Info struct {
 	Updated time.Time `json:"updated"`
 	// Path is where the store keeps it, when the store is files.
 	Path string `json:"path,omitempty"`
+	// Root is the file or directory that belongs to this session alone: a
+	// process holding it open is using this session. Empty for a store that
+	// keeps every session in one database, where an open handle says only
+	// that the agent is running.
+	Root string `json:"root,omitempty"`
+	// Holders are the processes the agent's own in-use markers name for this
+	// session (Copilot's inuse.<pid>.hold). A marker can outlive its
+	// process; Live checks each pid.
+	Holders []int `json:"holders,omitempty"`
+}
+
+// LiveState is whether a process is using a session right now.
+type LiveState string
+
+const (
+	// LiveUnknown: nothing available could tell.
+	LiveUnknown LiveState = "unknown"
+	// LiveIdle: no process is using the session.
+	LiveIdle LiveState = "idle"
+	// LiveActive: a process is, or may be, using the session.
+	LiveActive LiveState = "active"
+)
+
+// Evidence is what a Liveness answer rests on.
+type Evidence string
+
+const (
+	// EvidenceLockFile: the agent's own in-use marker for this session names
+	// a running process. Proof.
+	EvidenceLockFile Evidence = "lock-file"
+	// EvidenceOpenFile: a process holds the session's own file or directory
+	// open. Proof.
+	EvidenceOpenFile Evidence = "open-file"
+	// EvidenceNoProcess: no process of the agent is running. Proof of idle.
+	EvidenceNoProcess Evidence = "no-process"
+	// EvidenceProcessInCwd: a process of the agent runs in the session's
+	// directory. It may be serving another session there. Heuristic.
+	EvidenceProcessInCwd Evidence = "process-in-cwd"
+	// EvidenceNoProcessInCwd: the agent runs, but not in the session's
+	// directory. Heuristic: agents rarely serve a session from elsewhere.
+	EvidenceNoProcessInCwd Evidence = "no-process-in-cwd"
+	// EvidenceRecentWrite: the session was written within the recent window.
+	// Heuristic.
+	EvidenceRecentWrite Evidence = "recent-write"
+	// EvidenceNone: nothing to go on.
+	EvidenceNone Evidence = "none"
+)
+
+// Liveness is whether a session is in use, and why that is believed.
+type Liveness struct {
+	State    LiveState `json:"state"`
+	Evidence Evidence  `json:"evidence"`
+	// Heuristic is true when the answer is inferred rather than proven.
+	Heuristic bool `json:"heuristic"`
+	// PID is the process the evidence points at, when there is one.
+	PID    int    `json:"pid,omitempty"`
+	Detail string `json:"detail,omitempty"`
 }
 
 // ErrReadOnly is returned by Write on a store whose format is derived from
@@ -229,6 +286,18 @@ func Register(agent string, c Codec) {
 		registry = map[string]Codec{}
 	}
 	registry[agent] = c
+}
+
+// RegisteredAgents lists the agents with a codec set through Register.
+func RegisteredAgents() []string {
+	registryMu.Lock()
+	defer registryMu.Unlock()
+	out := make([]string, 0, len(registry))
+	for a := range registry {
+		out = append(out, a)
+	}
+	sort.Strings(out)
+	return out
 }
 
 // Registered returns a codec set through Register.

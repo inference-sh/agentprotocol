@@ -35,6 +35,8 @@ var files = transcript.JSONL{
 			return filepath.Join(home, root, transcript.EscapedCwd.Name(s.CWD), s.ID, "chat_history.jsonl")
 		},
 		Peek: peek,
+		// grok holds its session directory and events.jsonl open while live.
+		SessionRoot: filepath.Dir,
 	},
 	Decode: decode,
 	Encode: encode,

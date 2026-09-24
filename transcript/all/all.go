@@ -10,6 +10,9 @@
 package all
 
 import (
+	"context"
+	"sort"
+
 	"github.com/inference-sh/agentprotocol/transcript"
 	"github.com/inference-sh/agentprotocol/transcript/claude"
 	"github.com/inference-sh/agentprotocol/transcript/codex"
@@ -55,4 +58,71 @@ func Open(agent, home string) (transcript.Store, bool, error) {
 	}
 	st, err := c.Open(home)
 	return st, true, err
+}
+
+// Session is one session found by List: the store's Info and the agent it
+// belongs to.
+type Session struct {
+	Agent string
+	transcript.Info
+}
+
+// AgentError is a store List could not read. The other agents' sessions are
+// still returned.
+type AgentError struct {
+	Agent string
+	Err   error
+}
+
+func (e AgentError) Error() string { return e.Agent + ": " + e.Err.Error() }
+
+// Agents lists every agent with a codec: the pure-Go ones, and those the
+// sqlite module registers when it is imported.
+func Agents() []string {
+	seen := map[string]bool{}
+	var out []string
+	for a := range Codecs {
+		seen[a] = true
+		out = append(out, a)
+	}
+	for _, a := range transcript.RegisteredAgents() {
+		if !seen[a] {
+			out = append(out, a)
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
+// List lists the sessions every agent keeps under home for a working
+// directory (every directory when cwd is empty), newest first. An agent
+// with no store under home contributes nothing. A store that fails to list
+// is reported in the returned errors, and does not stop the others.
+func List(ctx context.Context, home, cwd string) ([]Session, []AgentError) {
+	var out []Session
+	var errs []AgentError
+	for _, agent := range Agents() {
+		if err := ctx.Err(); err != nil {
+			errs = append(errs, AgentError{agent, err})
+			continue
+		}
+		st, ok, err := Open(agent, home)
+		if !ok {
+			continue
+		}
+		if err != nil {
+			errs = append(errs, AgentError{agent, err})
+			continue
+		}
+		infos, err := st.List(ctx, cwd)
+		if err != nil {
+			errs = append(errs, AgentError{agent, err})
+			continue
+		}
+		for _, in := range infos {
+			out = append(out, Session{Agent: agent, Info: in})
+		}
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Updated.After(out[j].Updated) })
+	return out, errs
 }

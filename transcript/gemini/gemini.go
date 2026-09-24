@@ -99,7 +99,7 @@ func (st *store) List(ctx context.Context, cwd string) ([]transcript.Info, error
 		if cwd != "" && c.meta.ProjectHash != ProjectHash(cwd) {
 			continue
 		}
-		in := transcript.Info{ID: c.meta.SessionID, CWD: root, Path: p}
+		in := transcript.Info{ID: c.meta.SessionID, CWD: root, Path: p, Root: p}
 		if t, err := time.Parse(time.RFC3339Nano, c.meta.LastUpdated); err == nil {
 			in.Updated = t
 		} else if fi, err := os.Stat(p); err == nil {

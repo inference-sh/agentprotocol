@@ -61,6 +61,37 @@ runs the shared conformance check in `transcripttest`: read it, write it,
 read it again, require the file is unchanged and the events hold a turn. A
 codec cannot exist without a sample.
 
+## Listing and liveness
+
+`all.List(ctx, home, cwd)` lists every agent's sessions under a home in one
+call, newest first, each with its agent. An agent with no store contributes
+nothing; a store that fails is reported beside the results and does not stop
+the others.
+
+`all.Live(home, session)`, or `all.NewProbe(home).Live(session)` to check
+many sessions from one read of the process table, says whether a process is
+using a session now, and what the answer rests on:
+
+| Evidence | Meaning | Proof? |
+|---|---|---|
+| `lock-file` | the agent's in-use marker for the session names a running process (Copilot's `inuse.<pid>.hold`) | yes |
+| `open-file` | an agent process holds the session's own file or directory open (codex, grok, qwen, omp, cursor's blob store) | yes |
+| `no-process` | no process of the agent is running | yes, idle |
+| `process-in-cwd` | an agent process runs in the session's directory, and may be serving another session there | heuristic |
+| `recent-write` | the session was written in the last two minutes | heuristic |
+| `no-process-in-cwd` | the agent runs, but elsewhere | heuristic, idle |
+
+Which of these each agent produces was measured by recording its processes
+and open files while a harness-test session was live. Agents that keep every
+session in one database (goose, opencode, kilo, hermes) or open and close
+their transcript per write (claude, gemini, droid, kimi, pi) give no
+per-session proof; for them the answer is the labelled directory heuristic.
+It reads only metadata: process arguments, working directories, HOME, open
+file paths, and in-use markers. The process table is read from /proc, so
+off Linux only in-use markers and recent writes apply, and anything else is
+`unknown`. Treat a heuristic or unknown answer as a reason to warn before
+continuing a session, not as proof.
+
 ## Writing back
 
 A write never disturbs what it read. Entries read from a store carry their

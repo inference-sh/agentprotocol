@@ -102,6 +102,13 @@ type Layout struct {
 	// far as the header says. Required when the id is not in the file name,
 	// and used to filter by cwd when the directory does not encode it.
 	Peek func(path string) (Info, error)
+	// SessionRoot is the file or directory that belongs to one session
+	// alone, given its session file; see Info.Root. Optional; the default is
+	// the session file itself.
+	SessionRoot func(path string) string
+	// Holders lists the pids the agent's in-use markers name for the session
+	// with this file; see Info.Holders. Optional.
+	Holders func(path string) []int
 }
 
 // ProjectDir is how an agent derives a per-project directory name from the
@@ -197,7 +204,13 @@ func (st *jsonlStore) List(ctx context.Context, cwd string) ([]Info, error) {
 		if err != nil || fi.IsDir() {
 			continue
 		}
-		in := Info{ID: st.idOf(p), CWD: cwd, Updated: fi.ModTime(), Path: p}
+		in := Info{ID: st.idOf(p), CWD: cwd, Updated: fi.ModTime(), Path: p, Root: p}
+		if st.cfg.Layout.SessionRoot != nil {
+			in.Root = st.cfg.Layout.SessionRoot(p)
+		}
+		if st.cfg.Layout.Holders != nil {
+			in.Holders = st.cfg.Layout.Holders(p)
+		}
 		if st.cfg.Layout.Peek != nil {
 			peeked, err := st.cfg.Layout.Peek(p)
 			if err != nil {

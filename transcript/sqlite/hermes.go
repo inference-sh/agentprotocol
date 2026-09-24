@@ -41,6 +41,20 @@ type hermesToolCall struct {
 	} `json:"function"`
 }
 
+// hermesSession is one sessions row as List needs it: enough to tell which
+// sessions hermes offers to resume and which one a compression chain resumes
+// at.
+type hermesSession struct {
+	id, parent, endReason, source, cwd, title, updated string
+	started, ended                                     sql.NullFloat64
+	branched, delegated, reset                         bool
+}
+
+// List returns the sessions hermes offers to resume. hermes hides subagent
+// runs and the continuation a legacy compression rotated into (a child of a
+// session that ended with end_reason 'compression'), and shows each
+// compression chain once, under its live tip's id and title
+// (hermes_state_sessions.py list_sessions_rich, _project_compression_tips).
 func (st *hermesStore) List(ctx context.Context, cwd string) ([]transcript.Info, error) {
 	if _, err := os.Stat(st.path); err != nil {
 		if os.IsNotExist(err) {
@@ -60,29 +74,154 @@ func (st *hermesStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 	if err != nil {
 		return nil, fmt.Errorf("hermes: list: %w", err)
 	}
-	q := "SELECT id, " + cwdExpr + ", COALESCE(title, ''), COALESCE(ended_at, started_at, '') FROM sessions"
-	args := []any{}
-	if cwd != "" {
-		q += " WHERE " + cwdExpr + " = ?"
-		args = append(args, cwd)
+	cols, err := columns(ctx, db, "sessions")
+	if err != nil {
+		return nil, fmt.Errorf("hermes: list: %w", err)
 	}
-	rows, err := db.QueryContext(ctx, q, args...)
+	// The oldest stores have no lineage columns; every session there is a
+	// root.
+	lineage := "'', '', 0, 0, 0"
+	if cols["parent_session_id"] && cols["end_reason"] {
+		lineage = "COALESCE(parent_session_id, ''), COALESCE(end_reason, '')"
+		for _, marker := range []string{"_branched_from", "_delegate_from", "_reset_from"} {
+			if cols["model_config"] {
+				lineage += ", json_extract(model_config, '$." + marker + "') IS NOT NULL"
+			} else {
+				lineage += ", 0"
+			}
+		}
+	}
+	rows, err := db.QueryContext(ctx, "SELECT id, "+cwdExpr+", COALESCE(title, ''), COALESCE(ended_at, started_at, ''), COALESCE(source, ''), started_at, ended_at, "+lineage+" FROM sessions")
 	if err != nil {
 		return nil, fmt.Errorf("hermes: list: %w", err)
 	}
 	defer rows.Close()
-	var out []transcript.Info
+	var all []*hermesSession
+	byID := map[string]*hermesSession{}
 	for rows.Next() {
-		var id, dir, title, updated string
-		if err := rows.Scan(&id, &dir, &title, &updated); err != nil {
+		h := &hermesSession{}
+		if err := rows.Scan(&h.id, &h.cwd, &h.title, &h.updated, &h.source, &h.started, &h.ended, &h.parent, &h.endReason, &h.branched, &h.delegated, &h.reset); err != nil {
 			return nil, err
 		}
-		out = append(out, transcript.Info{ID: id, CWD: dir, Title: title, Updated: parseTime(updated), Path: st.path})
+		all = append(all, h)
+		byID[h.id] = h
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	children := map[string][]*hermesSession{}
+	for _, h := range all {
+		if h.parent != "" {
+			children[h.parent] = append(children[h.parent], h)
+		}
+	}
+	var out []transcript.Info
+	for _, h := range all {
+		if !h.listable(byID) {
+			continue
+		}
+		info := transcript.Info{ID: h.id, CWD: h.cwd, Title: h.title, Updated: parseTime(h.updated), Path: st.path}
+		if tip := h.compressionTip(children); tip != h {
+			info.ID, info.CWD, info.Updated = tip.id, tip.cwd, parseTime(tip.updated)
+			if tip.title != "" {
+				info.Title = tip.title
+			}
+		}
+		if cwd != "" && info.CWD != cwd {
+			continue
+		}
+		out = append(out, info)
 	}
 	transcript.SortNewest(out)
-	return out, rows.Err()
+	return out, nil
 }
 
+// listable reports whether hermes's session picker shows a session: a root,
+// or a branch or reset child, and never a subagent run
+// (hermes_state_common.py _LISTABLE_CHILD_SQL).
+func (h *hermesSession) listable(byID map[string]*hermesSession) bool {
+	if h.delegated {
+		return false
+	}
+	if h.parent == "" || h.branched || h.reset {
+		return true
+	}
+	p, ok := byID[h.parent]
+	return ok && p.endReason == "branched" && h.started.Float64 >= p.ended.Float64
+}
+
+// compressionTip follows a chain of legacy compression rotations to the
+// session hermes resumes, preferring a child that rotated again, then one
+// still open, then the most recently started (hermes_state_compression.py
+// _CHAIN_STEP_SQL, less its last-activity tiebreak).
+func (h *hermesSession) compressionTip(children map[string][]*hermesSession) *hermesSession {
+	seen := map[string]bool{h.id: true}
+	cur := h
+	for cur.endReason == "compression" {
+		var next *hermesSession
+		rank := func(c *hermesSession) int {
+			switch {
+			case c.endReason == "compression":
+				return 0
+			case !c.ended.Valid:
+				return 1
+			}
+			return 2
+		}
+		for _, c := range children[cur.id] {
+			if c.branched || c.delegated || c.reset || c.source == "tool" || seen[c.id] {
+				continue
+			}
+			if next == nil || rank(c) < rank(next) ||
+				rank(c) == rank(next) && (c.started.Float64 > next.started.Float64 ||
+					c.started.Float64 == next.started.Float64 && c.id > next.id) {
+				next = c
+			}
+		}
+		if next == nil {
+			break
+		}
+		seen[next.id] = true
+		cur = next
+	}
+	return cur
+}
+
+// hermesRow is one messages row with the columns that decide who it is for.
+// Stores from before a column existed read it as its default.
+type hermesRow struct {
+	id                           int64
+	role, content, toolID        string
+	toolName, reasoning          string
+	toolCalls                    sql.NullString
+	ts                           sql.NullFloat64
+	active, compacted, summary   bool
+	displayKind, displayMetadata string
+}
+
+// hermesMessageColumns selects a messages row, naming a default for each
+// column an older store does not have.
+func hermesMessageColumns(cols map[string]bool) string {
+	col := func(name, expr, missing string) string {
+		if cols[name] {
+			return expr
+		}
+		return missing
+	}
+	return strings.Join([]string{
+		"id", "role", "COALESCE(content, '')", "COALESCE(tool_call_id, '')", "COALESCE(tool_name, '')",
+		"tool_calls", "COALESCE(reasoning, '')", "timestamp",
+		col("active", "COALESCE(active, 1) != 0", "1"),
+		col("compacted", "COALESCE(compacted, 0) != 0", "0"),
+		col("_compressed_summary", "COALESCE(_compressed_summary, 0) != 0", "0"),
+		col("display_kind", "COALESCE(display_kind, '')", "''"),
+		col("display_metadata", "COALESCE(display_metadata, '')", "''"),
+	}, ", ")
+}
+
+// Read loads a session the way hermes does: rows in id order, since
+// timestamps are not monotonic. Every row is kept, including the ones hermes
+// no longer gives the model; hermesAudience decides who each one is for.
 func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
 	if _, err := os.Stat(st.path); errors.Is(err, os.ErrNotExist) {
 		return nil, transcript.ErrNotFound
@@ -115,48 +254,275 @@ func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session
 	}
 	s.Vendor = &hermesVendor{Source: source.String}
 
-	rows, err := db.QueryContext(ctx, "SELECT id, role, COALESCE(content, ''), COALESCE(tool_call_id, ''), COALESCE(tool_name, ''), tool_calls, COALESCE(reasoning, ''), timestamp FROM messages WHERE session_id = ? ORDER BY id", id)
+	cols, err := columns(ctx, db, "messages")
+	if err != nil {
+		return nil, fmt.Errorf("hermes: read messages: %w", err)
+	}
+	rows, err := db.QueryContext(ctx, "SELECT "+hermesMessageColumns(cols)+" FROM messages WHERE session_id = ? ORDER BY id", id)
 	if err != nil {
 		return nil, fmt.Errorf("hermes: read messages: %w", err)
 	}
 	defer rows.Close()
+	var hrows []hermesRow
 	for rows.Next() {
-		var rowID int64
-		var role, content, toolID, toolName, reasoning string
-		var toolCalls sql.NullString
-		var ts sql.NullFloat64
-		if err := rows.Scan(&rowID, &role, &content, &toolID, &toolName, &toolCalls, &reasoning, &ts); err != nil {
+		var r hermesRow
+		if err := rows.Scan(&r.id, &r.role, &r.content, &r.toolID, &r.toolName, &r.toolCalls, &r.reasoning, &r.ts,
+			&r.active, &r.compacted, &r.summary, &r.displayKind, &r.displayMetadata); err != nil {
 			return nil, err
 		}
-		e, err := hermesEntry(role, content, toolID, toolName, toolCalls.String, reasoning)
+		e, err := hermesEntry(r.role, r.content, r.toolID, r.toolName, r.toolCalls.String, r.reasoning)
 		if err != nil {
 			return nil, err
 		}
 		// Raw marks the entry as read; a rewrite keeps its row as is.
-		e.ID = "hermes-row:" + strconv.FormatInt(rowID, 10)
-		e.Raw = json.RawMessage(strconv.Quote(content))
-		if ts.Valid {
-			e.Time = time.Unix(int64(ts.Float64), 0).UTC()
+		e.ID = "hermes-row:" + strconv.FormatInt(r.id, 10)
+		e.Raw = json.RawMessage(strconv.Quote(r.content))
+		if r.ts.Valid {
+			e.Time = time.Unix(int64(r.ts.Float64), 0).UTC()
 		}
 		s.Entries = append(s.Entries, e)
+		hrows = append(hrows, r)
 	}
-	return s, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	hermesAudience(s, hrows)
+	return s, nil
 }
 
+// hermesAudience sets who each row is for, from the flags hermes keeps on it.
+//
+// The model is given the active rows (hermes_state_messages.py get_messages,
+// "AND active = 1"). A compaction archives the rows it summarized (active 0,
+// compacted 1), and a rewind, an undo or a compaction's copy of its tail
+// supersedes rows with active 0, compacted 0. The person is shown the display
+// history (_display_rows_from_conn, _dedupe_display_generations): active and
+// compaction-archived rows, not model-only ones, each logical message once at
+// the place its first copy holds, and then the TUI's projection
+// (tui_gateway/session_history.py _history_to_messages): a compaction summary
+// shows only the prior-tail content merged into it, a display_kind "hidden"
+// row and a "[System:" notice not at all.
+//
+// A summary hermes still gives the model carries a Compaction whose Summary
+// is what the model has at that point, the summary last, so the summary
+// travels with the conversation while the row itself shows what the person
+// sees.
+func hermesAudience(s *transcript.Session, rows []hermesRow) {
+	firstOfKey := map[string]bool{}
+	// copies are live rows the person sees through an earlier copy of the
+	// same message: the head a compaction keeps is re-inserted before its
+	// summary while the archived original holds the display place.
+	copies := map[string]bool{}
+	for i, r := range rows {
+		e := &s.Entries[i]
+		if e.Role == transcript.RoleOpaque {
+			continue
+		}
+		isSummary := r.summary || hermesSummaryKind(r.content) != ""
+		shown := false
+		if (r.active || r.compacted) && !hermesModelOnly(r.displayMetadata) {
+			key := strings.Join([]string{r.role, r.content, strconv.FormatFloat(r.ts.Float64, 'g', -1, 64), r.toolID, r.toolCalls.String, r.toolName}, "\x00")
+			if !firstOfKey[key] {
+				firstOfKey[key] = true
+				shown = true
+			} else if r.active {
+				copies[e.ID] = true
+			}
+		}
+		full := *e
+		switch {
+		case isSummary:
+			prior := hermesSummaryPrior(r.content)
+			shown = shown && prior != ""
+			if prior != "" {
+				e.Content = []transcript.Block{{Kind: transcript.BlockText, Text: prior}}
+			}
+		case r.displayKind == "hidden":
+			shown = false
+		case e.Role == transcript.RoleUser && strings.HasPrefix(strings.TrimLeft(e.Text(), " \t\r\n"), "[System:"):
+			shown = false
+		}
+		model := r.active
+		if isSummary && r.active {
+			full.Audience, full.Compaction, full.Raw = transcript.AudienceAll, nil, nil
+			before := (&transcript.Session{Entries: s.Entries[:i]}).Context()
+			for j := range before {
+				if copies[before[j].ID] {
+					before[j].Audience = transcript.AudienceAll
+				}
+			}
+			e.Compaction = &transcript.Compaction{Summary: append(before, full)}
+			model = !shown
+		}
+		e.Audience = audienceOf(shown, model)
+	}
+}
+
+// audienceOf maps whether an entry is shown and whether the model is given it
+// to an Audience.
+func audienceOf(user, model bool) transcript.Audience {
+	switch {
+	case user && model:
+		return transcript.AudienceAll
+	case user:
+		return transcript.AudienceUser
+	case model:
+		return transcript.AudienceModel
+	}
+	return transcript.AudienceNone
+}
+
+// hermesModelOnly reports a row the model reads but no display shows
+// (agent/context_compressor.py MODEL_ONLY_DISPLAY_METADATA_KEY).
+func hermesModelOnly(meta string) bool {
+	if meta == "" {
+		return false
+	}
+	var m map[string]any
+	if json.Unmarshal([]byte(meta), &m) != nil {
+		// Rows from before the write guard hold the object encoded twice.
+		var inner string
+		if json.Unmarshal([]byte(meta), &inner) != nil || json.Unmarshal([]byte(inner), &m) != nil {
+			return false
+		}
+	}
+	switch v := m["model_only"].(type) {
+	case bool:
+		return v
+	case float64:
+		return v != 0
+	}
+	return false
+}
+
+// The markers hermes frames a compaction summary with
+// (agent/context_compressor.py). Every summary prefix hermes has shipped
+// starts with one of the first two.
+const (
+	hermesSummaryPrefix       = "[CONTEXT COMPACTION — REFERENCE ONLY] Earlier turns were compacted"
+	hermesLegacySummaryPrefix = "[CONTEXT SUMMARY]:"
+	hermesSummaryEnd          = "--- END OF CONTEXT SUMMARY — respond to the message below, not the summary above ---"
+	hermesPriorHeader         = "[PRIOR CONTEXT — for reference only; not a new message]"
+	hermesPriorDelimiter      = "[END OF PRIOR CONTEXT — COMPACTION SUMMARY BELOW]"
+)
+
+// hermesSummaryKind classifies content as a standalone summary, a summary
+// merged into a carried message, or neither (classify_summary_content). The
+// flag column is recent; hermes itself falls back to the content.
+func hermesSummaryKind(content string) string {
+	starts := func(s string) bool {
+		return strings.HasPrefix(s, hermesSummaryPrefix) || strings.HasPrefix(s, hermesLegacySummaryPrefix)
+	}
+	text := strings.TrimLeft(hermesText(content), " \t\r\n")
+	if _, after, ok := strings.Cut(text, hermesPriorDelimiter); ok {
+		if starts(strings.TrimLeft(after, " \t\r\n")) {
+			return "merged"
+		}
+		return ""
+	}
+	if starts(text) {
+		return "standalone"
+	}
+	return ""
+}
+
+// hermesSummaryPrior is the part of a summary row the person is shown: the
+// carried message merged in before the summary, or whatever follows a legacy
+// end marker. A standalone summary shows nothing
+// (_strip_context_summary_handoff_message).
+func hermesSummaryPrior(content string) string {
+	text := hermesText(content)
+	if before, _, ok := strings.Cut(text, hermesPriorDelimiter); ok {
+		prior := strings.TrimSpace(before)
+		if strings.HasPrefix(prior, hermesPriorHeader) {
+			prior = strings.TrimLeft(prior[len(hermesPriorHeader):], " \t\r\n")
+		}
+		return prior
+	}
+	if _, after, ok := strings.Cut(text, hermesSummaryEnd); ok {
+		return strings.TrimLeft(after, " \t\r\n")
+	}
+	return ""
+}
+
+// hermesJSONPrefix marks content hermes stored as a JSON list of parts
+// rather than a string (hermes_state_messages.py _encode_content).
+const hermesJSONPrefix = "\x00json:"
+
+// hermesText is a row's content as text: the string itself, or the text
+// parts of a JSON list joined.
+func hermesText(content string) string {
+	var b strings.Builder
+	for _, t := range hermesParts(content) {
+		b.WriteString(t)
+	}
+	return b.String()
+}
+
+// hermesParts splits content into its text parts. A list keeps one part per
+// text item and drops images and audio, which have no block here.
+func hermesParts(content string) []string {
+	raw, ok := strings.CutPrefix(content, hermesJSONPrefix)
+	if !ok {
+		if content == "" {
+			return nil
+		}
+		return []string{content}
+	}
+	var parts []json.RawMessage
+	if json.Unmarshal([]byte(raw), &parts) != nil {
+		var single json.RawMessage
+		if json.Unmarshal([]byte(raw), &single) != nil {
+			return []string{content}
+		}
+		parts = []json.RawMessage{single}
+	}
+	var out []string
+	for _, p := range parts {
+		var s string
+		if json.Unmarshal(p, &s) == nil {
+			out = append(out, s)
+			continue
+		}
+		var item struct {
+			Type    string  `json:"type"`
+			Text    *string `json:"text"`
+			Content *string `json:"content"`
+		}
+		if json.Unmarshal(p, &item) != nil {
+			continue
+		}
+		switch {
+		case item.Text != nil:
+			out = append(out, *item.Text)
+		case item.Type == "text" && item.Content != nil:
+			out = append(out, *item.Content)
+		}
+	}
+	return out
+}
+
+// hermesEntry decodes a row. Roles other than user, assistant and tool
+// (system, session_meta) are hermes's bookkeeping, stripped before the model
+// sees history, and are kept as opaque rows.
 func hermesEntry(role, content, toolID, toolName, toolCalls, reasoning string) (transcript.Entry, error) {
+	text := func() []transcript.Block {
+		var out []transcript.Block
+		for _, t := range hermesParts(content) {
+			out = append(out, transcript.Block{Kind: transcript.BlockText, Text: t})
+		}
+		return out
+	}
 	e := transcript.Entry{Role: transcript.Role(role)}
 	switch role {
 	case "tool":
 		e.Role = transcript.RoleTool
-		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: toolID, Name: toolName, Text: content, Status: transcript.StatusOK}}
-		return e, nil
+		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: toolID, Name: toolName, Text: hermesText(content), Status: transcript.StatusOK}}
 	case "assistant":
 		if reasoning != "" {
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: reasoning})
 		}
-		if content != "" {
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: content})
-		}
+		e.Content = append(e.Content, text()...)
 		if toolCalls != "" {
 			var calls []hermesToolCall
 			if err := json.Unmarshal([]byte(toolCalls), &calls); err != nil {
@@ -166,11 +532,10 @@ func hermesEntry(role, content, toolID, toolName, toolCalls, reasoning string) (
 				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: c.ID, Name: c.Function.Name, Input: arguments(c.Function.Arguments)})
 			}
 		}
+	case "user":
+		e.Content = text()
 	default:
-		e.Role = transcript.RoleUser
-		if content != "" {
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: content})
-		}
+		e.Role = transcript.RoleOpaque
 	}
 	return e, nil
 }
@@ -310,8 +675,10 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 		}
 	}
 
+	// Every row read is kept, bookkeeping rows and rows hermes no longer
+	// gives the model included.
 	keep := map[string]bool{}
-	for _, e := range s.Messages() {
+	for _, e := range s.Entries {
 		if e.Raw != nil {
 			keep[strings.TrimPrefix(e.ID, "hermes-row:")] = true
 		}

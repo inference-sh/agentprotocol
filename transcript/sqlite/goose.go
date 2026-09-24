@@ -34,11 +34,37 @@ func (gooseCodec) Open(home string) (transcript.Store, error) {
 type gooseStore struct{ path string }
 
 type gooseContent struct {
-	Type       string          `json:"type"`
-	Text       string          `json:"text,omitempty"`
-	ID         string          `json:"id,omitempty"`
-	ToolCall   *gooseToolCall  `json:"toolCall,omitempty"`
-	ToolResult *gooseToolReslt `json:"toolResult,omitempty"`
+	Type        string            `json:"type"`
+	Text        string            `json:"text,omitempty"`
+	ID          string            `json:"id,omitempty"`
+	ToolCall    *gooseToolCall    `json:"toolCall,omitempty"`
+	ToolResult  *gooseToolReslt   `json:"toolResult,omitempty"`
+	Annotations *gooseAnnotations `json:"annotations,omitempty"`
+	// Thinking is a thinking block's text; Msg a system notification's;
+	// Message an error's.
+	Thinking string `json:"thinking,omitempty"`
+	Msg      string `json:"msg,omitempty"`
+	Message  string `json:"message,omitempty"`
+}
+
+// gooseAnnotations are the MCP annotations goose keeps on text, images and
+// tool output. Audience limits who a block is for: "user", "assistant", or
+// both when absent.
+type gooseAnnotations struct {
+	Audience []string `json:"audience,omitempty"`
+}
+
+// includes reports whether a block annotated so is for the given audience.
+func (a *gooseAnnotations) includes(role string) bool {
+	if a == nil || a.Audience == nil {
+		return true
+	}
+	for _, r := range a.Audience {
+		if r == role {
+			return true
+		}
+	}
+	return false
 }
 
 type gooseToolCall struct {
@@ -49,11 +75,15 @@ type gooseToolCall struct {
 	} `json:"value"`
 }
 
+// gooseToolReslt is a tool call's outcome: status "success" with the MCP
+// result as value, or "error" with the failure as error.
 type gooseToolReslt struct {
 	Status string `json:"status"`
 	Value  struct {
 		Content []gooseContent `json:"content"`
+		IsError bool           `json:"isError,omitempty"`
 	} `json:"value"`
+	Error string `json:"error,omitempty"`
 }
 
 func (st *gooseStore) List(ctx context.Context, cwd string) ([]transcript.Info, error) {
@@ -92,6 +122,8 @@ func (st *gooseStore) List(ctx context.Context, cwd string) ([]transcript.Info, 
 	return out, rows.Err()
 }
 
+// Read loads a session in the order goose does, by created_timestamp and
+// then row id (session_manager.rs get_conversation).
 func (st *gooseStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
 	if _, err := os.Stat(st.path); errors.Is(err, os.ErrNotExist) {
 		return nil, transcript.ErrNotFound
@@ -115,20 +147,28 @@ func (st *gooseStore) Read(ctx context.Context, id string) (*transcript.Session,
 	}
 	s.Created, s.Updated = parseTime(created), parseTime(updated)
 
-	rows, err := db.QueryContext(ctx, "SELECT id, message_id, role, content_json, created_timestamp FROM messages WHERE session_id = ? ORDER BY id", id)
+	cols, err := columns(ctx, db, "messages")
+	if err != nil {
+		return nil, fmt.Errorf("goose: read messages: %w", err)
+	}
+	metadata := "NULL"
+	if cols["metadata_json"] {
+		metadata = "metadata_json"
+	}
+	rows, err := db.QueryContext(ctx, "SELECT id, role, content_json, created_timestamp, "+metadata+" FROM messages WHERE session_id = ? ORDER BY created_timestamp, id", id)
 	if err != nil {
 		return nil, fmt.Errorf("goose: read messages: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var rowID int64
-		var msgID sql.NullString
 		var role, contentJSON string
 		var ts int64
-		if err := rows.Scan(&rowID, &msgID, &role, &contentJSON, &ts); err != nil {
+		var meta sql.NullString
+		if err := rows.Scan(&rowID, &role, &contentJSON, &ts, &meta); err != nil {
 			return nil, err
 		}
-		e, err := gooseEntry(role, contentJSON)
+		e, err := gooseEntry(role, contentJSON, gooseVisibility(meta.String))
 		if err != nil {
 			return nil, err
 		}
@@ -141,43 +181,162 @@ func (st *gooseStore) Read(ctx context.Context, id string) (*transcript.Session,
 		}
 		s.Entries = append(s.Entries, e)
 	}
-	return s, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	gooseCompactions(s)
+	return s, nil
 }
 
-func gooseEntry(role, contentJSON string) (transcript.Entry, error) {
+// gooseMeta is the part of a row's metadata_json that says who it is for.
+type gooseMeta struct {
+	UserVisible  *bool `json:"userVisible"`
+	AgentVisible *bool `json:"agentVisible"`
+}
+
+// gooseVisibility reads a row's metadata. goose falls back to visible to
+// both when the metadata is missing or does not parse, and both flags are
+// required fields, so a row missing either gets that fallback too.
+func gooseVisibility(meta string) gooseMeta {
+	yes := true
+	both := gooseMeta{UserVisible: &yes, AgentVisible: &yes}
+	var m gooseMeta
+	if meta == "" || json.Unmarshal([]byte(meta), &m) != nil || m.UserVisible == nil || m.AgentVisible == nil {
+		return both
+	}
+	return m
+}
+
+// gooseEntry decodes a row. goose keeps a row's visibility in its metadata
+// (userVisible, agentVisible), and a block's in its MCP audience annotation;
+// the provider formats then drop what the model is never sent (system
+// notifications, errors, confirmation requests). The
+// entry's Content is what the model was given when it was given the row,
+// else what the person was shown. Images and documents have no block here.
+func gooseEntry(role, contentJSON string, meta gooseMeta) (transcript.Entry, error) {
 	var content []gooseContent
 	if err := json.Unmarshal([]byte(contentJSON), &content); err != nil {
 		return transcript.Entry{}, fmt.Errorf("goose: content: %w", err)
 	}
 	e := transcript.Entry{Role: transcript.Role(role)}
+	if role != "user" && role != "assistant" {
+		// goose skips any other role on load.
+		e.Role = transcript.RoleOpaque
+		return e, nil
+	}
+	var model, user []transcript.Block
+	var toModel, toUser bool
 	toolResults := 0
 	for _, c := range content {
 		switch c.Type {
 		case "text":
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: c.Text})
+			b := transcript.Block{Kind: transcript.BlockText, Text: c.Text}
+			if c.Annotations.includes("assistant") {
+				model, toModel = append(model, b), true
+			}
+			if c.Annotations.includes("user") {
+				user, toUser = append(user, b), true
+			}
+		case "image", "document":
+			toModel = toModel || c.Annotations.includes("assistant")
+			toUser = toUser || c.Annotations.includes("user")
+		case "thinking":
+			b := transcript.Block{Kind: transcript.BlockReasoning, Text: c.Thinking}
+			model, user, toModel, toUser = append(model, b), append(user, b), true, true
+		case "redactedThinking":
+			toModel = true
+		case "systemNotification":
+			user, toUser = append(user, transcript.Block{Kind: transcript.BlockText, Text: c.Msg}), true
+		case "error":
+			user, toUser = append(user, transcript.Block{Kind: transcript.BlockText, Text: c.Message}), true
+		case "toolConfirmationRequest", "actionRequired":
+			toUser = true
 		case "toolRequest":
 			if c.ToolCall != nil {
-				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: c.ID, Name: c.ToolCall.Value.Name, Input: c.ToolCall.Value.Arguments})
+				b := transcript.Block{Kind: transcript.BlockToolUse, ToolID: c.ID, Name: c.ToolCall.Value.Name, Input: c.ToolCall.Value.Arguments}
+				model, user, toModel, toUser = append(model, b), append(user, b), true, true
 			}
 		case "toolResponse":
 			toolResults++
-			var text strings.Builder
-			status := transcript.StatusOK
-			if c.ToolResult != nil {
-				if c.ToolResult.Status != "success" {
-					status = transcript.StatusError
-				}
-				for _, rc := range c.ToolResult.Value.Content {
-					text.WriteString(rc.Text)
-				}
-			}
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolResult, ToolID: c.ID, Text: text.String(), Status: status})
+			m, u := gooseToolResult(c)
+			model, user, toModel, toUser = append(model, m), append(user, u), true, true
 		}
 	}
 	if e.Role == transcript.RoleUser && toolResults > 0 && toolResults == len(content) {
 		e.Role = transcript.RoleTool
 	}
+	toModel = toModel && *meta.AgentVisible
+	toUser = toUser && *meta.UserVisible
+	e.Content = user
+	if toModel {
+		e.Content = model
+	}
+	e.Audience = audienceOf(toUser, toModel)
 	return e, nil
+}
+
+// gooseToolResult is a tool result as the model and as the person get it:
+// each keeps the output items annotated for it. A call that failed, or whose
+// result says isError, is an error.
+func gooseToolResult(c gooseContent) (model, user transcript.Block) {
+	var m, u strings.Builder
+	status := transcript.StatusOK
+	if r := c.ToolResult; r != nil {
+		switch {
+		case r.Status != "success":
+			status = transcript.StatusError
+			m.WriteString(r.Error)
+			u.WriteString(r.Error)
+		case r.Value.IsError:
+			status = transcript.StatusError
+		}
+		for _, rc := range r.Value.Content {
+			if rc.Annotations.includes("assistant") {
+				m.WriteString(rc.Text)
+			}
+			if rc.Annotations.includes("user") {
+				u.WriteString(rc.Text)
+			}
+		}
+	}
+	model = transcript.Block{Kind: transcript.BlockToolResult, ToolID: c.ID, Text: m.String(), Status: status}
+	user = model
+	user.Text = u.String()
+	return model, user
+}
+
+// The texts goose's compaction appends after its summary, telling the model
+// the message before is a summary (context_mgmt/mod.rs).
+var gooseContinuations = []string{
+	"Your context was compacted. The previous message contains a summary of the conversation so far.",
+	"Your context was compacted at the user's request. The previous message contains a summary of the conversation so far.",
+}
+
+// gooseCompactions finds the summaries goose's compaction wrote. A
+// compaction keeps every earlier row for the person only, then adds the
+// summary and a continuation message for the model only
+// (context_mgmt/mod.rs compact_messages). The summary is the conversation
+// the model carries on from, so its row gets a Compaction whose Summary is
+// what the model has at that point, the summary last and meant for everyone;
+// the continuation stays the agent's own instruction.
+func gooseCompactions(s *transcript.Session) {
+	for i := 1; i < len(s.Entries); i++ {
+		c, sum := s.Entries[i], &s.Entries[i-1]
+		if c.Role != transcript.RoleAssistant || c.Audience != transcript.AudienceModel || sum.Audience != transcript.AudienceModel || sum.Compaction != nil {
+			continue
+		}
+		continuation := false
+		for _, prefix := range gooseContinuations {
+			continuation = continuation || strings.HasPrefix(c.Text(), prefix)
+		}
+		if !continuation {
+			continue
+		}
+		full := *sum
+		full.Audience, full.Raw = transcript.AudienceAll, nil
+		before := (&transcript.Session{Entries: s.Entries[:i-1]}).Context()
+		sum.Compaction = &transcript.Compaction{Summary: append(before, full)}
+	}
 }
 
 // Write persists a session without disturbing anything it read. Rows of
@@ -241,8 +400,9 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		}
 	}
 
+	// Every row read is kept, rows goose no longer shows or sends included.
 	keep := map[int64]bool{}
-	for _, e := range s.Messages() {
+	for _, e := range s.Entries {
 		if e.Raw != nil {
 			if id, ok := gooseRowID(e.ID); ok {
 				keep[id] = true
@@ -271,6 +431,13 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		}
 	}
 
+	// goose reads messages back by created_timestamp, so a new row never
+	// takes a time before the latest one stored, as goose's own append does
+	// (session_manager.rs add_message).
+	var latest sql.NullInt64
+	if err := tx.QueryRowContext(ctx, "SELECT MAX(created_timestamp) FROM messages WHERE session_id = ?", s.ID).Scan(&latest); err != nil {
+		return "", err
+	}
 	added := false
 	for _, e := range s.Messages() {
 		if e.Raw != nil {
@@ -284,9 +451,17 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		if !e.Time.IsZero() {
 			ts = e.Time.Unix()
 		}
+		if latest.Valid && ts < latest.Int64 {
+			ts = latest.Int64
+		}
+		latest = sql.NullInt64{Int64: ts, Valid: true}
+		meta, err := json.Marshal(map[string]bool{"userVisible": e.Audience.User(), "agentVisible": e.Audience.Model()})
+		if err != nil {
+			return "", err
+		}
 		if _, err := tx.ExecContext(ctx,
-			`INSERT INTO messages (message_id, session_id, role, content_json, created_timestamp, metadata_json) VALUES (?, ?, ?, ?, ?, '{"userVisible":true,"agentVisible":true}')`,
-			"msg_"+transcript.NewUUID(), s.ID, string(gooseRole(e.Role)), content, ts); err != nil {
+			`INSERT INTO messages (message_id, session_id, role, content_json, created_timestamp, metadata_json) VALUES (?, ?, ?, ?, ?, ?)`,
+			"msg_"+s.ID+"_"+transcript.NewUUID(), s.ID, string(gooseRole(e.Role)), content, ts, string(meta)); err != nil {
 			return "", fmt.Errorf("goose: write message: %w", err)
 		}
 		added = true

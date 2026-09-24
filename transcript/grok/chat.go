@@ -382,6 +382,14 @@ type userItem struct {
 	PromptIndex     *int   `json:"prompt_index,omitempty"`
 }
 
+// reasoningItem is a Responses API reasoning item (rs::ReasoningItem). Its
+// id is required and empty on one grok did not get from the API.
+type reasoningItem struct {
+	Type    string     `json:"type"`
+	ID      string     `json:"id"`
+	Summary []textPart `json:"summary"`
+}
+
 type assistantItem struct {
 	Type      string         `json:"type"`
 	Content   string         `json:"content"`
@@ -398,9 +406,12 @@ type toolResultItem struct {
 // encodeChat is the chat_history row for a new entry the model is given. A
 // prompt is wrapped in <user_query> as grok's user_query does
 // (session/user_message.rs) and carries its prompt index; a user entry that
-// is only model context is a system reminder. Reasoning is not written: grok
-// sends reasoning items back to the API, and one this codec made up is not
-// the model's.
+// is only model context is a system reminder. An assistant entry's reasoning
+// is a reasoning item before it, as grok stores reasoning since chat format
+// version 1, with its text as a summary and no id or encrypted content, the
+// item grok makes itself from streamed reasoning text
+// (synthesized_reasoning_item in conversation.rs). grok sends reasoning items
+// back as they are (conversation/responses.rs), so the model gets the text.
 func (p *plan) encodeChat(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
 	var rows []any
 	switch e.Role {
@@ -422,6 +433,11 @@ func (p *plan) encodeChat(e transcript.Entry, s *transcript.Session) (json.RawMe
 		row.Content = append(row.Content, imgs...)
 		rows = append(rows, row)
 	case transcript.RoleAssistant:
+		for _, b := range e.Content {
+			if b.Kind == transcript.BlockReasoning && b.Text != "" {
+				rows = append(rows, reasoningItem{Type: "reasoning", Summary: []textPart{{Type: "summary_text", Text: b.Text}}})
+			}
+		}
 		row := assistantItem{Type: "assistant", Content: e.Text()}
 		for _, b := range e.Content {
 			if b.Kind != transcript.BlockToolUse {
@@ -433,10 +449,9 @@ func (p *plan) encodeChat(e transcript.Entry, s *transcript.Session) (json.RawMe
 			}
 			row.ToolCalls = append(row.ToolCalls, chatToolCall{ID: b.ToolID, Name: b.Name, Arguments: args})
 		}
-		if row.Content == "" && row.ToolCalls == nil {
-			return nil, nil
+		if row.Content != "" || row.ToolCalls != nil {
+			rows = append(rows, row)
 		}
-		rows = append(rows, row)
 	case transcript.RoleTool:
 		for _, b := range e.Content {
 			if b.Kind == transcript.BlockToolResult {

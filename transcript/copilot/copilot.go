@@ -647,6 +647,13 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		ev.Type = "user.message"
 		data = userMessage{Content: e.Text(), Attachments: attachments(e.Content), MessageID: e.ID}
 	case transcript.RoleAssistant:
+		// Reasoning is not written. Copilot keeps a model's reasoning on the
+		// message (reasoningText, with the provider's reasoningOpaque or
+		// encryptedContent beside it) and strips it when it loads a session
+		// (hydrate_from_events_strip_reasoning in the 1.0.88 runtime;
+		// session-events.schema.json marks the opaque parts "stripped on
+		// resume"). A reasoningText written here was never sent to the model
+		// on session/load.
 		ev.Type = "assistant.message"
 		m := assistantMessage{MessageID: e.ID, Content: e.Text(), ToolRequests: []toolRequest{}}
 		for _, b := range e.Content {

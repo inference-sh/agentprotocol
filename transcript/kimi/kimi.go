@@ -138,10 +138,19 @@ type mediaURL struct {
 	Name string `json:"name,omitempty"`
 }
 
-// MarshalJSON writes a media part with its type and media alone, as kimi
-// does; other parts keep their text field even when it is empty.
+// MarshalJSON writes a media part with its type and media alone, and a
+// think part with its type, think and encrypted fields, as kimi does
+// (ThinkPart in llm/message.ts); text parts keep their text field even when
+// it is empty.
 func (p part) MarshalJSON() ([]byte, error) {
 	type plain part
+	if p.Type == "think" {
+		return json.Marshal(struct {
+			Type      string  `json:"type"`
+			Think     string  `json:"think"`
+			Encrypted *string `json:"encrypted,omitempty"`
+		}{p.Type, p.Think, p.Encrypted})
+	}
 	if p.ImageURL == nil && p.VideoURL == nil && p.AudioURL == nil {
 		return json.Marshal(plain(p))
 	}
@@ -499,8 +508,8 @@ func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMes
 			var calls []toolCall
 			for _, b := range e.Content {
 				switch b.Kind {
-				case transcript.BlockText:
-					rows = append(rows, loopRow(ms, contentPart{Type: "content.part", UUID: transcript.NewUUID(), TurnID: turnID, Step: step, StepUUID: stepUUID, Part: part{Type: "text", Text: b.Text}}))
+				case transcript.BlockText, transcript.BlockReasoning:
+					rows = append(rows, loopRow(ms, contentPart{Type: "content.part", UUID: transcript.NewUUID(), TurnID: turnID, Step: step, StepUUID: stepUUID, Part: assistantPart(b)}))
 				case transcript.BlockToolUse:
 					args := b.Input
 					if len(args) == 0 {
@@ -514,7 +523,7 @@ func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMes
 				calls = []toolCall{}
 			}
 			rows = append(rows, row{Type: "agent.message.appended", Kind: "event", Time: ms, Message: mustJSON(appended{
-				Message: message{Role: "assistant", Content: textParts(e), ToolCalls: calls},
+				Message: message{Role: "assistant", Content: assistantParts(e), ToolCalls: calls},
 				Meta:    meta{Source: "llm", MessageID: e.ID, Usage: &usage{}},
 			})})
 		case transcript.RoleTool:
@@ -631,14 +640,30 @@ func loopRow(ms int64, event any) row {
 	return row{Type: "context.append_loop_event", AgentID: "main", Event: mustJSON(event), Time: ms}
 }
 
-func textParts(e transcript.Entry) []part {
+// assistantParts is an assistant entry's text and reasoning, in order.
+func assistantParts(e transcript.Entry) []part {
 	out := []part{}
 	for _, b := range e.Content {
-		if b.Kind == transcript.BlockText {
-			out = append(out, part{Type: "text", Text: b.Text})
+		if b.Kind == transcript.BlockText || b.Kind == transcript.BlockReasoning {
+			out = append(out, assistantPart(b))
 		}
 	}
 	return out
+}
+
+// assistantPart is a text block as a text part and reasoning as a think
+// part. kimi sends a think part back to the model as the message's
+// reasoning_content whatever model wrote it (lowerMessage in
+// human/llm/requester/bases/openai/lower.ts), and needs no encrypted
+// content for it, so reasoning from another agent reaches the model. The
+// Anthropic requester strips a think part with no signature unless thinking
+// is preserved (stripUnsignedThinking in bases/anthropic/patterns.ts), as it
+// does kimi's own from an OpenAI-compatible model.
+func assistantPart(b transcript.Block) part {
+	if b.Kind == transcript.BlockReasoning {
+		return part{Type: "think", Think: b.Text}
+	}
+	return part{Type: "text", Text: b.Text}
 }
 
 // promptParts is a user or system entry's text and its own media, in

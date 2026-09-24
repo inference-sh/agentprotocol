@@ -425,6 +425,12 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	if e.ID == "" {
 		e.ID = transcript.NewUUID()
 	}
+	// Reasoning is not written. kiro keeps a model's reasoning as a thinking
+	// block holding the provider's signature, its redacted content and a
+	// digest of the tools it was made under, and sends it back as the
+	// history's ReasoningContentForHistory with that signature (ThinkingBlock
+	// in kiro-cli-chat 2.24.0). Reasoning from another agent has no signature
+	// kiro's models accept.
 	d := data{MessageID: e.ID, Content: []block{}}
 	results := map[string]toolOutcome{}
 	for _, b := range e.Content {

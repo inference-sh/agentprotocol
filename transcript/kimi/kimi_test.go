@@ -521,3 +521,53 @@ func TestPortableKeepsSummary(t *testing.T) {
 		t.Errorf("portable carries no summary")
 	}
 }
+
+// Written for kimi from another agent, reasoning is a think part of the
+// step and of the appended message, which kimi sends back to the model as
+// reasoning_content.
+func TestWriteReasoning(t *testing.T) {
+	in := &transcript.Session{Agent: "elsewhere", CWD: "/w", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "go"}}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{
+			{Kind: transcript.BlockReasoning, Text: "weighing it"},
+			{Kind: transcript.BlockText, Text: "reading"},
+			{Kind: transcript.BlockToolUse, ToolID: "c", Name: "ReadFile", Input: []byte(`{}`)},
+		}},
+		{Role: transcript.RoleTool, Content: []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: "c", Text: "body", Status: transcript.StatusOK}}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockReasoning, Text: "only thought"}}},
+	}}
+	st, err := Codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := st.Read(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, e := range s.Context() {
+		for _, b := range e.Content {
+			got = append(got, string(e.Role)+" "+string(b.Kind)+" "+b.Text)
+		}
+	}
+	want := []string{"user text go", "assistant reasoning weighing it", "assistant text reading", "assistant tool_use ", "tool tool_result body", "assistant reasoning only thought"}
+	if strings.Join(got, "\n") != strings.Join(want, "\n") {
+		t.Errorf("context\n  %q\nwant\n  %q", got, want)
+	}
+	var raw strings.Builder
+	for _, e := range s.Entries {
+		raw.Write(e.Raw)
+	}
+	for _, row := range []string{
+		`"part":{"type":"think","think":"weighing it"}`,
+		`"content":[{"type":"think","think":"weighing it"},{"type":"text","text":"reading"}]`,
+	} {
+		if !strings.Contains(raw.String(), row) {
+			t.Errorf("no %s in\n%s", row, raw.String())
+		}
+	}
+}

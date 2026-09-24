@@ -100,6 +100,12 @@ type message struct {
 	Visibility string  `json:"visibility,omitempty"`
 	// HiddenFromUserViews hides a message the model is still given.
 	HiddenFromUserViews bool `json:"hiddenFromUserViews,omitempty"`
+	// ChatCompletionReasoningContent is the reasoning a chat-completions
+	// model streamed for an assistant message, and
+	// ChatCompletionReasoningField the request field droid sends it back in
+	// (reasoning_content or reasoning).
+	ChatCompletionReasoningField   string `json:"chatCompletionReasoningField,omitempty"`
+	ChatCompletionReasoningContent string `json:"chatCompletionReasoningContent,omitempty"`
 }
 
 type block struct {
@@ -178,7 +184,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		e.Compaction = &transcript.Compaction{Summary: []transcript.Entry{summary(r.ID, e.Time, c)}}
 		return e, true, nil
 	}
-	if r.Message == nil || len(r.Message.Content) == 0 {
+	if r.Message == nil || len(r.Message.Content) == 0 && r.Message.ChatCompletionReasoningContent == "" {
 		return e, true, nil
 	}
 	e.Role = transcript.Role(r.Message.Role)
@@ -187,6 +193,9 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		e.Audience = transcript.AudienceUser
 	case r.Message.Visibility == visibilityLLM || r.Message.HiddenFromUserViews:
 		e.Audience = transcript.AudienceModel
+	}
+	if r.Message.ChatCompletionReasoningContent != "" {
+		e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: r.Message.ChatCompletionReasoningContent})
 	}
 	toolResults := 0
 	for _, b := range r.Message.Content {
@@ -474,6 +483,20 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		return nil, nil
 	}
 	content := make([]block, 0, len(e.Content))
+	// Reasoning goes where droid keeps what a chat-completions model
+	// streamed, which it sends back in that request field when the model
+	// takes reasoning: a custom model with enableThinking, or one its
+	// registry marks acceptsReasoning (the 0.226 bundle's chat-completions
+	// message builder). droid's thinking blocks are left alone: Anthropic
+	// replays one only with the model's signature, and the Responses API
+	// replays reasoning only as the model's encrypted_content, neither of
+	// which another agent's reasoning has.
+	var reasoning string
+	for _, b := range e.Content {
+		if b.Kind == transcript.BlockReasoning && role == transcript.RoleAssistant {
+			reasoning += b.Text
+		}
+	}
 	// A tool's images and documents go inside its tool_result, as droid
 	// stores them, after the result's text.
 	returned := map[string][]block{}
@@ -520,8 +543,12 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			}
 		}
 	}
-	if len(content) == 0 {
+	if len(content) == 0 && reasoning == "" {
 		return nil, nil
+	}
+	m := &message{Role: string(role), Content: content}
+	if reasoning != "" {
+		m.ChatCompletionReasoningField, m.ChatCompletionReasoningContent = "reasoning_content", reasoning
 	}
 	t := e.Time
 	if t.IsZero() {
@@ -532,6 +559,6 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		ID:        e.ID,
 		ParentID:  e.ParentID,
 		Timestamp: t.UTC().Format("2006-01-02T15:04:05.000Z"),
-		Message:   &message{Role: string(role), Content: content},
+		Message:   m,
 	})
 }

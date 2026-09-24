@@ -112,3 +112,50 @@ func TestLegacyRows(t *testing.T) {
 		t.Errorf("tool input %s", in)
 	}
 }
+
+// Written for grok from another agent, reasoning is a reasoning item before
+// the assistant item, which grok sends back to the model; the updates view
+// shows it as a thought.
+func TestWriteReasoning(t *testing.T) {
+	in := &transcript.Session{Agent: "elsewhere", CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "go"}}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{
+			{Kind: transcript.BlockReasoning, Text: "weighing it"},
+			{Kind: transcript.BlockText, Text: "reading"},
+			{Kind: transcript.BlockToolUse, ToolID: "c", Name: "read_file", Input: []byte(`{}`)},
+		}},
+		{Role: transcript.RoleTool, Content: []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: "c", Text: "body", Status: transcript.StatusOK}}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockReasoning, Text: "only thought"}}},
+	}}
+	home := t.TempDir()
+	st, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := read(t, home, id)
+	var got [][]string
+	for _, e := range s.Context() {
+		got = append(got, append([]string{string(e.Role)}, blocks(e)...))
+	}
+	want := [][]string{
+		{"user", "text:go"},
+		{"assistant", "reasoning:weighing it"},
+		{"assistant", "text:reading", "tool_use:c read_file"},
+		{"tool", "tool_result:c body ok"},
+		{"assistant", "reasoning:only thought"},
+	}
+	if !slices.EqualFunc(got, want, slices.Equal) {
+		t.Errorf("context\n  %q\nwant\n  %q", got, want)
+	}
+	chat, err := os.ReadFile(filepath.Join(home, root, transcript.EscapedCwd.Name("/tmp/p"), id, chatFile))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if row := `{"type":"reasoning","id":"","summary":[{"type":"summary_text","text":"weighing it"}]}`; !strings.Contains(string(chat), row) {
+		t.Errorf("chat history has no %s:\n%s", row, chat)
+	}
+}

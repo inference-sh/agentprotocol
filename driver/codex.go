@@ -74,7 +74,7 @@ func (b *CodexBackend) Kind() string { return KindCodex }
 //
 // Steer: a prompt during a running turn is sent as turn/steer against the
 // active turn, which codex accepts and feeds into that turn's next model
-// request. Measured on codex-cli 0.137.0.
+// request. Measured on codex-cli 0.137.0 and 0.156.1.
 //
 // Resume: thread/resume by thread id in a fresh process restores the
 // conversation; the next model request carries the earlier turns.
@@ -328,7 +328,7 @@ func userInput(in Input) []codexapp.UserInput {
 	for _, f := range in.Files {
 		if strings.HasPrefix(f.ContentType, "image/") {
 			if u, err := url.Parse(f.URI); err == nil && (u.Scheme == "http" || u.Scheme == "https" || u.Scheme == "data") {
-				if v, err := codexapp.NewUserInput(codexapp.ImageUserInput{Type: codexapp.UserInputTypeImage, URL: f.URI}); err == nil {
+				if v, err := codexapp.NewUserInput(codexapp.ImageUserInput{Type: codexapp.UserInputTypeImage, URL: &f.URI}); err == nil {
 					out = append(out, v)
 					continue
 				}
@@ -392,7 +392,7 @@ func (s *codexSession) Resolve(ctx context.Context, requestID string, res Resolu
 
 	allow := res.Decision == ap.InterruptResolutionAllow
 	session := res.Scope == ScopeSession || res.Scope == ScopeAlways
-	p.settle(approvalAnswer(p, allow, session))
+	p.settle(approvalAnswer(p, allow, session, res.Reason))
 
 	s.emit(ap.NewEvent(ap.AgentEventApprovalResolved, s.runID, s.chatID, ap.ApprovalResolvedPayload{
 		ToolInvocationID: requestID,
@@ -404,7 +404,10 @@ func (s *codexSession) Resolve(ctx context.Context, requestID string, res Resolu
 }
 
 // approvalAnswer builds the response body codex expects for the request kind.
-func approvalAnswer(p *codexApproval, allow, session bool) any {
+//
+// reason is only carried by the legacy methods, whose denial names a
+// rejection; the item/* methods have no field for it.
+func approvalAnswer(p *codexApproval, allow, session bool, reason string) any {
 	switch p.method {
 	case codexapp.MethodItemCommandExecutionRequestApproval:
 		d := codexapp.CommandExecutionApprovalDecisionDecline
@@ -439,7 +442,14 @@ func approvalAnswer(p *codexApproval, allow, session bool) any {
 		return codexapp.PermissionsRequestApprovalResponse{Permissions: grant, Scope: &scope}
 
 	case codexapp.MethodExecCommandApproval, codexapp.MethodApplyPatchApproval:
-		d := codexapp.ReviewDecisionDenied
+		// Since codex 0.156 a denial is {"denied":{"rejection":...}}; it was
+		// the bare string "denied" up to 0.137. Only turns started through the
+		// legacy APIs raise these requests, and this driver starts turns with
+		// turn/start, so the current shape is sent.
+		if reason == "" {
+			reason = "declined"
+		}
+		d := codexapp.ReviewDecision(mustJSON(codexapp.DeniedReviewDecision{Denied: codexapp.DeniedReviewDecisionDenied{Rejection: reason}}))
 		if allow && session {
 			d = codexapp.ReviewDecisionApprovedForSession
 		} else if allow {
@@ -455,7 +465,7 @@ func approvalAnswer(p *codexApproval, allow, session bool) any {
 
 // cancelAnswer is what a request gets when nobody will decide it: the session
 // closed or codex withdrew it.
-func cancelAnswer(p *codexApproval) any { return approvalAnswer(p, false, false) }
+func cancelAnswer(p *codexApproval) any { return approvalAnswer(p, false, false, "cancelled") }
 
 // Close ends the session. Parked approvals are declined, codex's stdin is
 // closed, and the event channel closes once the process is gone.
@@ -557,6 +567,11 @@ func (s *codexSession) onRequest(ctx context.Context, id json.RawMessage, method
 		}
 		key, turnID, tool = deref(p.ApprovalID, p.ItemID), p.TurnID, codexapp.ThreadItemTypeCommandExecution
 		args = ap.StringEncodedMap{"command": deref(p.Command, ""), "cwd": deref(p.Cwd, "")}
+		if p.Kind != nil && *p.Kind != codexapp.CommandExecutionApprovalKindCommand {
+			// writeStdin (codex 0.156): input for a terminal already running,
+			// not a new command.
+			args["kind"] = string(*p.Kind)
+		}
 		if p.Reason != nil {
 			args["reason"] = *p.Reason
 		}

@@ -188,6 +188,46 @@ func TestCodexApprovalAllowAndDeny(t *testing.T) {
 	}
 }
 
+func TestCodexWriteStdinApprovalSaysSo(t *testing.T) {
+	sess := openCodex(t, "normal", driver.SessionConfig{})
+	_ = sess.Prompt(context.Background(), driver.TextInput("stdin y"))
+	events := until(t, sess.Events(), ap.AgentEventApprovalRequired)
+	req, _ := ap.PayloadAs[ap.ApprovalRequiredPayload](events[len(events)-1], ap.AgentEventApprovalRequired)
+	if req.Arguments["kind"] != "writeStdin" || req.Arguments["command"] != "y" {
+		t.Errorf("arguments = %v, want the stdin kind named", req.Arguments)
+	}
+	_ = sess.Resolve(context.Background(), req.ToolInvocationID, driver.Allow())
+	if got := deltas(until(t, sess.Events(), ap.AgentEventTurnCompleted)); got != "decision=accept" {
+		t.Errorf("codex received %q", got)
+	}
+}
+
+func TestCodexLegacyApprovalDecisions(t *testing.T) {
+	cases := []struct {
+		name string
+		res  driver.Resolution
+		want string
+	}{
+		{"allow", driver.Allow(), `"approved"`},
+		{"allow for session", driver.AllowFor(driver.ScopeSession), `"approved_for_session"`},
+		{"deny", driver.Deny("not now"), `{"denied":{"rejection":"not now"}}`},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			sess := openCodex(t, "normal", driver.SessionConfig{})
+			_ = sess.Prompt(context.Background(), driver.TextInput("legacy touch x"))
+			events := until(t, sess.Events(), ap.AgentEventApprovalRequired)
+			req, _ := ap.PayloadAs[ap.ApprovalRequiredPayload](events[len(events)-1], ap.AgentEventApprovalRequired)
+			if err := sess.Resolve(context.Background(), req.ToolInvocationID, tc.res); err != nil {
+				t.Fatalf("resolve: %v", err)
+			}
+			if got := deltas(until(t, sess.Events(), ap.AgentEventTurnCompleted)); got != "decision="+tc.want {
+				t.Errorf("codex received %q, want decision=%s", got, tc.want)
+			}
+		})
+	}
+}
+
 func TestCodexResolveUnknownIsAnError(t *testing.T) {
 	sess := openCodex(t, "normal", driver.SessionConfig{})
 	if err := sess.Resolve(context.Background(), "nope", driver.Allow()); err == nil {
@@ -511,6 +551,28 @@ func (f *fakeCodex) handle(m codexapp.Message) {
 				f.notify(codexapp.MethodServerRequestResolved, map[string]any{"threadId": f.thread, "requestId": 0})
 				f.notify(codexapp.MethodItemCompleted, map[string]any{"threadId": f.thread, "turnId": turn, "completedAtMs": 2, "item": item(status)})
 				f.finish(turn, "decision="+r.Decision)
+			})
+			return
+		case strings.HasPrefix(text, "stdin "):
+			// A codex 0.156 approval for input to a running terminal.
+			f.request(codexapp.MethodItemCommandExecutionRequestApproval, map[string]any{
+				"threadId": f.thread, "turnId": turn, "itemId": "call_1", "startedAtMs": 1,
+				"command": strings.TrimPrefix(text, "stdin "), "kind": "writeStdin",
+			}, func(result json.RawMessage) {
+				var r struct{ Decision string }
+				_ = json.Unmarshal(result, &r)
+				f.finish(turn, "decision="+r.Decision)
+			})
+			return
+		case strings.HasPrefix(text, "legacy "):
+			// A legacy-API approval; the reply is the raw decision.
+			f.request(codexapp.MethodExecCommandApproval, map[string]any{
+				"conversationId": f.thread, "callId": "call_legacy", "cwd": "/w",
+				"command": []string{"sh", "-c", strings.TrimPrefix(text, "legacy ")}, "parsedCmd": []any{},
+			}, func(result json.RawMessage) {
+				var r struct{ Decision json.RawMessage }
+				_ = json.Unmarshal(result, &r)
+				f.finish(turn, "decision="+string(r.Decision))
 			})
 			return
 		case text == "policy?":

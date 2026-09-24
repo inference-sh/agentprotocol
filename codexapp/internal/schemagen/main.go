@@ -273,6 +273,41 @@ func nonNull(n node) (node, bool) {
 	return n, nullable
 }
 
+// mergeAlternatives flattens an object whose own properties are joined by a
+// choice of further property sets, such as an image given by url or by
+// fileId, into one struct holding every property. Only the object's own
+// required properties stay required; which alternative is sent is the
+// caller's business.
+func mergeAlternatives(n node) node {
+	props, _ := n["properties"].(map[string]any)
+	vs := variants(n)
+	if len(props) == 0 || len(vs) == 0 {
+		return n
+	}
+	merged := map[string]any{}
+	for _, v := range vs {
+		vn, ok := v.(map[string]any)
+		vp, _ := vn["properties"].(map[string]any)
+		if !ok || len(vp) == 0 {
+			return n
+		}
+		for k, x := range vp {
+			merged[k] = x
+		}
+	}
+	for k, x := range props {
+		merged[k] = x
+	}
+	c := node{}
+	for k, v := range n {
+		if k != "anyOf" && k != "oneOf" {
+			c[k] = v
+		}
+	}
+	c["properties"] = merged
+	return c
+}
+
 func variants(n node) []any {
 	if v := list(n, "oneOf"); v != nil {
 		return v
@@ -404,6 +439,7 @@ func (g *gen) declare(name string, n node) {
 	b.WriteString(comment(str(n, "description"), ""))
 	tn := typeName(name)
 	inner, _ := nonNull(n)
+	inner = mergeAlternatives(inner)
 
 	switch {
 	case isStringEnum(inner):

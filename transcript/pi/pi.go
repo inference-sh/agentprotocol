@@ -16,9 +16,11 @@ package pi
 import (
 	"bytes"
 	"crypto/rand"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -32,7 +34,95 @@ var Codec = codec("pi", ".pi/agent/sessions", transcript.DashWrappedCwd, piVaria
 // OMP is the Oh My Pi session store. It shares pi's rows. Its directory
 // name is a dash and the last path element, as observed on one sample;
 // listing does not depend on it because the header carries the cwd.
-var OMP = codec("omp", ".omp/agent/sessions", ompDir, ompVariant)
+var OMP transcript.Codec = ompCodec{codec("omp", ".omp/agent/sessions", ompDir, ompVariant)}
+
+// ompCodec reads the images omp moves out of its rows. omp writes an
+// image's base64 of 1024 characters or more to a content-addressed store
+// and keeps "blob:sha256:<hash>" in its place (session-persistence.ts,
+// truncateForPersistence); its loader reads them back
+// (session-loader.ts, resolveBlobRefsInEntries). The store is under the
+// home, which only Open knows.
+type ompCodec struct{ transcript.JSONL }
+
+func (c ompCodec) Open(home string) (transcript.Store, error) {
+	j := c.JSONL
+	finish := j.Finish
+	blobs := filepath.Join(home, ".omp", "agent", "blobs")
+	j.Finish = func(s *transcript.Session) error {
+		if err := finish(s); err != nil {
+			return err
+		}
+		resolveBlobs(s, blobs)
+		return nil
+	}
+	return j.Open(home)
+}
+
+// blobPrefix marks omp's reference to a stored blob (blob-store.ts).
+const blobPrefix = "blob:sha256:"
+
+// resolveBlobs puts the bytes of every stored image in its block. A blob
+// holds an image's raw bytes, or, for an image_url omp moved out, the whole
+// data: URL. A reference whose blob is gone stays one, as omp's loader
+// leaves it.
+func resolveBlobs(s *transcript.Session, dir string) {
+	resolve := func(bs []transcript.Block) {
+		for k := range bs {
+			b := &bs[k]
+			hash, ok := strings.CutPrefix(b.URI, blobPrefix)
+			if b.Kind != transcript.BlockImage || !ok || !blobHash(hash) {
+				continue
+			}
+			data, err := os.ReadFile(filepath.Join(dir, hash))
+			if err != nil {
+				continue
+			}
+			if mediaType, decoded, ok := dataURL(string(data)); ok {
+				b.MediaType, data = mediaType, decoded
+			}
+			b.Data, b.URI = data, ""
+		}
+	}
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		resolve(e.Content)
+		resolve(e.ModelContent)
+		if e.Compaction != nil {
+			for j := range e.Compaction.Summary {
+				resolve(e.Compaction.Summary[j].Content)
+			}
+		}
+	}
+}
+
+// blobHash reports whether a reference names a blob by a SHA-256 digest,
+// the only name omp resolves (blob-store.ts, parseBlobRef).
+func blobHash(h string) bool {
+	if len(h) != 64 {
+		return false
+	}
+	_, err := hex.DecodeString(h)
+	return err == nil && strings.ToLower(h) == h
+}
+
+// dataURL splits a base64 data: URL, the form omp keeps a provider's
+// image_url in.
+func dataURL(u string) (string, []byte, bool) {
+	meta, payload, ok := strings.Cut(u, ",")
+	if !ok {
+		return "", nil, false
+	}
+	mediaType, ok := strings.CutPrefix(meta, "data:")
+	if !ok {
+		return "", nil, false
+	}
+	mediaType, ok = strings.CutSuffix(mediaType, ";base64")
+	if !ok {
+		return "", nil, false
+	}
+	data, err := base64.StdEncoding.DecodeString(payload)
+	return mediaType, data, err == nil
+}
 
 // ompDir is the project directory rule Oh My Pi was seen to use.
 const ompDir transcript.ProjectDir = -1
@@ -185,15 +275,18 @@ type stored struct {
 	// fileMention: the files an @path in omp's prompt read in.
 	Files []mentionedFile `json:"files"`
 
+	// Images are the images omp's bash run returned (bashExecution).
+	Images content `json:"images"`
+
 	// branchSummary and compactionSummary.
 	Summary string `json:"summary"`
 	Method  string `json:"method"`
 }
 
 type mentionedFile struct {
-	Path    string          `json:"path"`
-	Content string          `json:"content"`
-	Image   json.RawMessage `json:"image"`
+	Path    string `json:"path"`
+	Content string `json:"content"`
+	Image   *block `json:"image"`
 }
 
 // message is what this codec writes for an entry from another agent.
@@ -239,8 +332,7 @@ func (c content) text() string {
 	return strings.Join(parts, "\n")
 }
 
-// blocks maps content to entry blocks. Images have no block kind and are
-// left out.
+// blocks maps content to entry blocks.
 func (c content) blocks() []transcript.Block {
 	var out []transcript.Block
 	for _, b := range c {
@@ -251,9 +343,44 @@ func (c content) blocks() []transcript.Block {
 			out = append(out, transcript.Block{Kind: transcript.BlockReasoning, Text: b.Thinking})
 		case "toolCall":
 			out = append(out, transcript.Block{Kind: transcript.BlockToolUse, ToolID: b.ID, Name: b.Name, Input: b.Arguments})
+		case "image":
+			if img, ok := b.image(""); ok {
+				out = append(out, img)
+			}
 		}
 	}
 	return out
+}
+
+// images maps the content's images to blocks carrying a tool call's id.
+func (c content) images(toolID string) []transcript.Block {
+	var out []transcript.Block
+	for _, b := range c {
+		if b.Type != "image" {
+			continue
+		}
+		if img, ok := b.image(toolID); ok {
+			out = append(out, img)
+		}
+	}
+	return out
+}
+
+// image maps a pi-ai ImageContent, whose data is base64, or in omp a
+// reference to a stored blob that ompCodec resolves. Data that is neither
+// is no image the provider would take either, and is left out.
+func (b block) image(toolID string) (transcript.Block, bool) {
+	img := transcript.Block{Kind: transcript.BlockImage, ToolID: toolID, MediaType: b.MimeType}
+	if strings.HasPrefix(b.Data, blobPrefix) {
+		img.URI = b.Data
+		return img, true
+	}
+	data, err := base64.StdEncoding.DecodeString(b.Data)
+	if err != nil {
+		return transcript.Block{}, false
+	}
+	img.Data = data
+	return img, true
 }
 
 type block struct {
@@ -261,8 +388,11 @@ type block struct {
 	Text              string `json:"text,omitempty"`
 	Thinking          string `json:"thinking,omitempty"`
 	ThinkingSignature string `json:"thinkingSignature,omitempty"`
-	// Data is a redacted thinking block's payload.
-	Data      string          `json:"data,omitempty"`
+	// Data is a redacted thinking block's payload, and an image's base64.
+	Data     string `json:"data,omitempty"`
+	MimeType string `json:"mimeType,omitempty"`
+	// ImageURL is an input_image's in a remote compaction's history.
+	ImageURL  string          `json:"image_url,omitempty"`
 	ID        string          `json:"id,omitempty"`
 	Name      string          `json:"name,omitempty"`
 	Arguments json.RawMessage `json:"arguments,omitempty"`
@@ -445,9 +575,12 @@ func (v variant) message(e *transcript.Entry, m stored) {
 			st = transcript.StatusError
 		}
 		e.Role = transcript.RoleTool
-		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: m.ToolCallID, Name: m.ToolName, Text: joined(m.Content), Status: st}}
+		e.Content = append([]transcript.Block{{Kind: transcript.BlockToolResult, ToolID: m.ToolCallID, Name: m.ToolName, Text: joined(m.Content), Status: st}},
+			m.Content.images(m.ToolCallID)...)
 	case "bashExecution":
-		e.Role, e.Content = transcript.RoleUser, text(bashText(m))
+		// omp sends the images a run returned after its text
+		// (convertToLlm in messages.ts); pi's runs have none.
+		e.Role, e.Content = transcript.RoleUser, append(text(bashText(m)), m.Images.blocks()...)
 		if m.ExcludeFromContext {
 			e.Audience = transcript.AudienceUser
 		}
@@ -499,8 +632,9 @@ func (v variant) custom(e *transcript.Entry, customType, attribution string, c c
 
 // fileMention fills omp's @path read: text files go to the model as one
 // developer message of <file> elements. A mention of images only goes as
-// the user's; a mixed one is split by omp in two, and the entry keeps the
-// text part.
+// the user's, the elements followed by the images; a mixed one is split by
+// omp in two, and the entry keeps the text part, since an entry has one
+// role.
 func (v variant) fileMention(e *transcript.Entry, files []mentionedFile) {
 	wrap := func(f mentionedFile) string {
 		inner := "\n"
@@ -510,16 +644,18 @@ func (v variant) fileMention(e *transcript.Entry, files []mentionedFile) {
 		return `<file path="` + f.Path + `">` + inner + "</file>"
 	}
 	var texts, images []string
+	var attached content
 	for _, f := range files {
-		if len(f.Image) > 0 && string(f.Image) != "null" {
+		if f.Image != nil {
 			images = append(images, wrap(f))
+			attached = append(attached, *f.Image)
 		} else {
 			texts = append(texts, wrap(f))
 		}
 	}
 	e.Role, e.Content = transcript.RoleSystem, text(strings.Join(texts, "\n"))
 	if len(texts) == 0 {
-		e.Role, e.Content = transcript.RoleUser, text(strings.Join(images, "\n"))
+		e.Role, e.Content = transcript.RoleUser, append(text(strings.Join(images, "\n")), attached.blocks()...)
 	}
 }
 
@@ -766,8 +902,20 @@ func remoteHistory(raw json.RawMessage, summary transcript.Entry) []transcript.E
 			}
 			var blocks []transcript.Block
 			for _, b := range parts {
-				if b.Type == "input_text" || b.Type == "output_text" || b.Type == "text" {
+				switch b.Type {
+				case "input_text", "output_text", "text":
 					blocks = append(blocks, transcript.Block{Kind: transcript.BlockText, Text: b.Text})
+				case "input_image":
+					// A data: URL, or the blob omp moved it to.
+					img := transcript.Block{Kind: transcript.BlockImage}
+					if mediaType, data, ok := dataURL(b.ImageURL); ok {
+						img.MediaType, img.Data = mediaType, data
+					} else if strings.HasPrefix(b.ImageURL, blobPrefix) {
+						img.URI = b.ImageURL
+					} else {
+						continue
+					}
+					blocks = append(blocks, img)
 				}
 			}
 			if len(blocks) > 0 {
@@ -1213,9 +1361,14 @@ func applyEdits(s *transcript.Session, rows []row, msgs []stored, branch []int, 
 		case "user", "assistant", "custom", "hookMessage":
 			e.Content = rep.Content.blocks()
 		case "toolResult":
+			// The result keeps its call and takes the replacement's text
+			// and images.
 			for k := range e.Content {
 				if e.Content[k].Kind == transcript.BlockToolResult {
-					e.Content[k].Text = joined(rep.Content)
+					res := e.Content[k]
+					res.Text = joined(rep.Content)
+					e.Content = append([]transcript.Block{res}, rep.Content.images(res.ToolID)...)
+					break
 				}
 			}
 		}
@@ -1248,6 +1401,16 @@ func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
 	return []json.RawMessage{h}, nil
 }
 
+// imageContent is an image block as pi-ai's ImageContent, which carries its
+// bytes as base64 and nothing else: an image known only by where it is, and
+// any other file, has no content block in either agent and is left out.
+func imageContent(b transcript.Block) (block, bool) {
+	if len(b.Data) == 0 || !strings.HasPrefix(b.MediaType, "image/") {
+		return block{}, false
+	}
+	return block{Type: "image", Data: base64.StdEncoding.EncodeToString(b.Data), MimeType: b.MediaType}, true
+}
+
 // messageRow is a message row as this codec writes it. The first row of a
 // session has a null parentId, as pi writes it.
 type messageRow struct {
@@ -1272,6 +1435,11 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			switch b.Kind {
 			case transcript.BlockText:
 				m.Content = append(m.Content, block{Type: "text", Text: b.Text})
+			case transcript.BlockImage:
+				// pi-ai's assistant messages hold no images.
+				if img, ok := imageContent(b); ok && e.Role == transcript.RoleUser {
+					m.Content = append(m.Content, img)
+				}
 			case transcript.BlockReasoning:
 				m.Content = append(m.Content, block{Type: "thinking", Thinking: b.Text})
 			case transcript.BlockToolUse:
@@ -1289,6 +1457,13 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			}
 			m = message{Role: "toolResult", ToolCallID: b.ToolID, ToolName: b.Name, IsError: b.Status == transcript.StatusError,
 				Content: []block{{Type: "text", Text: b.Text}}, Timestamp: t.UnixMilli()}
+			for _, img := range e.Content {
+				if img.Kind == transcript.BlockImage && img.ToolID == b.ToolID {
+					if c, ok := imageContent(img); ok {
+						m.Content = append(m.Content, c)
+					}
+				}
+			}
 		}
 	default:
 		return nil, nil

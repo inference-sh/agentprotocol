@@ -87,7 +87,8 @@ type Block struct {
 	// Data is an image's or file's bytes, when the agent stores them inline.
 	Data []byte `json:"data,omitempty"`
 	// URI is where an image or file is, when the agent stores a reference
-	// (a path, a file: or https: URL) instead of the bytes.
+	// instead of the bytes: a path, a file: or https: URL, or the model
+	// provider's id for an upload (Codex keeps file ids).
 	URI string `json:"uri,omitempty"`
 }
 

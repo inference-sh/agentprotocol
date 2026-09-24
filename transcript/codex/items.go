@@ -1,8 +1,10 @@
 package codex
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -36,13 +38,30 @@ type part struct {
 	Text string `json:"text"`
 }
 
+// contentItem is a message or tool output content part as read: text, or
+// an input_image, which holds a data: or https: URL, or the id of a file
+// uploaded to the provider (models.rs, ContentItem and ImageReference).
+type contentItem struct {
+	Type     string `json:"type"`
+	Text     string `json:"text"`
+	ImageURL string `json:"image_url"`
+	FileID   string `json:"file_id"`
+}
+
+// imagePart is an input_image as encode writes it.
+type imagePart struct {
+	Type     string `json:"type"`
+	ImageURL string `json:"image_url"`
+}
+
 // The shapes encode writes.
 type (
 	message struct {
-		Type    string `json:"type"`
-		ID      string `json:"id,omitempty"`
-		Role    string `json:"role"`
-		Content []part `json:"content"`
+		Type string `json:"type"`
+		ID   string `json:"id,omitempty"`
+		Role string `json:"role"`
+		// Content holds parts and imageParts.
+		Content []any `json:"content"`
 	}
 	reasoningItem struct {
 		Type    string `json:"type"`
@@ -86,13 +105,11 @@ func decodeItem(payload json.RawMessage) (transcript.Entry, itemKind, bool, erro
 	var kind itemKind
 	switch it.Type {
 	case "message":
-		texts, err := contentTexts(it.Content)
+		texts, content, err := messageContent(it.Content)
 		if err != nil {
 			return transcript.Entry{}, kind, false, fmt.Errorf("item %s: content: %w", it.ID, err)
 		}
-		for _, t := range texts {
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: t})
-		}
+		e.Content = content
 		switch it.Role {
 		case "user":
 			e.Role = transcript.RoleUser
@@ -132,14 +149,12 @@ func decodeItem(payload json.RawMessage) (transcript.Entry, itemKind, bool, erro
 	case "agent_message":
 		// A message from another agent, which the model reads as input and
 		// which opens a turn like a user message.
-		texts, err := contentTexts(it.Content)
+		_, content, err := messageContent(it.Content)
 		if err != nil {
 			return transcript.Entry{}, kind, false, fmt.Errorf("item %s: content: %w", it.ID, err)
 		}
 		e.Role = transcript.RoleUser
-		for _, t := range texts {
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: t})
-		}
+		e.Content = content
 		kind.turn = true
 	case "reasoning":
 		e.Role = transcript.RoleAssistant
@@ -181,12 +196,12 @@ func decodeItem(payload json.RawMessage) (transcript.Entry, itemKind, bool, erro
 		e.Role = transcript.RoleAssistant
 		e.Content = []transcript.Block{{Kind: transcript.BlockToolUse, ToolID: it.ID, Name: "image_generation", Input: input}}
 	case "function_call_output", "custom_tool_call_output":
-		text, err := outputText(it.Output)
+		text, images, err := output(it.Output, it.CallID)
 		if err != nil {
 			return transcript.Entry{}, kind, false, fmt.Errorf("item %s: output: %w", it.ID, err)
 		}
 		e.Role = transcript.RoleTool
-		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: it.CallID, Name: it.Name, Text: text, Status: transcript.StatusOK}}
+		e.Content = append([]transcript.Block{{Kind: transcript.BlockToolResult, ToolID: it.CallID, Name: it.Name, Text: text, Status: transcript.StatusOK}}, images...)
 	case "tool_search_output":
 		e.Role = transcript.RoleTool
 		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: it.CallID, Name: "tool_search", Text: string(it.Tools), Status: toolStatus(it.Status)}}
@@ -234,25 +249,33 @@ func toolStatus(s string) transcript.Status {
 	return transcript.StatusOK
 }
 
-// contentTexts reads the text parts of a message's content. Image and
-// audio parts carry no text and are skipped; an agent_message's encrypted
-// parts are too.
-func contentTexts(raw json.RawMessage) ([]string, error) {
+// messageContent reads a message's content: its text parts, and every
+// part as a block in order. An attached image is an input_image part
+// between the text parts Codex frames it with (models.rs,
+// local_image_content_items). Audio parts have no block and are skipped;
+// an agent_message's encrypted parts are too.
+func messageContent(raw json.RawMessage) ([]string, []transcript.Block, error) {
 	if len(raw) == 0 {
-		return nil, nil
+		return nil, nil, nil
 	}
-	var parts []part
-	if err := json.Unmarshal(raw, &parts); err != nil {
-		return nil, err
+	var items []contentItem
+	if err := json.Unmarshal(raw, &items); err != nil {
+		return nil, nil, err
 	}
-	var out []string
-	for _, p := range parts {
-		switch p.Type {
+	var texts []string
+	var out []transcript.Block
+	for _, c := range items {
+		switch c.Type {
 		case "input_text", "output_text":
-			out = append(out, p.Text)
+			texts = append(texts, c.Text)
+			out = append(out, transcript.Block{Kind: transcript.BlockText, Text: c.Text})
+		case "input_image":
+			if b, ok := image(c, ""); ok {
+				out = append(out, b)
+			}
 		}
 	}
-	return out, nil
+	return texts, out, nil
 }
 
 // arguments turns the JSON-encoded string Codex stores into the object it
@@ -265,25 +288,82 @@ func arguments(s string) json.RawMessage {
 	return quoted
 }
 
-// outputText reads a tool output: a string, or an array of content parts
-// (models.rs, FunctionCallOutputPayload).
-func outputText(raw json.RawMessage) (string, error) {
+// output reads a tool output: a string, or an array of content items
+// (models.rs, FunctionCallOutputPayload), whose text is joined and whose
+// images, such as view_image's, come back as blocks carrying the call id.
+func output(raw json.RawMessage, callID string) (string, []transcript.Block, error) {
 	if len(raw) == 0 {
-		return "", nil
+		return "", nil, nil
 	}
 	var text string
 	if err := json.Unmarshal(raw, &text); err == nil {
-		return text, nil
+		return text, nil, nil
 	}
-	var parts []part
-	if err := json.Unmarshal(raw, &parts); err != nil {
-		return "", err
+	var items []contentItem
+	if err := json.Unmarshal(raw, &items); err != nil {
+		return "", nil, err
 	}
 	var b strings.Builder
-	for _, p := range parts {
-		b.WriteString(p.Text)
+	var images []transcript.Block
+	for _, c := range items {
+		switch c.Type {
+		case "input_image":
+			if img, ok := image(c, callID); ok {
+				images = append(images, img)
+			}
+		default:
+			b.WriteString(c.Text)
+		}
 	}
-	return b.String(), nil
+	return b.String(), images, nil
+}
+
+// image reads an input_image. Codex inlines what the person attaches and
+// what its tools read as a base64 data: URL (models.rs, data_url_from_bytes);
+// an image given by URL or by a provider file id stays a reference. A data:
+// URL that does not decode holds no image, and is left out.
+func image(c contentItem, toolID string) (transcript.Block, bool) {
+	b := transcript.Block{Kind: transcript.BlockImage, ToolID: toolID}
+	switch {
+	case c.FileID != "":
+		b.URI = c.FileID
+	case strings.HasPrefix(c.ImageURL, "data:"):
+		mediaType, data, err := dataURL(c.ImageURL)
+		if err != nil {
+			return transcript.Block{}, false
+		}
+		b.MediaType, b.Data = mediaType, data
+	default:
+		b.URI = c.ImageURL
+	}
+	return b, true
+}
+
+// dataURL splits a data: URL into its media type and bytes.
+func dataURL(u string) (string, []byte, error) {
+	meta, payload, ok := strings.Cut(strings.TrimPrefix(u, "data:"), ",")
+	if !ok {
+		return "", nil, fmt.Errorf("data URL without a comma")
+	}
+	if mediaType, ok := strings.CutSuffix(meta, ";base64"); ok {
+		data, err := base64.StdEncoding.DecodeString(payload)
+		return mediaType, data, err
+	}
+	data, err := url.PathUnescape(payload)
+	return meta, []byte(data), err
+}
+
+// imageURL is the image_url Codex stores for an image block: the bytes as
+// a data: URL, or a web URL as it is. A local path is no URL the model's
+// API fetches, and Codex keeps no other kind of reference, so it has none.
+func imageURL(b transcript.Block) (string, bool) {
+	switch {
+	case len(b.Data) > 0 && b.MediaType != "":
+		return "data:" + b.MediaType + ";base64," + base64.StdEncoding.EncodeToString(b.Data), true
+	case strings.HasPrefix(b.URI, "https://") || strings.HasPrefix(b.URI, "http://"):
+		return b.URI, true
+	}
+	return "", false
 }
 
 // summaryPrefix opens the user message a compaction leaves in place of the

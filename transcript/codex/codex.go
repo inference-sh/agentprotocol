@@ -580,7 +580,7 @@ func (p *plan) encode(e transcript.Entry, s *transcript.Session) (json.RawMessag
 	var items []any
 	switch e.Role {
 	case transcript.RoleUser, transcript.RoleSystem, transcript.RoleAssistant:
-		var text []part
+		var content []any
 		partType := "input_text"
 		role := "user"
 		switch e.Role {
@@ -593,7 +593,15 @@ func (p *plan) encode(e transcript.Entry, s *transcript.Session) (json.RawMessag
 		for _, b := range e.Content {
 			switch b.Kind {
 			case transcript.BlockText:
-				text = append(text, part{Type: partType, Text: b.Text})
+				content = append(content, part{Type: partType, Text: b.Text})
+			case transcript.BlockImage:
+				// Only a user message takes an input_image: Codex puts
+				// what the person attaches there and nothing else
+				// (models.rs, from_user_input). Files have no content
+				// item at all.
+				if u, ok := imageURL(b); ok && role == "user" {
+					content = append(content, imagePart{Type: "input_image", ImageURL: u})
+				}
 			case transcript.BlockReasoning:
 				items = append(items, reasoningItem{Type: "reasoning", ID: "rs_" + e.ID, Summary: []part{{Type: "summary_text", Text: b.Text}}})
 			case transcript.BlockToolUse:
@@ -604,15 +612,34 @@ func (p *plan) encode(e transcript.Entry, s *transcript.Session) (json.RawMessag
 				items = append(items, functionCall{Type: "function_call", ID: "fc_" + b.ToolID, Name: b.Name, Arguments: args, CallID: b.ToolID})
 			}
 		}
-		if len(text) > 0 {
-			items = append([]any{message{Type: "message", ID: "msg_" + e.ID, Role: role, Content: text}}, items...)
+		if len(content) > 0 {
+			items = append([]any{message{Type: "message", ID: "msg_" + e.ID, Role: role, Content: content}}, items...)
 		}
 	case transcript.RoleTool:
+		// An image a tool returned goes into its output as an input_image
+		// content item, as view_image's does (models.rs,
+		// FunctionCallOutputContentItem).
+		images := map[string][]any{}
+		for _, b := range e.Content {
+			if b.Kind == transcript.BlockImage && b.ToolID != "" {
+				if u, ok := imageURL(b); ok {
+					images[b.ToolID] = append(images[b.ToolID], imagePart{Type: "input_image", ImageURL: u})
+				}
+			}
+		}
 		for _, b := range e.Content {
 			if b.Kind != transcript.BlockToolResult {
 				continue
 			}
-			out, err := json.Marshal(b.Text)
+			var body any = b.Text
+			if imgs := images[b.ToolID]; len(imgs) > 0 {
+				var content []any
+				if b.Text != "" {
+					content = append(content, part{Type: "input_text", Text: b.Text})
+				}
+				body = append(content, imgs...)
+			}
+			out, err := json.Marshal(body)
 			if err != nil {
 				return nil, err
 			}

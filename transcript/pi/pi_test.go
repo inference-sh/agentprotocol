@@ -403,3 +403,138 @@ func TestForeignSystemChain(t *testing.T) {
 		t.Errorf("first row = %s", back.Entries[1].Raw)
 	}
 }
+
+const ompDirTest = ".omp/agent/sessions/-p"
+
+// omp's context builder drops what a resumed request must not replay
+// (buildSessionContext, session-context.ts:383-726): a retried turn
+// (retryRecovery, turn-recovery.ts:783) and an empty error turn, tool calls
+// with no result on the path, and an aborted or failed turn with its tool
+// results unless an interrupted-thinking note follows it
+// (agent-session.ts:3033). Its TUI still shows them. Provider failures and
+// aborts do not happen against the mock server, so the rows are by hand.
+func TestOMPResumeFilters(t *testing.T) {
+	h := home(t, ompDirTest,
+		`{"type":"session","version":3,"id":"s","timestamp":"2026-01-01T00:00:00.000Z","cwd":"/p"}`,
+		`{"type":"message","id":"u1","parentId":null,"timestamp":"2026-01-01T00:00:01.000Z","message":{"role":"user","content":"q1","timestamp":1}}`,
+		`{"type":"message","id":"a1","parentId":"u1","timestamp":"2026-01-01T00:00:02.000Z","message":{"role":"assistant","content":[{"type":"text","text":"calling"},{"type":"toolCall","id":"c1","name":"read","arguments":{}},{"type":"toolCall","id":"c2","name":"read","arguments":{}}],"stopReason":"toolUse","provider":"p","model":"m","timestamp":2}}`,
+		`{"type":"message","id":"t1","parentId":"a1","timestamp":"2026-01-01T00:00:03.000Z","message":{"role":"toolResult","toolCallId":"c1","toolName":"read","content":[{"type":"text","text":"r1"}],"isError":false,"timestamp":3}}`,
+		`{"type":"message","id":"u2","parentId":"t1","timestamp":"2026-01-01T00:00:04.000Z","message":{"role":"user","content":"q2","timestamp":4}}`,
+		`{"type":"message","id":"a2","parentId":"u2","timestamp":"2026-01-01T00:00:05.000Z","message":{"role":"assistant","content":[{"type":"text","text":"partial"},{"type":"toolCall","id":"c3","name":"read","arguments":{}}],"stopReason":"error","provider":"p","model":"m","timestamp":5}}`,
+		`{"type":"message","id":"t3","parentId":"a2","timestamp":"2026-01-01T00:00:06.000Z","message":{"role":"toolResult","toolCallId":"c3","toolName":"read","content":[{"type":"text","text":"r3"}],"isError":true,"timestamp":6}}`,
+		`{"type":"message","id":"u3","parentId":"t3","timestamp":"2026-01-01T00:00:07.000Z","message":{"role":"user","content":"q3","timestamp":7}}`,
+		`{"type":"message","id":"a3","parentId":"u3","timestamp":"2026-01-01T00:00:08.000Z","message":{"role":"assistant","content":[{"type":"text","text":"interrupted"}],"stopReason":"aborted","provider":"p","model":"m","timestamp":8}}`,
+		`{"type":"message","id":"n3","parentId":"a3","timestamp":"2026-01-01T00:00:09.000Z","message":{"role":"custom","customType":"interrupted-thinking","content":"note","display":false,"timestamp":9}}`,
+		`{"type":"message","id":"a4","parentId":"n3","timestamp":"2026-01-01T00:00:10.000Z","message":{"role":"assistant","content":[{"type":"text","text":"  "}],"stopReason":"error","provider":"p","model":"m","timestamp":10}}`,
+		`{"type":"message","id":"a5","parentId":"a4","timestamp":"2026-01-01T00:00:11.000Z","message":{"role":"assistant","content":[{"type":"text","text":"retried"}],"stopReason":"stop","retryRecovery":{"kind":"x"},"provider":"p","model":"m","timestamp":11}}`,
+		`{"type":"message","id":"u4","parentId":"a5","timestamp":"2026-01-01T00:00:12.000Z","message":{"role":"user","content":"q4","timestamp":12}}`,
+		`{"type":"message","id":"a6","parentId":"u4","timestamp":"2026-01-01T00:00:13.000Z","message":{"role":"assistant","content":[{"type":"toolCall","id":"c9","name":"read","arguments":{}}],"stopReason":"toolUse","provider":"p","model":"m","timestamp":13}}`,
+	)
+	s := read(t, OMP, transcripttest.Sample{Home: h, ID: "s"})
+	equal(t, "context", summary(s.Context()), []string{
+		"user: q1", "assistant: calling", "tool: r1", "user: q2", "user: q3",
+		"assistant: interrupted", "system: note", "user: q4",
+	})
+	equal(t, "linearize", summary(s.Linearize()), []string{
+		"user: q1", "assistant: calling", "tool: r1", "user: q2", "assistant: partial", "tool: r3", "user: q3",
+		"assistant: interrupted", "assistant:   ", "assistant: retried", "user: q4", "assistant: ",
+	})
+	for _, e := range s.Context() {
+		if e.ID == "a1" && len(e.Content) != 2 {
+			t.Errorf("a1 keeps %d blocks, want text and the answered call", len(e.Content))
+		}
+	}
+}
+
+// pi-ai leaves an aborted or failed assistant turn out of every request
+// (transformMessages, packages/ai/src/api/transform-messages.ts:201) and
+// keeps its tool results. Rows by hand, as for omp.
+func TestPiAbortedTurn(t *testing.T) {
+	h := home(t, piDir,
+		`{"type":"session","version":3,"id":"s","timestamp":"2026-01-01T00:00:00.000Z","cwd":"/p"}`,
+		`{"type":"message","id":"u1","parentId":null,"timestamp":"2026-01-01T00:00:01.000Z","message":{"role":"user","content":"q1","timestamp":1}}`,
+		`{"type":"message","id":"a1","parentId":"u1","timestamp":"2026-01-01T00:00:02.000Z","message":{"role":"assistant","content":[{"type":"toolCall","id":"c1","name":"read","arguments":{}}],"stopReason":"aborted","provider":"p","model":"m","timestamp":2}}`,
+		`{"type":"message","id":"t1","parentId":"a1","timestamp":"2026-01-01T00:00:03.000Z","message":{"role":"toolResult","toolCallId":"c1","toolName":"read","content":[{"type":"text","text":"r1"}],"isError":true,"timestamp":3}}`,
+		`{"type":"message","id":"u2","parentId":"t1","timestamp":"2026-01-01T00:00:04.000Z","message":{"role":"user","content":"q2","timestamp":4}}`,
+	)
+	s := read(t, Codec, transcripttest.Sample{Home: h, ID: "s"})
+	equal(t, "context", summary(s.Context()), []string{"user: q1", "tool: r1", "user: q2"})
+	equal(t, "linearize", summary(s.Linearize()), []string{"user: q1", "assistant: ", "tool: r1", "user: q2"})
+}
+
+// omp's context notes tool (tools/context-notes.ts:138) keeps a notebook in
+// custom rows, and the newest revision after the last /clear goes to the
+// model ahead of everything else (session-context.ts:617). The tool is
+// opt-in and experimental, so the rows are by hand.
+func TestOMPContextNotes(t *testing.T) {
+	rows := []string{
+		`{"type":"session","version":3,"id":"s","timestamp":"2026-01-01T00:00:00.000Z","cwd":"/p"}`,
+		`{"type":"message","id":"u1","parentId":null,"timestamp":"2026-01-01T00:00:01.000Z","message":{"role":"user","content":"q1","timestamp":1}}`,
+		`{"type":"custom","id":"k0","parentId":"u1","timestamp":"2026-01-01T00:00:02.000Z","customType":"experimental_context_notes","data":{"version":1,"text":"old"}}`,
+		`{"type":"custom","id":"k1","parentId":"k0","timestamp":"2026-01-01T00:00:03.000Z","customType":"experimental_context_notes","data":{"version":1,"text":"NOTES"}}`,
+		`{"type":"message","id":"a1","parentId":"k1","timestamp":"2026-01-01T00:00:04.000Z","message":{"role":"assistant","content":[{"type":"text","text":"ok"}],"stopReason":"stop","provider":"p","model":"m","timestamp":4}}`,
+	}
+	s := read(t, OMP, transcripttest.Sample{Home: home(t, ompDirTest, rows...), ID: "s"})
+	ctx := s.Context()
+	equal(t, "context", summary(ctx), []string{"system: <experimental-context-notes>\nThis opt-in", "user: q1", "assistant: ok"})
+	if len(ctx) > 0 && !strings.HasSuffix(ctx[0].Text(), "Latest notebook revision:\nNOTES\n</experimental-context-notes>") {
+		t.Errorf("notes = %q", ctx[0].Text())
+	}
+	equal(t, "linearize", summary(s.Linearize()), []string{"user: q1", "assistant: ok"})
+
+	rows = append(rows,
+		`{"type":"compaction","id":"c1","parentId":"a1","timestamp":"2026-01-01T00:00:05.000Z","summary":"S","firstKeptEntryId":"a1","tokensBefore":1}`,
+		`{"type":"message","id":"u2","parentId":"c1","timestamp":"2026-01-01T00:00:06.000Z","message":{"role":"user","content":"q2","timestamp":6}}`)
+	s = read(t, OMP, transcripttest.Sample{Home: home(t, ompDirTest, rows...), ID: "s"})
+	equal(t, "context after compaction", summary(s.Context()), []string{
+		"system: <experimental-context-notes>\nThis opt-in", "user: Prior model work/tool state available.\nM", "assistant: ok", "user: q2",
+	})
+
+	rows = append(rows,
+		`{"type":"custom","id":"k2","parentId":"u2","timestamp":"2026-01-01T00:00:07.000Z","customType":"experimental_context_notes","data":{"version":1,"text":"NEWER"}}`)
+	s = read(t, OMP, transcripttest.Sample{Home: home(t, ompDirTest, rows...), ID: "s"})
+	ctx = s.Context()
+	equal(t, "context with notes after compaction", summary(ctx), []string{
+		"system: <experimental-context-notes>\nThis opt-in", "user: Prior model work/tool state available.\nM", "assistant: ok", "user: q2",
+	})
+	if len(ctx) > 0 && !strings.Contains(ctx[0].Text(), "NEWER") {
+		t.Errorf("notes = %q", ctx[0].Text())
+	}
+}
+
+// A context-rollover compaction (session-maintenance.ts:1588) summarizes
+// nothing of the turn prefix it drops, so omp restores the newest user
+// request before its kept range right after the summary
+// (session-context.ts:531). Rows by hand: rollover is experimental.
+func TestOMPRollover(t *testing.T) {
+	h := home(t, ompDirTest,
+		`{"type":"session","version":3,"id":"s","timestamp":"2026-01-01T00:00:00.000Z","cwd":"/p"}`,
+		`{"type":"message","id":"u1","parentId":null,"timestamp":"2026-01-01T00:00:01.000Z","message":{"role":"user","content":"first","timestamp":1}}`,
+		`{"type":"message","id":"u2","parentId":"u1","timestamp":"2026-01-01T00:00:02.000Z","message":{"role":"user","content":"latest request","timestamp":2}}`,
+		`{"type":"message","id":"a2","parentId":"u2","timestamp":"2026-01-01T00:00:03.000Z","message":{"role":"assistant","content":[{"type":"text","text":"working"}],"stopReason":"stop","provider":"p","model":"m","timestamp":3}}`,
+		`{"type":"compaction","id":"c1","parentId":"a2","timestamp":"2026-01-01T00:00:04.000Z","summary":"S","firstKeptEntryId":"a2","tokensBefore":1,"details":{"kind":"experimental-context-rollover","version":1}}`,
+	)
+	s := read(t, OMP, transcripttest.Sample{Home: h, ID: "s"})
+	equal(t, "context", summary(s.Context()), []string{
+		"user: Prior model work/tool state available.\nM", "user: latest request", "assistant: working",
+	})
+}
+
+// An OpenAI remote compaction (packages/agent/src/compaction/openai.ts:912)
+// keeps the /responses/compact output: plain Responses message items and one
+// encrypted compaction item. omp replays them in place of the summary on the
+// same provider; the messages are read here and the encrypted item stands
+// as the summary. The remote endpoint is not mocked, so rows by hand.
+func TestOMPRemoteCompaction(t *testing.T) {
+	h := home(t, ompDirTest,
+		`{"type":"session","version":3,"id":"s","timestamp":"2026-01-01T00:00:00.000Z","cwd":"/p"}`,
+		`{"type":"message","id":"u1","parentId":null,"timestamp":"2026-01-01T00:00:01.000Z","message":{"role":"user","content":"q1","timestamp":1}}`,
+		`{"type":"message","id":"a1","parentId":"u1","timestamp":"2026-01-01T00:00:02.000Z","message":{"role":"assistant","content":[{"type":"text","text":"a1"}],"stopReason":"stop","provider":"openai","model":"m","timestamp":2}}`,
+		`{"type":"message","id":"u2","parentId":"a1","timestamp":"2026-01-01T00:00:03.000Z","message":{"role":"user","content":"q2","timestamp":3}}`,
+		`{"type":"compaction","id":"c1","parentId":"u2","timestamp":"2026-01-01T00:00:04.000Z","summary":"S","firstKeptEntryId":"","providerReplayThroughEntryId":"a1","tokensBefore":1,"method":"remote","preserveData":{"openaiRemoteCompaction":{"provider":"openai","replacementHistory":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Preserved user"}]},{"type":"reasoning","encrypted_content":"r"},{"type":"compaction","encrypted_content":"enc"}],"compactionItem":{"type":"compaction","encrypted_content":"enc"}}}}`,
+	)
+	s := read(t, OMP, transcripttest.Sample{Home: h, ID: "s"})
+	equal(t, "context", summary(s.Context()), []string{
+		"user: Preserved user", "user: Prior model work/tool state available.\nM", "user: q2",
+	})
+}

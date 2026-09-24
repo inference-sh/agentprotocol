@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -145,6 +146,12 @@ const (
 	// colons into dashes, and wraps the result in double dashes: /a/b is
 	// --a-b--. pi does this.
 	DashWrappedCwd
+	// SanitizedCwd turns every character other than an ASCII letter or digit
+	// into a dash, counting UTF-16 code units as JavaScript does, so a
+	// character outside the Basic Multilingual Plane gives two: /a/b.c d is
+	// -a-b-c-d. On Windows the path is lowercased first. qwen does this
+	// (sanitizeCwd in its utils/paths.ts).
+	SanitizedCwd
 )
 
 // Name returns the directory name for a working directory.
@@ -159,6 +166,22 @@ func (p ProjectDir) Name(cwd string) string {
 	case DashWrappedCwd:
 		trimmed := strings.TrimLeft(cwd, "/\\")
 		return "--" + strings.NewReplacer("/", "-", "\\", "-", ":", "-").Replace(trimmed) + "--"
+	case SanitizedCwd:
+		if runtime.GOOS == "windows" {
+			cwd = strings.ToLower(cwd)
+		}
+		var b strings.Builder
+		for _, r := range cwd {
+			switch {
+			case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9':
+				b.WriteRune(r)
+			case r > 0xFFFF:
+				b.WriteString("--")
+			default:
+				b.WriteByte('-')
+			}
+		}
+		return b.String()
 	default:
 		return ""
 	}

@@ -282,3 +282,21 @@ func TestRestart(t *testing.T) {
 		t.Errorf("appended entry linked to %q", p)
 	}
 }
+
+// A replacement history moves without the agent's own context in it.
+func TestPortableSummary(t *testing.T) {
+	s := &Session{Entries: []Entry{
+		text("1", "", RoleUser, "u1"),
+		{ID: "2", ParentID: "1", Compaction: &Compaction{Summary: []Entry{
+			{Role: RoleSystem, Audience: AudienceModel, Content: []Block{{Kind: BlockText, Text: "system prompt"}}},
+			text("", "", RoleUser, "SUMMARY"),
+		}}},
+		text("3", "2", RoleUser, "u2"),
+	}}
+	if got := texts(s.Context()); got != "system prompt SUMMARY u2" {
+		t.Errorf("context: %q", got)
+	}
+	if got := texts(s.Portable().Entries); got != "SUMMARY u2" {
+		t.Errorf("portable: %q", got)
+	}
+}

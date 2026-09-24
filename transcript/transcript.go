@@ -110,7 +110,11 @@ type Compaction struct {
 	// Summary is what stands in for the retired history, in the order the
 	// model receives it. It may be empty (a reset that keeps nothing) and may
 	// hold several entries (a replacement history). The compaction row itself
-	// reaches the model only through it.
+	// reaches the model only through it. Every entry here reaches the model;
+	// Audience tells the conversation (the summary itself, kept turns:
+	// AudienceAll) from context the agent regenerates for itself (a system
+	// prompt, an environment block: AudienceModel), which Portable leaves
+	// behind.
 	Summary []Entry
 	// Keep is the ID of the first earlier entry the agent keeps after the
 	// summary (pi's firstKeptEntryId, opencode's tail_start_id). Empty keeps

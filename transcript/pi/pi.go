@@ -705,8 +705,10 @@ func (v variant) compaction(s *transcript.Session, rows []row, msgs []stored, br
 				Content: text(systemText(*r.SystemMessage)), Audience: transcript.AudienceModel})
 		}
 	}
+	// The summary is conversation: it is all that is left of what it
+	// retired, and goes with the session to another agent.
 	self := s.Entries[i]
-	self.Compaction, self.Raw, self.Audience = nil, nil, transcript.AudienceModel
+	self.Compaction, self.Raw, self.Audience = nil, nil, transcript.AudienceAll
 	if v == piVariant {
 		c.Summary = append(c.Summary, self)
 		return c
@@ -749,12 +751,14 @@ func remoteHistory(raw json.RawMessage, summary transcript.Entry) []transcript.E
 				out, placed = append(out, summary), true
 			}
 		case "message":
-			role := transcript.RoleSystem
+			// Kept turns are conversation; developer and system items are
+			// the provider's own context.
+			role, audience := transcript.RoleSystem, transcript.AudienceModel
 			switch item.Role {
 			case "user":
-				role = transcript.RoleUser
+				role, audience = transcript.RoleUser, transcript.AudienceAll
 			case "assistant":
-				role = transcript.RoleAssistant
+				role, audience = transcript.RoleAssistant, transcript.AudienceAll
 			}
 			var parts content
 			if json.Unmarshal(item.Content, &parts) != nil {
@@ -767,7 +771,7 @@ func remoteHistory(raw json.RawMessage, summary transcript.Entry) []transcript.E
 				}
 			}
 			if len(blocks) > 0 {
-				out = append(out, transcript.Entry{Role: role, Time: summary.Time, Content: blocks, Audience: transcript.AudienceModel})
+				out = append(out, transcript.Entry{Role: role, Time: summary.Time, Content: blocks, Audience: audience})
 			}
 		}
 	}

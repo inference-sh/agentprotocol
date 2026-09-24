@@ -2,10 +2,13 @@
 //
 // Claude keeps one JSONL per session under
 // ~/.claude/projects/<mangled cwd>/<id>.jsonl. Rows form a tree through
-// uuid and parentUuid, and the file's last row is normally the leaf. Message
-// rows have type user or assistant and carry an Anthropic-shaped message.
-// Every other row (system, attachment, mode, last-prompt, summary) is opaque
-// but keeps its place in the chain.
+// uuid and parentUuid. Message rows have type user or assistant and carry an
+// Anthropic-shaped message. Every other row (system, attachment, mode,
+// last-prompt, summary) is opaque but keeps its place in the chain.
+//
+// The file alone does not say what Claude resumes with: its loader picks the
+// leaf, splices back what a compaction kept, and repairs the tree a parallel
+// tool call leaves behind. finish in resume.go does the same.
 package claude
 
 import (
@@ -37,9 +40,11 @@ var Codec = transcript.JSONL{
 			return running.serving(filepath.Join(home, ".claude", "sessions"))
 		},
 	},
-	Decode: decode,
-	Encode: encode,
-	Tree:   true,
+	Decode:  decode,
+	Finish:  finish,
+	Prepare: stamp,
+	Encode:  encode,
+	Tree:    true,
 }
 
 // Vendor is what a Claude session carries in Session.Vendor: the stamps
@@ -64,7 +69,22 @@ type row struct {
 	Message     *message `json:"message,omitempty"`
 	UUID        string   `json:"uuid,omitempty"`
 	Timestamp   string   `json:"timestamp,omitempty"`
+
+	// Read only: Claude sets these on rows it writes itself, never on a row
+	// this codec encodes.
+	IsMeta                    bool `json:"isMeta,omitempty"`
+	IsVisibleInTranscriptOnly bool `json:"isVisibleInTranscriptOnly,omitempty"`
+	IsAPIErrorMessage         bool `json:"isApiErrorMessage,omitempty"`
 }
+
+// timeLayout is JavaScript's Date.toISOString, which Claude stamps rows
+// with. Its loader compares timestamps as strings, which orders them only at
+// this fixed width.
+const timeLayout = "2006-01-02T15:04:05.000Z"
+
+// syntheticModel is the model Claude names on an assistant row it made up
+// itself, such as an API error it shows in place of a reply.
+const syntheticModel = "<synthetic>"
 
 type message struct {
 	Role         string          `json:"role"`
@@ -109,10 +129,19 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	if r.ParentUUID != nil {
 		e.ParentID = *r.ParentUUID
 	}
+	// Every row with a uuid is stamped, opaque ones included: a writer needs
+	// the file's latest time to keep appended rows after it.
+	var terr error
+	if r.Timestamp != "" {
+		e.Time, terr = time.Parse(time.RFC3339Nano, r.Timestamp)
+	}
 	if r.Type != "user" && r.Type != "assistant" || r.IsSidechain || r.Message == nil {
 		// Attachments and system rows sit in the parent chain between
 		// messages, so they keep their links and stay opaque.
 		return e, true, nil
+	}
+	if terr != nil {
+		return transcript.Entry{}, false, fmt.Errorf("row %s: timestamp: %w", r.UUID, terr)
 	}
 	if s.CWD == "" {
 		s.CWD = r.CWD
@@ -135,13 +164,6 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		v.Model = r.Message.Model
 		s.Model = r.Message.Model
 	}
-	if r.Timestamp != "" {
-		t, err := time.Parse(time.RFC3339Nano, r.Timestamp)
-		if err != nil {
-			return transcript.Entry{}, false, fmt.Errorf("row %s: timestamp: %w", r.UUID, err)
-		}
-		e.Time = t
-	}
 	content, err := blocks(r.Message.Content)
 	if err != nil {
 		return transcript.Entry{}, false, fmt.Errorf("row %s: %w", r.UUID, err)
@@ -151,7 +173,26 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	if e.Role == transcript.RoleUser && onlyToolResults(content) {
 		e.Role = transcript.RoleTool
 	}
+	e.Audience = audience(r)
 	return e, true, nil
+}
+
+// audience maps the flags Claude's UI filters on (shouldShowUserMessage in
+// its utils/messages.ts) and the rows normalizeMessagesForAPI leaves out.
+func audience(r row) transcript.Audience {
+	switch {
+	case r.Type == "user" && (r.IsMeta || r.IsVisibleInTranscriptOnly):
+		// Injected context (a caveat, a skill's body) is sent and never
+		// shown. The summary a full compaction leaves is sent and shown only
+		// in the ctrl+o transcript view. A partial compaction's summary lacks
+		// the transcript-only flag and is shown collapsed, so it stays for
+		// everyone.
+		return transcript.AudienceModel
+	case r.Type == "assistant" && r.IsAPIErrorMessage && r.Message.Model == syntheticModel:
+		// An API error Claude shows in place of a reply and never sends.
+		return transcript.AudienceUser
+	}
+	return transcript.AudienceAll
 }
 
 func onlyToolResults(content []transcript.Block) bool {
@@ -295,7 +336,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		Type:        string(role),
 		Message:     m,
 		UUID:        e.ID,
-		Timestamp:   t.UTC().Format(time.RFC3339Nano),
+		Timestamp:   t.UTC().Format(timeLayout),
 	}
 	if e.ParentID != "" {
 		r.ParentUUID = &e.ParentID

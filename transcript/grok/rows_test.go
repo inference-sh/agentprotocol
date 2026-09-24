@@ -10,22 +10,6 @@ import (
 	"github.com/inference-sh/agentprotocol/transcript"
 )
 
-// An attached image has no block, and leaves none empty behind.
-func TestImagePrompt(t *testing.T) {
-	s := read(t, "testdata/home", imageID)
-	for _, e := range s.Messages() {
-		for _, b := range e.Content {
-			if b.Kind == transcript.BlockText && b.Text == "" {
-				t.Errorf("empty text block on %s entry", e.Role)
-			}
-		}
-	}
-	want := []string{"user: What is in this image?", "assistant: Hello from mock server."}
-	if got := texts(s.Linearize()); !slices.Equal(got, want) {
-		t.Errorf("linearize %q, want %q", got, want)
-	}
-}
-
 // chatSession writes a session directory holding rows as its
 // chat_history.jsonl, for row shapes no run against the mock server
 // produces, and reads it back.
@@ -56,6 +40,8 @@ func blocks(e transcript.Entry) []string {
 			out = append(out, "tool_use:"+b.ToolID+" "+b.Name)
 		case transcript.BlockToolResult:
 			out = append(out, "tool_result:"+b.ToolID+" "+b.Text+" "+string(b.Status))
+		case transcript.BlockImage:
+			out = append(out, "image:"+b.MediaType)
 		default:
 			out = append(out, string(b.Kind)+":"+b.Text)
 		}
@@ -114,7 +100,7 @@ func TestLegacyRows(t *testing.T) {
 	}
 	want := [][]string{
 		{"system", "text:You are Grok."},
-		{"user", "text:read it"},
+		{"user", "text:read it", "image:image/png"},
 		{"assistant", "reasoning:thinking", "tool_use:c1 read_file"},
 		{"tool", "tool_result:c1 body ok"},
 		{"assistant", "text:done"},

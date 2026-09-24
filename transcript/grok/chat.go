@@ -37,6 +37,51 @@ type chatRow struct {
 	Summary []textPart `json:"summary"`
 	// Kind is a backend tool call's payload.
 	Kind json.RawMessage `json:"kind"`
+	// Images are the images a tool result carries beside its text.
+	Images []contentPart `json:"images"`
+}
+
+// contentPart is a part of a user item's content or of a tool result's
+// images, as far as images go: an image by URL (ContentPart::Image), or on
+// a legacy row an image_url block.
+type contentPart struct {
+	Type     string `json:"type"`
+	URL      string `json:"url"`
+	ImageURL *struct {
+		URL string `json:"url"`
+	} `json:"image_url"`
+}
+
+// image is the image block for a part, if it is an image.
+func (p contentPart) image(toolID string) (transcript.Block, bool) {
+	switch {
+	case p.Type == "image" && p.URL != "":
+		return imageFromURL(p.URL, toolID), true
+	case p.Type == "image_url" && p.ImageURL != nil && p.ImageURL.URL != "":
+		return imageFromURL(p.ImageURL.URL, toolID), true
+	}
+	return transcript.Block{}, false
+}
+
+// images is the image blocks of a content field's parts. A plain string has
+// none.
+func images(parts []contentPart, toolID string) []transcript.Block {
+	var out []transcript.Block
+	for _, p := range parts {
+		if b, ok := p.image(toolID); ok {
+			out = append(out, b)
+		}
+	}
+	return out
+}
+
+// contentImages is the image blocks of a content field.
+func contentImages(raw json.RawMessage, toolID string) []transcript.Block {
+	var parts []contentPart
+	if json.Unmarshal(raw, &parts) != nil {
+		return nil
+	}
+	return images(parts, toolID)
 }
 
 // chatToolCall is a tool call on an assistant row: flat in v1, under
@@ -115,7 +160,7 @@ func decodeChat(raw json.RawMessage, s *transcript.Session) (transcript.Entry, b
 		} else {
 			e.Audience = transcript.AudienceModel
 		}
-		e.Content = textBlocks(transcript.BlockText, text)
+		e.Content = append(textBlocks(transcript.BlockText, text), contentImages(r.Content, "")...)
 	case "assistant":
 		e.Role = transcript.RoleAssistant
 		e.Content = textBlocks(transcript.BlockReasoning, legacyReasoning(r))
@@ -128,9 +173,11 @@ func decodeChat(raw json.RawMessage, s *transcript.Session) (transcript.Entry, b
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: tc.ID, Name: name, Input: arguments(args)})
 		}
 	case "tool_result", "tool":
-		// Images a tool returned travel beside the text and have no block.
+		// The images a tool returned follow its result.
 		e.Role = transcript.RoleTool
 		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: r.ToolCallID, Text: contentText(r.Content), Status: transcript.StatusOK}}
+		e.Content = append(e.Content, contentImages(r.Content, r.ToolCallID)...)
+		e.Content = append(e.Content, images(r.Images, r.ToolCallID)...)
 	case "reasoning":
 		e.Role = transcript.RoleAssistant
 		e.Content = textBlocks(transcript.BlockReasoning, reasoningText(r.Summary, r.Content))
@@ -326,8 +373,9 @@ type systemItem struct {
 }
 
 type userItem struct {
-	Type    string     `json:"type"`
-	Content []textPart `json:"content"`
+	Type string `json:"type"`
+	// Content is text parts, then image parts.
+	Content []any `json:"content"`
 	// SyntheticReason marks context the runtime injected, so grok's turn
 	// walkers do not count it as a prompt (SyntheticReason::starts_prompt_turn).
 	SyntheticReason string `json:"synthetic_reason,omitempty"`
@@ -344,6 +392,7 @@ type toolResultItem struct {
 	Type       string `json:"type"`
 	ToolCallID string `json:"tool_call_id"`
 	Content    string `json:"content"`
+	Images     []any  `json:"images,omitempty"`
 }
 
 // encodeChat is the chat_history row for a new entry the model is given. A
@@ -358,17 +407,19 @@ func (p *plan) encodeChat(e transcript.Entry, s *transcript.Session) (json.RawMe
 	case transcript.RoleSystem:
 		rows = append(rows, systemItem{Type: "system", Content: e.Text()})
 	case transcript.RoleUser:
-		if e.Text() == "" {
+		imgs := imageParts(e, "")
+		if e.Text() == "" && imgs == nil {
 			return nil, nil
 		}
 		row := userItem{Type: "user"}
 		if n, ok := p.prompt[e.ID]; ok {
-			row.Content = []textPart{{Type: "text", Text: "<user_query>\n" + e.Text() + "\n</user_query>"}}
+			row.Content = []any{textPart{Type: "text", Text: "<user_query>\n" + e.Text() + "\n</user_query>"}}
 			row.PromptIndex = &n
 		} else {
-			row.Content = []textPart{{Type: "text", Text: e.Text()}}
+			row.Content = []any{textPart{Type: "text", Text: e.Text()}}
 			row.SyntheticReason = "system_reminder"
 		}
+		row.Content = append(row.Content, imgs...)
 		rows = append(rows, row)
 	case transcript.RoleAssistant:
 		row := assistantItem{Type: "assistant", Content: e.Text()}
@@ -389,7 +440,7 @@ func (p *plan) encodeChat(e transcript.Entry, s *transcript.Session) (json.RawMe
 	case transcript.RoleTool:
 		for _, b := range e.Content {
 			if b.Kind == transcript.BlockToolResult {
-				rows = append(rows, toolResultItem{Type: "tool_result", ToolCallID: b.ToolID, Content: b.Text})
+				rows = append(rows, toolResultItem{Type: "tool_result", ToolCallID: b.ToolID, Content: b.Text, Images: imageParts(e, b.ToolID)})
 			}
 		}
 	}

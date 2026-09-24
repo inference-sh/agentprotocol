@@ -1,6 +1,7 @@
 package kimi
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -123,6 +124,11 @@ func messageEntry(m contextMsg) transcript.Entry {
 	case "tool":
 		e.Role = transcript.RoleTool
 		e.Content = []transcript.Block{toolResult(m.ToolCallID, textOf(m.Content), m.IsError)}
+		for _, p := range m.Content {
+			if b, ok := media(p, m.ToolCallID); ok {
+				e.Content = append(e.Content, b)
+			}
+		}
 		return e
 	default:
 		return transcript.Entry{}
@@ -145,7 +151,55 @@ func contentBlock(p part) (transcript.Block, bool) {
 	case "think":
 		return transcript.Block{Kind: transcript.BlockReasoning, Text: p.Think}, true
 	}
-	return transcript.Block{}, false
+	return media(p, "")
+}
+
+// media reads an image_url, video_url or audio_url part: an image, or a
+// file for video and audio. A data: URL gives the bytes and media type;
+// any other URL, a web URL or kimi's media:// reference, is the location.
+// toolID is set for media a tool returned.
+func media(p part, toolID string) (transcript.Block, bool) {
+	var m *mediaURL
+	kind := transcript.BlockFile
+	switch p.Type {
+	case "image_url":
+		m, kind = p.ImageURL, transcript.BlockImage
+	case "video_url":
+		m = p.VideoURL
+	case "audio_url":
+		m = p.AudioURL
+	}
+	if m == nil || m.URL == "" {
+		return transcript.Block{}, false
+	}
+	b := transcript.Block{Kind: kind, ToolID: toolID, Name: m.Name}
+	if mediaType, data, ok := parseDataURL(m.URL); ok {
+		b.MediaType, b.Data = mediaType, data
+	} else {
+		b.URI = m.URL
+	}
+	return b, true
+}
+
+// parseDataURL reads a base64 data: URL.
+func parseDataURL(url string) (mediaType string, data []byte, ok bool) {
+	rest, found := strings.CutPrefix(url, "data:")
+	if !found {
+		return "", nil, false
+	}
+	meta, payload, found := strings.Cut(rest, ",")
+	if !found {
+		return "", nil, false
+	}
+	mediaType, found = strings.CutSuffix(meta, ";base64")
+	if !found {
+		return "", nil, false
+	}
+	data, err := base64.StdEncoding.DecodeString(payload)
+	if err != nil {
+		return "", nil, false
+	}
+	return mediaType, data, true
 }
 
 func toolResult(id, text string, isError bool) transcript.Block {
@@ -166,15 +220,21 @@ func textOf(parts []part) string {
 	return b.String()
 }
 
-// outputText is a tool result's output, which kimi stores as a string or as
-// content parts.
-func outputText(raw json.RawMessage) string {
+// output is a tool result's output, which kimi stores as a string or as
+// content parts: its text, and the media it returned for the call toolID.
+func output(raw json.RawMessage, toolID string) (string, []transcript.Block) {
 	if s, ok := str(raw); ok {
-		return s
+		return s, nil
 	}
 	var parts []part
 	_ = json.Unmarshal(raw, &parts)
-	return textOf(parts)
+	var out []transcript.Block
+	for _, p := range parts {
+		if b, ok := media(p, toolID); ok {
+			out = append(out, b)
+		}
+	}
+	return textOf(parts), out
 }
 
 // finish replays kimi's restore over the decoded rows: it drops what an undo

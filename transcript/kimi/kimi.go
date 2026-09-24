@@ -24,6 +24,7 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -122,6 +123,35 @@ type part struct {
 	Text      string  `json:"text"`
 	Think     string  `json:"think,omitempty"`
 	Encrypted *string `json:"encrypted,omitempty"`
+	// An image_url, video_url or audio_url part's media (ImageURLPart and
+	// its siblings in llm/message.ts).
+	ImageURL *mediaURL `json:"imageUrl,omitempty"`
+	VideoURL *mediaURL `json:"videoUrl,omitempty"`
+	AudioURL *mediaURL `json:"audioUrl,omitempty"`
+}
+
+// mediaURL is where a media part's content is: a data: URL holding its
+// bytes, as kimi records an image a person attaches or ReadMediaFile
+// returns, or a URL.
+type mediaURL struct {
+	URL  string `json:"url"`
+	ID   string `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
+// MarshalJSON writes a media part with its type and media alone, as kimi
+// does; other parts keep their text field even when it is empty.
+func (p part) MarshalJSON() ([]byte, error) {
+	type plain part
+	if p.ImageURL == nil && p.VideoURL == nil && p.AudioURL == nil {
+		return json.Marshal(plain(p))
+	}
+	return json.Marshal(struct {
+		Type     string    `json:"type"`
+		ImageURL *mediaURL `json:"imageUrl,omitempty"`
+		VideoURL *mediaURL `json:"videoUrl,omitempty"`
+		AudioURL *mediaURL `json:"audioUrl,omitempty"`
+	}{p.Type, p.ImageURL, p.VideoURL, p.AudioURL})
 }
 
 type toolCall struct {
@@ -316,7 +346,8 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		case "step.begin":
 			e = transcript.Entry{ID: ev.UUID, Role: transcript.RoleAssistant}
 		case "tool.result":
-			e = transcript.Entry{Role: transcript.RoleTool, Content: []transcript.Block{toolResult(ev.ToolCallID, outputText(ev.Result.Output), ev.Result.IsError)}}
+			text, media := output(ev.Result.Output, ev.ToolCallID)
+			e = transcript.Entry{Role: transcript.RoleTool, Content: append([]transcript.Block{toolResult(ev.ToolCallID, text, ev.Result.IsError)}, media...)}
 		default:
 			return transcript.Entry{}, false, nil
 		}
@@ -453,7 +484,7 @@ func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMes
 		var rows []any
 		switch e.Role {
 		case transcript.RoleUser, transcript.RoleSystem:
-			content := textParts(e)
+			content := promptParts(e)
 			rows = append(rows,
 				row{Type: "context.append_message", AgentID: "main", Time: ms, Message: mustJSON(contextMessage{
 					Role: "user", Content: content, ID: e.ID, ToolCalls: []toolCall{}, Origin: origin{Kind: "user"},
@@ -493,10 +524,21 @@ func (p plan) encoder() func(transcript.Entry, *transcript.Session) (json.RawMes
 					continue
 				}
 				ev := toolResultEvent{Type: "tool.result", ParentUUID: p.call[b.ToolID], ToolCallID: b.ToolID}
+				// A result with media is content parts, the text then what
+				// the tool returned, as ReadMediaFile's is; otherwise it is
+				// the text.
+				content := []part{{Type: "text", Text: b.Text}}
 				ev.Result.Output = b.Text
+				if media := mediaParts(e, b.ToolID); len(media) > 0 {
+					if b.Text == "" {
+						content = nil
+					}
+					content = append(content, media...)
+					ev.Result.Output = content
+				}
 				ev.Result.IsError = b.Status == transcript.StatusError
 				rows = append(rows, loopRow(ms, ev), row{Type: "agent.message.appended", Kind: "event", Time: ms, Message: mustJSON(appended{
-					Message: message{Role: "tool", Content: []part{{Type: "text", Text: b.Text}}, ToolCalls: []toolCall{}, ToolCallID: b.ToolID},
+					Message: message{Role: "tool", Content: content, ToolCalls: []toolCall{}, ToolCallID: b.ToolID},
 					Meta:    meta{Source: "tool"},
 				})})
 			}
@@ -580,8 +622,9 @@ type toolResultEvent struct {
 	ParentUUID string `json:"parentUuid"`
 	ToolCallID string `json:"toolCallId"`
 	Result     struct {
-		Output  string `json:"output"`
-		IsError bool   `json:"isError,omitempty"`
+		// Output is a string, or content parts.
+		Output  any  `json:"output"`
+		IsError bool `json:"isError,omitempty"`
 	} `json:"result"`
 }
 
@@ -597,6 +640,68 @@ func textParts(e transcript.Entry) []part {
 		}
 	}
 	return out
+}
+
+// promptParts is a user or system entry's text and its own media, in
+// order.
+func promptParts(e transcript.Entry) []part {
+	out := []part{}
+	for _, b := range e.Content {
+		switch {
+		case b.Kind == transcript.BlockText:
+			out = append(out, part{Type: "text", Text: b.Text})
+		case b.ToolID == "":
+			if p, ok := mediaPart(b); ok {
+				out = append(out, p)
+			}
+		}
+	}
+	return out
+}
+
+// mediaParts is the media parts for what the tool call toolID returned.
+func mediaParts(e transcript.Entry, toolID string) []part {
+	var out []part
+	for _, b := range e.Content {
+		if b.ToolID != toolID {
+			continue
+		}
+		if p, ok := mediaPart(b); ok {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+// mediaPart is the part for an image or file. kimi has parts for images,
+// video and audio, each by URL: a data: URL of the bytes, or a web URL. A
+// document, or media known only by a local path, has no part and is left
+// out.
+func mediaPart(b transcript.Block) (part, bool) {
+	if b.Kind != transcript.BlockImage && b.Kind != transcript.BlockFile {
+		return part{}, false
+	}
+	var url string
+	switch {
+	case b.Data != nil:
+		url = "data:" + b.MediaType + ";base64," + base64.StdEncoding.EncodeToString(b.Data)
+	case strings.HasPrefix(b.URI, "https://") || strings.HasPrefix(b.URI, "http://"):
+		url = b.URI
+	default:
+		return part{}, false
+	}
+	m := &mediaURL{URL: url, Name: b.Name}
+	switch {
+	case b.Kind == transcript.BlockImage || strings.HasPrefix(b.MediaType, "image/"):
+		return part{Type: "image_url", ImageURL: m}, true
+	case strings.HasPrefix(b.MediaType, "video/"):
+		return part{Type: "video_url", VideoURL: m}, true
+	case strings.HasPrefix(b.MediaType, "audio/"):
+		// An audio part has no name (AudioURLPart).
+		m.Name = ""
+		return part{Type: "audio_url", AudioURL: m}, true
+	}
+	return part{}, false
 }
 
 func mustJSON(v any) json.RawMessage {

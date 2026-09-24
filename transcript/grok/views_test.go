@@ -36,6 +36,8 @@ func texts(es []transcript.Entry) []string {
 				x += "call " + b.Name
 			case transcript.BlockToolResult:
 				x += "result " + b.Text
+			case transcript.BlockImage:
+				x += " [image " + b.MediaType + "]"
 			}
 		}
 		out = append(out, string(e.Role)+": "+x)

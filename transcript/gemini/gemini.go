@@ -19,6 +19,7 @@ package gemini
 import (
 	"context"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -642,8 +643,24 @@ type part struct {
 	VideoMetadata       json.RawMessage `json:"videoMetadata,omitempty"`
 	CodeExecutionResult json.RawMessage `json:"codeExecutionResult,omitempty"`
 	ExecutableCode      json.RawMessage `json:"executableCode,omitempty"`
-	FileData            json.RawMessage `json:"fileData,omitempty"`
-	InlineData          json.RawMessage `json:"inlineData,omitempty"`
+	FileData            *fileData       `json:"fileData,omitempty"`
+	InlineData          *blob           `json:"inlineData,omitempty"`
+}
+
+// blob is an inlineData part: an image or file's bytes in base64, as
+// gemini records one read into a prompt (an ACP image, an @ reference) or
+// returned by a tool.
+type blob struct {
+	MimeType    string `json:"mimeType"`
+	Data        string `json:"data"`
+	DisplayName string `json:"displayName,omitempty"`
+}
+
+// fileData is a fileData part: a file by reference.
+type fileData struct {
+	MimeType    string `json:"mimeType,omitempty"`
+	FileURI     string `json:"fileUri"`
+	DisplayName string `json:"displayName,omitempty"`
 }
 
 type functionCall struct {
@@ -656,6 +673,10 @@ type functionResponse struct {
 	ID       string          `json:"id"`
 	Name     string          `json:"name"`
 	Response json.RawMessage `json:"response"`
+	// Parts are images a tool returned, nested for a model that takes
+	// multimodal function responses (convertToFunctionResponse in core
+	// utils/generateContentResponseUtilities.ts).
+	Parts []part `json:"parts,omitempty"`
 }
 
 type thought struct {
@@ -812,22 +833,17 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	switch r.Type {
 	case "user":
 		e.Role = transcript.RoleUser
-		responses := 0
-		for _, p := range content {
-			if p.FunctionResponse != nil {
-				responses++
-				e.Content = append(e.Content, transcript.Block{
-					Kind: transcript.BlockToolResult, ToolID: p.FunctionResponse.ID, Name: p.FunctionResponse.Name,
-					Text: responseText(p.FunctionResponse.Response), Status: transcript.StatusOK,
-				})
-				continue
-			}
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
+		blocks, answered, err := userBlocks(content)
+		if err != nil {
+			return transcript.Entry{}, false, fmt.Errorf("row %s: %w", r.ID, err)
 		}
-		if responses > 0 && responses == len(content) {
+		e.Content = blocks
+		if answered > 0 && answered == len(content) {
 			e.Role = transcript.RoleTool
 		}
-		e.Content, e.ModelContent = ownContent(e.Content, r.DisplayContent)
+		if e.Content, e.ModelContent, err = ownContent(e.Content, r.DisplayContent); err != nil {
+			return transcript.Entry{}, false, fmt.Errorf("row %s: displayContent: %w", r.ID, err)
+		}
 		// The session context is the one record gemini leaves out on resume
 		// and yet gives the model: it starts every resumed chat with a fresh
 		// copy under the same id (core utils/environmentContext.ts,
@@ -858,6 +874,12 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: p.FunctionCall.ID, Name: p.FunctionCall.Name, Input: p.FunctionCall.Args})
 			case p.isThought():
 				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: p.Text})
+			case p.InlineData != nil || p.FileData != nil:
+				b, err := media(p, "")
+				if err != nil {
+					return transcript.Entry{}, false, fmt.Errorf("row %s: %w", r.ID, err)
+				}
+				e.Content = append(e.Content, b)
 			case p.Text != "":
 				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
 			}
@@ -873,6 +895,85 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		e.Audience = audience(len(content) > 0 || extra, shown != "" || extra)
 	}
 	return e, true, nil
+}
+
+// userBlocks reads a user record's parts. A tool's images and files come in
+// its functionResponse's parts, or, for a model that takes none there, as
+// the parts right after it (convertToFunctionResponse returns the response
+// and then its media, and a record holds each call's in turn); either way
+// they follow the result with its call's id. answered counts the parts
+// that are a tool's: its response and what it returned.
+func userBlocks(content []part) (blocks []transcript.Block, answered int, err error) {
+	toolID := "" // the call whose response came last
+	for _, p := range content {
+		switch {
+		case p.FunctionResponse != nil:
+			fr := p.FunctionResponse
+			answered++
+			toolID = fr.ID
+			blocks = append(blocks, transcript.Block{
+				Kind: transcript.BlockToolResult, ToolID: fr.ID, Name: fr.Name,
+				Text: responseText(fr.Response), Status: transcript.StatusOK,
+			})
+			for _, np := range fr.Parts {
+				if np.InlineData == nil && np.FileData == nil {
+					continue
+				}
+				b, err := media(np, fr.ID)
+				if err != nil {
+					return nil, 0, err
+				}
+				blocks = append(blocks, b)
+			}
+		case p.InlineData != nil || p.FileData != nil:
+			b, err := media(p, toolID)
+			if err != nil {
+				return nil, 0, err
+			}
+			if toolID != "" {
+				answered++
+			}
+			blocks = append(blocks, b)
+		default:
+			toolID = ""
+			blocks = append(blocks, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
+		}
+	}
+	return blocks, answered, nil
+}
+
+// media reads an inlineData or fileData part as an image or file block.
+// toolID is set for one a tool returned.
+func media(p part, toolID string) (transcript.Block, error) {
+	if p.InlineData != nil {
+		data, err := base64.StdEncoding.DecodeString(p.InlineData.Data)
+		if err != nil {
+			return transcript.Block{}, fmt.Errorf("inlineData: %w", err)
+		}
+		return transcript.Block{Kind: mediaKind(p.InlineData.MimeType), ToolID: toolID, MediaType: p.InlineData.MimeType, Data: data, Name: p.InlineData.DisplayName}, nil
+	}
+	return transcript.Block{Kind: mediaKind(p.FileData.MimeType), ToolID: toolID, MediaType: p.FileData.MimeType, URI: p.FileData.FileURI, Name: p.FileData.DisplayName}, nil
+}
+
+// mediaKind is the block an attachment of a media type is: an image, or any
+// other file.
+func mediaKind(mediaType string) transcript.BlockKind {
+	if strings.HasPrefix(mediaType, "image/") {
+		return transcript.BlockImage
+	}
+	return transcript.BlockFile
+}
+
+// mediaPart is the part gemini records an image or file as: inlineData for
+// bytes, fileData for a reference. A block with neither has no part.
+func mediaPart(b transcript.Block) (part, bool) {
+	switch {
+	case b.Data != nil:
+		return part{InlineData: &blob{MimeType: b.MediaType, Data: base64.StdEncoding.EncodeToString(b.Data), DisplayName: b.Name}}, true
+	case b.URI != "":
+		return part{FileData: &fileData{MimeType: b.MediaType, FileURI: b.URI, DisplayName: b.Name}}, true
+	}
+	return part{}, false
 }
 
 // responseText reads a functionResponse.response, which Gemini tools fill
@@ -912,6 +1013,13 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 					return nil, err
 				}
 				parts = append(parts, part{FunctionResponse: &functionResponse{ID: b.ToolID, Name: b.Name, Response: resp}})
+			case transcript.BlockImage, transcript.BlockFile:
+				// A tool's media follows its response as parts of their
+				// own, the shape gemini gives every model; nested parts
+				// are only for models that take them.
+				if p, ok := mediaPart(b); ok {
+					parts = append(parts, p)
+				}
 			}
 		}
 		if len(parts) == 0 {
@@ -923,6 +1031,9 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		}
 		r.Content = content
 	case transcript.RoleAssistant:
+		// A model turn is written in the legacy shape, text with thoughts
+		// and calls beside it, which has no place for an image the model
+		// made; one is dropped.
 		r.Type = "gemini"
 		var text strings.Builder
 		for _, b := range e.Content {
@@ -960,12 +1071,13 @@ func stamp(t time.Time) string {
 // after the prompt (core/client.ts wraps it in <hook_context>), which the
 // model is given and is not the person's. ModelContent is nil when the two
 // are the same.
-func ownContent(content []transcript.Block, display json.RawMessage) (own, model []transcript.Block) {
+func ownContent(content []transcript.Block, display json.RawMessage) (own, model []transcript.Block, err error) {
 	if ps, err := parts(display); err == nil && strings.TrimSpace(partsString(ps)) != "" {
-		for _, p := range ps {
-			own = append(own, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
+		own, _, err := userBlocks(ps)
+		if err != nil {
+			return nil, nil, err
 		}
-		return own, content
+		return own, content, nil
 	}
 	for _, b := range content {
 		if b.Kind == transcript.BlockText && strings.HasPrefix(strings.TrimSpace(b.Text), hookContext) {
@@ -974,7 +1086,7 @@ func ownContent(content []transcript.Block, display json.RawMessage) (own, model
 		own = append(own, b)
 	}
 	if len(own) == len(content) || len(own) == 0 {
-		return content, nil
+		return content, nil, nil
 	}
-	return own, content
+	return own, content, nil
 }

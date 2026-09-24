@@ -19,6 +19,7 @@
 package droid
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -110,7 +111,29 @@ type block struct {
 	ToolUseID string          `json:"tool_use_id,omitempty"`
 	IsError   *bool           `json:"is_error,omitempty"`
 	Content   json.RawMessage `json:"content,omitempty"`
+	Source    *mediaSource    `json:"source,omitempty"`
 }
+
+// mediaSource is an image's or a document's source as droid stores it (the
+// 0.226 bundle's message serializer): an image's bytes in base64; a PDF's
+// bytes in base64, which droid leaves empty on disk and keeps the file's
+// path beside; or a text document's text.
+type mediaSource struct {
+	Type      string `json:"type"`
+	Data      string `json:"data"`
+	MediaType string `json:"media_type,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Path      string `json:"path,omitempty"`
+	Mime      string `json:"mime,omitempty"`
+}
+
+// The kinds of source a block carries.
+const (
+	sourceBase64 = "base64"
+	sourceText   = "text"
+)
+
+const mediaPDF = "application/pdf"
 
 func header(raw json.RawMessage, s *transcript.Session) (bool, error) {
 	var h sessionStart
@@ -174,7 +197,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: b.ID, Name: b.Name, Input: b.Input})
 		case "tool_result":
 			toolResults++
-			text, err := resultText(b.Content)
+			text, media, err := result(b.Content, b.ToolUseID)
 			if err != nil {
 				return transcript.Entry{}, false, fmt.Errorf("row %s: tool_result: %w", r.ID, err)
 			}
@@ -183,12 +206,101 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 				st = transcript.StatusError
 			}
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolResult, ToolID: b.ToolUseID, Text: text, Status: st})
+			e.Content = append(e.Content, media...)
+		case "image", "document":
+			m, ok, err := decodeMedia(b, "")
+			if err != nil {
+				return transcript.Entry{}, false, fmt.Errorf("row %s: %s: %w", r.ID, b.Type, err)
+			}
+			if ok {
+				e.Content = append(e.Content, m)
+			}
 		}
 	}
 	if e.Role == transcript.RoleUser && toolResults == len(r.Message.Content) {
 		e.Role = transcript.RoleTool
 	}
+	if e.Role == transcript.RoleUser && e.Audience == transcript.AudienceAll {
+		e.Content, e.ModelContent = ownContent(e.Content)
+	}
 	return e, true, nil
+}
+
+// ownContent splits a prompt into what the person wrote and what the model
+// was given. droid adds its own context to a prompt as text blocks wrapped
+// in <system-reminder>, such as the local paths of attached images, and
+// strips them from every view of the prompt it shows (the bundle's
+// /<system-reminder>[\s\S]*?<\/system-reminder>/g replacements).
+// ModelContent is nil when the two are the same.
+func ownContent(content []transcript.Block) (own, model []transcript.Block) {
+	for _, b := range content {
+		if b.Kind == transcript.BlockText && isReminder(b.Text) {
+			continue
+		}
+		own = append(own, b)
+	}
+	if len(own) == len(content) || len(own) == 0 {
+		return content, nil
+	}
+	return own, content
+}
+
+func isReminder(text string) bool {
+	text = strings.TrimSpace(text)
+	return strings.HasPrefix(text, "<system-reminder>") && strings.HasSuffix(text, "</system-reminder>")
+}
+
+// decodeMedia reads an image or document block. toolID is set for one a
+// tool returned.
+func decodeMedia(b block, toolID string) (transcript.Block, bool, error) {
+	src := b.Source
+	if src == nil {
+		return transcript.Block{}, false, nil
+	}
+	out := transcript.Block{Kind: transcript.BlockImage, ToolID: toolID, MediaType: src.MediaType}
+	if b.Type == "document" {
+		out.Kind, out.Name, out.URI = transcript.BlockFile, src.Name, src.Path
+	}
+	switch src.Type {
+	case sourceBase64:
+		if src.Data != "" {
+			data, err := base64.StdEncoding.DecodeString(src.Data)
+			if err != nil {
+				return transcript.Block{}, false, err
+			}
+			out.Data = data
+		}
+	case sourceText:
+		if b.Type != "document" {
+			return transcript.Block{}, false, nil
+		}
+		out.Data = []byte(src.Data)
+		if src.Mime != "" {
+			out.MediaType = src.Mime
+		}
+	default:
+		return transcript.Block{}, false, nil
+	}
+	if out.Data == nil && out.URI == "" {
+		return transcript.Block{}, false, nil
+	}
+	return out, true, nil
+}
+
+// encodeMedia is the block droid stores an image or file as. droid keeps an
+// image only as base64 bytes, and a document only as a PDF or as text, so
+// an image or file given by reference alone, or a file of another type, has
+// no block and is dropped.
+func encodeMedia(b transcript.Block) (block, bool) {
+	switch {
+	case b.Kind == transcript.BlockImage && len(b.Data) > 0:
+		return block{Type: "image", Source: &mediaSource{Type: sourceBase64, Data: base64.StdEncoding.EncodeToString(b.Data), MediaType: b.MediaType}}, true
+	case b.Kind == transcript.BlockFile && b.MediaType == mediaPDF && len(b.Data) > 0:
+		return block{Type: "document", Source: &mediaSource{Type: sourceBase64, Data: base64.StdEncoding.EncodeToString(b.Data), MediaType: mediaPDF, Name: b.Name, Path: b.URI}}, true
+	case b.Kind == transcript.BlockFile && strings.HasPrefix(b.MediaType, "text/") && b.Data != nil:
+		return block{Type: "document", Source: &mediaSource{Type: sourceText, Data: string(b.Data), MediaType: "text/plain", Name: b.Name, Mime: b.MediaType}}, true
+	}
+	return block{}, false
 }
 
 // summaryPreamble wraps an LLM summary the way droid hands it to the model,
@@ -280,23 +392,37 @@ func finish(s *transcript.Session) error {
 	return nil
 }
 
-func resultText(raw json.RawMessage) (string, error) {
+// result reads a tool_result's content: a string, or blocks whose text is
+// the result's and whose images and documents the tool returned.
+func result(raw json.RawMessage, toolID string) (string, []transcript.Block, error) {
 	if len(raw) == 0 {
-		return "", nil
+		return "", nil, nil
 	}
 	var text string
 	if err := json.Unmarshal(raw, &text); err == nil {
-		return text, nil
+		return text, nil, nil
 	}
 	var bs []block
 	if err := json.Unmarshal(raw, &bs); err != nil {
-		return "", err
+		return "", nil, err
 	}
 	var b strings.Builder
+	var media []transcript.Block
 	for _, p := range bs {
-		b.WriteString(p.Text)
+		switch p.Type {
+		case "image", "document":
+			m, ok, err := decodeMedia(p, toolID)
+			if err != nil {
+				return "", nil, fmt.Errorf("%s: %w", p.Type, err)
+			}
+			if ok {
+				media = append(media, m)
+			}
+		default:
+			b.WriteString(p.Text)
+		}
 	}
-	return b.String(), nil
+	return b.String(), media, nil
 }
 
 func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
@@ -348,6 +474,17 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		return nil, nil
 	}
 	content := make([]block, 0, len(e.Content))
+	// A tool's images and documents go inside its tool_result, as droid
+	// stores them, after the result's text.
+	returned := map[string][]block{}
+	for _, b := range e.Content {
+		switch b.Kind {
+		case transcript.BlockImage, transcript.BlockFile:
+			if m, ok := encodeMedia(b); ok && b.ToolID != "" {
+				returned[b.ToolID] = append(returned[b.ToolID], m)
+			}
+		}
+	}
 	for _, b := range e.Content {
 		switch b.Kind {
 		case transcript.BlockText:
@@ -359,12 +496,28 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			}
 			content = append(content, block{Type: "tool_use", ID: b.ToolID, Name: b.Name, Input: in})
 		case transcript.BlockToolResult:
-			text, err := json.Marshal(b.Text)
+			var out any = b.Text
+			if media := returned[b.ToolID]; media != nil {
+				var parts []block
+				if b.Text != "" {
+					parts = append(parts, block{Type: "text", Text: b.Text})
+				}
+				out = append(parts, media...)
+				delete(returned, b.ToolID)
+			}
+			text, err := json.Marshal(out)
 			if err != nil {
 				return nil, err
 			}
 			isErr := b.Status == transcript.StatusError
 			content = append(content, block{Type: "tool_result", ToolUseID: b.ToolID, IsError: &isErr, Content: text})
+		case transcript.BlockImage, transcript.BlockFile:
+			if b.ToolID != "" {
+				continue
+			}
+			if m, ok := encodeMedia(b); ok {
+				content = append(content, m)
+			}
 		}
 	}
 	if len(content) == 0 {

@@ -1,6 +1,7 @@
 package grok
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"strconv"
 	"strings"
@@ -70,13 +71,77 @@ type updateMeta struct {
 	} `json:"x.ai/tool,omitempty"`
 }
 
-// contentBlock is an ACP content block, as a chunk carries it.
+// contentBlock is an ACP content block, as a chunk carries it: text, an
+// image with its bytes in base64, or a resource link or embedded resource a
+// prompt carried.
 type contentBlock struct {
 	Type string `json:"type"`
 	Text string `json:"text"`
 	Meta *struct {
 		BashCommand json.RawMessage `json:"bashCommand"`
 	} `json:"_meta,omitempty"`
+	Data     string `json:"data,omitempty"`
+	MimeType string `json:"mimeType,omitempty"`
+	URI      string `json:"uri,omitempty"`
+	Name     string `json:"name,omitempty"`
+	// Resource is an embedded resource's contents: text or a base64 blob.
+	Resource *struct {
+		URI      string  `json:"uri"`
+		MimeType string  `json:"mimeType"`
+		Text     *string `json:"text"`
+		Blob     string  `json:"blob"`
+	} `json:"resource,omitempty"`
+}
+
+// block is the block for a content block's attachment, one that is not
+// text: an image, a linked or embedded file. toolID is set for one a tool
+// returned.
+func (c contentBlock) block(toolID string) (transcript.Block, bool) {
+	kind := transcript.BlockFile
+	if strings.HasPrefix(c.MimeType, "image/") {
+		kind = transcript.BlockImage
+	}
+	switch c.Type {
+	case "image":
+		b := transcript.Block{Kind: transcript.BlockImage, ToolID: toolID, MediaType: c.MimeType, URI: c.URI}
+		if c.Data != "" {
+			data, err := base64.StdEncoding.DecodeString(c.Data)
+			if err != nil {
+				return transcript.Block{}, false
+			}
+			b.Data = data
+		}
+		return b, b.Data != nil || b.URI != ""
+	case "resource_link":
+		return transcript.Block{Kind: kind, ToolID: toolID, MediaType: c.MimeType, URI: c.URI, Name: c.Name}, c.URI != ""
+	case "resource":
+		r := c.Resource
+		if r == nil {
+			return transcript.Block{}, false
+		}
+		b := transcript.Block{Kind: transcript.BlockFile, ToolID: toolID, MediaType: r.MimeType, URI: r.URI}
+		if strings.HasPrefix(r.MimeType, "image/") {
+			b.Kind = transcript.BlockImage
+		}
+		switch {
+		case r.Text != nil:
+			b.Data = []byte(*r.Text)
+		case r.Blob != "":
+			data, err := base64.StdEncoding.DecodeString(r.Blob)
+			if err != nil {
+				return transcript.Block{}, false
+			}
+			b.Data = data
+		}
+		return b, true
+	}
+	return transcript.Block{}, false
+}
+
+// toolImage is an image entry of a tool call update's content.
+type toolImage struct {
+	Type    string   `json:"type"`
+	Content acpImage `json:"content"`
 }
 
 // toolContent is one entry of a tool call update's content.
@@ -143,13 +208,13 @@ func decodeUpdate(raw json.RawMessage, s *transcript.Session) (transcript.Entry,
 	e := transcript.Entry{Time: p.time, Audience: transcript.AudienceUser}
 	switch u.SessionUpdate {
 	case "user_message_chunk":
-		// An image the person attached is a chunk with no text: still their
-		// message, with no block this model can hold.
+		// An image the person attached is a chunk of its own, which
+		// finishUpdates joins onto the prompt's text.
 		e.Role = transcript.RoleUser
-		e.Content = textBlocks(transcript.BlockText, chunkText(u.Content))
+		e.Content = chunkBlocks(u.Content)
 	case "agent_message_chunk":
 		e.Role = transcript.RoleAssistant
-		e.Content = textBlocks(transcript.BlockText, chunkText(u.Content))
+		e.Content = chunkBlocks(u.Content)
 	case "agent_thought_chunk":
 		e.Role = transcript.RoleAssistant
 		e.Content = textBlocks(transcript.BlockReasoning, chunkText(u.Content))
@@ -173,7 +238,8 @@ func decodeUpdate(raw json.RawMessage, s *transcript.Session) (transcript.Entry,
 			return transcript.Entry{}, false, nil
 		}
 		e.Role = transcript.RoleTool
-		e.Content = []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: u.ToolCallID, Text: toolOutput(u), Status: status}}
+		text, media := toolOutput(u)
+		e.Content = append([]transcript.Block{{Kind: transcript.BlockToolResult, ToolID: u.ToolCallID, Text: text, Status: status}}, media...)
 	default:
 		return transcript.Entry{}, false, nil
 	}
@@ -188,25 +254,47 @@ func chunkText(raw json.RawMessage) string {
 	return c.Text
 }
 
-// toolOutput is what a finished call shows: its text content, or, for a
-// call the server ran, which reports only raw output, that output.
-func toolOutput(u update) string {
+// chunkBlocks is a message chunk's block: its text, or what it attaches.
+func chunkBlocks(raw json.RawMessage) []transcript.Block {
+	var c contentBlock
+	if json.Unmarshal(raw, &c) != nil {
+		return nil
+	}
+	if c.Type == "text" {
+		return textBlocks(transcript.BlockText, c.Text)
+	}
+	if b, ok := c.block(""); ok {
+		return []transcript.Block{b}
+	}
+	return nil
+}
+
+// toolOutput is what a finished call shows: its text content and the
+// images it returned, or, for a call the server ran, which reports only raw
+// output, that output.
+func toolOutput(u update) (string, []transcript.Block) {
 	var contents []toolContent
 	_ = json.Unmarshal(u.Content, &contents)
 	var b strings.Builder
+	var media []transcript.Block
 	for _, c := range contents {
-		if c.Type == "content" && c.Content.Type == "text" {
+		if c.Type != "content" {
+			continue
+		}
+		if c.Content.Type == "text" {
 			b.WriteString(c.Content.Text)
+		} else if m, ok := c.Content.block(u.ToolCallID); ok {
+			media = append(media, m)
 		}
 	}
-	if b.Len() == 0 && len(u.RawOutput) > 0 && string(u.RawOutput) != "null" {
+	if b.Len() == 0 && media == nil && len(u.RawOutput) > 0 && string(u.RawOutput) != "null" {
 		var text string
 		if json.Unmarshal(u.RawOutput, &text) == nil {
-			return text
+			return text, nil
 		}
-		return string(u.RawOutput)
+		return string(u.RawOutput), nil
 	}
-	return b.String()
+	return b.String(), media
 }
 
 // step is what a row means to grok's prompt and rewind bookkeeping
@@ -470,13 +558,19 @@ func (p *plan) encodeUpdates(e transcript.Entry, s *transcript.Session) ([]json.
 	var updates []update
 	switch e.Role {
 	case transcript.RoleUser:
-		u := update{SessionUpdate: "user_message_chunk", Content: mustJSON(contentBlock{Type: "text", Text: e.Text()})}
+		// The prompt's text, then a chunk for each image, as grok echoes a
+		// prompt with images attached.
+		meta := &updateMeta{HostTurn: true}
 		if n, ok := p.prompt[e.ID]; ok {
-			u.Meta = &updateMeta{PromptIndex: &n}
-		} else {
-			u.Meta = &updateMeta{HostTurn: true}
+			meta = &updateMeta{PromptIndex: &n}
 		}
-		updates = append(updates, u)
+		imgs := acpImages(e, "")
+		if e.Text() != "" || imgs == nil {
+			updates = append(updates, update{SessionUpdate: "user_message_chunk", Content: mustJSON(contentBlock{Type: "text", Text: e.Text()}), Meta: meta})
+		}
+		for _, img := range imgs {
+			updates = append(updates, update{SessionUpdate: "user_message_chunk", Content: mustJSON(img), Meta: meta})
+		}
 	case transcript.RoleAssistant:
 		for _, b := range e.Content {
 			switch b.Kind {
@@ -501,7 +595,15 @@ func (p *plan) encodeUpdates(e transcript.Entry, s *transcript.Session) ([]json.
 			if b.Status == transcript.StatusError {
 				status = "failed"
 			}
-			content := mustJSON([]toolContent{{Type: "content", Content: contentBlock{Type: "text", Text: b.Text}}})
+			contents := []any{toolContent{Type: "content", Content: contentBlock{Type: "text", Text: b.Text}}}
+			imgs := acpImages(e, b.ToolID)
+			if b.Text == "" && imgs != nil {
+				contents = nil
+			}
+			for _, img := range imgs {
+				contents = append(contents, toolImage{Type: "content", Content: img})
+			}
+			content := mustJSON(contents)
 			updates = append(updates, update{SessionUpdate: "tool_call_update", ToolCallID: b.ToolID, Status: status, Content: content})
 		}
 	}

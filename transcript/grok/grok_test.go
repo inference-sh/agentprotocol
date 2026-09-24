@@ -15,13 +15,13 @@ import (
 // with a mock summary long enough for grok to accept: five prompts, a mock
 // read_file call, a failed and a successful /compact, then one more prompt.
 // The second ran three prompts, rewound to the second with
-// x.ai/rewind/execute, and ran one more. The third is one prompt with a
-// PNG attached.
+// x.ai/rewind/execute, and ran one more. The third is a prompt with a PNG
+// attached, then a mock read_file call on a PNG, whose result is the image.
 const (
 	sampleCWD = "/tmp/harness-test-grok-2119806780"
 	sampleID  = "01a0d2bc-f56f-78f1-a37e-8fd0135a718e"
 	rewoundID = "01a0d2ca-0758-7b20-a275-8f5e8de76245"
-	imageID   = "01a0d2ca-e564-7a82-9e56-029d9a2a7dff"
+	imageID   = "01a0d2e6-055f-7473-9e9f-aa3315b452ed"
 )
 
 func TestRoundTrip(t *testing.T) {

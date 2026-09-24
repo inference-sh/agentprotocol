@@ -15,10 +15,12 @@
 package qwen
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -128,8 +130,25 @@ type message struct {
 type part struct {
 	Text             string            `json:"text,omitempty"`
 	Thought          bool              `json:"thought,omitempty"`
+	InlineData       *blob             `json:"inlineData,omitempty"`
+	FileData         *fileData         `json:"fileData,omitempty"`
 	FunctionCall     *functionCall     `json:"functionCall,omitempty"`
 	FunctionResponse *functionResponse `json:"functionResponse,omitempty"`
+}
+
+// blob is a Gemini inlineData part: bytes in base64, as Qwen records an
+// image or a file read into a prompt or returned by a tool.
+type blob struct {
+	MimeType    string `json:"mimeType"`
+	Data        string `json:"data"`
+	DisplayName string `json:"displayName,omitempty"`
+}
+
+// fileData is a Gemini fileData part: a file by reference.
+type fileData struct {
+	MimeType    string `json:"mimeType,omitempty"`
+	FileURI     string `json:"fileUri"`
+	DisplayName string `json:"displayName,omitempty"`
 }
 
 type functionCall struct {
@@ -142,6 +161,10 @@ type functionResponse struct {
 	ID       string          `json:"id"`
 	Name     string          `json:"name"`
 	Response json.RawMessage `json:"response"`
+	// Parts are the images and files the tool returned. Qwen nests them in
+	// the response for every model (convertToFunctionResponse in
+	// core/coreToolScheduler.ts).
+	Parts []part `json:"parts,omitempty"`
 }
 
 type toolCallResult struct {
@@ -155,6 +178,23 @@ type toolCallResult struct {
 // the history the person sees is untouched.
 type compressionPayload struct {
 	CompressedHistory []message `json:"compressedHistory"`
+}
+
+// promptPayload is a user row's systemPayload. Over ACP, Qwen records the
+// prompt's text as the message and the resource links the prompt carried
+// here: its transcript replay shows them after the text
+// (projectUserAttachmentReferences in acp-bridge/src/transcript-replay.ts),
+// and the resumed model history, built from the message, never has them.
+type promptPayload struct {
+	ResourceLinks []resourceLink `json:"resourceLinks"`
+}
+
+// resourceLink is an ACP resource_link content block.
+type resourceLink struct {
+	Type     string `json:"type"`
+	URI      string `json:"uri"`
+	Name     string `json:"name"`
+	MimeType string `json:"mimeType"`
 }
 
 // slashCommandPayload is a slash_command row's systemPayload.
@@ -223,7 +263,10 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 			// Qwen's own context.
 			c := &transcript.Compaction{}
 			for i, m := range p.CompressedHistory {
-				e := content(m, transcript.StatusOK)
+				e, err := content(m, transcript.StatusOK)
+				if err != nil {
+					return transcript.Entry{}, false, fmt.Errorf("row %s: compression: %w", r.UUID, err)
+				}
 				if i == 0 || hasCall(e) {
 					e.Audience = transcript.AudienceAll
 				}
@@ -268,14 +311,33 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	if r.ToolCallResult != nil && r.ToolCallResult.Status != "" && r.ToolCallResult.Status != "success" {
 		status = transcript.StatusError
 	}
-	e.Content = content(*r.Message, status).Content
+	c, err := content(*r.Message, status)
+	if err != nil {
+		return transcript.Entry{}, false, fmt.Errorf("row %s: %w", r.UUID, err)
+	}
+	e.Content = c.Content
+	if r.Type == "user" && len(r.SystemPayload) > 0 {
+		var p promptPayload
+		if json.Unmarshal(r.SystemPayload, &p) == nil {
+			var links []transcript.Block
+			for _, l := range p.ResourceLinks {
+				if l.Type == "resource_link" && l.URI != "" {
+					links = append(links, transcript.Block{Kind: mediaKind(l.MimeType), MediaType: l.MimeType, URI: l.URI, Name: l.Name})
+				}
+			}
+			if links != nil {
+				e.ModelContent = e.Content
+				e.Content = append(append([]transcript.Block(nil), e.Content...), links...)
+			}
+		}
+	}
 	return e, true, nil
 }
 
 // content maps a Gemini-shaped message to an entry, for the history a
 // compression keeps as much as for a row's own message. A user message that
 // only answers function calls is a tool entry.
-func content(m message, status transcript.Status) transcript.Entry {
+func content(m message, status transcript.Status) (transcript.Entry, error) {
 	e := transcript.Entry{Role: transcript.RoleUser, Audience: transcript.AudienceModel}
 	if m.Role == "model" {
 		e.Role = transcript.RoleAssistant
@@ -287,7 +349,23 @@ func content(m message, status transcript.Status) transcript.Entry {
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: p.FunctionCall.ID, Name: p.FunctionCall.Name, Input: p.FunctionCall.Args})
 		case p.FunctionResponse != nil:
 			results++
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolResult, ToolID: p.FunctionResponse.ID, Name: p.FunctionResponse.Name, Text: responseText(p.FunctionResponse.Response), Status: status})
+			fr := p.FunctionResponse
+			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolResult, ToolID: fr.ID, Name: fr.Name, Text: responseText(fr.Response), Status: status})
+			for _, np := range fr.Parts {
+				b, ok, err := media(np, fr.ID)
+				if err != nil {
+					return transcript.Entry{}, err
+				}
+				if ok {
+					e.Content = append(e.Content, b)
+				}
+			}
+		case p.InlineData != nil || p.FileData != nil:
+			b, _, err := media(p, "")
+			if err != nil {
+				return transcript.Entry{}, err
+			}
+			e.Content = append(e.Content, b)
 		case p.Thought:
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: p.Text})
 		default:
@@ -297,7 +375,44 @@ func content(m message, status transcript.Status) transcript.Entry {
 	if e.Role == transcript.RoleUser && results > 0 && results == len(m.Parts) {
 		e.Role = transcript.RoleTool
 	}
-	return e
+	return e, nil
+}
+
+// media reads an inlineData or fileData part as an image or file block.
+// toolID is set for one a tool returned.
+func media(p part, toolID string) (transcript.Block, bool, error) {
+	switch {
+	case p.InlineData != nil:
+		data, err := base64.StdEncoding.DecodeString(p.InlineData.Data)
+		if err != nil {
+			return transcript.Block{}, false, fmt.Errorf("inlineData: %w", err)
+		}
+		return transcript.Block{Kind: mediaKind(p.InlineData.MimeType), ToolID: toolID, MediaType: p.InlineData.MimeType, Data: data, Name: p.InlineData.DisplayName}, true, nil
+	case p.FileData != nil:
+		return transcript.Block{Kind: mediaKind(p.FileData.MimeType), ToolID: toolID, MediaType: p.FileData.MimeType, URI: p.FileData.FileURI, Name: p.FileData.DisplayName}, true, nil
+	}
+	return transcript.Block{}, false, nil
+}
+
+// mediaKind is the block an attachment of a media type is: an image, or any
+// other file.
+func mediaKind(mediaType string) transcript.BlockKind {
+	if strings.HasPrefix(mediaType, "image/") {
+		return transcript.BlockImage
+	}
+	return transcript.BlockFile
+}
+
+// mediaPart is the part Qwen records an image or file as: inlineData for
+// bytes, fileData for a reference. A block with neither has no part.
+func mediaPart(b transcript.Block) (part, bool) {
+	switch {
+	case b.Data != nil:
+		return part{InlineData: &blob{MimeType: b.MediaType, Data: base64.StdEncoding.EncodeToString(b.Data), DisplayName: b.Name}}, true
+	case b.URI != "":
+		return part{FileData: &fileData{MimeType: b.MediaType, FileURI: b.URI, DisplayName: b.Name}}, true
+	}
+	return part{}, false
 }
 
 // finish reads the rows the way Qwen's loader and resume do
@@ -446,8 +561,21 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	default:
 		return nil, nil
 	}
+	responses := map[string]int{} // tool call id -> index of its functionResponse part
 	for _, b := range e.Content {
 		switch b.Kind {
+		case transcript.BlockImage, transcript.BlockFile:
+			p, ok := mediaPart(b)
+			if !ok {
+				continue
+			}
+			// What a tool returned goes in its response, as Qwen nests it.
+			if i, found := responses[b.ToolID]; found && b.ToolID != "" {
+				fr := r.Message.Parts[i].FunctionResponse
+				fr.Parts = append(fr.Parts, p)
+				continue
+			}
+			r.Message.Parts = append(r.Message.Parts, p)
 		case transcript.BlockText:
 			r.Message.Parts = append(r.Message.Parts, part{Text: b.Text})
 		case transcript.BlockReasoning:
@@ -465,6 +593,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			if err != nil {
 				return nil, err
 			}
+			responses[b.ToolID] = len(r.Message.Parts)
 			r.Message.Parts = append(r.Message.Parts, part{FunctionResponse: &functionResponse{ID: b.ToolID, Name: b.Name, Response: resp}})
 			status := "success"
 			if b.Status == transcript.StatusError {

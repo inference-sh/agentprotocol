@@ -827,6 +827,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		if responses > 0 && responses == len(content) {
 			e.Role = transcript.RoleTool
 		}
+		e.Content, e.ModelContent = ownContent(e.Content, r.DisplayContent)
 		// The session context is the one record gemini leaves out on resume
 		// and yet gives the model: it starts every resumed chat with a fresh
 		// copy under the same id (core utils/environmentContext.ts,
@@ -951,4 +952,29 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 
 func stamp(t time.Time) string {
 	return t.UTC().Format("2006-01-02T15:04:05.000Z")
+}
+
+// ownContent splits a user record's blocks into what the person wrote and
+// what the model was given. gemini records the first as displayContent when
+// they differ; without it, a hook's additional context is a part of its own
+// after the prompt (core/client.ts wraps it in <hook_context>), which the
+// model is given and is not the person's. ModelContent is nil when the two
+// are the same.
+func ownContent(content []transcript.Block, display json.RawMessage) (own, model []transcript.Block) {
+	if ps, err := parts(display); err == nil && strings.TrimSpace(partsString(ps)) != "" {
+		for _, p := range ps {
+			own = append(own, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
+		}
+		return own, content
+	}
+	for _, b := range content {
+		if b.Kind == transcript.BlockText && strings.HasPrefix(strings.TrimSpace(b.Text), hookContext) {
+			continue
+		}
+		own = append(own, b)
+	}
+	if len(own) == len(content) || len(own) == 0 {
+		return content, nil
+	}
+	return own, content
 }

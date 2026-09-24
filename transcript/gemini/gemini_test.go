@@ -340,3 +340,29 @@ func TestAudience(t *testing.T) {
 		t.Error("linearize dropped the slash command the history view shows")
 	}
 }
+
+// TestHookContext: a hook's additional context rides in the prompt's
+// record as a part of its own. The model is given it; another agent gets
+// the prompt the person typed.
+func TestHookContext(t *testing.T) {
+	st, err := Codec.Open(compactHome)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := st.Read(t.Context(), compactResumed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var sent bool
+	for _, e := range s.Context() {
+		sent = sent || strings.Contains(e.Text(), "<hook_context>")
+	}
+	if !sent {
+		t.Error("the model is not given the hook's context")
+	}
+	for _, e := range s.Portable().Entries {
+		if strings.Contains(e.Text(), "<hook_context>") {
+			t.Errorf("gemini's hook context moved with the session: %q", e.Text())
+		}
+	}
+}

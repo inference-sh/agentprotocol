@@ -433,8 +433,10 @@ func TestHermes019Audience(t *testing.T) {
 		"user: What was the codename?", hello,
 	})
 	ctx := said(s.Context())
-	if len(ctx) != 6 || ctx[0] != "user: What is the project codename? Reply ONLY the codename." ||
-		!strings.HasPrefix(ctx[1], "assistant: [PRIOR CONTEXT") || ctx[2] != "user: Name a prime number." {
+	// Prompts reach the model as hermes sent them, the hook's context
+	// appended (api_content); said cuts each line at 60 characters.
+	if len(ctx) != 6 || ctx[0] != "user: What is the project codename? Reply ONLY the codename.\n\nThe " ||
+		!strings.HasPrefix(ctx[1], "assistant: [PRIOR CONTEXT") || ctx[2] != "user: Name a prime number.\n\nThe project codename is HOOK-HERMES-17" {
 		t.Errorf("model context: %q", ctx)
 	}
 	for _, e := range s.Context() {
@@ -442,8 +444,9 @@ func TestHermes019Audience(t *testing.T) {
 			t.Errorf("the model is given archived history: %q", e.Text())
 		}
 	}
+	// Another agent gets the prompts as the person typed them.
 	port := said(s.Portable().Entries)
-	if len(port) != 6 || port[0] != ctx[0] || port[1] != ctx[1] {
+	if len(port) != 6 || port[0] != "user: What is the project codename? Reply ONLY the codename." || port[1] != ctx[1] {
 		t.Errorf("portable: %q", port)
 	}
 }
@@ -590,5 +593,33 @@ func TestHermesListCompressionChain(t *testing.T) {
 	}
 	if len(infos) != 1 || infos[0].ID != "tip" || infos[0].Title != "the chat" {
 		t.Errorf("list = %+v, want the chain once as its tip", infos)
+	}
+}
+
+// TestHermesAPIContent: hermes stores the prompt as the person typed it
+// and, beside it, the bytes it sent, here with the hook's context
+// appended. The model is given those bytes on resume; the person, and
+// another agent, get the prompt.
+func TestHermesAPIContent(t *testing.T) {
+	s := readSample(t, Hermes, "testdata/hermes-0.19", hermes019ID)
+	const prompt = "What is the project codename? Reply ONLY the codename."
+	var sent, shown bool
+	for _, e := range s.Context() {
+		if strings.HasPrefix(e.Text(), prompt+"\n\nThe project codename is HOOK-HERMES-") {
+			sent = true
+		}
+	}
+	for _, e := range s.Linearize() {
+		if e.Text() == prompt {
+			shown = true
+		}
+	}
+	if !sent || !shown {
+		t.Errorf("hook context sent to the model: %v; prompt shown as typed: %v", sent, shown)
+	}
+	for _, e := range s.Portable().Entries {
+		if strings.Contains(e.Text(), "HOOK-HERMES-") {
+			t.Errorf("hermes' hook context moved with the session: %q", e.Text())
+		}
 	}
 }

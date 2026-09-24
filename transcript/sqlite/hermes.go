@@ -197,6 +197,10 @@ type hermesRow struct {
 	ts                           sql.NullFloat64
 	active, compacted, summary   bool
 	displayKind, displayMetadata string
+	// apiContent is the text hermes sent the model for the row, when it
+	// differs from what was stored for the person: hook and plugin context
+	// appended to a prompt, or a sanitized reply.
+	apiContent string
 }
 
 // hermesMessageColumns selects a messages row, naming a default for each
@@ -216,6 +220,7 @@ func hermesMessageColumns(cols map[string]bool) string {
 		col("_compressed_summary", "COALESCE(_compressed_summary, 0) != 0", "0"),
 		col("display_kind", "COALESCE(display_kind, '')", "''"),
 		col("display_metadata", "COALESCE(display_metadata, '')", "''"),
+		col("api_content", "COALESCE(api_content, '')", "''"),
 	}, ", ")
 }
 
@@ -267,13 +272,14 @@ func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session
 	for rows.Next() {
 		var r hermesRow
 		if err := rows.Scan(&r.id, &r.role, &r.content, &r.toolID, &r.toolName, &r.toolCalls, &r.reasoning, &r.ts,
-			&r.active, &r.compacted, &r.summary, &r.displayKind, &r.displayMetadata); err != nil {
+			&r.active, &r.compacted, &r.summary, &r.displayKind, &r.displayMetadata, &r.apiContent); err != nil {
 			return nil, err
 		}
 		e, err := hermesEntry(r.role, r.content, r.toolID, r.toolName, r.toolCalls.String, r.reasoning)
 		if err != nil {
 			return nil, err
 		}
+		e.ModelContent = hermesAPIContent(r, e.Content)
 		// Raw marks the entry as read; a rewrite keeps its row as is.
 		e.ID = "hermes-row:" + strconv.FormatInt(r.id, 10)
 		e.Raw = json.RawMessage(strconv.Quote(r.content))
@@ -288,6 +294,23 @@ func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session
 	}
 	hermesAudience(s, hrows)
 	return s, nil
+}
+
+// hermesAPIContent is what hermes gives the model for a user or assistant
+// row that carries api_content: those bytes in place of its text, "replay
+// the exact bytes sent live" (agent/turn_context.py), with its tool calls
+// kept. Nil when the row has none, or they match what was stored.
+func hermesAPIContent(r hermesRow, content []transcript.Block) []transcript.Block {
+	if r.apiContent == "" || r.apiContent == r.content || (r.role != "user" && r.role != "assistant") {
+		return nil
+	}
+	out := []transcript.Block{{Kind: transcript.BlockText, Text: hermesText(r.apiContent)}}
+	for _, b := range content {
+		if b.Kind != transcript.BlockText {
+			out = append(out, b)
+		}
+	}
+	return out
 }
 
 // hermesAudience sets who each row is for, from the flags hermes keeps on it.
@@ -346,9 +369,19 @@ func hermesAudience(s *transcript.Session, rows []hermesRow) {
 		if isSummary && r.active {
 			full.Audience, full.Compaction, full.Raw = transcript.AudienceAll, nil, nil
 			before := (&transcript.Session{Entries: s.Entries[:i]}).Context()
+			stored := map[string][]transcript.Block{}
+			for _, x := range s.Entries[:i] {
+				stored[x.ID] = x.Content
+			}
 			for j := range before {
 				if copies[before[j].ID] {
 					before[j].Audience = transcript.AudienceAll
+				}
+				// Context gives the bytes hermes sent; the summary keeps
+				// what was stored, with those bytes beside it, so another
+				// agent gets the prompt and not hermes' hook output.
+				if c, ok := stored[before[j].ID]; ok && before[j].ModelContent != nil {
+					before[j].Content = c
 				}
 			}
 			e.Compaction = &transcript.Compaction{Summary: append(before, full)}

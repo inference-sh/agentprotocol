@@ -131,6 +131,12 @@ type Entry struct {
 	Role     Role      `json:"role"`
 	Time     time.Time `json:"time,omitempty"`
 	Content  []Block   `json:"content"`
+	// ModelContent is what the model was given for this entry when the agent
+	// sent it something other than what the person saw: a prompt with hook
+	// output appended (hermes' api_content), for instance. Nil means Content.
+	// Context returns it in Content's place; Portable does not, since what an
+	// agent adds to a message is its own.
+	ModelContent []Block `json:"model_content,omitempty"`
 	// Audience is who the entry is for. The zero value is everyone.
 	Audience Audience `json:"audience,omitempty"`
 	// Compaction is set on a row that replaces the history before it.
@@ -376,6 +382,17 @@ func (s *Session) Linearize() []Entry {
 // gathered so far is replaced by the compaction's Summary followed by the
 // gathered entries from Keep on.
 func (s *Session) Context() []Entry {
+	out := s.context()
+	for i, e := range out {
+		if e.ModelContent != nil {
+			out[i].Content = e.ModelContent
+		}
+	}
+	return out
+}
+
+// context is Context with each entry's Content as the person saw it.
+func (s *Session) context() []Entry {
 	type placed struct {
 		at int // position on the branch
 		e  Entry
@@ -434,13 +451,14 @@ func (s *Session) Portable() *Session {
 	out.Restart = false
 	out.Vendor = nil
 	out.Entries = nil
-	for _, e := range s.Context() {
+	for _, e := range s.context() {
 		if e.Audience != AudienceAll {
 			continue
 		}
 		e.ParentID = ""
 		e.Raw = nil
 		e.Compaction = nil
+		e.ModelContent = nil
 		out.Entries = append(out.Entries, e)
 	}
 	return &out

@@ -300,3 +300,21 @@ func TestPortableSummary(t *testing.T) {
 		t.Errorf("portable: %q", got)
 	}
 }
+
+// The model is given what the agent sent, and another agent what the
+// person wrote.
+func TestModelContent(t *testing.T) {
+	e := text("1", "", RoleUser, "question")
+	e.ModelContent = []Block{{Kind: BlockText, Text: "question + hook"}}
+	s := &Session{Entries: []Entry{e}}
+	if got := texts(s.Context()); got != "question + hook" {
+		t.Errorf("context: %q", got)
+	}
+	if got := texts(s.Linearize()); got != "question" {
+		t.Errorf("linearize: %q", got)
+	}
+	p := s.Portable().Entries
+	if texts(p) != "question" || p[0].ModelContent != nil {
+		t.Errorf("portable: %+v", p)
+	}
+}

@@ -239,3 +239,46 @@ func TestWriteReasoning(t *testing.T) {
 		t.Errorf("assistant row %s", raw)
 	}
 }
+
+// droid keeps a model's thinking as signed thinking blocks in the answer's
+// content, and a redacted one as its data (the 0.226 bundle's content-block
+// serializer: {type:"thinking",thinking,signature,signatureProvider} and
+// {type:"redacted_thinking",data}); the mock model streams neither, so the
+// rows are hand-built in that shape. A chat-completions answer carries its
+// reasoning twice, as a thinking block signed with the wire field's name and
+// as chatCompletionReasoningContent, and is read once.
+func TestThinkingBlocks(t *testing.T) {
+	rows := []string{
+		`{"type":"session_start","id":"s","title":"t","owner":"unknown","version":2,"cwd":"/w"}`,
+		`{"type":"message","id":"u1","timestamp":"2026-09-24T09:00:00.000Z","message":{"role":"user","content":[{"type":"text","text":"first"}]}}`,
+		`{"type":"message","id":"a1","parentId":"u1","timestamp":"2026-09-24T09:00:01.000Z","message":{"role":"assistant","content":[{"type":"thinking","thinking":"signed thought","signature":"EqQB","signatureProvider":"anthropic"},{"type":"redacted_thinking","data":"EmwK"},{"type":"thinking","thinking":"  ","signature":"EqQC","signatureProvider":"anthropic"},{"type":"text","text":"one"}],"modelId":"claude-opus-4-5"}}`,
+		`{"type":"message","id":"u2","parentId":"a1","timestamp":"2026-09-24T09:00:02.000Z","message":{"role":"user","content":[{"type":"text","text":"second"}]}}`,
+		`{"type":"message","id":"a2","parentId":"u2","timestamp":"2026-09-24T09:00:03.000Z","message":{"role":"assistant","content":[{"type":"thinking","thinking":"streamed thought","signature":"reasoning_content","signatureProvider":"openai"},{"type":"text","text":"two"}],"chatCompletionReasoningField":"reasoning_content","chatCompletionReasoningContent":"streamed thought","modelId":"custom:mock-model"}}`,
+	}
+	home := t.TempDir()
+	dir := filepath.Join(home, ".factory", "sessions", transcript.MangledCwd.Name("/w"))
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "s.jsonl"), []byte(strings.Join(rows, "\n")+"\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	st, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := st.Read(t.Context(), "s")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, e := range s.Context() {
+		for _, b := range e.Content {
+			got = append(got, e.ID+" "+string(b.Kind)+" "+b.Text)
+		}
+	}
+	want := []string{"u1 text first", "a1 reasoning signed thought", "a1 text one", "u2 text second", "a2 reasoning streamed thought", "a2 text two"}
+	if strings.Join(got, "\n") != strings.Join(want, "\n") {
+		t.Errorf("context\n  %q\nwant\n  %q", got, want)
+	}
+}

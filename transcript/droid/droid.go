@@ -118,6 +118,9 @@ type block struct {
 	IsError   *bool           `json:"is_error,omitempty"`
 	Content   json.RawMessage `json:"content,omitempty"`
 	Source    *mediaSource    `json:"source,omitempty"`
+	// Thinking is a thinking block's text. Its signature and the provider
+	// that signed it are left in the row.
+	Thinking string `json:"thinking,omitempty"`
 }
 
 // mediaSource is an image's or a document's source as droid stores it (the
@@ -194,12 +197,27 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	case r.Message.Visibility == visibilityLLM || r.Message.HiddenFromUserViews:
 		e.Audience = transcript.AudienceModel
 	}
-	if r.Message.ChatCompletionReasoningContent != "" {
-		e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: r.Message.ChatCompletionReasoningContent})
+	// A model's reasoning is its thinking blocks, which droid keeps in the
+	// content of every provider's answer (the 0.226 bundle's content-block
+	// serializer), signed by the provider that wrote them. On resume droid
+	// sends a block the route accepts the signature of as a thinking block,
+	// and turns any other into <thinking> text (its history sanitizer), so
+	// the model gets the text on every route but Gemini, which drops it. A
+	// chat-completions answer also keeps its reasoning as
+	// chatCompletionReasoningContent, which is what droid sends back on that
+	// route; its thinking blocks are the same text, so they are not read
+	// twice. A redacted_thinking block has no text to read.
+	cc := r.Message.ChatCompletionReasoningContent
+	if cc != "" {
+		e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: cc})
 	}
 	toolResults := 0
 	for _, b := range r.Message.Content {
 		switch b.Type {
+		case "thinking":
+			if cc == "" && strings.TrimSpace(b.Thinking) != "" {
+				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: b.Thinking})
+			}
 		case "text":
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: b.Text})
 		case "tool_use":

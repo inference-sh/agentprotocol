@@ -264,6 +264,7 @@ func (s *piSession) Prompt(ctx context.Context, in Input) error {
 	s.mu.Lock()
 	wasActive, runSeen := s.turnActive, s.runSeen
 	s.openTurnLocked()
+	turn := s.turnIndex
 	s.mu.Unlock()
 
 	cmd := pirpc.Command{ID: s.proc.NewID(), Type: pirpc.CmdPrompt, Message: text}
@@ -287,7 +288,7 @@ func (s *piSession) Prompt(ctx context.Context, in Input) error {
 		s.proc.Forget(cmd.ID)
 		return fmt.Errorf("driver: send prompt to pi: %w", err)
 	}
-	go s.awaitPrompt(cmd.Type, ch)
+	go s.awaitPrompt(cmd.Type, turn, ch)
 	return nil
 }
 
@@ -297,8 +298,9 @@ func (s *piSession) Prompt(ctx context.Context, in Input) error {
 // running) comes with no run, so it ends the turn. An acceptance with no run
 // behind it is a prompt pi handled itself (an extension command, or an input
 // hook that consumed it), and get_state tells that apart from a run about to
-// start.
-func (s *piSession) awaitPrompt(command string, ch <-chan pirpc.Response) {
+// start. Both only apply while the turn the prompt was sent in is still the
+// current one.
+func (s *piSession) awaitPrompt(command string, turn int, ch <-chan pirpc.Response) {
 	res, ok := <-ch
 	if !ok {
 		return // pi exited; watch ends the turn
@@ -306,7 +308,7 @@ func (s *piSession) awaitPrompt(command string, ch <-chan pirpc.Response) {
 	if !res.Success {
 		s.mu.Lock()
 		defer s.mu.Unlock()
-		if s.turnActive && !s.runSeen {
+		if s.turnActive && s.turnIndex == turn && !s.runSeen {
 			s.failTurnLocked("pi rejected the prompt: "+res.Error, "prompt_rejected")
 		} else {
 			s.backend.diagnose(fmt.Sprintf("pi rejected a %s: %s", command, res.Error))
@@ -314,7 +316,7 @@ func (s *piSession) awaitPrompt(command string, ch <-chan pirpc.Response) {
 		return
 	}
 	s.mu.Lock()
-	check := s.turnActive && !s.runSeen && !s.compacting
+	check := s.turnActive && s.turnIndex == turn && !s.runSeen && !s.compacting
 	s.mu.Unlock()
 	if !check {
 		return
@@ -329,7 +331,7 @@ func (s *piSession) awaitPrompt(command string, ch <-chan pirpc.Response) {
 	// start has been seen by now.
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if s.turnActive && !s.runSeen && !s.compacting {
+	if s.turnActive && s.turnIndex == turn && !s.runSeen && !s.compacting {
 		s.completeTurnLocked("handled")
 	}
 }

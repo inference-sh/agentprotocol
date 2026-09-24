@@ -187,6 +187,9 @@ func gooseEntry(role, contentJSON string) (transcript.Entry, error) {
 // own scheme, YYYYMMDD_N with N one past the highest for the day, allocated
 // inside the transaction so it can never land on a session goose already has.
 func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	if s.Agent != "goose" {
+		s = s.Portable()
+	}
 	now := time.Now()
 	if s.Created.IsZero() {
 		s.Created = now

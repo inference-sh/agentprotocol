@@ -312,6 +312,9 @@ func indexOf(ids []string, id string) int {
 // in-memory list with {"$set": {"messages": ...}}, which would drop records
 // appended after it loaded. Write while gemini is not running the session.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	if s.Agent != "gemini" {
+		s = s.Portable()
+	}
 	if s.CWD == "" {
 		return "", errors.New("gemini: a session needs its project root (CWD): gemini files sessions under it")
 	}

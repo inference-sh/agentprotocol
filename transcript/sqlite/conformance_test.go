@@ -233,3 +233,13 @@ func TestForeignIDs(t *testing.T) {
 		})
 	}
 }
+
+// TestImported hands each sample to its own writer as if another agent had
+// read it; see transcripttest.Imported.
+func TestImported(t *testing.T) {
+	for _, s := range stores {
+		t.Run(s.name, func(t *testing.T) {
+			transcripttest.Imported(t, s.codec, transcripttest.Sample{Home: copyHome(t, s.home), ID: s.id})
+		})
+	}
+}

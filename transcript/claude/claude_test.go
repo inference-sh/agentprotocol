@@ -89,3 +89,7 @@ func TestHolders(t *testing.T) {
 		t.Errorf("holders = %+v, want [4242]", infos)
 	}
 }
+
+func TestImported(t *testing.T) {
+	transcripttest.Imported(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

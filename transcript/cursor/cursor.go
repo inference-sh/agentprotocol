@@ -26,6 +26,7 @@ import (
 
 // Codec is the Cursor CLI session store, read-only.
 var Codec = transcript.JSONL{
+	Agent: "cursor",
 	Layout: transcript.Layout{
 		Files: files,
 		Peek:  peek,

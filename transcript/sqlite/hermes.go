@@ -237,6 +237,9 @@ type hermesVendor struct{ Source string }
 // A session hermes does not have gets a sessions row with the columns hermes
 // requires, source and started_at.
 func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	if s.Agent != "hermes" {
+		s = s.Portable()
+	}
 	if s.ID == "" {
 		s.ID = transcript.NewUUID()
 	}

@@ -23,6 +23,11 @@ import (
 // Layout answers where files are. Decode and Encode answer what a row is.
 // Header, WriteHeader and After cover the few agents that need more.
 type JSONL struct {
+	// Agent is the agent's id. Read stamps it on every session; Write keeps
+	// the Raw rows of a session only when it carries this id, and takes any
+	// other session through Session.Portable.
+	Agent string
+
 	// Layout locates session files under a home directory.
 	Layout Layout
 
@@ -39,6 +44,14 @@ type JSONL struct {
 	// it finds on message rows, such as cwd or timestamps on agents that
 	// stamp every row.
 	Decode func(row json.RawMessage, s *Session) (e Entry, ok bool, err error)
+
+	// Finish runs once every row of a session is decoded, for formats whose
+	// rows mean something only together: one message split across rows, a
+	// marker that pins the leaf or undoes turns, links the agent repairs in
+	// memory when it loads. It sets Audience, Compaction, Leaf and the links
+	// on entries the way the agent's loader reads them; it never touches Raw.
+	// Optional.
+	Finish func(s *Session) error
 
 	// Encode turns an entry into a row for a session that did not come from
 	// this agent. Entries with Raw set are written as they were and never
@@ -271,11 +284,19 @@ func (st *jsonlStore) Read(ctx context.Context, id string) (*Session, error) {
 		return nil, err
 	}
 	defer f.Close()
-	s := &Session{ID: id}
+	s := &Session{ID: id, Agent: st.cfg.Agent}
 	if fi, err := f.Stat(); err == nil {
 		s.Updated = fi.ModTime()
 	}
-	return s, st.decodeAll(f, s)
+	if err := st.decodeAll(f, s); err != nil {
+		return nil, err
+	}
+	if st.cfg.Finish != nil {
+		if err := st.cfg.Finish(s); err != nil {
+			return nil, fmt.Errorf("transcript: %s: %w", id, err)
+		}
+	}
+	return s, nil
 }
 
 func (st *jsonlStore) decodeAll(r *os.File, s *Session) error {
@@ -338,6 +359,9 @@ func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
 	if st.cfg.Encode == nil {
 		return "", ErrReadOnly
 	}
+	if s.Agent != st.cfg.Agent {
+		s = s.Portable()
+	}
 	if st.cfg.Prepare != nil {
 		if err := st.cfg.Prepare(st.home, s); err != nil {
 			return "", err
@@ -370,12 +394,20 @@ func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
 			buf.WriteByte('\n')
 		}
 	}
+	// An entry the encoder has no row for is left out, and an entry linked
+	// to it is linked to its parent instead, so no written row names a
+	// parent the file does not hold.
+	dropped := map[string]string{}
 	for _, e := range s.Entries {
+		for {
+			to, ok := dropped[e.ParentID]
+			if !ok {
+				break
+			}
+			e.ParentID = to
+		}
 		row := e.Raw
 		if row == nil {
-			if st.cfg.Encode == nil {
-				return "", ErrReadOnly
-			}
 			var err error
 			row, err = st.cfg.Encode(e, s)
 			if err != nil {
@@ -383,6 +415,9 @@ func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
 			}
 		}
 		if len(row) == 0 {
+			if e.Raw == nil && e.ID != "" {
+				dropped[e.ID] = e.ParentID
+			}
 			continue
 		}
 		buf.Write(row)
@@ -507,7 +542,8 @@ var UUIDs = IDScheme{New: NewUUID, Valid: IsUUID}
 // rejects an event whose id is not a UUID). Each replaced id is remapped in
 // every ParentID that named it. With tree set, a new entry with no ParentID
 // is linked to the entry before it that has an id: the previous new entry,
-// or the active leaf of the rows read back.
+// or, for the first, the session's Leaf when it pins one and otherwise the
+// last row read back with an id.
 //
 // Codecs that plan a write across entries before encoding call it
 // themselves; the JSONL engine calls it for the rest.
@@ -529,13 +565,17 @@ func AssignIDs(s *Session, scheme IDScheme, tree bool) {
 			e.ID = id
 		}
 	}
-	prev := ""
+	prev, first := "", true
 	for i := range s.Entries {
 		e := &s.Entries[i]
 		if e.Raw == nil && e.Role != RoleOpaque {
 			if to, ok := remap[e.ParentID]; ok {
 				e.ParentID = to
 			}
+			if first && s.Leaf != "" {
+				prev = s.Leaf
+			}
+			first = false
 			if tree && e.ParentID == "" {
 				e.ParentID = prev
 			}

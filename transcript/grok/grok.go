@@ -23,6 +23,7 @@ import (
 var Codec transcript.Codec = codec{}
 
 var files = transcript.JSONL{
+	Agent: "grok",
 	Layout: transcript.Layout{
 		Files: func(home, cwd string) ([]string, error) {
 			project := "*"

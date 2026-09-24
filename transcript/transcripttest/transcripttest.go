@@ -7,6 +7,7 @@ package transcripttest
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -61,6 +62,9 @@ func RoundTrip(t *testing.T, codec transcript.Codec, sample Sample) *transcript.
 	}
 	if s.ID != sample.ID {
 		t.Errorf("read: id = %q, want %q", s.ID, sample.ID)
+	}
+	if s.Agent == "" {
+		t.Errorf("read: session carries no agent, so a writer cannot tell its rows are this agent's")
 	}
 	msgs := s.Messages()
 	if len(msgs) == 0 {
@@ -318,4 +322,77 @@ func ListsCWD(t *testing.T, codec transcript.Codec, sample Sample) {
 		}
 	}
 	t.Errorf("unfiltered listing has no session %s", sample.ID)
+}
+
+// Imported checks the move between agents: a session read from this
+// agent's sample, handed to the writer as if another agent had read it,
+// must be re-encoded rather than copied, and read back as the same
+// conversation. A writer that emitted the session's Raw rows here would
+// put one agent's format into another's store.
+func Imported(t *testing.T, codec transcript.Codec, sample Sample) {
+	t.Helper()
+	ctx := context.Background()
+	src, err := codec.Open(sample.Home)
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	s, err := src.Read(ctx, sample.ID)
+	if err != nil {
+		t.Fatalf("read: %v", err)
+	}
+	want := s.Portable().Entries
+	// The rows become another agent's: a writer that copies Raw writes rows
+	// its agent cannot read.
+	s.Agent = "elsewhere"
+	for i := range s.Entries {
+		s.Entries[i].Raw = json.RawMessage(`{"elsewhere":"a row in another agent's format"}`)
+	}
+	dst, err := codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatalf("open temp: %v", err)
+	}
+	id, err := dst.Write(ctx, s)
+	if err == transcript.ErrReadOnly {
+		t.Skip("store is read-only")
+	}
+	if err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	back, err := dst.Read(ctx, id)
+	if err != nil {
+		t.Fatalf("read back: %v", err)
+	}
+	got := back.Linearize()
+	if len(got) == 0 {
+		t.Fatal("read back no conversation")
+	}
+	// A format may not hold every entry another agent has (a system row, a
+	// reasoning block it would have to forge), so the check is that what
+	// comes back is the conversation's text, in order, with nothing added.
+	var wantText, gotText []string
+	for _, e := range want {
+		if x := e.Text(); x != "" {
+			wantText = append(wantText, string(e.Role)+": "+x)
+		}
+	}
+	for _, e := range got {
+		if x := e.Text(); x != "" {
+			gotText = append(gotText, string(e.Role)+": "+x)
+		}
+	}
+	if !subsequence(gotText, wantText) {
+		t.Errorf("imported conversation reads back as\n  %q\nwant (in order, a subset of)\n  %q", gotText, wantText)
+	}
+}
+
+// subsequence reports whether every element of sub appears in seq, in
+// order.
+func subsequence(sub, seq []string) bool {
+	i := 0
+	for _, x := range seq {
+		if i < len(sub) && sub[i] == x {
+			i++
+		}
+	}
+	return i == len(sub)
 }

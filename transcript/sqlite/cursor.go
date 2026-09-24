@@ -395,6 +395,9 @@ func resultString(raw json.RawMessage) string {
 }
 
 func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	if s.Agent != "cursor" {
+		s = s.Portable()
+	}
 	if s.ID == "" {
 		s.ID = transcript.NewUUID()
 	}

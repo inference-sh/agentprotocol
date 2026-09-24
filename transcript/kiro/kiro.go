@@ -25,6 +25,7 @@ import (
 var Codec transcript.Codec = codec{}
 
 var files = transcript.JSONL{
+	Agent: "kiro",
 	Layout: transcript.Layout{
 		Root: ".kiro/sessions/cli",
 		Ext:  ".jsonl",
@@ -55,6 +56,9 @@ type store struct {
 // Write gives new entries their ids before writing, so the transcript rows
 // and the sidecar's message lists name the same messages.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	if s.Agent != "kiro" {
+		s = s.Portable()
+	}
 	transcript.AssignIDs(s, transcript.UUIDs, false)
 	return st.Store.Write(ctx, s)
 }

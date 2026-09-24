@@ -31,6 +31,7 @@ const root = ".qwen/projects"
 
 // Codec is the Qwen Code session store.
 var Codec = transcript.JSONL{
+	Agent: "qwen",
 	Layout: transcript.Layout{
 		Ext: ".jsonl",
 		Files: func(home, cwd string) ([]string, error) {

@@ -19,6 +19,7 @@ import (
 
 // Codec is the droid session store.
 var Codec = transcript.JSONL{
+	Agent: "droid",
 	Layout: transcript.Layout{
 		Root:    ".factory/sessions",
 		Project: transcript.MangledCwd,

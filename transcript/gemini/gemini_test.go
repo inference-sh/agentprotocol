@@ -198,3 +198,7 @@ func TestFileMinute(t *testing.T) {
 		t.Errorf("created earlier: named %v", got)
 	}
 }
+
+func TestImported(t *testing.T) {
+	transcripttest.Imported(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

@@ -25,17 +25,17 @@ func init() {
 // with session, message and part tables whose payloads are JSON in a `data`
 // column; a session belongs to a project keyed by its worktree directory.
 var (
-	Opencode transcript.Codec = openCodec{".local/share/opencode/opencode.db"}
-	Kilo     transcript.Codec = openCodec{".local/share/kilo/kilo.db"}
+	Opencode transcript.Codec = openCodec{"opencode", ".local/share/opencode/opencode.db"}
+	Kilo     transcript.Codec = openCodec{"kilo", ".local/share/kilo/kilo.db"}
 )
 
-type openCodec struct{ rel string }
+type openCodec struct{ agent, rel string }
 
 func (c openCodec) Open(home string) (transcript.Store, error) {
-	return &openStore{path: filepath.Join(home, c.rel)}, nil
+	return &openStore{agent: c.agent, path: filepath.Join(home, c.rel)}, nil
 }
 
-type openStore struct{ path string }
+type openStore struct{ agent, path string }
 
 // openMessage is the message `data` payload. Only the fields the codec reads
 // or writes are named; Vendor keeps the rest for a same-agent write.
@@ -127,7 +127,7 @@ func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, 
 	defer done()
 	defer db.Close()
 
-	s := &transcript.Session{ID: id}
+	s := &transcript.Session{ID: id, Agent: st.agent}
 	var created, updated int64
 	err = db.QueryRowContext(ctx, "SELECT directory, title, time_created, time_updated FROM session WHERE id = ?", id).
 		Scan(&s.CWD, &s.Title, &created, &updated)
@@ -237,6 +237,9 @@ func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, 
 // part schemas require. A session opencode does not have yet gets a session
 // row, bound to its directory's project.
 func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	if s.Agent != st.agent {
+		s = s.Portable()
+	}
 	if err := os.MkdirAll(filepath.Dir(st.path), 0o755); err != nil {
 		return "", err
 	}

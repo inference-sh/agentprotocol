@@ -41,6 +41,7 @@ var Codec = func() transcript.JSONL {
 // workspace.yaml, but not the index. Alone it produces sessions Copilot will
 // not load; the sqlite module's Copilot codec wraps it and adds the index.
 var Writer = transcript.JSONL{
+	Agent: "copilot",
 	Layout: transcript.Layout{
 		Files:       files,
 		PathFor:     pathFor,

@@ -132,3 +132,7 @@ func TestForeignIDs(t *testing.T) {
 func TestListsCWD(t *testing.T) {
 	transcripttest.ListsCWD(t, Codec, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
 }
+
+func TestImported(t *testing.T) {
+	transcripttest.Imported(t, Writer, transcripttest.Sample{Home: "testdata/home", CWD: sampleCWD, ID: sampleID})
+}

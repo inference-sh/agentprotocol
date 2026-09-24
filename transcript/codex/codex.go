@@ -24,6 +24,7 @@ import (
 
 // Codec is the Codex session store.
 var Codec = transcript.JSONL{
+	Agent: "codex",
 	Layout: transcript.Layout{
 		Files:   files,
 		PathFor: pathFor,

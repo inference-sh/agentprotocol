@@ -41,6 +41,7 @@ import (
 var Codec transcript.Codec = codec{}
 
 var files = transcript.JSONL{
+	Agent: "kimi",
 	Layout: transcript.Layout{
 		Files: func(home, cwd string) ([]string, error) {
 			workspace := "*"
@@ -179,6 +180,9 @@ func (st *store) Read(ctx context.Context, id string) (*transcript.Session, erro
 // Write plans the session's new entries and writes them with the rows kimi
 // rebuilds the model's context from as well as its transcript rows.
 func (st *store) Write(ctx context.Context, s *transcript.Session) (string, error) {
+	if s.Agent != "kimi" {
+		s = s.Portable()
+	}
 	// Ids first: the plan names entries by id.
 	transcript.AssignIDs(s, files.IDs, false)
 	w := files

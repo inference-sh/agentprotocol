@@ -23,18 +23,19 @@ import (
 )
 
 // Codec is the pi session store.
-var Codec = codec(".pi/agent/sessions", transcript.DashWrappedCwd)
+var Codec = codec("pi", ".pi/agent/sessions", transcript.DashWrappedCwd)
 
 // OMP is the Oh My Pi session store. It shares pi's rows. Its directory
 // name is a dash and the last path element, as observed on one sample;
 // listing does not depend on it because the header carries the cwd.
-var OMP = codec(".omp/agent/sessions", ompDir)
+var OMP = codec("omp", ".omp/agent/sessions", ompDir)
 
 // ompDir is the project directory rule Oh My Pi was seen to use.
 const ompDir transcript.ProjectDir = -1
 
-func codec(root string, project transcript.ProjectDir) transcript.JSONL {
+func codec(agent, root string, project transcript.ProjectDir) transcript.JSONL {
 	return transcript.JSONL{
+		Agent: agent,
 		Layout: transcript.Layout{
 			Files: func(home, cwd string) ([]string, error) {
 				return transcript.Glob(filepath.Join(home, root, "*", "*.jsonl"))

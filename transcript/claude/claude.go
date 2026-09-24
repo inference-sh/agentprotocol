@@ -26,6 +26,7 @@ const Version = "2.1.278"
 
 // Codec is the Claude Code session store.
 var Codec = transcript.JSONL{
+	Agent: "claude",
 	Layout: transcript.Layout{
 		Root:    ".claude/projects",
 		Project: transcript.MangledCwd,

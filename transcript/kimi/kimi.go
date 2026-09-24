@@ -24,7 +24,6 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -684,7 +683,7 @@ func mediaPart(b transcript.Block) (part, bool) {
 	var url string
 	switch {
 	case b.Data != nil:
-		url = "data:" + b.MediaType + ";base64," + base64.StdEncoding.EncodeToString(b.Data)
+		url = transcript.DataURL(b.MediaType, b.Data)
 	case strings.HasPrefix(b.URI, "https://") || strings.HasPrefix(b.URI, "http://"):
 		url = b.URI
 	default:

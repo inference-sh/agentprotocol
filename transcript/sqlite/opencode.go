@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/rand"
 	"database/sql"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -615,7 +614,7 @@ func openAttachments(p openPart, kilo bool) []transcript.Block {
 // otherwise.
 func mediaBlock(mediaType, url, name string) transcript.Block {
 	b := transcript.Block{Kind: transcript.BlockFile, MediaType: mediaType, URI: url, Name: name}
-	if mt, data, ok := parseDataURL(url); ok {
+	if mt, data, ok := transcript.ParseDataURL(url); ok {
 		b.URI, b.Data = "", data
 		if b.MediaType == "" {
 			b.MediaType = mt
@@ -625,31 +624,6 @@ func mediaBlock(mediaType, url, name string) transcript.Block {
 		b.Kind = transcript.BlockImage
 	}
 	return b
-}
-
-// parseDataURL decodes a data: URL (RFC 2397) into its media type and bytes.
-func parseDataURL(u string) (string, []byte, bool) {
-	rest, ok := strings.CutPrefix(u, "data:")
-	if !ok {
-		return "", nil, false
-	}
-	meta, payload, ok := strings.Cut(rest, ",")
-	if !ok {
-		return "", nil, false
-	}
-	mediaType, params, _ := strings.Cut(meta, ";")
-	if strings.HasSuffix(params, "base64") {
-		data, err := base64.StdEncoding.DecodeString(payload)
-		if err != nil {
-			return "", nil, false
-		}
-		return mediaType, data, true
-	}
-	text, err := neturl.PathUnescape(payload)
-	if err != nil {
-		return "", nil, false
-	}
-	return mediaType, []byte(text), true
 }
 
 // mediaURL is a block's content as a URL: a data: URL of its bytes, or the
@@ -662,7 +636,7 @@ func mediaURL(b transcript.Block) string {
 	if mt == "" {
 		mt = "application/octet-stream"
 	}
-	return "data:" + mt + ";base64," + base64.StdEncoding.EncodeToString(b.Data)
+	return transcript.DataURL(mt, b.Data)
 }
 
 // openRevertOf reads a session's revert state, nil when there is none or

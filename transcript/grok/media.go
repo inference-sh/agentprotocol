@@ -17,33 +17,12 @@ import (
 // base64 data: URL, or the URL itself as the image's location.
 func imageFromURL(url, toolID string) transcript.Block {
 	b := transcript.Block{Kind: transcript.BlockImage, ToolID: toolID}
-	if mediaType, data, ok := parseDataURL(url); ok {
+	if mediaType, data, ok := transcript.ParseDataURL(url); ok {
 		b.MediaType, b.Data = mediaType, data
 		return b
 	}
 	b.URI = url
 	return b
-}
-
-// parseDataURL reads a base64 data: URL.
-func parseDataURL(url string) (mediaType string, data []byte, ok bool) {
-	rest, found := strings.CutPrefix(url, "data:")
-	if !found {
-		return "", nil, false
-	}
-	meta, payload, found := strings.Cut(rest, ",")
-	if !found {
-		return "", nil, false
-	}
-	mediaType, found = strings.CutSuffix(meta, ";base64")
-	if !found {
-		return "", nil, false
-	}
-	data, err := base64.StdEncoding.DecodeString(payload)
-	if err != nil {
-		return "", nil, false
-	}
-	return mediaType, data, true
 }
 
 // imageURL is the URL grok stores an image block as: a data: URL of its
@@ -54,7 +33,7 @@ func imageURL(b transcript.Block) (string, bool) {
 	case b.Kind != transcript.BlockImage:
 		return "", false
 	case b.Data != nil:
-		return "data:" + b.MediaType + ";base64," + base64.StdEncoding.EncodeToString(b.Data), true
+		return transcript.DataURL(b.MediaType, b.Data), true
 	case strings.HasPrefix(b.URI, "https://") || strings.HasPrefix(b.URI, "http://"):
 		return b.URI, true
 	}

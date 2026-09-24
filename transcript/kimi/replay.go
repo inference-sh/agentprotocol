@@ -1,7 +1,6 @@
 package kimi
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -173,33 +172,12 @@ func media(p part, toolID string) (transcript.Block, bool) {
 		return transcript.Block{}, false
 	}
 	b := transcript.Block{Kind: kind, ToolID: toolID, Name: m.Name}
-	if mediaType, data, ok := parseDataURL(m.URL); ok {
+	if mediaType, data, ok := transcript.ParseDataURL(m.URL); ok {
 		b.MediaType, b.Data = mediaType, data
 	} else {
 		b.URI = m.URL
 	}
 	return b, true
-}
-
-// parseDataURL reads a base64 data: URL.
-func parseDataURL(url string) (mediaType string, data []byte, ok bool) {
-	rest, found := strings.CutPrefix(url, "data:")
-	if !found {
-		return "", nil, false
-	}
-	meta, payload, found := strings.Cut(rest, ",")
-	if !found {
-		return "", nil, false
-	}
-	mediaType, found = strings.CutSuffix(meta, ";base64")
-	if !found {
-		return "", nil, false
-	}
-	data, err := base64.StdEncoding.DecodeString(payload)
-	if err != nil {
-		return "", nil, false
-	}
-	return mediaType, data, true
 }
 
 func toolResult(id, text string, isError bool) transcript.Block {

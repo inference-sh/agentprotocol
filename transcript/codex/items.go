@@ -1,10 +1,8 @@
 package codex
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"net/url"
 	"strings"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -328,8 +326,8 @@ func image(c contentItem, toolID string) (transcript.Block, bool) {
 	case c.FileID != "":
 		b.URI = c.FileID
 	case strings.HasPrefix(c.ImageURL, "data:"):
-		mediaType, data, err := dataURL(c.ImageURL)
-		if err != nil {
+		mediaType, data, ok := transcript.ParseDataURL(c.ImageURL)
+		if !ok {
 			return transcript.Block{}, false
 		}
 		b.MediaType, b.Data = mediaType, data
@@ -339,27 +337,13 @@ func image(c contentItem, toolID string) (transcript.Block, bool) {
 	return b, true
 }
 
-// dataURL splits a data: URL into its media type and bytes.
-func dataURL(u string) (string, []byte, error) {
-	meta, payload, ok := strings.Cut(strings.TrimPrefix(u, "data:"), ",")
-	if !ok {
-		return "", nil, fmt.Errorf("data URL without a comma")
-	}
-	if mediaType, ok := strings.CutSuffix(meta, ";base64"); ok {
-		data, err := base64.StdEncoding.DecodeString(payload)
-		return mediaType, data, err
-	}
-	data, err := url.PathUnescape(payload)
-	return meta, []byte(data), err
-}
-
 // imageURL is the image_url Codex stores for an image block: the bytes as
 // a data: URL, or a web URL as it is. A local path is no URL the model's
 // API fetches, and Codex keeps no other kind of reference, so it has none.
 func imageURL(b transcript.Block) (string, bool) {
 	switch {
 	case len(b.Data) > 0 && b.MediaType != "":
-		return "data:" + b.MediaType + ";base64," + base64.StdEncoding.EncodeToString(b.Data), true
+		return transcript.DataURL(b.MediaType, b.Data), true
 	case strings.HasPrefix(b.URI, "https://") || strings.HasPrefix(b.URI, "http://"):
 		return b.URI, true
 	}

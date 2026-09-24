@@ -77,7 +77,7 @@ func resolveBlobs(s *transcript.Session, dir string) {
 			if err != nil {
 				continue
 			}
-			if mediaType, decoded, ok := dataURL(string(data)); ok {
+			if mediaType, decoded, ok := transcript.ParseDataURL(string(data)); ok {
 				b.MediaType, data = mediaType, decoded
 			}
 			b.Data, b.URI = data, ""
@@ -103,25 +103,6 @@ func blobHash(h string) bool {
 	}
 	_, err := hex.DecodeString(h)
 	return err == nil && strings.ToLower(h) == h
-}
-
-// dataURL splits a base64 data: URL, the form omp keeps a provider's
-// image_url in.
-func dataURL(u string) (string, []byte, bool) {
-	meta, payload, ok := strings.Cut(u, ",")
-	if !ok {
-		return "", nil, false
-	}
-	mediaType, ok := strings.CutPrefix(meta, "data:")
-	if !ok {
-		return "", nil, false
-	}
-	mediaType, ok = strings.CutSuffix(mediaType, ";base64")
-	if !ok {
-		return "", nil, false
-	}
-	data, err := base64.StdEncoding.DecodeString(payload)
-	return mediaType, data, err == nil
 }
 
 // ompDir is the project directory rule Oh My Pi was seen to use.
@@ -908,7 +889,7 @@ func remoteHistory(raw json.RawMessage, summary transcript.Entry) []transcript.E
 				case "input_image":
 					// A data: URL, or the blob omp moved it to.
 					img := transcript.Block{Kind: transcript.BlockImage}
-					if mediaType, data, ok := dataURL(b.ImageURL); ok {
+					if mediaType, data, ok := transcript.ParseDataURL(b.ImageURL); ok {
 						img.MediaType, img.Data = mediaType, data
 					} else if strings.HasPrefix(b.ImageURL, blobPrefix) {
 						img.URI = b.ImageURL

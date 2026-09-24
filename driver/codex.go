@@ -13,6 +13,7 @@ import (
 
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/codexapp"
+	"github.com/inference-sh/agentprotocol/harness"
 )
 
 // KindCodex names the native Codex backend.
@@ -35,6 +36,12 @@ type CodexBackend struct {
 	// Env is the child environment. Nil inherits the parent's. Set
 	// CODEX_HOME here to select an account profile.
 	Env []string
+
+	// Version is the installed codex version (codex --version), when the
+	// caller knows it; ForHarnessVersion sets it. Features the registry
+	// records for codex with a version range (harness.Harness.Features) are
+	// then used only on versions that have them. Empty assumes every feature.
+	Version string
 
 	// ClientName and ClientVersion identify us during initialize. Codex puts
 	// them in its user agent.
@@ -95,12 +102,18 @@ func (b *CodexBackend) Kind() string { return KindCodex }
 // backend does not wire SessionConfig.Tools or MCP metadata into it yet.
 func (b *CodexBackend) Capabilities() Capabilities {
 	return Capabilities{
-		Steer:     true,
+		Steer:     b.has(harness.FeatureTurnSteer),
 		Approvals: true,
 		Interrupt: true,
 		Resume:    true,
 		Tools:     false,
 	}
+}
+
+// has reports whether the installed codex has a version-ranged feature,
+// true when the version is not known.
+func (b *CodexBackend) has(feature string) bool {
+	return b.Version == "" || harness.All["codex"].HasFeature(feature, b.Version)
 }
 
 func (b *CodexBackend) diagnose(msg string) {
@@ -329,6 +342,10 @@ func (s *codexSession) send(ctx context.Context, in Input) error {
 	thread, active := s.id, s.activeTurn
 	s.mu.Unlock()
 
+	if active != "" && !s.backend.has(harness.FeatureTurnSteer) {
+		return fmt.Errorf("driver: codex %s has no turn/steer (added in %s); send the prompt after the turn ends",
+			s.backend.Version, harness.All["codex"].Features[harness.FeatureTurnSteer].From)
+	}
 	if active != "" {
 		_, err := s.proc.TurnSteer(ctx, codexapp.TurnSteerParams{ThreadID: thread, ExpectedTurnID: active, Input: input})
 		if err == nil {

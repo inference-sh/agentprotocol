@@ -36,7 +36,8 @@ func ForHarness(h harness.Harness, env []string) (Backend, error) {
 }
 
 // UnsupportedVersionError is ForHarnessVersion's refusal: the installed
-// version is older than any inference has tested. Verdict carries the
+// version is below harness.Harness.Requires, so something the driver needs
+// is missing. Verdict carries the
 // user-facing reason, the tested range and the upgrade command.
 type UnsupportedVersionError struct {
 	Verdict harness.SupportVerdict
@@ -46,9 +47,9 @@ func (e *UnsupportedVersionError) Error() string { return "driver: " + e.Verdict
 
 // ForHarnessVersion is ForHarness for a caller that knows the installed
 // version. It returns the harness.Support verdict with the backend, and
-// refuses only an OlderThanSupported version, with an
-// *UnsupportedVersionError; a newer or unreadable version gets a backend and
-// the verdict to warn with. The backend is told the version, so a feature
+// refuses only an OlderThanSupported version (below Harness.Requires), with
+// an *UnsupportedVersionError; an older-than-tested, newer or unreadable
+// version gets a backend and the verdict to warn with. The backend is told the version, so a feature
 // the registry records for a version range (harness.Harness.Features) is
 // used only where the installed version has it.
 func ForHarnessVersion(h harness.Harness, version string, env []string) (Backend, harness.SupportVerdict, error) {
@@ -60,8 +61,11 @@ func ForHarnessVersion(h harness.Harness, version string, env []string) (Backend
 	if err != nil {
 		return nil, v, err
 	}
-	if pi, ok := b.(*PiBackend); ok {
-		pi.Version = version
+	switch b := b.(type) {
+	case *PiBackend:
+		b.Version = version
+	case *CodexBackend:
+		b.Version = version
 	}
 	return b, v, nil
 }

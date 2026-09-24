@@ -6,9 +6,10 @@
 // same thing everywhere.
 //
 // Versions: Harness.Tested is the range of each agent's versions inference
-// has verified, and Support(name, version) says whether an installed one is
-// inside it, runs nothing, and carries a user-facing reason and the upgrade
-// command. Behaviour that exists only on some versions is recorded once as a
+// has verified, Harness.Requires the floor below which a capability the
+// driver needs is missing, and Support(name, version) places an installed
+// version against both, runs nothing, and carries a user-facing reason and
+// the upgrade command. Only a version below Requires is refused. Behaviour that exists only on some versions is recorded once as a
 // VersionRange in Harness.Features and read with HasFeature, rather than by
 // forking the entry per version.
 //

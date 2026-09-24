@@ -68,7 +68,7 @@ func TestForHarnessVersion(t *testing.T) {
 		t.Errorf("refusal carries no upgrade data: %+v", v)
 	}
 
-	for _, ver := range []string{pi.Tested.Max, "99.0.0", ""} {
+	for _, ver := range []string{pi.Tested.Max, "99.0.0", "", "0.84.0"} {
 		b, v, err := driver.ForHarnessVersion(pi, ver, nil)
 		if err != nil {
 			t.Fatalf("%q: %v", ver, err)
@@ -76,10 +76,21 @@ func TestForHarnessVersion(t *testing.T) {
 		if b.(*driver.PiBackend).Version != ver {
 			t.Errorf("%q: backend not told the version", ver)
 		}
-		want := map[string]harness.SupportLevel{pi.Tested.Max: harness.Supported, "99.0.0": harness.NewerThanTested, "": harness.SupportUnknown}[ver]
+		want := map[string]harness.SupportLevel{pi.Tested.Max: harness.Supported, "99.0.0": harness.NewerThanTested, "": harness.SupportUnknown, "0.84.0": harness.OlderThanTested}[ver]
 		if v.Level != want {
 			t.Errorf("%q: %s, want %s", ver, v.Level, want)
 		}
+	}
+
+	b, v, err := driver.ForHarnessVersion(harness.All["codex"], "codex-cli 0.98.0", nil)
+	if err != nil || v.Level != harness.OlderThanTested || b.(*driver.CodexBackend).Version != "codex-cli 0.98.0" {
+		t.Fatalf("codex 0.98.0: %v %+v", err, v)
+	}
+	if b.Capabilities().Steer {
+		t.Error("codex 0.98.0 has no turn/steer, but reports Steer")
+	}
+	if !(&driver.CodexBackend{}).Capabilities().Steer || !(&driver.CodexBackend{Version: "0.156.1"}).Capabilities().Steer {
+		t.Error("codex with turn/steer reports no Steer")
 	}
 
 	if _, _, err := driver.ForHarnessVersion(harness.All["windsurf"], "1.0", nil); err == nil || errors.As(err, &uv) {

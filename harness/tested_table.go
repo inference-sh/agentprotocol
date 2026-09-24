@@ -51,6 +51,19 @@ var testedTable = map[string]TestedVersions{
 	// windsurf has no CLI: nothing to run, so nothing tested.
 }
 
+// requiresTable is Requires per agent: set only where a capability the
+// session driver depends on is known to be missing below the version.
+// Every other agent is refused at no version.
+var requiresTable = map[string]Requirement{
+	"pi": {Version: "0.80.4", Capability: "RPC agent_settled event, which the pi driver ends a turn on",
+		Evidence: "pi CHANGELOG 0.80.4: \"Added extension and RPC agent_settled events\"; driver/pi.go closes a turn only on agent_settled"},
+	"codex": {Version: "0.56.0", Capability: "app-server thread and turn API (thread/start, turn/start)",
+		Evidence: "codex-rs/app-server-protocol/src/protocol/common.rs: thread/start, thread/resume, turn/start, turn/interrupt, turn/completed and item/* are at tag rust-v0.56.0 and absent at rust-v0.55.0"},
+	// cursor: not set. `cursor-agent acp` (hidden) is in the 2026.05.16-0338208,
+	// 2026.09.18-9a7762b and 2026.09.23-86fc751 bundles (dist-package/index.js,
+	// command("acp")); no version without it has been found.
+}
+
 // upgradeCmds are UpgradeCmd where InstallCmd does not upgrade.
 var upgradeCmds = map[string][]string{
 	// pip install is a no-op for an installed package; --upgrade fetches the
@@ -67,7 +80,16 @@ var features = map[string]map[string]VersionRange{
 		// ID" (pi CHANGELOG, 0.76.0).
 		FeatureSessionID: {From: "0.76.0"},
 	},
+	"codex": {
+		// turn/steer, which the codex driver sends a prompt into a running
+		// turn with: in app-server-protocol common.rs at rust-v0.99.0, absent
+		// at rust-v0.98.0.
+		FeatureTurnSteer: {From: "0.99.0"},
+	},
 }
+
+// FeatureTurnSteer is codex app-server's turn/steer request.
+const FeatureTurnSteer = "turn-steer"
 
 // FeatureSessionID is an agent's --session-id flag.
 const FeatureSessionID = "session-id"
@@ -75,6 +97,9 @@ const FeatureSessionID = "session-id"
 func init() {
 	for name, t := range testedTable {
 		decorate("testedTable", name, func(h *Harness) { h.Tested = t })
+	}
+	for name, r := range requiresTable {
+		decorate("requiresTable", name, func(h *Harness) { h.Requires = r })
 	}
 	for name, cmd := range upgradeCmds {
 		decorate("upgradeCmds", name, func(h *Harness) { h.UpgradeCmd = cmd })

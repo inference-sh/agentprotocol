@@ -69,6 +69,10 @@ func TestHasFeature(t *testing.T) {
 	if !pi.HasFeature(FeatureSessionID, "0.87.1") || pi.HasFeature(FeatureSessionID, "0.75.0") || pi.HasFeature(FeatureSessionID, "") {
 		t.Error("pi --session-id is recorded from 0.76.0")
 	}
+	codex := All["codex"]
+	if !codex.HasFeature(FeatureTurnSteer, "codex-cli 0.99.0") || codex.HasFeature(FeatureTurnSteer, "codex-cli 0.98.0") {
+		t.Error("codex turn/steer is recorded from 0.99.0")
+	}
 	if !All["claude"].HasFeature("anything-unrecorded", "") {
 		t.Error("an unrecorded feature is on every version")
 	}

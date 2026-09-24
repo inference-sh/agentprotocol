@@ -12,6 +12,18 @@ type TestedVersions struct {
 	Evidence string
 }
 
+// Requirement is a capability the driver depends on and the version it
+// appeared in.
+type Requirement struct {
+	// Version is the first version with Capability.
+	Version string
+	// Capability names it for users: "RPC agent_settled event, which ends a
+	// turn".
+	Capability string
+	// Evidence is where Version comes from (changelog, schema at a tag).
+	Evidence string
+}
+
 // SupportLevel is what Support concluded about an installed version.
 type SupportLevel string
 
@@ -20,8 +32,11 @@ const (
 	Supported SupportLevel = "supported"
 	// NewerThanTested: newer than anything tested. Likely fine; warn.
 	NewerThanTested SupportLevel = "newer-than-tested"
-	// OlderThanSupported: older than the oldest tested version. Do not
-	// drive it; show Reason and UpgradeCmd.
+	// OlderThanTested: older than anything tested but not below
+	// Harness.Requires. It may work; warn.
+	OlderThanTested SupportLevel = "older-than-tested"
+	// OlderThanSupported: below Harness.Requires, so something the driver
+	// needs is missing. Do not drive it; show Reason and UpgradeCmd.
 	OlderThanSupported SupportLevel = "older-than-supported"
 	// SupportUnknown: the version could not be read, the agent is not in
 	// the registry, or nothing about it has been tested. Warn.
@@ -38,6 +53,9 @@ type SupportVerdict struct {
 	Version   string `json:"version,omitempty"`
 	TestedMin string `json:"tested_min,omitempty"`
 	TestedMax string `json:"tested_max,omitempty"`
+	// Requires is the version below which the agent is refused, "" when
+	// none is.
+	Requires string `json:"requires,omitempty"`
 	// UpgradeCmd installs the latest release over the installed one.
 	UpgradeCmd []string `json:"upgrade_cmd,omitempty"`
 }
@@ -64,9 +82,13 @@ func (h Harness) Support(version string) SupportVerdict {
 		Version:    ParseVersion(version),
 		TestedMin:  h.Tested.Min,
 		TestedMax:  h.Tested.Max,
+		Requires:   h.Requires.Version,
 		UpgradeCmd: h.UpgradeCommand(),
 	}
 	switch {
+	case v.Version != "" && h.Requires.Version != "" && !versionAtLeast(v.Version, h.Requires.Version):
+		v.Level = OlderThanSupported
+		v.Reason = fmt.Sprintf("%s %s has no %s, added in %s", product, v.Version, h.Requires.Capability, h.Requires.Version)
 	case h.Tested.Min == "" || h.Tested.Max == "":
 		v.Level = SupportUnknown
 		v.Reason = fmt.Sprintf("inference has not tested any version of %s", product)
@@ -74,8 +96,8 @@ func (h Harness) Support(version string) SupportVerdict {
 		v.Level = SupportUnknown
 		v.Reason = fmt.Sprintf("could not read which version of %s is installed; inference has tested %s", product, rangeText(h.Tested))
 	case !versionAtLeast(v.Version, h.Tested.Min):
-		v.Level = OlderThanSupported
-		v.Reason = fmt.Sprintf("%s %s is older than %s, the oldest version inference has tested", product, v.Version, h.Tested.Min)
+		v.Level = OlderThanTested
+		v.Reason = fmt.Sprintf("%s %s is older than the oldest version inference has tested (%s); it may work", product, v.Version, h.Tested.Min)
 	case !versionAtLeast(h.Tested.Max, v.Version):
 		v.Level = NewerThanTested
 		v.Reason = fmt.Sprintf("%s %s is newer than %s, the newest version inference has tested", product, v.Version, h.Tested.Max)

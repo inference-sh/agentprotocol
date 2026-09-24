@@ -219,6 +219,13 @@ type Harness struct {
 	// an agent nothing has verified. Support reads it.
 	Tested TestedVersions
 
+	// Requires is the hard floor: the oldest version that has something
+	// the session driver cannot work without. Below it Support says
+	// OlderThanSupported. Set only where the capability is known to be
+	// missing below that version; zero means no version is refused. Filled
+	// from requiresTable in tested_table.go.
+	Requires Requirement
+
 	// UpgradeCmd moves an installed agent to its latest release, where
 	// InstallCmd would not (pip install leaves an installed package alone).
 	// Empty means InstallCmd upgrades too. Use UpgradeCommand.

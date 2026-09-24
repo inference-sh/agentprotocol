@@ -132,37 +132,40 @@ Windsurf is IDE-only and has no entry.
 
 #### Supported versions
 
-`Harness.Tested` is the range of each agent's versions inference has verified, with the evidence. `harness.Support(name, version)` compares an installed version against it and runs nothing; `DetectResult.Support()` does the same with the version detection read. The verdict's `Level` is one of:
+`Harness.Tested` is the range of each agent's versions inference has verified, with the evidence. `Harness.Requires` is a separate hard floor: the version a capability the session driver cannot work without appeared in, set only where that capability is known to be missing below it. `harness.Support(name, version)` compares an installed version against both and runs nothing; `DetectResult.Support()` does the same with the version detection read. The verdict's `Level` is one of:
 
 | level | meaning | caller |
 |---|---|---|
 | `supported` | inside the tested range | drive it |
 | `newer-than-tested` | above `Tested.Max` | drive it, warn |
-| `older-than-supported` | below `Tested.Min` | do not drive; show `Reason` and `UpgradeCmd` |
+| `older-than-tested` | below `Tested.Min`, not below `Requires` | drive it, warn: it may work |
+| `older-than-supported` | below `Requires`: a capability the driver needs is missing | do not drive; show `Reason` and `UpgradeCmd` |
 | `unknown` | version unreadable, agent unknown or untested | drive it, warn |
 
-`Reason` is a sentence for end users ("Pi Coding Agent 0.80.3 is older than 0.87.1, the oldest version inference has tested"); `TestedMin`, `TestedMax` and `UpgradeCmd` (the `UpgradeCmd` field where `InstallCmd` does not upgrade, as with pip, else `InstallCmd`) are data to render.
+`Reason` is a sentence for end users ("Pi Coding Agent 0.80.3 has no RPC agent_settled event, which the pi driver ends a turn on, added in 0.80.4"; "Claude Code 2.1.280 is older than the oldest version inference has tested (2.1.281); it may work"). `TestedMin`, `TestedMax`, `Requires` and `UpgradeCmd` (the `UpgradeCmd` field where `InstallCmd` does not upgrade, as with pip, else `InstallCmd`) are data to render.
 
 `driver.ForHarness` stays version-agnostic. `driver.ForHarnessVersion(h, version, env)` returns the backend and the verdict, refuses only `older-than-supported` (with an `*UnsupportedVersionError` carrying the verdict), and tells the backend the version.
 
-| agent | tested min | tested max | how verified |
-|---|---|---|---|
-| claude | 2.1.281 | 2.1.282 | harness-test CI; agentprotocol CI pins 2.1.281 |
-| codex | 0.156.1 | 0.156.1 | harness-test CI; agentprotocol CI pins 0.156.1; codexapp generated from it |
-| copilot | 1.0.86 | 1.0.88 | harness-test CI |
-| cursor | 2026.09.23 | 2026.09.23 | harness-test CI |
-| droid | 0.223.0 | 0.226.2 | harness-test CI |
-| gemini | 0.60.0 | 0.61.0 | harness-test CI |
-| goose | 1.51.0 | 1.52.0 | harness-test CI |
-| grok | 1.0.34 | 1.0.41 | harness-test CI |
-| hermes | 0.19.0 | 0.19.0 | harness-test CI |
-| kilo | 7.7.5 | 7.7.9 | harness-test CI |
-| kimi | 2.0.2 | 2.1.1 | harness-test CI |
-| kiro | 2.22.1 | 2.24.0 | harness-test CI |
-| omp | 18.2.6 | 18.3.0 | harness-test CI |
-| opencode | 1.18.31 | 1.18.32 | harness-test CI |
-| pi | 0.87.1 | 0.87.1 | harness-test CI; agentprotocol CI pins 0.87.1 |
-| qwen | 0.24.1 | 0.24.5 | harness-test CI |
+| agent | tested min | tested max | how verified | floor (`Requires`) | floor evidence |
+|---|---|---|---|---|---|
+| claude | 2.1.281 | 2.1.282 | harness-test CI; agentprotocol CI pins 2.1.281 | — | |
+| codex | 0.156.1 | 0.156.1 | harness-test CI; agentprotocol CI pins 0.156.1; codexapp generated from it | 0.56.0 | app-server `thread/start`, `thread/resume`, `turn/start`, `turn/interrupt`, `turn/completed`, `item/*` are in `app-server-protocol/src/protocol/common.rs` at `rust-v0.56.0` and absent at `rust-v0.55.0` |
+| copilot | 1.0.86 | 1.0.88 | harness-test CI | — | |
+| cursor | 2026.09.23 | 2026.09.23 | harness-test CI | — | `cursor-agent acp` is in the 2026.05.16, 2026.09.18 and 2026.09.23 bundles; no version without it found |
+| droid | 0.223.0 | 0.226.2 | harness-test CI | — | |
+| gemini | 0.60.0 | 0.61.0 | harness-test CI | — | |
+| goose | 1.51.0 | 1.52.0 | harness-test CI | — | |
+| grok | 1.0.34 | 1.0.41 | harness-test CI | — | |
+| hermes | 0.19.0 | 0.19.0 | harness-test CI | — | |
+| kilo | 7.7.5 | 7.7.9 | harness-test CI | — | |
+| kimi | 2.0.2 | 2.1.1 | harness-test CI | — | |
+| kiro | 2.22.1 | 2.24.0 | harness-test CI | — | |
+| omp | 18.2.6 | 18.3.0 | harness-test CI | — | |
+| opencode | 1.18.31 | 1.18.32 | harness-test CI | — | |
+| pi | 0.87.1 | 0.87.1 | harness-test CI; agentprotocol CI pins 0.87.1 | 0.80.4 | CHANGELOG 0.80.4 adds the RPC `agent_settled` event; the pi driver closes a turn only on it |
+| qwen | 0.24.1 | 0.24.5 | harness-test CI | — | |
+
+A floor of — refuses no version.
 
 "harness-test CI" means the agent's workflow in belt-sh/harness-test finished green, every job including the session job that drives the agent through its `DriverKind` backend, with that version installed; versions come from the runs' `→ version:` log lines, 2026-09-20 to 2026-09-24. Claude, codex, cursor and pi have had the session job only since 2026-09-24, so older versions that passed their other modes are not counted (`Tested.Evidence` lists them). Nothing between two tested versions is claimed beyond that.
 
@@ -172,7 +175,7 @@ Windsurf is IDE-only and has no entry.
 
 #### Version-specific behaviour
 
-When a flag, subcommand or protocol field exists only on some versions, the registry records it once as a `VersionRange` (`From` inclusive, `Before` exclusive) under a feature name in `Harness.Features`, and the driver asks `h.HasFeature(name, installedVersion)` before using it. The entry is not forked per version. pi's `--session-id` (CHANGELOG: added in 0.76.0) is one: `PiBackend` with a `Version` below that reports `Resume: false` and refuses a resume before starting pi. `StatusCheck.MinVersion` is the same rule for the login check. Versions are read with `ParseVersion`, which takes the first dotted number from `--version` output (`codex-cli 0.156.1`, `2.1.282 (Claude Code)`, `2026.09.23-86fc751`), and compared numerically per component by `CompareVersions`.
+When a flag, subcommand or protocol field exists only on some versions, the registry records it once as a `VersionRange` (`From` inclusive, `Before` exclusive) under a feature name in `Harness.Features`, and the driver asks `h.HasFeature(name, installedVersion)` before using it. The entry is not forked per version. Recorded so far: codex `turn/steer` (in the app-server schema from `rust-v0.99.0`), so a `CodexBackend` with an older `Version` reports `Steer: false` and returns an error for a prompt sent during a running turn; and pi `--session-id` (CHANGELOG: added in 0.76.0), so a `PiBackend` below that reports `Resume: false` and refuses a resume before starting pi. A feature only some versions have is a `Features` entry; a capability without which the driver cannot run at all is `Requires`. `StatusCheck.MinVersion` is the same rule for the login check. Versions are read with `ParseVersion`, which takes the first dotted number from `--version` output (`codex-cli 0.156.1`, `2.1.282 (Claude Code)`, `2026.09.23-86fc751`), and compared numerically per component by `CompareVersions`.
 
 ### a2a
 

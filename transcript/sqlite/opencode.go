@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -46,6 +47,15 @@ type openMessage struct {
 	Agent      string   `json:"agent,omitempty"`
 	ProviderID string   `json:"providerID,omitempty"`
 	ModelID    string   `json:"modelID,omitempty"`
+	// Summary is true on the assistant message a compaction wrote. A user
+	// message keeps an object of file diffs under the same key.
+	Summary json.RawMessage `json:"summary,omitempty"`
+	Finish  string          `json:"finish,omitempty"`
+	Error   *openError      `json:"error,omitempty"`
+}
+
+type openError struct {
+	Name string `json:"name"`
 }
 
 type openTime struct {
@@ -55,19 +65,33 @@ type openTime struct {
 
 // openPart is the part `data` payload.
 type openPart struct {
-	Type   string          `json:"type"`
-	Text   string          `json:"text,omitempty"`
-	Tool   string          `json:"tool,omitempty"`
-	CallID string          `json:"callID,omitempty"`
-	State  *openToolState  `json:"state,omitempty"`
-	Raw    json.RawMessage `json:"-"`
+	ID        string          `json:"-"`
+	Type      string          `json:"type"`
+	Text      string          `json:"text,omitempty"`
+	Synthetic bool            `json:"synthetic,omitempty"`
+	Ignored   bool            `json:"ignored,omitempty"`
+	Metadata  json.RawMessage `json:"metadata,omitempty"`
+	Tool      string          `json:"tool,omitempty"`
+	CallID    string          `json:"callID,omitempty"`
+	State     *openToolState  `json:"state,omitempty"`
+	// TailStartID is set on a compaction part to the first message the
+	// compaction keeps after its summary.
+	TailStartID string `json:"tail_start_id,omitempty"`
 }
 
 type openToolState struct {
-	Status string          `json:"status"`
-	Input  json.RawMessage `json:"input,omitempty"`
-	Output string          `json:"output,omitempty"`
-	Error  string          `json:"error,omitempty"`
+	Status   string          `json:"status"`
+	Input    json.RawMessage `json:"input,omitempty"`
+	Output   string          `json:"output,omitempty"`
+	Error    string          `json:"error,omitempty"`
+	Metadata json.RawMessage `json:"metadata,omitempty"`
+}
+
+// openRevert is the session's revert column: the message, and optionally
+// the part within it, from which the person undid the conversation.
+type openRevert struct {
+	MessageID string `json:"messageID"`
+	PartID    string `json:"partID,omitempty"`
 }
 
 // openVendor carries what a write needs from a session read from the store:
@@ -92,11 +116,28 @@ func (st *openStore) List(ctx context.Context, cwd string) ([]transcript.Info, e
 	}
 	defer done()
 	defer db.Close()
-	q := "SELECT id, directory, title, time_updated FROM session"
+	cols, err := openColumns(ctx, db, "session")
+	if err != nil {
+		return nil, fmt.Errorf("opencode: list: %w", err)
+	}
+	// opencode lists the sessions a person started: a subagent's session
+	// has a parent and an archived one a time_archived (session.ts listGlobal
+	// with roots, and the archived filter every listing applies).
+	var where []string
 	args := []any{}
+	if cols["parent_id"] {
+		where = append(where, "parent_id IS NULL")
+	}
+	if cols["time_archived"] {
+		where = append(where, "time_archived IS NULL")
+	}
 	if cwd != "" {
-		q += " WHERE directory = ?"
+		where = append(where, "directory = ?")
 		args = append(args, cwd)
+	}
+	q := "SELECT id, directory, title, time_updated FROM session"
+	if len(where) > 0 {
+		q += " WHERE " + strings.Join(where, " AND ")
 	}
 	rows, err := db.QueryContext(ctx, q, args...)
 	if err != nil {
@@ -114,6 +155,14 @@ func (st *openStore) List(ctx context.Context, cwd string) ([]transcript.Info, e
 	}
 	transcript.SortNewest(out)
 	return out, rows.Err()
+}
+
+// openRow is one message as read, with its parts.
+type openRow struct {
+	id    string
+	raw   json.RawMessage
+	m     openMessage
+	parts []openPart
 }
 
 func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, error) {
@@ -138,31 +187,31 @@ func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, 
 		return nil, fmt.Errorf("opencode: read session: %w", err)
 	}
 	s.Created, s.Updated = time.UnixMilli(created).UTC(), time.UnixMilli(updated).UTC()
+	rev, err := openRevertOf(ctx, db, id)
+	if err != nil {
+		return nil, err
+	}
 	vendor := &openVendor{}
 	s.Vendor = vendor
 
 	// Parts, grouped by message.
-	partRows, err := db.QueryContext(ctx, "SELECT message_id, data FROM part WHERE session_id = ? ORDER BY time_created, id", id)
+	partRows, err := db.QueryContext(ctx, "SELECT id, message_id, data FROM part WHERE session_id = ? ORDER BY time_created, id", id)
 	if err != nil {
 		return nil, fmt.Errorf("opencode: read parts: %w", err)
 	}
 	defer partRows.Close()
 	partsByMsg := map[string][]openPart{}
-	order := map[string]int{}
 	for partRows.Next() {
-		var msgID, data string
-		if err := partRows.Scan(&msgID, &data); err != nil {
+		var partID, msgID, data string
+		if err := partRows.Scan(&partID, &msgID, &data); err != nil {
 			return nil, err
 		}
 		var p openPart
 		if err := json.Unmarshal([]byte(data), &p); err != nil {
 			return nil, fmt.Errorf("opencode: part: %w", err)
 		}
-		p.Raw = json.RawMessage(data)
+		p.ID = partID
 		partsByMsg[msgID] = append(partsByMsg[msgID], p)
-		if _, ok := order[msgID]; !ok {
-			order[msgID] = len(order)
-		}
 	}
 	if err := partRows.Err(); err != nil {
 		return nil, err
@@ -173,69 +222,398 @@ func (st *openStore) Read(ctx context.Context, id string) (*transcript.Session, 
 		return nil, fmt.Errorf("opencode: read messages: %w", err)
 	}
 	defer msgRows.Close()
+	var msgs []openRow
 	for msgRows.Next() {
 		var msgID, data string
 		if err := msgRows.Scan(&msgID, &data); err != nil {
 			return nil, err
 		}
-		var m openMessage
-		if err := json.Unmarshal([]byte(data), &m); err != nil {
+		r := openRow{id: msgID, raw: json.RawMessage(data), parts: partsByMsg[msgID]}
+		if err := json.Unmarshal([]byte(data), &r.m); err != nil {
 			return nil, fmt.Errorf("opencode: message: %w", err)
 		}
-		if m.Agent != "" {
-			vendor.Agent = m.Agent
+		if r.m.Agent != "" {
+			vendor.Agent = r.m.Agent
 		}
-		if m.Role == "assistant" && m.ProviderID != "" {
-			vendor.ProviderID, vendor.ModelID = m.ProviderID, m.ModelID
-			s.Model = m.ModelID
+		if r.m.Role == "assistant" && r.m.ProviderID != "" {
+			vendor.ProviderID, vendor.ModelID = r.m.ProviderID, r.m.ModelID
+			s.Model = r.m.ModelID
 		}
-		// Raw marks the entry as read from the store: a write leaves its
-		// message and part rows exactly as they are.
-		e := transcript.Entry{ID: msgID, ParentID: m.ParentID, Role: transcript.Role(m.Role), Raw: json.RawMessage(data)}
-		if m.Time.Created > 0 {
-			e.Time = time.UnixMilli(m.Time.Created).UTC()
-		}
-		toolResults := 0
-		for _, p := range partsByMsg[msgID] {
-			switch p.Type {
-			case "text":
-				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
-			case "reasoning":
-				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: p.Text})
-			case "tool":
-				b := transcript.Block{Kind: transcript.BlockToolUse, ToolID: p.CallID, Name: p.Tool}
-				if p.State != nil {
-					b.Input = p.State.Input
-					if p.State.Status == "completed" || p.State.Status == "error" {
-						// A completed tool part carries both the call and its
-						// result; split it so the result reads as a tool entry.
-						toolResults++
-						status := transcript.StatusOK
-						text := p.State.Output
-						if p.State.Status == "error" {
-							status = transcript.StatusError
-							if p.State.Error != "" {
-								text = p.State.Error
-							}
-						}
-						e.Content = append(e.Content, b, transcript.Block{Kind: transcript.BlockToolResult, ToolID: p.CallID, Name: p.Tool, Text: text, Status: status})
-						continue
+		msgs = append(msgs, r)
+	}
+	if err := msgRows.Err(); err != nil {
+		return nil, err
+	}
+	s.Entries = openEntries(msgs, rev, st.agent == "kilo")
+	return s, nil
+}
+
+// openView is one part as the person and the model each receive it.
+type openView struct {
+	id          string
+	blocks      []transcript.Block
+	model, user bool
+}
+
+// openEntries turns messages into entries the way opencode builds the
+// model's context on a prompt: the revert cleanup that runs first
+// (revert.ts cleanup), then filterCompacted and toModelMessages
+// (message-v2.ts). What the person sees follows the TUI. A message whose
+// parts differ in who they are for, such as a prompt with a synthetic
+// reminder appended, becomes one entry per run of parts with the same
+// audience: the first keeps the message id, the others take the id of
+// their first part.
+func openEntries(msgs []openRow, rev *openRevert, kilo bool) []transcript.Entry {
+	views := make([][]openView, len(msgs))
+	for i, r := range msgs {
+		views[i] = openViews(r, kilo)
+	}
+
+	// The TUI hides every message from the revert point on, and the next
+	// prompt deletes them before the model sees anything. With a part named,
+	// the message holding it keeps its earlier parts.
+	live, reverted := len(msgs), len(msgs)
+	if rev != nil {
+		for i, r := range msgs {
+			if r.id != rev.MessageID {
+				continue
+			}
+			live, reverted = i, i
+			for j := i; j < len(msgs); j++ {
+				for k := range views[j] {
+					views[j][k].user = false
+					if j > i || rev.PartID == "" {
+						views[j][k].model = false
 					}
 				}
-				e.Content = append(e.Content, b)
+			}
+			if rev.PartID == "" {
+				break
+			}
+			live = i + 1
+			if !slices.ContainsFunc(r.parts, func(p openPart) bool { return p.ID == rev.PartID }) {
+				break
+			}
+			for k := range views[i] {
+				if views[i][k].id >= rev.PartID {
+					views[i][k].model = false
+				}
+			}
+			if kilo && r.m.Role == "assistant" {
+				// Kilo clears the provider error of the message it keeps
+				// part of (kilo revert.ts cleanup), so its parts are sent.
+				msgs[i].m.Error = nil
+			}
+			break
+		}
+	}
+
+	// An assistant message that failed is not sent, unless it was aborted
+	// after producing something (message-v2.ts toModelMessages).
+	unsent := make([]bool, len(msgs))
+	for i, r := range msgs {
+		unsent[i] = i >= live || r.m.Role == "assistant" && r.m.Error != nil && !openAbortedWithContent(r)
+		if unsent[i] {
+			for k := range views[i] {
+				views[i][k].model = false
 			}
 		}
-		s.Entries = append(s.Entries, e)
 	}
-	return s, msgRows.Err()
+
+	compaction, carrier := openCompaction(msgs[:live], views)
+
+	var out []transcript.Entry
+	for i, r := range msgs {
+		start := len(out)
+		for _, v := range views[i] {
+			if len(v.blocks) == 0 {
+				continue
+			}
+			if n := len(out); n > start {
+				last := &out[n-1]
+				if last.Audience == openAudience(v.model, v.user) {
+					last.Content = append(last.Content, v.blocks...)
+					continue
+				}
+			}
+			id := r.id
+			if len(out) > start {
+				id = v.id
+			}
+			out = append(out, openEntry(r, id, v.model, v.user, v.blocks))
+		}
+		if len(out) == start {
+			// A message with no part the entry can hold, like a prompt of
+			// only an image, is still a message.
+			out = append(out, openEntry(r, r.id, !unsent[i], i < reverted, nil))
+		}
+		if i == carrier {
+			out[start].Compaction = compaction
+		}
+	}
+	return out
+}
+
+func openEntry(r openRow, id string, model, user bool, blocks []transcript.Block) transcript.Entry {
+	// opencode's parentID names the prompt an answer replies to, not a
+	// previous row: the session is a list in store order, so it is not an
+	// entry link.
+	e := transcript.Entry{ID: id, Role: transcript.Role(r.m.Role), Content: blocks, Audience: openAudience(model, user), Raw: r.raw}
+	if r.m.Time.Created > 0 {
+		e.Time = time.UnixMilli(r.m.Time.Created).UTC()
+	}
+	return e
+}
+
+func openAudience(model, user bool) transcript.Audience {
+	switch {
+	case model && user:
+		return transcript.AudienceAll
+	case model:
+		return transcript.AudienceModel
+	case user:
+		return transcript.AudienceUser
+	}
+	return transcript.AudienceNone
+}
+
+func openAbortedWithContent(r openRow) bool {
+	if r.m.Error.Name != "MessageAbortedError" {
+		return false
+	}
+	return slices.ContainsFunc(r.parts, func(p openPart) bool { return p.Type != "step-start" && p.Type != "reasoning" })
+}
+
+// openCompaction finds the compaction filterCompacted applies: the newest
+// compaction prompt whose summary finished without error. It returns what
+// that compaction does and the index of the message carrying it, which is
+// the summary filterCompacted places right after the prompt; -1 when there
+// is none. The model then gets the prompt (as the fixed question opencode
+// sends for it) and the summary, the kept tail from tail_start_id up to the
+// prompt, and everything after the summary. The prompt shows the person
+// only a divider, so it is for nobody outside the summary.
+func openCompaction(msgs []openRow, views [][]openView) (*transcript.Compaction, int) {
+	completed := map[string]bool{}
+	for i := len(msgs) - 1; i >= 0; i-- {
+		r := msgs[i]
+		if r.m.Role == "assistant" && string(r.m.Summary) == "true" && r.m.Finish != "" && r.m.Error == nil {
+			completed[r.m.ParentID] = true
+			continue
+		}
+		if r.m.Role != "user" || !completed[r.id] {
+			continue
+		}
+		k := slices.IndexFunc(r.parts, func(p openPart) bool { return p.Type == "compaction" })
+		if k < 0 {
+			continue
+		}
+		c := &transcript.Compaction{}
+		if tail := r.parts[k].TailStartID; tail != "" && tail != r.id {
+			// A tail that is not an earlier message leaves filterCompacted
+			// looking for it through the whole session, which then reaches
+			// the model uncut.
+			if !slices.ContainsFunc(msgs[:i], func(m openRow) bool { return m.id == tail }) {
+				return nil, -1
+			}
+			c.Keep = tail
+		}
+		s := -1
+		for j := i + 1; j < len(msgs); j++ {
+			if m := msgs[j]; m.m.Role == "assistant" && string(m.m.Summary) == "true" && m.m.ParentID == r.id {
+				s = j
+				break
+			}
+		}
+		if s < 0 {
+			return nil, -1
+		}
+		c.Summary = append(c.Summary, openModelView(msgs[i], views[i])...)
+		c.Summary = append(c.Summary, openModelView(msgs[s], views[s])...)
+		for k := range views[i] {
+			views[i][k].model, views[i][k].user = false, false
+		}
+		for k := range views[s] {
+			views[s][k].model = false
+		}
+		return c, s
+	}
+	return nil, -1
+}
+
+// openModelView is a message as the model receives it, one entry, for
+// everyone when the person is shown it too.
+func openModelView(r openRow, views []openView) []transcript.Entry {
+	var blocks []transcript.Block
+	shown := false
+	for _, v := range views {
+		if v.model {
+			blocks = append(blocks, v.blocks...)
+			shown = shown || v.user && len(v.blocks) > 0
+		}
+	}
+	if len(blocks) == 0 {
+		return nil
+	}
+	e := openEntry(r, r.id, true, shown, blocks)
+	e.Raw = nil
+	return []transcript.Entry{e}
+}
+
+// kiloTransient is the part metadata key Kilo marks UI-only text with.
+const kiloTransient = "kilocode.lifecycle"
+
+// openViews maps each part of a message to its blocks and who gets them.
+func openViews(r openRow, kilo bool) []openView {
+	var out []openView
+	for _, p := range r.parts {
+		v := openView{id: p.ID, model: true, user: true}
+		text := func(t string) {
+			v.blocks = []transcript.Block{{Kind: transcript.BlockText, Text: t}}
+		}
+		switch r.m.Role {
+		case "user":
+			switch p.Type {
+			case "text":
+				// The model is not given ignored text; the TUI does not show
+				// synthetic text (message-v2.ts toModelMessages, TUI
+				// UserMessage).
+				if p.Text != "" {
+					text(p.Text)
+				}
+				v.model, v.user = !p.Ignored, !p.Synthetic
+			case "compaction":
+				text("What did we do so far?")
+				v.user = false
+			case "subtask":
+				text("The following tool was executed by the user")
+				v.user = false
+			}
+		case "assistant":
+			switch p.Type {
+			case "text":
+				if p.Text != "" {
+					text(p.Text)
+				}
+				if kilo && (p.Ignored || openTransient(p)) {
+					// Kilo keeps local UI notices out of future prompts
+					// (kilo message-v2.ts toModelMessages).
+					v.model = false
+				}
+			case "reasoning":
+				v.blocks = []transcript.Block{{Kind: transcript.BlockReasoning, Text: p.Text}}
+			case "tool":
+				v.blocks = openToolBlocks(p)
+			}
+		}
+		out = append(out, v)
+	}
+	return out
+}
+
+func openTransient(p openPart) bool {
+	var meta map[string]json.RawMessage
+	if json.Unmarshal(p.Metadata, &meta) != nil {
+		return false
+	}
+	var v string
+	return json.Unmarshal(meta[kiloTransient], &v) == nil && v == "transient"
+}
+
+// openToolBlocks splits a tool part into its call and, once there is one,
+// its result, as toModelMessages sends them. A call still pending or
+// running when the session stopped is answered as interrupted, and one
+// interrupted by an abort sends the output it had.
+func openToolBlocks(p openPart) []transcript.Block {
+	use := transcript.Block{Kind: transcript.BlockToolUse, ToolID: p.CallID, Name: p.Tool}
+	if p.State == nil {
+		return []transcript.Block{use}
+	}
+	use.Input = p.State.Input
+	res := transcript.Block{Kind: transcript.BlockToolResult, ToolID: p.CallID, Name: p.Tool, Status: transcript.StatusOK}
+	switch p.State.Status {
+	case "completed":
+		// A pruned output (state.time.compacted) reaches the model as
+		// "[Old tool result content cleared]"; the person still sees it
+		// all, and the entry keeps it.
+		res.Text = p.State.Output
+	case "error":
+		var meta struct {
+			Interrupted bool            `json:"interrupted"`
+			Output      json.RawMessage `json:"output"`
+		}
+		var out string
+		if json.Unmarshal(p.State.Metadata, &meta) == nil && meta.Interrupted && json.Unmarshal(meta.Output, &out) == nil {
+			res.Text = out
+			break
+		}
+		res.Text, res.Status = p.State.Error, transcript.StatusError
+	case "pending", "running":
+		res.Text, res.Status = "[Tool execution was interrupted]", transcript.StatusError
+	default:
+		return []transcript.Block{use}
+	}
+	return []transcript.Block{use, res}
+}
+
+// openRevertOf reads a session's revert state, nil when there is none or
+// the store predates it.
+func openRevertOf(ctx context.Context, q openQuerier, sessionID string) (*openRevert, error) {
+	cols, err := openColumns(ctx, q, "session")
+	if err != nil {
+		return nil, err
+	}
+	if !cols["revert"] {
+		return nil, nil
+	}
+	var raw sql.NullString
+	if err := q.QueryRowContext(ctx, "SELECT revert FROM session WHERE id = ?", sessionID).Scan(&raw); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("opencode: read revert: %w", err)
+	}
+	if !raw.Valid || raw.String == "" || raw.String == "null" {
+		return nil, nil
+	}
+	var r openRevert
+	if err := json.Unmarshal([]byte(raw.String), &r); err != nil {
+		return nil, fmt.Errorf("opencode: revert: %w", err)
+	}
+	if r.MessageID == "" {
+		return nil, nil
+	}
+	return &r, nil
+}
+
+type openQuerier interface {
+	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
+}
+
+func openColumns(ctx context.Context, q openQuerier, table string) (map[string]bool, error) {
+	rows, err := q.QueryContext(ctx, "SELECT name FROM pragma_table_info(?)", table)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := map[string]bool{}
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		out[name] = true
+	}
+	return out, rows.Err()
 }
 
 // Write persists a session without disturbing anything it read. Entries read
 // from the store (Raw set) keep their message and part rows exactly; rows of
 // entries the session no longer holds are removed; new entries are inserted
 // after them as messages opencode accepts, with every field its message and
-// part schemas require. A session opencode does not have yet gets a session
-// row, bound to its directory's project.
+// part schemas require. New entries appended to a session under a revert
+// first remove the reverted messages, as a prompt does. A session opencode
+// does not have yet gets a session row, bound to its directory's project.
 func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, error) {
 	if s.Agent != st.agent {
 		s = s.Portable()
@@ -282,13 +660,9 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 
 	// Keep what was read; drop rows for entries the session no longer has.
 	keep := map[string]bool{}
-	var lastUser string
 	for _, e := range s.Messages() {
 		if e.Raw != nil {
 			keep[e.ID] = true
-			if e.Role == transcript.RoleUser {
-				lastUser = e.ID
-			}
 		}
 	}
 	stale, err := openMessageIDs(ctx, tx, s.ID)
@@ -304,6 +678,21 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 				return "", fmt.Errorf("opencode: remove message: %w", err)
 			}
 		}
+	}
+	adding := slices.ContainsFunc(s.Messages(), func(e transcript.Entry) bool {
+		return e.Raw == nil && (e.Role == transcript.RoleUser || e.Role == transcript.RoleAssistant)
+	})
+	if adding && exists {
+		// A prompt into a session under a revert first deletes what was
+		// reverted; messages appended without doing so would sit behind
+		// the revert point, hidden, and go with the rest on the next prompt.
+		if err := openCleanup(ctx, tx, s.ID, st.agent == "kilo", now); err != nil {
+			return "", err
+		}
+	}
+	lastUser, err := openLastUser(ctx, tx, s.ID)
+	if err != nil {
+		return "", err
 	}
 
 	d, err := openDefaults(ctx, tx, s)
@@ -474,8 +863,70 @@ func openDefaults(ctx context.Context, tx *sql.Tx, s *transcript.Session) (openD
 	return d, nil
 }
 
+// openCleanup does what opencode does to a session under a revert before a
+// prompt (revert.ts cleanup): it deletes the messages from the revert point
+// on, or with a part named, the messages after the one holding it and that
+// message's parts from the named one on, and clears the revert. Kilo also
+// clears the provider error of an assistant message it kept part of.
+func openCleanup(ctx context.Context, tx *sql.Tx, sessionID string, kilo bool, now time.Time) error {
+	rev, err := openRevertOf(ctx, tx, sessionID)
+	if err != nil || rev == nil {
+		return err
+	}
+	msgs, err := openMessageIDs(ctx, tx, sessionID)
+	if err != nil {
+		return err
+	}
+	if i := slices.Index(msgs, rev.MessageID); i >= 0 {
+		from := i
+		if rev.PartID != "" {
+			from++
+		}
+		for _, id := range msgs[from:] {
+			for _, q := range []string{"DELETE FROM part WHERE message_id = ?", "DELETE FROM message WHERE id = ?"} {
+				if _, err := tx.ExecContext(ctx, q, id); err != nil {
+					return fmt.Errorf("opencode: remove reverted message: %w", err)
+				}
+			}
+		}
+		if rev.PartID != "" {
+			res, err := tx.ExecContext(ctx, "DELETE FROM part WHERE message_id = ? AND id >= ? AND EXISTS (SELECT 1 FROM part WHERE message_id = ? AND id = ?)",
+				rev.MessageID, rev.PartID, rev.MessageID, rev.PartID)
+			if err != nil {
+				return fmt.Errorf("opencode: remove reverted parts: %w", err)
+			}
+			if n, _ := res.RowsAffected(); n > 0 && kilo {
+				if _, err := tx.ExecContext(ctx,
+					"UPDATE message SET data = json_remove(data, '$.error'), time_updated = ? WHERE id = ? AND json_extract(data, '$.role') = 'assistant' AND json_type(data, '$.error') IS NOT NULL",
+					now.UnixMilli(), rev.MessageID); err != nil {
+					return fmt.Errorf("opencode: clear reverted error: %w", err)
+				}
+			}
+		}
+	}
+	if _, err := tx.ExecContext(ctx, "UPDATE session SET revert = NULL, time_updated = ? WHERE id = ?", now.UnixMilli(), sessionID); err != nil {
+		return fmt.Errorf("opencode: clear revert: %w", err)
+	}
+	return nil
+}
+
+// openLastUser is the session's newest user message, which an appended
+// assistant message answers.
+func openLastUser(ctx context.Context, tx *sql.Tx, sessionID string) (string, error) {
+	var id string
+	err := tx.QueryRowContext(ctx,
+		"SELECT id FROM message WHERE session_id = ? AND json_extract(data, '$.role') = 'user' ORDER BY time_created DESC, id DESC LIMIT 1",
+		sessionID).Scan(&id)
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", nil
+	}
+	return id, err
+}
+
+// openMessageIDs lists a session's messages in the order opencode loads
+// them.
 func openMessageIDs(ctx context.Context, tx *sql.Tx, sessionID string) ([]string, error) {
-	rows, err := tx.QueryContext(ctx, "SELECT id FROM message WHERE session_id = ?", sessionID)
+	rows, err := tx.QueryContext(ctx, "SELECT id FROM message WHERE session_id = ? ORDER BY time_created, id", sessionID)
 	if err != nil {
 		return nil, err
 	}

@@ -24,6 +24,10 @@ type Process struct {
 	// session/close before the stream is closed. Zero means
 	// DefaultShutdownGrace; negative means close at once.
 	ShutdownGrace time.Duration
+
+	// ExitGrace is how long Wait lets the agent exit after its stdin is
+	// closed before killing it. Zero means DefaultExitGrace.
+	ExitGrace time.Duration
 }
 
 // ProcessConfig describes how to launch the agent.
@@ -123,11 +127,20 @@ func Spawn(ctx context.Context, cfg ProcessConfig, info ClientInfo, h Handler) (
 // cuts that off partway, and the symptom is a hook that mostly fires.
 const DefaultShutdownGrace = 5 * time.Second
 
+// DefaultExitGrace is how long Wait gives an agent to exit once its stdin is
+// closed before it kills it.
+//
+// Most agents exit on end of input. Cursor's `agent acp` (2026.09.23) does
+// not: it keeps running with stdin closed, and a Wait that waited for the
+// stream to end never returned.
+const DefaultExitGrace = 5 * time.Second
+
 // Wait shuts the session down and waits for the child to exit.
 //
 // It sends session/close, gives the agent ShutdownGrace to finish and close
 // its own side, then closes the stream and reaps the process. An agent that
 // exits promptly is not delayed: the grace ends as soon as the stream does.
+// An agent still running ExitGrace after its stdin closed is killed.
 //
 // An agent exiting non-zero after being asked to stop is common, so the exit
 // error is returned for the caller to interpret rather than swallowed.
@@ -148,8 +161,25 @@ func (p *Process) Wait() error {
 	}
 
 	_ = p.Close()
+	exit := p.ExitGrace
+	if exit <= 0 {
+		exit = DefaultExitGrace
+	}
+	timer := time.NewTimer(exit)
+	defer timer.Stop()
+	select {
+	case <-p.Done():
+		return p.cmd.Wait()
+	case <-timer.C:
+	}
+	// cmd.Wait closes our end of stdout once the child is gone, which ends
+	// the read loop even if a grandchild still holds the pipe.
+	if p.cmd.Process != nil {
+		_ = p.cmd.Process.Kill()
+	}
+	err := p.cmd.Wait()
 	<-p.Done()
-	return p.cmd.Wait()
+	return err
 }
 
 // Kill terminates the child without waiting for it to shut down cleanly and

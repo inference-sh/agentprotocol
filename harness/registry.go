@@ -708,10 +708,17 @@ var All = map[string]Harness{
 		DefaultModel: "gpt-4o-mini",
 		ToolCallName: "read",
 		ToolCallArgs: `{"path":"README.md"}`,
-		HookFormat:   JSONFlat,
+		// The mock serves this as ExecServerMessage shell_args; cursor has no
+		// model-facing tool list on agent.v1, the backend picks the exec.
+		ToolCallGated: ToolCall{Name: "shell", Args: gatedShellArgs},
+		HookFormat:    JSONFlat,
 		ServerRequestedHooks: map[Mode][]string{
 			ModeHeadless:    {PromptSubmit.Tag(), Stop.Tag(), PreCompact.Tag()},
 			ModeInteractive: {PreCompact.Tag()},
+			ModeACP:         {PromptSubmit.Tag(), Stop.Tag(), PreCompact.Tag()},
+		},
+		KnownIssues: map[string]string{
+			"acp:event:SESSION_START": "cursor runs sessionStart only in runAgent, the TUI and --print path; the ACP server module never calls it (bundle 2026.09.23: 1699.index.js has no sessionStart reference) and the hook did not fire under the mock",
 		},
 		HookConfigDir: ".cursor",
 		HookFileName:  "hooks.json",
@@ -731,6 +738,16 @@ var All = map[string]Harness{
 		InteractiveArgs:         []string{"--trust", "--force", "--model", "{{.Model}}", "What is the project codename? Reply ONLY the codename."},
 		InteractivePromptInArgs: true,
 		ExitCommand:             "/exit",
+		// `cursor-agent acp`, measured on Cursor Agent 2026.09.23: an ACP
+		// server over stdio that takes no options of its own. The endpoint
+		// comes from CURSOR_API_ENDPOINT like the other modes, the model from
+		// the backend's default, and approvals are asked of the client, which
+		// the runner answers, so neither ACPArgs nor ACPAutoApproveArgs is
+		// needed. It is launched as cursor-agent, the name detection uses,
+		// because a session driver resolving "agent" can find grok's.
+		// It keeps running after its stdin closes; acp.Process.Wait kills it
+		// after ExitGrace.
+		ACPCmd: []string{"cursor-agent", "acp"},
 	},
 	// Windsurf: ~/.codeium/windsurf/hooks.json, {"hooks":{event:[{command}]}} with
 	// snake_case events (docs 2026-09). Exit code is the only feedback channel;

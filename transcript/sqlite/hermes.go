@@ -56,10 +56,14 @@ func (st *hermesStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 	defer db.Close()
 	// hermes often leaves the cwd column empty and records the directory in
 	// model_config instead.
-	q := "SELECT id, " + hermesCWD + ", COALESCE(title, ''), COALESCE(ended_at, started_at, '') FROM sessions"
+	cwdExpr, err := hermesCWD(ctx, db)
+	if err != nil {
+		return nil, fmt.Errorf("hermes: list: %w", err)
+	}
+	q := "SELECT id, " + cwdExpr + ", COALESCE(title, ''), COALESCE(ended_at, started_at, '') FROM sessions"
 	args := []any{}
 	if cwd != "" {
-		q += " WHERE " + hermesCWD + " = ?"
+		q += " WHERE " + cwdExpr + " = ?"
 		args = append(args, cwd)
 	}
 	rows, err := db.QueryContext(ctx, q, args...)
@@ -92,7 +96,11 @@ func (st *hermesStore) Read(ctx context.Context, id string) (*transcript.Session
 
 	s := &transcript.Session{ID: id, Agent: "hermes"}
 	var cwd, title, start, updated, source, model sql.NullString
-	err = db.QueryRowContext(ctx, "SELECT "+hermesCWD+", title, started_at, ended_at, source, model FROM sessions WHERE id = ?", id).
+	cwdExpr, err := hermesCWD(ctx, db)
+	if err != nil {
+		return nil, fmt.Errorf("hermes: read session: %w", err)
+	}
+	err = db.QueryRowContext(ctx, "SELECT "+cwdExpr+", title, started_at, ended_at, source, model FROM sessions WHERE id = ?", id).
 		Scan(&cwd, &title, &start, &updated, &source, &model)
 	if err == sql.ErrNoRows {
 		return nil, transcript.ErrNotFound
@@ -178,9 +186,46 @@ func arguments(s string) json.RawMessage {
 	return quoted
 }
 
-// hermesCWD is the session's directory: the cwd column, or the cwd hermes
-// records inside model_config when it leaves the column empty.
-const hermesCWD = "COALESCE(NULLIF(cwd, ''), json_extract(model_config, '$.cwd'), '')"
+// hermesCWD is the SQL for a session's directory: the cwd column, or the cwd
+// hermes records inside model_config when it leaves the column empty. Older
+// hermes databases have no cwd column, so the expression names only the
+// columns the sessions table has.
+func hermesCWD(ctx context.Context, q queryer) (string, error) {
+	cols, err := columns(ctx, q, "sessions")
+	if err != nil {
+		return "", err
+	}
+	var parts []string
+	if cols["cwd"] {
+		parts = append(parts, "NULLIF(cwd, '')")
+	}
+	if cols["model_config"] {
+		parts = append(parts, "json_extract(model_config, '$.cwd')")
+	}
+	return "COALESCE(" + strings.Join(append(parts, "''"), ", ") + ")", nil
+}
+
+type queryer interface {
+	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+}
+
+// columns lists a table's columns.
+func columns(ctx context.Context, q queryer, table string) (map[string]bool, error) {
+	rows, err := q.QueryContext(ctx, "SELECT name FROM pragma_table_info(?)", table)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := map[string]bool{}
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		out[name] = true
+	}
+	return out, rows.Err()
+}
 
 // hermesVendor carries the source a session was opened from, which hermes
 // requires on every session row.
@@ -244,9 +289,20 @@ func (st *hermesStore) Write(ctx context.Context, s *transcript.Session) (string
 				title = msgs[0].Text()
 			}
 		}
+		// Older hermes databases have no cwd column; model_config carries
+		// the directory in every version.
+		cols, err := columns(ctx, tx, "sessions")
+		if err != nil {
+			return "", err
+		}
+		names := []string{"id", "source", "started_at", "title", "model", "model_config"}
+		vals := []any{s.ID, source, epoch(s.Created), title, nullIfEmpty(s.Model), string(modelConfig)}
+		if cols["cwd"] {
+			names, vals = append(names, "cwd"), append(vals, s.CWD)
+		}
 		if _, err := tx.ExecContext(ctx,
-			"INSERT INTO sessions (id, source, started_at, cwd, title, model, model_config) VALUES (?, ?, ?, ?, ?, ?, ?)",
-			s.ID, source, epoch(s.Created), s.CWD, title, nullIfEmpty(s.Model), string(modelConfig)); err != nil {
+			"INSERT INTO sessions ("+strings.Join(names, ", ")+") VALUES (?"+strings.Repeat(", ?", len(names)-1)+")",
+			vals...); err != nil {
 			return "", fmt.Errorf("hermes: write session: %w", err)
 		}
 	}

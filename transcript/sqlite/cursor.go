@@ -49,9 +49,13 @@ type CursorVendor struct {
 	Root     []byte
 	RootIDs  []string
 	// MetaHex and MetaFile are the meta row and meta.json exactly as read,
-	// written back unchanged when the conversation is unchanged.
+	// written back unchanged when the conversation is unchanged. MetaFile is
+	// nil for a session kept without meta.json, and none is added.
 	MetaHex  string
 	MetaFile []byte
+	// ProjectDir is the directory the session was read from, md5 of its cwd,
+	// so a session whose cwd is unknown writes back where it was.
+	ProjectDir string
 }
 
 // cursorMeta is the meta.json beside store.db.
@@ -88,6 +92,15 @@ type cursorPart struct {
 	IsError    bool            `json:"isError,omitempty"`
 }
 
+// createdMs is a session's creation time: meta.json's, or the store's own
+// record of it when meta.json is missing.
+func createdMs(m cursorMeta, sm cursorStoreMeta) int64 {
+	if m.CreatedAtMs > 0 {
+		return m.CreatedAtMs
+	}
+	return sm.CreatedAt
+}
+
 // cursorDir is the project directory Cursor keys sessions under: the md5 of
 // the working directory.
 func cursorDir(cwd string) string {
@@ -109,12 +122,20 @@ func (st *cursorStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 		if _, err := os.Stat(filepath.Join(dir, "store.db")); err != nil {
 			continue
 		}
-		m, err := readCursorMeta(dir)
+		m, ok, err := readCursorMeta(dir)
 		if err != nil {
 			return nil, err
 		}
-		if !m.HasConversation {
+		if ok && !m.HasConversation {
 			continue
+		}
+		if !ok {
+			// No meta.json: the directory is md5(cwd), so a filtered listing
+			// knows the cwd and an unfiltered one cannot.
+			m.CWD = cwd
+			if fi, err := os.Stat(filepath.Join(dir, "store.db")); err == nil {
+				m.UpdatedAtMs = fi.ModTime().UnixMilli()
+			}
 		}
 		// Cursor holds the session's store.db open while it serves the
 		// session, so the directory is this session's alone.
@@ -124,16 +145,21 @@ func (st *cursorStore) List(ctx context.Context, cwd string) ([]transcript.Info,
 	return out, nil
 }
 
-func readCursorMeta(dir string) (cursorMeta, error) {
-	var m cursorMeta
+// readCursorMeta reads meta.json. Older Cursor versions kept sessions
+// without one; for those it reports ok false and the store's own meta row is
+// all there is.
+func readCursorMeta(dir string) (m cursorMeta, ok bool, err error) {
 	raw, err := os.ReadFile(filepath.Join(dir, "meta.json"))
+	if errors.Is(err, os.ErrNotExist) {
+		return m, false, nil
+	}
 	if err != nil {
-		return m, fmt.Errorf("cursor: %w", err)
+		return m, false, fmt.Errorf("cursor: %w", err)
 	}
 	if err := json.Unmarshal(raw, &m); err != nil {
-		return m, fmt.Errorf("cursor: meta.json: %w", err)
+		return m, false, fmt.Errorf("cursor: meta.json: %w", err)
 	}
-	return m, nil
+	return m, true, nil
 }
 
 func (st *cursorStore) sessionDir(id string) (string, error) {
@@ -154,17 +180,21 @@ func (st *cursorStore) Read(ctx context.Context, id string) (*transcript.Session
 	if err != nil {
 		return nil, err
 	}
-	m, err := readCursorMeta(dir)
+	m, hasMeta, err := readCursorMeta(dir)
 	if err != nil {
 		return nil, err
 	}
-	metaFile, err := os.ReadFile(filepath.Join(dir, "meta.json"))
-	if err != nil {
-		return nil, fmt.Errorf("cursor: %w", err)
-	}
-	metaJSON, err := rawFields(filepath.Join(dir, "meta.json"))
-	if err != nil {
-		return nil, err
+	var metaFile []byte
+	metaJSON := map[string]json.RawMessage{}
+	if hasMeta {
+		if metaFile, err = os.ReadFile(filepath.Join(dir, "meta.json")); err != nil {
+			return nil, fmt.Errorf("cursor: %w", err)
+		}
+		if metaJSON, err = rawFields(filepath.Join(dir, "meta.json")); err != nil {
+			return nil, err
+		}
+	} else if fi, err := os.Stat(filepath.Join(dir, "store.db")); err == nil {
+		m.UpdatedAtMs = fi.ModTime().UnixMilli()
 	}
 	db, done, err := openRO(filepath.Join(dir, "store.db"))
 	if err != nil {
@@ -204,9 +234,10 @@ func (st *cursorStore) Read(ctx context.Context, id string) (*transcript.Session
 		Agent:   "cursor",
 		CWD:     m.CWD,
 		Title:   sm.Name,
-		Created: time.UnixMilli(m.CreatedAtMs).UTC(),
+		Created: time.UnixMilli(createdMs(m, sm)).UTC(),
 		Updated: time.UnixMilli(m.UpdatedAtMs).UTC(),
-		Vendor:  &CursorVendor{Meta: metaFields, MetaJSON: metaJSON, Root: root, RootIDs: ids, MetaHex: metaHex, MetaFile: metaFile},
+		Vendor: &CursorVendor{Meta: metaFields, MetaJSON: metaJSON, Root: root, RootIDs: ids, MetaHex: metaHex, MetaFile: metaFile,
+			ProjectDir: filepath.Base(filepath.Dir(dir))},
 	}
 	for _, bid := range ids {
 		data, err := blob(ctx, db, bid)
@@ -441,7 +472,14 @@ func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string
 		return "", err
 	}
 
-	dir := filepath.Join(st.root, cursorDir(s.CWD), s.ID)
+	project := cursorDir(s.CWD)
+	if s.CWD == "" {
+		if v == nil || v.ProjectDir == "" {
+			return "", errors.New("cursor: a session needs its working directory: Cursor files sessions under md5(cwd)")
+		}
+		project = v.ProjectDir
+	}
+	dir := filepath.Join(st.root, project, s.ID)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return "", err
 	}
@@ -504,6 +542,10 @@ func (st *cursorStore) Write(ctx context.Context, s *transcript.Session) (string
 	}
 	if unchanged && v.MetaFile != nil {
 		out = v.MetaFile
+	}
+	if unchanged && v.MetaFile == nil {
+		// Kept without meta.json, and nothing changed: add none.
+		return s.ID, nil
 	}
 	if err := os.WriteFile(filepath.Join(dir, "meta.json"), out, 0o644); err != nil {
 		return "", err

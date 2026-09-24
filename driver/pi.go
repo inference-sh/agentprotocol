@@ -11,6 +11,7 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
+	"github.com/inference-sh/agentprotocol/harness"
 	"github.com/inference-sh/agentprotocol/pirpc"
 )
 
@@ -36,6 +37,12 @@ type PiBackend struct {
 
 	// Env is the child environment. Nil inherits the parent's.
 	Env []string
+
+	// Version is the installed pi version (what pi --version printed), when
+	// the caller knows it; ForHarnessVersion sets it. Features the registry
+	// records for pi with a version range (harness.Harness.Features) are then
+	// used only on versions that have them. Empty assumes every feature.
+	Version string
 
 	// OnDiagnostic receives protocol-level observations that are not
 	// failures: the session pi opened, retries, extension errors and
@@ -85,9 +92,15 @@ func (b *PiBackend) Capabilities() Capabilities {
 		Steer:     true,
 		Approvals: false,
 		Interrupt: true,
-		Resume:    true,
+		Resume:    b.has(harness.FeatureSessionID),
 		Tools:     false,
 	}
+}
+
+// has reports whether the installed pi has a version-ranged feature, true
+// when the version is not known.
+func (b *PiBackend) has(feature string) bool {
+	return b.Version == "" || harness.All["pi"].HasFeature(feature, b.Version)
 }
 
 func (b *PiBackend) diagnose(msg string) {
@@ -103,6 +116,10 @@ func (b *PiBackend) diagnose(msg string) {
 // that id if it had none, so Open checks that the session's file exists and
 // fails otherwise. Resuming needs the WorkDir the session was started in.
 func (b *PiBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error) {
+	if cfg.ResumeSessionID != "" && !b.has(harness.FeatureSessionID) {
+		return nil, fmt.Errorf("driver: pi %s has no --session-id (added in %s), so session %s cannot be resumed",
+			b.Version, harness.All["pi"].Features[harness.FeatureSessionID].From, cfg.ResumeSessionID)
+	}
 	s := &piSession{
 		backend: b,
 		runID:   cfg.RunID,

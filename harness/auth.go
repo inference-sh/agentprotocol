@@ -6,8 +6,6 @@ import (
 	"errors"
 	"os"
 	"os/exec"
-	"regexp"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -40,6 +38,24 @@ type Auth struct {
 	// AccountDirEnv unset. They are for existence checks only: nothing may
 	// read them. A path ending in "/" is a directory.
 	CredentialPaths []string
+
+	// AccountDirReplaces is the leading part of every CredentialPaths entry
+	// that AccountDirEnv relocates: ".claude" for CLAUDE_CONFIG_DIR,
+	// ".local/share" for XDG_DATA_HOME. Empty means the env var stands in for
+	// $HOME itself (GEMINI_CLI_HOME, FACTORY_HOME_OVERRIDE).
+	//
+	// AccountDirValue is what that part becomes when the env var is set, a
+	// template on its value: empty means the value itself (a directory);
+	// "{{.Value}}/config" or a $HOME-relative ".omp/profiles/{{.Value}}/agent"
+	// when the env var is not simply the directory.
+	AccountDirReplaces string
+	AccountDirValue    string
+
+	// LoginFiles are the CredentialPaths entries that exist only once a
+	// login has been saved: files the agent writes at login and not before.
+	// A database or settings file every run creates is left out, as are
+	// directories. CredentialsPresent stats these and nothing else.
+	LoginFiles []string
 
 	// Keyring: the agent stores its login in the OS secret store when one is
 	// available (libsecret on Linux, Keychain on macOS), so CredentialPaths
@@ -245,7 +261,7 @@ func CheckLoginVersion(ctx context.Context, name, version string, env ...string)
 		return StatusResult{State: LoginUnknown}, ErrNoStatusCheck
 	}
 	s := *h.Auth.Status
-	if s.MinVersion != "" && !versionAtLeast(version, s.MinVersion) {
+	if s.MinVersion != "" && !(VersionRange{From: s.MinVersion}).Contains(version) {
 		return StatusResult{State: LoginUnknown}, ErrStatusCheckUnsupported
 	}
 	if len(s.Providers) == 0 {
@@ -335,28 +351,4 @@ func (s StatusCheck) classify(code int, out string) LoginState {
 		return LoginLoggedIn
 	}
 	return LoginUnknown
-}
-
-var versionRe = regexp.MustCompile(`\d+(?:\.\d+)+`)
-
-// versionAtLeast compares the first dotted number in each string ("claude
-// 2.1.281 (Claude Code)", "2026.09.23-86fc751"). A version it cannot read is
-// not at least anything.
-func versionAtLeast(have, min string) bool {
-	h, m := versionRe.FindString(have), versionRe.FindString(min)
-	if h == "" || m == "" {
-		return false
-	}
-	hp, mp := strings.Split(h, "."), strings.Split(m, ".")
-	for i := 0; i < len(mp); i++ {
-		var a, b int
-		if i < len(hp) {
-			a, _ = strconv.Atoi(hp[i])
-		}
-		b, _ = strconv.Atoi(mp[i])
-		if a != b {
-			return a > b
-		}
-	}
-	return true
 }

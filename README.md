@@ -128,6 +128,52 @@ It lives here rather than in a test suite because three things consume it at run
 
 Windsurf is IDE-only and has no entry.
 
+`CredentialsPresent(name, env...)` is the cheaper, weaker signal for an agent with no `Cheap` check: it stats (never opens) the agent's `Auth.LoginFiles` for the account `env` selects, following the same selector as the table above (`CLAUDE_CONFIG_DIR`, `XDG_DATA_HOME`, `OMP_PROFILE`, ...; a relative value for a directory variable is ignored, as XDG and goose ignore it). A file that exists may hold an expired or revoked token; a missing one says nothing for an agent that keeps its login in the keyring (`Auth.Keyring`) or reads it from an env var. Copilot, kiro and omp have no login file whose existence proves a login, so it always says no for them. Order for a caller: a `Cheap` status check, then `CredentialsPresent`, then the config directory.
+
+#### Supported versions
+
+`Harness.Tested` is the range of each agent's versions inference has verified, with the evidence. `harness.Support(name, version)` compares an installed version against it and runs nothing; `DetectResult.Support()` does the same with the version detection read. The verdict's `Level` is one of:
+
+| level | meaning | caller |
+|---|---|---|
+| `supported` | inside the tested range | drive it |
+| `newer-than-tested` | above `Tested.Max` | drive it, warn |
+| `older-than-supported` | below `Tested.Min` | do not drive; show `Reason` and `UpgradeCmd` |
+| `unknown` | version unreadable, agent unknown or untested | drive it, warn |
+
+`Reason` is a sentence for end users ("Pi Coding Agent 0.80.3 is older than 0.87.1, the oldest version inference has tested"); `TestedMin`, `TestedMax` and `UpgradeCmd` (the `UpgradeCmd` field where `InstallCmd` does not upgrade, as with pip, else `InstallCmd`) are data to render.
+
+`driver.ForHarness` stays version-agnostic. `driver.ForHarnessVersion(h, version, env)` returns the backend and the verdict, refuses only `older-than-supported` (with an `*UnsupportedVersionError` carrying the verdict), and tells the backend the version.
+
+| agent | tested min | tested max | how verified |
+|---|---|---|---|
+| claude | 2.1.281 | 2.1.282 | harness-test CI; agentprotocol CI pins 2.1.281 |
+| codex | 0.156.1 | 0.156.1 | harness-test CI; agentprotocol CI pins 0.156.1; codexapp generated from it |
+| copilot | 1.0.86 | 1.0.88 | harness-test CI |
+| cursor | 2026.09.23 | 2026.09.23 | harness-test CI |
+| droid | 0.223.0 | 0.226.2 | harness-test CI |
+| gemini | 0.60.0 | 0.61.0 | harness-test CI |
+| goose | 1.51.0 | 1.52.0 | harness-test CI |
+| grok | 1.0.34 | 1.0.41 | harness-test CI |
+| hermes | 0.19.0 | 0.19.0 | harness-test CI |
+| kilo | 7.7.5 | 7.7.9 | harness-test CI |
+| kimi | 2.0.2 | 2.1.1 | harness-test CI |
+| kiro | 2.22.1 | 2.24.0 | harness-test CI |
+| omp | 18.2.6 | 18.3.0 | harness-test CI |
+| opencode | 1.18.31 | 1.18.32 | harness-test CI |
+| pi | 0.87.1 | 0.87.1 | harness-test CI; agentprotocol CI pins 0.87.1 |
+| qwen | 0.24.1 | 0.24.5 | harness-test CI |
+
+"harness-test CI" means the agent's workflow in belt-sh/harness-test finished green, every job including the session job that drives the agent through its `DriverKind` backend, with that version installed; versions come from the runs' `→ version:` log lines, 2026-09-20 to 2026-09-24. Claude, codex, cursor and pi have had the session job only since 2026-09-24, so older versions that passed their other modes are not counted (`Tested.Evidence` lists them). Nothing between two tested versions is claimed beyond that.
+
+**Raising `Tested.Max`.** harness-test installs each agent with its `InstallCmd`, which takes the latest release, on every push and in the nightly; agentprotocol's `Agents` workflow runs a `latest` entry nightly next to its pins. When those are green on a newer release, set `Max` to it and add it to the evidence.
+
+**Extending `Tested.Min`.** It needs a green harness-test run with the older version installed, and harness-test has no way to pin an agent's version per run: the image installs whatever `InstallCmd` fetches. That is the missing piece (a per-agent version override for the install step, as agentprotocol's `Agents` workflow does with `CLAUDE_VERSION`/`CODEX_VERSION`/`PI_VERSION` for its three drivers). Until it exists, `Min` only moves down with evidence like that workflow's pinned entry.
+
+#### Version-specific behaviour
+
+When a flag, subcommand or protocol field exists only on some versions, the registry records it once as a `VersionRange` (`From` inclusive, `Before` exclusive) under a feature name in `Harness.Features`, and the driver asks `h.HasFeature(name, installedVersion)` before using it. The entry is not forked per version. pi's `--session-id` (CHANGELOG: added in 0.76.0) is one: `PiBackend` with a `Version` below that reports `Resume: false` and refuses a resume before starting pi. `StatusCheck.MinVersion` is the same rule for the login check. Versions are read with `ParseVersion`, which takes the first dotted number from `--version` output (`codex-cli 0.156.1`, `2.1.282 (Claude Code)`, `2026.09.23-86fc751`), and compared numerically per component by `CompareVersions`.
+
 ### a2a
 
 Wire types for [A2A](https://a2a-protocol.org) v1.0, and total mappings between an A2A task state and a run state, both directions. The mapping functions are pure, so a server answering A2A calls and a client making them can share one definition.

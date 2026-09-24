@@ -214,6 +214,22 @@ type Harness struct {
 	// APIKeyEnvVar above stays the key the test mock uses.
 	Auth Auth
 
+	// Tested is the range of this agent's versions inference has verified,
+	// with the evidence. Filled from testedTable in tested_table.go; zero for
+	// an agent nothing has verified. Support reads it.
+	Tested TestedVersions
+
+	// UpgradeCmd moves an installed agent to its latest release, where
+	// InstallCmd would not (pip install leaves an installed package alone).
+	// Empty means InstallCmd upgrades too. Use UpgradeCommand.
+	UpgradeCmd []string
+
+	// Features are flags, subcommands and protocol fields that exist only on
+	// some versions of the agent, by name, with the versions that have them.
+	// Drivers consult them through HasFeature with the installed version. A
+	// feature not listed is on every version.
+	Features map[string]VersionRange
+
 	// Headless (-p) mode
 	HeadlessCmd       []string   // command prefix
 	HeadlessModelArgs []string   // model selection flags, supports {{.Model}}

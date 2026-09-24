@@ -1,6 +1,9 @@
 package driver_test
 
 import (
+	"context"
+	"errors"
+	"strings"
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/driver"
@@ -49,6 +52,55 @@ func TestForHarness(t *testing.T) {
 	for _, name := range []string{"claude", "codex", "pi"} {
 		if got := harness.All[name].DriverKind(); got == harness.DriverACP || got == "" {
 			t.Errorf("%s runs on %q, want its native driver", name, got)
+		}
+	}
+}
+
+func TestForHarnessVersion(t *testing.T) {
+	pi := harness.All["pi"]
+
+	_, v, err := driver.ForHarnessVersion(pi, "0.80.3", nil)
+	var uv *driver.UnsupportedVersionError
+	if !errors.As(err, &uv) || v.Level != harness.OlderThanSupported || uv.Verdict.Reason != v.Reason {
+		t.Fatalf("0.80.3: %v, %+v", err, v)
+	}
+	if len(v.UpgradeCmd) == 0 || v.TestedMin == "" {
+		t.Errorf("refusal carries no upgrade data: %+v", v)
+	}
+
+	for _, ver := range []string{pi.Tested.Max, "99.0.0", ""} {
+		b, v, err := driver.ForHarnessVersion(pi, ver, nil)
+		if err != nil {
+			t.Fatalf("%q: %v", ver, err)
+		}
+		if b.(*driver.PiBackend).Version != ver {
+			t.Errorf("%q: backend not told the version", ver)
+		}
+		want := map[string]harness.SupportLevel{pi.Tested.Max: harness.Supported, "99.0.0": harness.NewerThanTested, "": harness.SupportUnknown}[ver]
+		if v.Level != want {
+			t.Errorf("%q: %s, want %s", ver, v.Level, want)
+		}
+	}
+
+	if _, _, err := driver.ForHarnessVersion(harness.All["windsurf"], "1.0", nil); err == nil || errors.As(err, &uv) {
+		t.Errorf("windsurf: want the no-driver error, got %v", err)
+	}
+}
+
+// pi's --session-id is recorded from 0.76.0: an older pi cannot resume, and
+// the backend says so before starting anything.
+func TestPiResumeNeedsSessionID(t *testing.T) {
+	old := &driver.PiBackend{Command: "/nonexistent/pi-would-fail-if-run", Version: "0.75.0"}
+	if old.Capabilities().Resume {
+		t.Error("pi 0.75.0 reports Resume")
+	}
+	_, err := old.Open(context.Background(), driver.SessionConfig{ResumeSessionID: "abc"})
+	if err == nil || !strings.Contains(err.Error(), "--session-id") {
+		t.Errorf("resume on 0.75.0: %v", err)
+	}
+	for _, v := range []string{"", "0.87.1"} {
+		if !(&driver.PiBackend{Version: v}).Capabilities().Resume {
+			t.Errorf("pi %q: Resume false", v)
 		}
 	}
 }

@@ -222,24 +222,48 @@ func CheckLogin(ctx context.Context, name string, env ...string) (StatusResult, 
 	if len(s.Providers) == 0 {
 		return s.run(ctx, s.Cmd, env)
 	}
-	// One run per provider; the first logged-in answer wins, otherwise the
-	// last answer stands (logged out only if every provider said so).
-	var last StatusResult
-	allOut := true
+	// One run per provider, all at once: each is a separate process start
+	// (pi's is a Node start per provider, about a second each), and run in
+	// turn five of them outlast any enrollment budget. The first logged-in
+	// answer wins and cancels the rest; otherwise the result is logged out
+	// only if every provider said so.
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	type answer struct {
+		r   StatusResult
+		err error
+	}
+	answers := make(chan answer, len(s.Providers))
 	for _, p := range s.Providers {
 		cmd := make([]string, len(s.Cmd))
 		for i, a := range s.Cmd {
 			cmd[i] = strings.ReplaceAll(a, "{{.Provider}}", p)
 		}
-		r, err := s.run(ctx, cmd, env)
-		if err != nil {
-			return r, err
+		go func() {
+			r, err := s.run(ctx, cmd, env)
+			answers <- answer{r, err}
+		}()
+	}
+	var last StatusResult
+	var firstErr error
+	allOut := true
+	for range s.Providers {
+		a := <-answers
+		if a.err == nil && a.r.State == LoginLoggedIn {
+			return a.r, nil
 		}
-		if r.State == LoginLoggedIn {
-			return r, nil
+		if a.err != nil {
+			if firstErr == nil {
+				firstErr = a.err
+			}
+			allOut = false
+			continue
 		}
-		allOut = allOut && r.State == LoginLoggedOut
-		last = r
+		allOut = allOut && a.r.State == LoginLoggedOut
+		last = a.r
+	}
+	if firstErr != nil {
+		return StatusResult{State: LoginUnknown}, firstErr
 	}
 	if !allOut {
 		last.State = LoginUnknown

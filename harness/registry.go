@@ -496,7 +496,7 @@ var All = map[string]Harness{
 			"GEMINI_API_KEY":             "mock-key",
 		},
 		APIKeyEnvVar:  "",
-		DefaultModel:  "gemini-3.5-flash",
+		DefaultModel:  "gemini-3.8-flash",
 		ToolCallName:  "write_file",
 		ToolCallArgs:  `{"file_path":"{{.RepoDir}}/test-output.txt","content":"test"}`,
 		HookFormat:    JSONNested,
@@ -525,9 +525,11 @@ var All = map[string]Harness{
 		// Pin the model in every mode. Unpinned, gemini picked its own (a
 		// flash-lite router plus gemini-3.1-pro-preview), and AcceptedModels
 		// once listed the prefixes "gemini-3"/"gemini-2" so any of them passed.
-		HeadlessModelArgs:       []string{"--yolo", "-m", "gemini-3.5-flash"},
-		ACPArgs:                 []string{"-m", "gemini-3.5-flash"},
-		InteractiveCmd:          []string{"gemini", "--yolo", "-m", "gemini-3.5-flash", "-i", "What is the project codename? Reply ONLY the codename."},
+		// gemini 0.61 sends gemini-3.8-flash (LATEST_GEMINI_FLASH_MODEL) when
+		// asked for gemini-3.5-flash, so the pin follows it.
+		HeadlessModelArgs:       []string{"--yolo", "-m", "gemini-3.8-flash"},
+		ACPArgs:                 []string{"-m", "gemini-3.8-flash"},
+		InteractiveCmd:          []string{"gemini", "--yolo", "-m", "gemini-3.8-flash", "-i", "What is the project codename? Reply ONLY the codename."},
 		InteractivePromptInArgs: true,
 		SlowInput:               true,
 		ExitCommand:             "/exit",

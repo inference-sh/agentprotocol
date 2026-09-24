@@ -1,0 +1,386 @@
+package harness
+
+// authTable is Auth per agent, measured in Docker 2026-09 on the versions in
+// MeasuredOn (harness-test's image, agents installed by their InstallCmd).
+// Logins were started far enough to see what they offer and then killed;
+// none was completed, so every logged-in output below comes from the
+// agent's help or source. Credential files were checked for existence only.
+var authTable = map[string]Auth{
+	"claude": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionOAuth, Subscription: "Claude Pro/Max", Headless: HeadlessPasteToken,
+				Command: []string{"claude", "auth", "login"},
+				Note:    "prints a claude.com/cai/oauth/authorize URL (redirect on platform.claude.com, no localhost callback) and waits at \"Paste code here if prompted >\"; --console bills the API instead, --sso forces SSO"},
+			{Kind: AuthSubscriptionToken, Subscription: "Claude Pro/Max", Headless: HeadlessEnvToken,
+				Command: []string{"claude", "setup-token"}, EnvVars: []string{"CLAUDE_CODE_OAUTH_TOKEN"},
+				Note: "setup-token runs the same URL-and-paste flow and prints a 1-year token to export as CLAUDE_CODE_OAUTH_TOKEN; the token then works on any machine with no login there"},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN"},
+				Note: "also apiKeyHelper in settings"},
+			{Kind: AuthCloudSSO, Headless: HeadlessEnvToken, EnvVars: []string{"CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_VERTEX", "CLAUDE_CODE_USE_FOUNDRY"}},
+		},
+		Status: &StatusCheck{
+			Cmd:           []string{"claude", "auth", "status", "--json"},
+			LoggedOutExit: 1, LoggedOutContains: `"loggedIn": false`, LoggedInExit: 0,
+			Output: `JSON. Logged out (measured, indented JSON): {"loggedIn": false, "authMethod": "none", "apiProvider": "firstParty", ...}, exit 1. ` +
+				`Logged in (source): loggedIn true, authMethod claude.ai|oauth_token|api_key|api_key_helper|third_party, email, orgId, orgName, subscriptionType, apiKeySource (an env var name); no token field`,
+			Cheap: true,
+			Note: "0.2s, same answer with no network, no prompt; a run writes nothing unless .claude.json is missing, which the first run creates. " +
+				"A set CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY reports logged in without being validated",
+		},
+		AccountDirEnv:   "CLAUDE_CONFIG_DIR",
+		CredentialPaths: []string{".claude/.credentials.json"},
+		MeasuredOn:      "claude 2.1.281",
+		Source:          "help, observed login and setup-token prompts, bundle strings, auth status run logged out and with fake env tokens",
+		Note:            "Linux keeps the login in the plaintext file; the macOS Keychain is used only on macOS. CLAUDE_CONFIG_DIR moves .credentials.json and .claude.json",
+	},
+	"codex": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionOAuth, Subscription: "ChatGPT Plus/Pro/Business", Headless: HeadlessDeviceCode,
+				Command: []string{"codex", "login", "--device-auth"},
+				Note:    "prints https://auth.openai.com/codex/device and a one-time code valid 15 minutes"},
+			{Kind: AuthSubscriptionOAuth, Subscription: "ChatGPT Plus/Pro/Business", Headless: HeadlessNone,
+				Command: []string{"codex", "login"},
+				Note:    "localhost:1455 callback; it prints a hint to use --device-auth on a remote machine"},
+			{Kind: AuthSubscriptionToken, Subscription: "ChatGPT", Headless: HeadlessEnvToken,
+				Command: []string{"codex", "login", "--with-access-token"}, EnvVars: []string{"CODEX_ACCESS_TOKEN"},
+				Note: "reads the token on stdin (help's example pipes CODEX_ACCESS_TOKEN); bundle strings name ChatGPT personal access tokens and agent identity tokens; not exercised"},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken,
+				Command: []string{"codex", "login", "--with-api-key"}, EnvVars: []string{"OPENAI_API_KEY", "CODEX_API_KEY"},
+				Note: "--with-api-key reads stdin and stores it in auth.json"},
+			{Kind: AuthCloudSSO, Headless: HeadlessEnvToken, Note: "Amazon Bedrock (bundle strings)"},
+		},
+		Status: &StatusCheck{
+			Cmd:           []string{"codex", "login", "status"},
+			LoggedOutExit: 1, LoggedOutContains: "Not logged in", LoggedInExit: 0,
+			Output:          `text. Logged out (measured): "Not logged in", exit 1. Logged in (source): "Logged in using ChatGPT" / "... access token" / "... personal access token" / "... an API key - <first 8>***<last 5>"`,
+			OutputHasSecret: true,
+			Note: "0.08s, same answer with no network, no prompt, but every run rewrites a lock under $CODEX_HOME/tmp/arg0, so not Cheap. " +
+				"Only stored logins count: OPENAI_API_KEY or CODEX_API_KEY in the env still reports Not logged in",
+		},
+		AccountDirEnv:   "CODEX_HOME",
+		CredentialPaths: []string{".codex/auth.json"},
+		MeasuredOn:      "codex-cli 0.156.1",
+		Source:          "help, observed login and --device-auth prompts, bundle strings, login status run logged out and with a fake key",
+		Note:            "cli_auth_credentials_store = file|keyring|auto in config.toml; the container (no keyring) used the file",
+	},
+	"copilot": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionOAuth, Subscription: "GitHub Copilot", Headless: HeadlessDeviceCode,
+				Command: []string{"copilot", "login", "--device-code"}, ACPMethodID: "copilot-login",
+				Note: "prints https://github.com/login/device and a code. Plain `copilot login` picks device code only when SSH_CONNECTION is set or stdin is not a TTY; a bare container got the localhost web flow, so pass --device-code. " +
+					"With no keyring it asks before saving the token in plaintext, and without a TTY that prompt answers no and the token is not saved: run it in a pty or use a token env var"},
+			{Kind: AuthSubscriptionToken, Subscription: "GitHub Copilot", Headless: HeadlessEnvToken,
+				Command: []string{"copilot", "login", "--with-token"}, EnvVars: []string{"COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"},
+				Note: "env vars in that precedence, over any stored login; fine-grained PAT with Copilot Requests, or an OAuth token from the Copilot CLI or gh app; classic ghp_ PATs are refused"},
+			{Kind: AuthProviderConfig, Headless: HeadlessEnvToken,
+				EnvVars: []string{"COPILOT_PROVIDER_BASE_URL", "COPILOT_PROVIDER_API_KEY", "COPILOT_PROVIDER_BEARER_TOKEN"},
+				Note:    "bring-your-own provider; no GitHub login needed"},
+		},
+		AccountDirEnv:   "COPILOT_HOME",
+		CredentialPaths: []string{".copilot/"},
+		Keyring:         true,
+		MeasuredOn:      "GitHub Copilot CLI 1.0.88",
+		Source:          "login --help, help environment, observed web and device flows, ACP authMethods, bundle",
+		Note: "no status command (login status is rejected). ACP copilot-login carries _meta terminal-auth {command: copilot, args: [login]}. " +
+			"Token is kept in the system keychain (libsecret), else a plaintext file under $COPILOT_HOME whose name was not confirmed",
+	},
+	"cursor": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionOAuth, Subscription: "Cursor Pro/Business", Headless: HeadlessBrowserElsewhere,
+				Command: []string{"cursor-agent", "login"}, EnvVars: []string{"NO_OPEN_BROWSER"}, ACPMethodID: "cursor_login",
+				Note: "with NO_OPEN_BROWSER=1 it prints a cursor.com/loginDeepControl URL and polls; open it on any machine, nothing is pasted back. Same without a TTY. " +
+					"ACP cursor_login only uses an existing login"},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"CURSOR_API_KEY"},
+				Note: "also --api-key; CURSOR_AUTH_TOKEN / --auth-token take a token of a kind not confirmed"},
+		},
+		Status: &StatusCheck{
+			Cmd:           []string{"cursor-agent", "status", "--format", "json"},
+			LoggedOutExit: 0, LoggedOutContains: `"isAuthenticated": false`, LoggedInExit: 0,
+			Output: `JSON, exit 0 either way. Logged out (measured, indented JSON): {"status": "unauthenticated", "isAuthenticated": false, "hasAccessToken": false, "hasRefreshToken": false, "message": "Not logged in"}. ` +
+				`Logged in (source): status "authenticated" or "partially-authenticated", isAuthenticated true, userInfo {email,userId,firstName,lastName,teamId,teamName}; booleans for the tokens, never the tokens`,
+			Note: "0.65s, same answer with no network logged out; but every run writes /tmp/cursor-agent-logs-<uid>/session-*.log and a logged-in run calls GetMe over the network, so not Cheap. CURSOR_API_KEY in the env is ignored",
+		},
+		AccountDirEnv:   "XDG_CONFIG_HOME",
+		CredentialPaths: []string{".config/cursor/auth.json"},
+		MeasuredOn:      "cursor-agent 2026.09.23-86fc751",
+		Source:          "help, observed login with NO_OPEN_BROWSER, ACP authMethods, bundle",
+		Note: "CURSOR_CONFIG_DIR moves cli-config.json only, not the login; on Linux the login is $XDG_CONFIG_HOME/<name>/auth.json per source, with <name> read as cursor but not confirmed. " +
+			"The Keychain is macOS-only",
+	},
+	"gemini": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionOAuth, Subscription: "Google account (Gemini Code Assist, Google AI Pro/Ultra)", Headless: HeadlessPasteToken,
+				Command: []string{"gemini"}, EnvVars: []string{"NO_BROWSER", "GOOGLE_GENAI_USE_GCA"}, ACPMethodID: "oauth-personal",
+				Note: "no login subcommand: the TUI's \"Log in with Google\" prints an accounts.google.com URL (redirect codeassist.google.com/authcode) and asks \"Enter the authorization code:\". " +
+					"It takes this path by itself on Linux with no DISPLAY/WAYLAND_DISPLAY, or with NO_BROWSER or CI set. Needs a TTY: gemini -p with no cached login fails with \"Manual authorization is required but the current session is non-interactive\""},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"GEMINI_API_KEY"}, ACPMethodID: "gemini-api-key"},
+			{Kind: AuthCloudSSO, Headless: HeadlessEnvToken, ACPMethodID: "vertex-ai",
+				EnvVars: []string{"GOOGLE_GENAI_USE_VERTEXAI", "GOOGLE_API_KEY", "GOOGLE_CLOUD_PROJECT", "GOOGLE_CLOUD_LOCATION", "GOOGLE_APPLICATION_CREDENTIALS"}},
+			{Kind: AuthProviderConfig, Headless: HeadlessEnvToken, ACPMethodID: "gateway", EnvVars: []string{"GOOGLE_GEMINI_BASE_URL"}},
+		},
+		AccountDirEnv:   "GEMINI_CLI_HOME",
+		CredentialPaths: []string{".gemini/oauth_creds.json", ".gemini/google_accounts.json"},
+		MeasuredOn:      "gemini 0.61.0",
+		Source:          "ACP authMethods, observed TUI login in a container, bundle (getAuthTypeFromEnv, shouldAttemptBrowserLaunch)",
+		Note: "no status command; a login exists when oauth_creds.json exists and settings.json has security.auth.selectedType. " +
+			"GEMINI_CLI_HOME stands in for $HOME (.gemini goes under it). GEMINI_FORCE_ENCRYPTED_FILE_STORAGE=true moves the login to the keychain, else .gemini/gemini-credentials.json. " +
+			"ACP authenticate with a methodId other than the saved one deletes the cached login first; ACP oauth-personal with no cached login cannot prompt (source, not run)",
+	},
+	"qwen": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionToken, Subscription: "Alibaba Cloud Coding Plan", Headless: HeadlessEnvToken,
+				EnvVars: []string{"BAILIAN_CODING_PLAN_API_KEY"},
+				Note:    "sk-sp- key; base URL coding-intl.dashscope.aliyuncs.com/v1 (international) or coding.dashscope.aliyuncs.com/v1 (China). BAILIAN_TOKEN_PLAN_API_KEY for the Token Plan"},
+			{Kind: AuthDeviceCode, Subscription: "Qwen OAuth (free tier discontinued 2026-04-15)", Headless: HeadlessNone,
+				Command: []string{"qwen"},
+				Note:    "still in the code as a chat.qwen.ai device flow behind the TUI's /auth, but the bundle maps its quota errors to \"Qwen OAuth free tier has been discontinued\"; qwen auth says it cannot be set by env vars"},
+			{Kind: AuthProviderConfig, Headless: HeadlessEnvToken, ACPMethodID: "openai",
+				EnvVars: []string{"OPENAI_API_KEY", "OPENAI_BASE_URL", "OPENAI_MODEL", "OPENROUTER_API_KEY"},
+				Note:    "--auth-type openai|openai-responses|anthropic|gemini|vertex-ai; ACP advertises only openai (_meta type terminal, args [--auth-type=openai])"},
+		},
+		AccountDirEnv:   "QWEN_HOME",
+		CredentialPaths: []string{".qwen/oauth_creds.json", ".qwen/settings.json", ".qwen/.env"},
+		MeasuredOn:      "qwen 0.24.5",
+		Source:          "help, qwen auth output, ACP authMethods, bundle",
+		Note:            "no status command outside the TUI (/doctor). qwen auth is removed and prints the options. Keys entered in /auth are saved in settings.json under env.<KEY>. QWEN_HOME replaces ~/.qwen",
+	},
+	"kiro": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionOAuth, Subscription: "Kiro Free/Pro (Builder ID, Google, GitHub)", Headless: HeadlessDeviceCode,
+				Command: []string{"kiro-cli", "login", "--license", "free", "--use-device-flow"},
+				Note:    "prints a view.awsapps.com/start/#/device URL and code and polls; works without a TTY. Without --license it shows a menu (Builder ID / Google / GitHub / Your Organization). Plain login with no browser says to retry with --use-device-flow"},
+			{Kind: AuthCloudSSO, Headless: HeadlessDeviceCode,
+				Command: []string{"kiro-cli", "login", "--license", "pro", "--identity-provider", "<start-url>", "--region", "<region>", "--use-device-flow"},
+				Note:    "IAM Identity Center or external IdP; without --identity-provider it prompts for the start URL"},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"KIRO_API_KEY"}},
+		},
+		Status: &StatusCheck{
+			Cmd:           []string{"kiro-cli", "whoami", "--format", "json"},
+			LoggedOutExit: 1, LoggedOutContains: `"account":null`, LoggedInExit: 0,
+			Output: `JSON. Logged out (measured): {"account":null}, exit 1. With KIRO_API_KEY set (measured, fake key): {"accountType":"ApiKey","email":null}, exit 0, key not validated. ` +
+				`Logged in (binary strings): accountType and email; plain format says "Logged in with Builder ID" / "IAM Identity Center (<start url>)" / "External IdP"`,
+			Note: "same answer with no network, 50ms warm, no prompt; but every run writes ~/.local/share/kiro-cli/data.sqlite3 (and the first creates ~/.kiro/settings/cli.json), so not Cheap. Whether a logged-in run refreshes tokens over the network is unverified",
+		},
+		AccountDirEnv:   "XDG_DATA_HOME",
+		CredentialPaths: []string{".local/share/kiro-cli/data.sqlite3"},
+		MeasuredOn:      "kiro-cli 2.24.0",
+		Source:          "help, observed login menu and device flow, whoami logged out and with a fake key, binary strings",
+		Note: "the login is rows in data.sqlite3 (table auth_kv). KIRO_HOME moves ~/.kiro only, not the login; KIRO_DATA_DIR did not move it. " +
+			"kiro-cli acp exits with \"You are not logged in\" before answering initialize, and with a key it returns authMethods [], so ACP cannot log in",
+	},
+	"droid": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionOAuth, Subscription: "Factory account", Headless: HeadlessDeviceCode,
+				Command: []string{"droid"}, ACPMethodID: "device-pairing",
+				Note: "no login subcommand: the TUI's Login prints https://auth.factory.ai/device and a code and waits. ACP authenticate device-pairing runs the same flow and blocks until done; " +
+					"whether an ACP client can see the code is unverified. droid exec logged out exits 1 with \"Please log in using /login or set a valid FACTORY_API_KEY\""},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"FACTORY_API_KEY"}, ACPMethodID: "factory-api-key",
+				Note: "an account key from app.factory.ai; overrides any stored login"},
+			{Kind: AuthProviderConfig, Headless: HeadlessEnvToken, Note: "customModels in ~/.factory/settings.json (BYOK)"},
+		},
+		Status: &StatusCheck{
+			Cmd:           []string{"droid", "doctor", "--auth", "--json"},
+			LoggedOutExit: 0, LoggedOutContains: "not logged in", LoggedInExit: 0, LoggedOutAnyExit: true,
+			Output: `JSON; exit 0 with network, 1 without (measured), whatever the login. Logged out (measured): the check with id "auth.verify" has status "warn" and detail "no usable credentials found (not logged in)". Logged in: unverified; strings suggest descriptions only`,
+			Note:   "probes api.workos.com (265ms offline, with that check failing) and writes ~/.factory/cache/certs/ on every run, so not Cheap",
+		},
+		AccountDirEnv:   "FACTORY_HOME_OVERRIDE",
+		CredentialPaths: []string{".factory/auth.v2.file", ".factory/auth.v2.key"},
+		Keyring:         true,
+		MeasuredOn:      "droid 0.226.2",
+		Source:          "help, observed TUI login, ACP authMethods, doctor run logged out and offline, bundle",
+		Note:            "FACTORY_HOME_OVERRIDE stands in for $HOME (.factory goes under it). The OS keyring is used when present; FACTORY_DISABLE_KEYRING=1 keeps the login in the encrypted auth.v2.file, which keeps profiles apart (the keyring entry is likely shared, inferred)",
+	},
+	"grok": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionOAuth, Subscription: "SuperGrok / X Premium", Headless: HeadlessDeviceCode,
+				Command: []string{"grok", "login", "--device-auth"}, ACPMethodID: "grok.com",
+				Note: "prints accounts.x.ai/oauth2/device with a code and waits. In a container plain grok login also chose the device flow"},
+			{Kind: AuthSubscriptionOAuth, Subscription: "SuperGrok / X Premium", Headless: HeadlessPasteToken,
+				Command: []string{"grok", "login", "--oauth"},
+				Note:    "auth.x.ai URL with a 127.0.0.1 redirect, then \"Paste the URL here if it doesn't connect\""},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"XAI_API_KEY"},
+				Note: "used only when no login session is active"},
+			{Kind: AuthCloudSSO, Headless: HeadlessEnvToken, EnvVars: []string{"GROK_OIDC_ISSUER", "GROK_OIDC_CLIENT_ID", "GROK_AUTH_PROVIDER_COMMAND"},
+				Note: "enterprise OIDC, or a helper command that prints a token"},
+		},
+		AccountDirEnv:   "GROK_HOME",
+		CredentialPaths: []string{".grok/auth.json"},
+		MeasuredOn:      "grok 1.0.41",
+		Source:          "help, shipped docs (~/.grok/docs/user-guide/02-authentication.md), observed login flows, ACP authMethods, binary strings",
+		Note: "no status command. grok models answers on its first line (\"You are not authenticated.\" logged out, \"You are using XAI_API_KEY.\", \"Signed in as ...\" per strings), exit 0 either way, " +
+			"but it writes config, logs and a session index, so it is not recorded as a check. GROK_HOME relocates the whole ~/.grok, auth.json included",
+	},
+	"kimi": {
+		Methods: []AuthMethod{
+			{Kind: AuthDeviceCode, Subscription: "Kimi Code plan", Headless: HeadlessDeviceCode,
+				Command: []string{"kimi", "login"}, ACPMethodID: "login",
+				Note: "prints www.kimi.com/code/authorize_device with a code (valid 1800s) and polls; --region mainland-cn|global. ACP login is terminal auth: _meta terminal-auth {command: kimi, args: [login]}"},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"KIMI_API_KEY", "KIMI_BASE_URL"},
+				Note: "or kimi provider add"},
+		},
+		AccountDirEnv:   "KIMI_CODE_HOME",
+		CredentialPaths: []string{".kimi-code/credentials/kimi-code.json"},
+		MeasuredOn:      "kimi 2.1.1",
+		Source:          "help, observed kimi login, ACP authMethods, bundle",
+		Note: "no status command: provider list does not see the OAuth login and writes files, doctor only validates config. " +
+			"A login exists when credentials/kimi-code.json exists under KIMI_CODE_HOME",
+	},
+	"goose": {
+		Methods: []AuthMethod{
+			{Kind: AuthProviderConfig, Subscription: "ChatGPT Plus/Pro (chatgpt_codex provider)", Headless: HeadlessNone,
+				Command: []string{"goose", "configure"}, EnvVars: []string{"GOOSE_PROVIDER"},
+				Note: "localhost /auth/callback; no device flow string found (binary strings, flow not observed)"},
+			{Kind: AuthProviderConfig, Subscription: "GitHub Copilot (github_copilot provider)", Headless: HeadlessDeviceCode,
+				Command: []string{"goose", "configure"}, EnvVars: []string{"GOOSE_PROVIDER", "GITHUB_COPILOT_TOKEN"},
+				Note: "GitHub device flow per binary strings; not observed"},
+			{Kind: AuthProviderConfig, Subscription: "SuperGrok (xai_oauth provider)", Headless: HeadlessDeviceCode,
+				Command: []string{"goose", "configure"}, EnvVars: []string{"GOOSE_PROVIDER", "XAI_OAUTH_TOKEN"},
+				Note: "binary strings: falls back to a device-code flow on headless machines; not observed"},
+			{Kind: AuthProviderConfig, Subscription: "another agent's login (claude_code, codex_cli, cursor-agent, gemini_cli, *-acp providers)", Headless: HeadlessNone,
+				EnvVars: []string{"GOOSE_PROVIDER"},
+				Note:    "these providers run the other CLI and use its login, so the headless answer is that agent's"},
+			{Kind: AuthProviderConfig, Headless: HeadlessEnvToken, EnvVars: []string{"GOOSE_PROVIDER", "GOOSE_MODEL"}, ACPMethodID: "goose-provider",
+				Note: "API-key providers, OpenRouter and Tetrate logins from goose configure. ACP goose-provider only tells the user to run goose configure"},
+		},
+		AccountDirEnv:   "GOOSE_PATH_ROOT",
+		CredentialPaths: []string{".config/goose/secrets.yaml", ".config/goose/"},
+		Keyring:         true,
+		MeasuredOn:      "goose 1.52.0",
+		Source:          "configure menu, ACP authMethods, binary strings, goose info",
+		Note: "no login-state command: goose info prints paths and config, not whether a provider is signed in, and writes a log. " +
+			"Secrets go to the keyring unless GOOSE_DISABLE_KEYRING=1 (then secrets.yaml); OAuth providers keep tokens under the config dir (chatgpt_codex/tokens.json, xai_oauth/tokens.json, gemini_oauth/tokens.json, per strings). " +
+			"GOOSE_PATH_ROOT moves config, data and state (measured); XDG_CONFIG_HOME moves config",
+	},
+	"hermes": {
+		Methods: []AuthMethod{
+			{Kind: AuthProviderConfig, Subscription: "ChatGPT Plus/Pro (openai-codex)", Headless: HeadlessDeviceCode,
+				Command: []string{"hermes", "auth", "add", "openai-codex", "--type", "oauth", "--no-browser"},
+				Note:    "prints auth.openai.com/codex/device and a code"},
+			{Kind: AuthProviderConfig, Subscription: "Claude Pro/Max (anthropic)", Headless: HeadlessPasteToken,
+				Command: []string{"hermes", "auth", "add", "anthropic", "--type", "oauth", "--no-browser"}, EnvVars: []string{"CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_TOKEN", "ANTHROPIC_API_KEY"},
+				Note: "claude.ai authorize URL, then \"Paste it below\"; also takes a claude setup-token via CLAUDE_CODE_OAUTH_TOKEN"},
+			{Kind: AuthProviderConfig, Subscription: "Nous Portal (nous)", Headless: HeadlessDeviceCode,
+				Command: []string{"hermes", "auth", "add", "nous", "--type", "oauth", "--no-browser"},
+				Note:    "prints portal.nousresearch.com with a user code"},
+			{Kind: AuthProviderConfig, Subscription: "SuperGrok / Premium+ (xai-oauth)", Headless: HeadlessDeviceCode,
+				Command: []string{"hermes", "auth", "add", "xai-oauth", "--type", "oauth", "--no-browser"},
+				Note:    "prints accounts.x.ai/oauth2/device and a code"},
+			{Kind: AuthProviderConfig, Subscription: "GitHub Copilot (copilot)", Headless: HeadlessEnvToken,
+				EnvVars: []string{"COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"}},
+			{Kind: AuthProviderConfig, Headless: HeadlessEnvToken, EnvVars: []string{"OPENROUTER_API_KEY"}, ACPMethodID: "hermes-setup",
+				Note: "API-key providers in ~/.hermes/.env; ACP hermes-setup is terminal auth that runs hermes --setup"},
+		},
+		AccountDirEnv:   "HERMES_HOME",
+		CredentialPaths: []string{".hermes/auth.json", ".hermes/.env"},
+		MeasuredOn:      "hermes-agent 0.19.0",
+		Source:          "help, observed hermes auth add flows, ACP authMethods, package source",
+		Note: "status is per provider: hermes auth status <provider> prints \"<provider>: logged out\" (measured, 0.3s offline) or \"<provider>: logged in\" plus auth_type, client_id, scope, expires_at (source), exit 0 either way. " +
+			"Not recorded as a check: it writes auth.lock, and nous and qwen-oauth refresh tokens over the network. hermes status masks keys to 4 characters each end, so its output carries key material. " +
+			"Profiles are ~/.hermes/profiles/<name>, selected by setting HERMES_HOME",
+	},
+	"opencode": {
+		Methods: []AuthMethod{
+			{Kind: AuthProviderConfig, Subscription: "ChatGPT Plus/Pro", Headless: HeadlessDeviceCode,
+				Command: []string{"opencode", "auth", "login", "-p", "openai", "-m", "ChatGPT Pro/Plus (headless)"},
+				Note:    "auth.openai.com/codex/device code flow (method label read from the binary; the menu did not render in the capture). \"ChatGPT Pro/Plus (browser)\" needs a local callback"},
+			{Kind: AuthProviderConfig, Subscription: "GitHub Copilot", Headless: HeadlessDeviceCode,
+				Command: []string{"opencode", "auth", "login", "-p", "github-copilot"},
+				Note:    "asks github.com or Enterprise, then GitHub's device flow"},
+			{Kind: AuthProviderConfig, Subscription: "SuperGrok", Headless: HeadlessDeviceCode,
+				Command: []string{"opencode", "auth", "login", "-p", "xai", "-m", "SuperGrok Subscription"}},
+			{Kind: AuthSubscriptionToken, Subscription: "any provider login", Headless: HeadlessEnvToken,
+				EnvVars: []string{"OPENCODE_AUTH_CONTENT"},
+				Note:    "the whole auth.json as a JSON string; auth list honours it (measured)"},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"OPENAI_API_KEY", "ANTHROPIC_API_KEY"}, ACPMethodID: "opencode-login",
+				Note: "anthropic takes an API key only (no Claude Pro/Max login in this version); opencode (Zen) is a key from opencode.ai/auth. ACP opencode-login only says to run opencode auth login"},
+		},
+		AccountDirEnv:   "XDG_DATA_HOME",
+		CredentialPaths: []string{".local/share/opencode/auth.json"},
+		MeasuredOn:      "opencode 1.18.32",
+		Source:          "help, auth login menu in a pty, ACP authMethods, binary strings, auth list logged out and with fake credential files",
+		Note: "no single login state: auth list prints one line per stored provider (\"●  OpenAI oauth\"), never the secret (checked with fake files), \"0 credentials\" when empty, exit 0. " +
+			"Not recorded as a check: 1.3s and every run writes opencode.db and a log. OPENCODE_CONFIG_DIR does not move auth.json",
+	},
+	"kilo": {
+		Methods: []AuthMethod{
+			{Kind: AuthSubscriptionOAuth, Subscription: "Kilo account", Headless: HeadlessDeviceCode,
+				Command: []string{"kilo", "auth", "login", "-p", "kilo"}, ACPMethodID: "kilo-login",
+				Note: "prints app.kilo.ai/device-auth and a code (measured). ACP kilo-login only says to run kilo auth login"},
+			{Kind: AuthProviderConfig, Subscription: "ChatGPT Plus/Pro", Headless: HeadlessDeviceCode,
+				Command: []string{"kilo", "auth", "login", "-p", "openai", "-m", "ChatGPT Pro/Plus (headless)"},
+				Note:    "label read from the binary"},
+			{Kind: AuthProviderConfig, Subscription: "GitHub Copilot", Headless: HeadlessDeviceCode,
+				Command: []string{"kilo", "auth", "login", "-p", "github-copilot"}},
+			{Kind: AuthProviderConfig, Subscription: "SuperGrok", Headless: HeadlessDeviceCode,
+				Command: []string{"kilo", "auth", "login", "-p", "xai"},
+				Note:    "method \"xAI Grok OAuth (Headless / Remote / VPS)\""},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"OPENAI_API_KEY", "ANTHROPIC_API_KEY"},
+				Note: "anthropic is API key only. KILO_AUTH_CONTENT is in the binary, presumably like OPENCODE_AUTH_CONTENT; not tested"},
+		},
+		AccountDirEnv:   "XDG_DATA_HOME",
+		CredentialPaths: []string{".local/share/kilo/auth.json"},
+		MeasuredOn:      "kilo 7.7.9",
+		Source:          "help, observed kilo device login, ACP authMethods, binary strings, auth list logged out and with fake credential files",
+		Note:            "auth list is opencode's (per-provider lines, no secrets with fake files, exit 0) but took 4.6s offline and writes config, db, logs and a telemetry id, so it is not recorded as a check. KILO_CONFIG_DIR does not move auth.json",
+	},
+	"pi": {
+		Methods: []AuthMethod{
+			{Kind: AuthProviderConfig, Subscription: "ChatGPT Plus/Pro", Headless: HeadlessDeviceCode,
+				Command: []string{"pi"},
+				Note:    "no login subcommand: /login in the TUI, \"Sign in with an account\", OpenAI offers \"Device code login (headless)\""},
+			{Kind: AuthProviderConfig, Subscription: "Claude Pro/Max", Headless: HeadlessPasteToken,
+				Command: []string{"pi"}, EnvVars: []string{"ANTHROPIC_OAUTH_TOKEN"},
+				Note: "/login: localhost callback, or paste the final redirect URL or code. ANTHROPIC_OAUTH_TOKEN takes a claude setup-token"},
+			{Kind: AuthProviderConfig, Subscription: "GitHub Copilot, SuperGrok, Kimi Code", Headless: HeadlessDeviceCode,
+				Command: []string{"pi"},
+				Note:    "/login device flows (source; final step not run)"},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"OPENROUTER_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY"},
+				Note: "full list in pi --help"},
+		},
+		Status: &StatusCheck{
+			Cmd:           []string{"pi", "auth", "check", "--provider", "{{.Provider}}", "--json", "--no-refresh"},
+			Providers:     []string{"anthropic", "openai-codex", "github-copilot", "xai", "kimi-coding"},
+			LoggedOutExit: 1, LoggedOutContains: "not_ready", LoggedInExit: 0,
+			Output: `JSON per provider. Logged out (measured): {"status":"not_ready","provider":"anthropic","reason":"credentials_not_configured"}, exit 1. ` +
+				`Logged in (fake credential file): {"status":"ready","provider":"openai-codex","authType":"oauth"}, exit 0; an API key in the env reports ready with authType api_key`,
+			Cheap: true,
+			Note:  "0.3s per provider with no network, no writes, no prompt (measured). Never add --credentials (prints the secret); without --no-refresh it refreshes OAuth over the network and writes",
+		},
+		AccountDirEnv:   "PI_CODING_AGENT_DIR",
+		CredentialPaths: []string{".pi/agent/auth.json"},
+		MeasuredOn:      "pi 0.87.1",
+		Source:          "help, /login menu in a pty, bundle, auth check logged out and with fake credential files",
+		Note:            "pi auth print-api-key / print-bearer-token print secrets; never forward them",
+	},
+	"omp": {
+		Methods: []AuthMethod{
+			{Kind: AuthProviderConfig, Subscription: "ChatGPT Plus/Pro", Headless: HeadlessDeviceCode,
+				Command: []string{"omp", "login"},
+				Note:    "menu entry \"ChatGPT Plus/Pro (Codex, headless/device)\": auth.openai.com/codex/device (measured). The other ChatGPT entry is localhost:1455 plus a paste prompt"},
+			{Kind: AuthProviderConfig, Subscription: "Claude Pro/Max", Headless: HeadlessPasteToken,
+				Command: []string{"omp", "login", "anthropic"}, EnvVars: []string{"ANTHROPIC_OAUTH_TOKEN"},
+				Note: "claude.ai URL with a localhost:54545 callback, then \"Paste the authorization code (or full redirect URL)\""},
+			{Kind: AuthProviderConfig, Subscription: "GitHub Copilot, SuperGrok, Kimi Code", Headless: HeadlessDeviceCode,
+				Command: []string{"omp", "login"}, EnvVars: []string{"COPILOT_GITHUB_TOKEN"},
+				Note: "device codes (measured for Copilot; xAI and Kimi from the menu)"},
+			{Kind: AuthProviderConfig, Subscription: "Google (Gemini CLI / Code Assist)", Headless: HeadlessPasteToken,
+				Command: []string{"omp", "login"},
+				Note:    "127.0.0.1:8085 callback plus paste prompt"},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"OPENAI_API_KEY", "ANTHROPIC_API_KEY"}, ACPMethodID: "agent",
+				Note: "ACP agent means use what is already configured; authenticate returns {} and does nothing"},
+		},
+		AccountDirEnv:   "OMP_PROFILE",
+		CredentialPaths: []string{".omp/agent/agent.db"},
+		MeasuredOn:      "omp 18.3.0",
+		Source:          "login help, omp login menu in a pty, ACP authMethods, package source",
+		Note: "no safe status: omp usage writes databases and logs, and logged in it fetches usage over the network and prints account emails; omp token prints the token. " +
+			"OMP_PROFILE=<name> (or --profile) selects ~/.omp/profiles/<name>/agent; PI_CODING_AGENT_DIR overrides the agent dir. Logins live in the SQLite agent.db",
+	},
+}
+
+func init() {
+	for name, a := range authTable {
+		decorate("authTable", name, func(h *Harness) { h.Auth = a })
+	}
+}

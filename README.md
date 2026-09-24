@@ -103,6 +103,31 @@ The registry of coding-agent CLIs — claude, codex, gemini, cursor, goose, kiro
 
 It lives here rather than in a test suite because three things consume it at runtime: a CLI installing hooks into an agent, a daemon reporting which agents a machine hosts, and a server deciding how to launch one. One registry, or the ids drift. The conformance suite that proves it against real agents is [harness-test](https://github.com/belt-sh/harness-test).
 
+#### Signing in
+
+`Harness.Auth` records how a user signs each agent in with their own account, measured in Docker (2026-09) on the version in `Auth.MeasuredOn`. Logins were started and killed, never completed, so every logged-in output comes from help or source. `CheckLogin` runs a status check bounded by `StatusTimeout`; only a check marked `Cheap` (no network, no prompt, no writes, measured) is safe to run on every enrollment. Credential paths are for existence checks only.
+
+| agent | subscription login | headless | status check (logged out → exit, marker) | account selector |
+|---|---|---|---|---|
+| claude | Claude Pro/Max | paste code: `claude auth login`; or `claude setup-token` elsewhere → `CLAUDE_CODE_OAUTH_TOKEN` | `claude auth status --json` → 1, `"loggedIn": false` (cheap) | `CLAUDE_CONFIG_DIR` |
+| codex | ChatGPT | device code: `codex login --device-auth` | `codex login status` → 1, `Not logged in` (API-key login prints a masked key; not cheap) | `CODEX_HOME` |
+| copilot | GitHub Copilot | device code: `copilot login --device-code` (needs a pty or keyring to save); `COPILOT_GITHUB_TOKEN`/`GH_TOKEN` | none | `COPILOT_HOME` |
+| cursor | Cursor | URL opened elsewhere: `NO_OPEN_BROWSER=1 cursor-agent login` | `cursor-agent status --format json` → 0, `"isAuthenticated": false` (writes a log) | `XDG_CONFIG_HOME` |
+| droid | Factory account | device code, TUI or ACP `device-pairing` only; `FACTORY_API_KEY` | `droid doctor --auth --json` → any, `not logged in` (network, writes) | `FACTORY_HOME_OVERRIDE` |
+| gemini | Google account | paste code in the TUI (needs a TTY) | none | `GEMINI_CLI_HOME` |
+| goose | via providers (ChatGPT, Copilot, SuperGrok, other CLIs) | per provider in `goose configure` | none | `GOOSE_PATH_ROOT` |
+| grok | SuperGrok / X Premium | device code: `grok login --device-auth` | none (`grok models` first line, writes) | `GROK_HOME` |
+| hermes | via providers (ChatGPT, Claude, Nous, SuperGrok) | device code / paste: `hermes auth add <p> --type oauth --no-browser` | per provider, not recorded (writes, may refresh) | `HERMES_HOME` |
+| kilo | Kilo account, plus ChatGPT/Copilot/SuperGrok | device code: `kilo auth login -p kilo` | none (`kilo auth list` lists providers, 4.6s, writes) | `XDG_DATA_HOME` |
+| kimi | Kimi Code plan | device code: `kimi login` | none | `KIMI_CODE_HOME` |
+| kiro | Kiro Free/Pro, Identity Center | device code: `kiro-cli login --license free --use-device-flow` | `kiro-cli whoami --format json` → 1, `"account":null` (writes its db) | `XDG_DATA_HOME` |
+| omp | via providers (ChatGPT, Claude, Copilot, Gemini, ...) | device code or paste: `omp login` | none | `OMP_PROFILE` |
+| opencode | via providers (ChatGPT, Copilot, SuperGrok) | device code: `opencode auth login -p openai -m "ChatGPT Pro/Plus (headless)"`; `OPENCODE_AUTH_CONTENT` | none (`opencode auth list`, writes) | `XDG_DATA_HOME` |
+| pi | via providers (ChatGPT, Claude, Copilot, SuperGrok, Kimi) | device code or paste in the TUI's `/login` | `pi auth check --provider <p> --json --no-refresh` per provider → 1, `not_ready` (cheap) | `PI_CODING_AGENT_DIR` |
+| qwen | Alibaba Coding Plan key (Qwen OAuth free tier discontinued) | env: `BAILIAN_CODING_PLAN_API_KEY` | none | `QWEN_HOME` |
+
+Windsurf is IDE-only and has no entry.
+
 ### a2a
 
 Wire types for [A2A](https://a2a-protocol.org) v1.0, and total mappings between an A2A task state and a run state, both directions. The mapping functions are pure, so a server answering A2A calls and a client making them can share one definition.

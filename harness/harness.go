@@ -209,6 +209,11 @@ type Harness struct {
 	// relocates ".config" for agents that live under it.
 	ConfigDirEnv string
 
+	// Auth is how a user signs this agent in with their own account, and
+	// how to tell whether they have. Filled from authTable in auth_table.go.
+	// APIKeyEnvVar above stays the key the test mock uses.
+	Auth Auth
+
 	// Headless (-p) mode
 	HeadlessCmd       []string   // command prefix
 	HeadlessModelArgs []string   // model selection flags, supports {{.Model}}

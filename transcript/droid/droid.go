@@ -6,6 +6,16 @@
 // and carry an Anthropic-shaped message. Hook records are message rows with
 // no content and a visibility of user_only; they keep their place in the
 // chain and stay opaque.
+//
+// droid loads a session in file order, not by its links: the messages
+// after the latest compaction_state row's anchor, behind a summary it
+// builds from that row (the droid 0.226 bundle, the session loader and
+// compaction's summary builder). A message's visibility says who it is for:
+// user_only rows are never sent, llm_only rows (the per-turn
+// "context-<turn>" reminders) are never shown. /compress in the TUI
+// compacts into a new session whose session_start names the old one as
+// parent and whose first row is the compaction_state; the old session is
+// left as it was. Over ACP (droid exec) /compress is an ordinary prompt.
 package droid
 
 import (
@@ -32,6 +42,7 @@ var Codec = transcript.JSONL{
 	},
 	Header:      header,
 	Decode:      decode,
+	Finish:      finish,
 	Encode:      encode,
 	WriteHeader: writeHeader,
 	Tree:        true,
@@ -62,10 +73,32 @@ type row struct {
 	Message   *message `json:"message,omitempty"`
 }
 
+// compactionState is the row a compaction writes (saveCompactionSummary).
+type compactionState struct {
+	SummaryText string `json:"summaryText"`
+	SummaryKind string `json:"summaryKind"`
+	// SystemInfoText is the environment reminder droid sends after the
+	// summary, since the turns that carried it are gone.
+	SystemInfoText string `json:"systemInfoText"`
+	// AnchorMessage is the last message the summary replaces. A compaction
+	// into a new session has none, and keeps every message in the file.
+	AnchorMessage *struct {
+		ID string `json:"id"`
+	} `json:"anchorMessage"`
+}
+
+// Who a message is for. An empty visibility is both.
+const (
+	visibilityUser = "user_only"
+	visibilityLLM  = "llm_only"
+)
+
 type message struct {
 	Role       string  `json:"role"`
 	Content    []block `json:"content"`
 	Visibility string  `json:"visibility,omitempty"`
+	// HiddenFromUserViews hides a message the model is still given.
+	HiddenFromUserViews bool `json:"hiddenFromUserViews,omitempty"`
 }
 
 type block struct {
@@ -103,7 +136,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	if err := json.Unmarshal(raw, &r); err != nil {
 		return transcript.Entry{}, false, err
 	}
-	if r.Type != "message" || r.ID == "" {
+	if (r.Type != "message" && r.Type != "compaction_state") || r.ID == "" {
 		return transcript.Entry{}, false, nil
 	}
 	e := transcript.Entry{ID: r.ID, ParentID: r.ParentID, Role: transcript.RoleOpaque}
@@ -114,10 +147,24 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		}
 		e.Time = t
 	}
+	if r.Type == "compaction_state" {
+		var c compactionState
+		if err := json.Unmarshal(raw, &c); err != nil {
+			return transcript.Entry{}, false, fmt.Errorf("row %s: %w", r.ID, err)
+		}
+		e.Compaction = &transcript.Compaction{Summary: []transcript.Entry{summary(r.ID, e.Time, c)}}
+		return e, true, nil
+	}
 	if r.Message == nil || len(r.Message.Content) == 0 {
 		return e, true, nil
 	}
 	e.Role = transcript.Role(r.Message.Role)
+	switch {
+	case r.Message.Visibility == visibilityUser:
+		e.Audience = transcript.AudienceUser
+	case r.Message.Visibility == visibilityLLM || r.Message.HiddenFromUserViews:
+		e.Audience = transcript.AudienceModel
+	}
 	toolResults := 0
 	for _, b := range r.Message.Content {
 		switch b.Type {
@@ -142,6 +189,92 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		e.Role = transcript.RoleTool
 	}
 	return e, true, nil
+}
+
+// summaryPreamble wraps an LLM summary the way droid hands it to the model,
+// as captured from its request after resuming a /compress'd session.
+const summaryPreamble = "A previous instance of Droid has summarized the conversation thus far as follows:\n\n<summary>\n%s\n</summary>\n\nIMPORTANT: This summary was created by a previous instance of Droid. Files referenced in the summary may not be available until you explicitly view them again."
+
+// summary is the user message droid builds from a compaction_state row: the
+// summary, then the environment reminder when the row carries one. Other
+// summary kinds (a transcript serialized for a provider switch) are sent
+// without the preamble.
+func summary(id string, at time.Time, c compactionState) transcript.Entry {
+	text := c.SummaryText
+	if c.SummaryKind == "" || c.SummaryKind == "llm_summary" {
+		text = fmt.Sprintf(summaryPreamble, c.SummaryText)
+	}
+	e := transcript.Entry{ID: id, Role: transcript.RoleUser, Time: at, Audience: transcript.AudienceModel,
+		Content: []transcript.Block{{Kind: transcript.BlockText, Text: text}}}
+	if c.SystemInfoText != "" {
+		e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: c.SystemInfoText})
+	}
+	return e
+}
+
+// finish lays the session out the way droid loads it. droid reads rows in
+// file order, while their links leave gaps: a turn's context row and the
+// hook rows at the start of a run name no parent, and nothing links to a
+// compaction_state. So a row without a parent follows the row before it, a
+// compaction follows the last message before it, and the row after a
+// compaction follows the compaction. Each compaction then keeps the
+// messages after its anchor, less the tool results right after it, whose
+// call the summary replaced.
+func finish(s *transcript.Session) error {
+	prev, prevMessage, after := "", "", ""
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		if e.ID == "" {
+			continue
+		}
+		switch {
+		case e.Compaction != nil:
+			e.ParentID = prevMessage
+			after = e.ID
+		case after != "":
+			e.ParentID = after
+			after = ""
+		case e.ParentID == "":
+			e.ParentID = prev
+		}
+		prev = e.ID
+		if e.Role != transcript.RoleOpaque {
+			prevMessage = e.ID
+		}
+	}
+	for i := range s.Entries {
+		e := &s.Entries[i]
+		if e.Compaction == nil {
+			continue
+		}
+		var c compactionState
+		if err := json.Unmarshal(e.Raw, &c); err != nil {
+			return fmt.Errorf("row %s: %w", e.ID, err)
+		}
+		from := 0
+		if c.AnchorMessage != nil && c.AnchorMessage.ID != "" {
+			from = len(s.Entries)
+			for j := 0; j < i; j++ {
+				if s.Entries[j].ID == c.AnchorMessage.ID {
+					from = j + 1
+					break
+				}
+			}
+		}
+		j := from
+		for j < i && s.Entries[j].Role == transcript.RoleTool {
+			j++
+		}
+		// Rows that are not messages give the model nothing, so the kept
+		// history starts at the next message.
+		for j < i && s.Entries[j].Role == transcript.RoleOpaque {
+			j++
+		}
+		if j < i {
+			e.Compaction.Keep = s.Entries[j].ID
+		}
+	}
+	return nil
 }
 
 func resultText(raw json.RawMessage) (string, error) {

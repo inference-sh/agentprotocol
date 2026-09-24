@@ -90,9 +90,18 @@ func (st *store) List(ctx context.Context, cwd string) ([]transcript.Info, error
 		return nil, err
 	}
 	var out []transcript.Info
+	seen := map[string]int{}
 	for _, p := range paths {
 		c, err := replay(p)
 		if err != nil || c.meta.SessionID == "" {
+			continue
+		}
+		// gemini lists only a session with something to resume, and never a
+		// subagent's (cli utils/sessionUtils.ts, getAllSessionFiles). Loading
+		// a session starts a recording under its id before it resolves the
+		// file, so a load leaves a second file with the same id and nothing
+		// in it but the session context.
+		if c.meta.Kind == "subagent" || !c.resumable() {
 			continue
 		}
 		root := projectRoot(filepath.Dir(filepath.Dir(p)))
@@ -105,6 +114,15 @@ func (st *store) List(ctx context.Context, cwd string) ([]transcript.Info, error
 		} else if fi, err := os.Stat(p); err == nil {
 			in.Updated = fi.ModTime()
 		}
+		// Of several files with one id gemini keeps the one updated last, and
+		// the first in name order on a tie (getSessionFiles).
+		if i, ok := seen[in.ID]; ok {
+			if in.Updated.After(out[i].Updated) {
+				out[i] = in
+			}
+			continue
+		}
+		seen[in.ID] = len(out)
 		out = append(out, in)
 	}
 	transcript.SortNewest(out)
@@ -182,6 +200,33 @@ func (c *conversation) messages() []message {
 		}
 	}
 	return out
+}
+
+// resumable reports whether any message is one gemini would offer to resume
+// (core services/chatRecordingService.ts, isResumableMessageRecord).
+func (c *conversation) resumable() bool {
+	for _, m := range c.messages() {
+		var r row
+		if json.Unmarshal(m.raw, &r) != nil {
+			continue
+		}
+		content, err := parts(r.Content)
+		if err != nil {
+			continue
+		}
+		text := strings.TrimSpace(partsString(content))
+		switch r.Type {
+		case "user":
+			if sentOnResume(text) {
+				return true
+			}
+		case "gemini":
+			if text != "" || len(r.ToolCalls) > 0 || len(r.Thoughts) > 0 {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func (c *conversation) put(id string, raw json.RawMessage) {
@@ -578,14 +623,33 @@ type row struct {
 	Timestamp string          `json:"timestamp"`
 	Type      string          `json:"type"`
 	Content   json.RawMessage `json:"content"`
-	Thoughts  []thought       `json:"thoughts,omitempty"`
-	ToolCalls []toolCall      `json:"toolCalls,omitempty"`
-	Model     string          `json:"model,omitempty"`
+	// DisplayContent is what gemini's history view shows in place of
+	// Content, when the two differ.
+	DisplayContent json.RawMessage `json:"displayContent,omitempty"`
+	Thoughts       []thought       `json:"thoughts,omitempty"`
+	ToolCalls      []toolCall      `json:"toolCalls,omitempty"`
+	Model          string          `json:"model,omitempty"`
 }
 
+// part is one element of a record's content, a @google/genai Part.
 type part struct {
 	Text             string            `json:"text,omitempty"`
+	Thought          json.RawMessage   `json:"thought,omitempty"`
+	FunctionCall     *functionCall     `json:"functionCall,omitempty"`
 	FunctionResponse *functionResponse `json:"functionResponse,omitempty"`
+	// The media and code parts, which only name themselves when a record is
+	// rendered as text.
+	VideoMetadata       json.RawMessage `json:"videoMetadata,omitempty"`
+	CodeExecutionResult json.RawMessage `json:"codeExecutionResult,omitempty"`
+	ExecutableCode      json.RawMessage `json:"executableCode,omitempty"`
+	FileData            json.RawMessage `json:"fileData,omitempty"`
+	InlineData          json.RawMessage `json:"inlineData,omitempty"`
+}
+
+type functionCall struct {
+	ID   string          `json:"id,omitempty"`
+	Name string          `json:"name"`
+	Args json.RawMessage `json:"args,omitempty"`
 }
 
 type functionResponse struct {
@@ -613,6 +677,107 @@ func prefix(id string) string {
 	return id
 }
 
+// parts reads a record's content, a PartListUnion: a string, one part, or a
+// list of parts and strings. gemini writes a model turn's content as a
+// string, and as parts once its history has been synced back into the file
+// (on resume, or after /compress), so both shapes occur in one file.
+func parts(raw json.RawMessage) ([]part, error) {
+	if len(raw) == 0 || string(raw) == "null" {
+		return nil, nil
+	}
+	var text string
+	if json.Unmarshal(raw, &text) == nil {
+		// An empty string is falsy to gemini and so no part at all.
+		if text == "" {
+			return nil, nil
+		}
+		return []part{{Text: text}}, nil
+	}
+	var list []json.RawMessage
+	if json.Unmarshal(raw, &list) != nil {
+		list = []json.RawMessage{raw}
+	}
+	out := make([]part, 0, len(list))
+	for _, item := range list {
+		var p part
+		if json.Unmarshal(item, &text) == nil {
+			p.Text = text
+		} else if err := json.Unmarshal(item, &p); err != nil {
+			return nil, err
+		}
+		out = append(out, p)
+	}
+	return out, nil
+}
+
+// isThought reports whether a part is model reasoning. The field is a
+// boolean in the API; gemini tests only that it is present.
+func (p part) isThought() bool { return len(p.Thought) > 0 && string(p.Thought) != "false" }
+
+// String is gemini's partListUnionToString for one part (utils/partUtils.ts,
+// partToString with verbose set): the text, or a bracketed name for a part
+// that has none. Whether a record is sent to the model and shown to the
+// person is decided on this string.
+func (p part) String() string {
+	switch {
+	case p.VideoMetadata != nil:
+		return "[Video Metadata]"
+	case p.Thought != nil:
+		return "[Thought: " + string(p.Thought) + "]"
+	case p.CodeExecutionResult != nil:
+		return "[Code Execution Result]"
+	case p.ExecutableCode != nil:
+		return "[Executable Code]"
+	case p.FileData != nil:
+		return "[File Data]"
+	case p.FunctionCall != nil:
+		return "[Function Call: " + p.FunctionCall.Name + "]"
+	case p.FunctionResponse != nil:
+		return "[Function Response: " + p.FunctionResponse.Name + "]"
+	case p.InlineData != nil:
+		return "[Media]"
+	}
+	return p.Text
+}
+
+func partsString(ps []part) string {
+	var b strings.Builder
+	for _, p := range ps {
+		b.WriteString(p.String())
+	}
+	return b.String()
+}
+
+// Internal context gemini keeps as user records. Neither is shown in its
+// history view (cli utils/sessionUtils.ts, convertSessionToHistoryFormats).
+const (
+	sessionContext = "<session_context>"
+	hookContext    = "<hook_context>"
+)
+
+// sentOnResume is gemini's test for a user record it leaves out of the
+// history a resumed session gives the model (core utils/sessionUtils.ts,
+// isIgnoredUserContent): an empty message, a slash or ? command, or its own
+// injected context.
+func sentOnResume(text string) bool {
+	return text != "" && !strings.HasPrefix(text, "/") && !strings.HasPrefix(text, "?") &&
+		!strings.HasPrefix(text, sessionContext) && !strings.HasPrefix(text, hookContext)
+}
+
+// audience combines whether gemini gives a record to the model on resume and
+// whether its history view shows it.
+func audience(model, user bool) transcript.Audience {
+	switch {
+	case model && user:
+		return transcript.AudienceAll
+	case model:
+		return transcript.AudienceModel
+	case user:
+		return transcript.AudienceUser
+	}
+	return transcript.AudienceNone
+}
+
 func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool, error) {
 	var r row
 	if err := json.Unmarshal(raw, &r); err != nil {
@@ -630,15 +795,25 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 		}
 		e.Time = t
 	}
+	if r.Type != "user" && r.Type != "gemini" {
+		// info, error and warning records are the CLI's notices. The history
+		// view shows them; the model never gets them.
+		return transcript.Entry{}, false, nil
+	}
+	content, err := parts(r.Content)
+	if err != nil {
+		return transcript.Entry{}, false, fmt.Errorf("row %s: content: %w", r.ID, err)
+	}
+	text := strings.TrimSpace(partsString(content))
+	shown := text
+	if display, err := parts(r.DisplayContent); err == nil && partsString(display) != "" {
+		shown = strings.TrimSpace(partsString(display))
+	}
 	switch r.Type {
 	case "user":
-		var parts []part
-		if err := json.Unmarshal(r.Content, &parts); err != nil {
-			return transcript.Entry{}, false, fmt.Errorf("row %s: content: %w", r.ID, err)
-		}
 		e.Role = transcript.RoleUser
 		responses := 0
-		for _, p := range parts {
+		for _, p := range content {
 			if p.FunctionResponse != nil {
 				responses++
 				e.Content = append(e.Content, transcript.Block{
@@ -649,26 +824,52 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 			}
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
 		}
-		if responses > 0 && responses == len(parts) {
+		if responses > 0 && responses == len(content) {
 			e.Role = transcript.RoleTool
 		}
+		// The session context is the one record gemini leaves out on resume
+		// and yet gives the model: it starts every resumed chat with a fresh
+		// copy under the same id (core utils/environmentContext.ts,
+		// getInitialChatHistory), which the next checkpoint writes back.
+		model := sentOnResume(text) || strings.HasPrefix(text, sessionContext)
+		user := shown != "" && !strings.HasPrefix(shown, sessionContext) && !strings.HasPrefix(shown, hookContext)
+		e.Audience = audience(model, user)
 	case "gemini":
 		e.Role = transcript.RoleAssistant
-		var text string
-		if err := json.Unmarshal(r.Content, &text); err != nil {
-			return transcript.Entry{}, false, fmt.Errorf("row %s: content: %w", r.ID, err)
+		// A record whose content carries calls or thoughts is the model turn
+		// as sent; an older one keeps them beside the text, and gemini
+		// rebuilds the turn as thoughts, text, then calls (core
+		// utils/sessionUtils.ts, convertSessionToClientHistory).
+		modern := false
+		for _, p := range content {
+			if p.FunctionCall != nil || p.isThought() {
+				modern = true
+			}
 		}
-		for _, th := range r.Thoughts {
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: strings.TrimSpace(th.Subject + "\n" + th.Description)})
+		if !modern {
+			for _, th := range r.Thoughts {
+				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: strings.TrimSpace(th.Subject + "\n" + th.Description)})
+			}
 		}
-		if text != "" {
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: text})
+		for _, p := range content {
+			switch {
+			case p.FunctionCall != nil:
+				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: p.FunctionCall.ID, Name: p.FunctionCall.Name, Input: p.FunctionCall.Args})
+			case p.isThought():
+				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: p.Text})
+			case p.Text != "":
+				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
+			}
 		}
-		for _, tc := range r.ToolCalls {
-			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: tc.ID, Name: tc.Name, Input: tc.Args})
+		if !modern {
+			for _, tc := range r.ToolCalls {
+				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolUse, ToolID: tc.ID, Name: tc.Name, Input: tc.Args})
+			}
 		}
-	default:
-		return transcript.Entry{}, false, nil
+		// A turn with nothing to send is dropped from the resumed history,
+		// and the history view has nothing to show for it either.
+		extra := len(r.Thoughts) > 0 || len(r.ToolCalls) > 0
+		e.Audience = audience(len(content) > 0 || extra, shown != "" || extra)
 	}
 	return e, true, nil
 }

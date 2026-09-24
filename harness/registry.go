@@ -46,6 +46,16 @@ func withTSPluginExport(h Harness, export string) Harness {
 // it exists nowhere and can do nothing if an agent runs it anyway.
 const gatedShellArgs = `{"command":"rm -rf /tmp/gated-probe-does-not-exist"}`
 
+// gatedWebFetchArgs is claude's gated call. Its own settings in this registry
+// allow Bash, Read and Write outright, so the gated tool has to be one outside
+// that list; WebFetch is declared on every turn, and the host does not exist.
+const gatedWebFetchArgs = `{"url":"https://gated-probe.invalid/","prompt":"Summarise the page."}`
+
+// gatedExecArgs is codex's gated call: exec_command takes "cmd", and codex's
+// default approval policy (untrusted) asks before any command outside its
+// known-safe set.
+const gatedExecArgs = `{"cmd":"rm -rf /tmp/gated-probe-does-not-exist"}`
+
 // withGatedTool names the tool this agent is expected to ask permission for,
 // for harnesses built by a helper rather than written out as a literal.
 func withGatedTool(h Harness, name, args string) Harness {
@@ -112,6 +122,7 @@ var All = map[string]Harness{
 		Name: "claude", Binary: "claude",
 		Driver:        DriverClaudeCode,
 		Sessions:      claude.Codec,
+		ToolCallGated: ToolCall{Name: "WebFetch", Args: gatedWebFetchArgs},
 		InstallCmd:    []string{"npm", "install", "-g", "@anthropic-ai/claude-code"},
 		DetectEnvVars: []string{"CLAUDECODE", "CLAUDE_CODE", "CLAUDE_CODE_ENTRYPOINT"},
 		APIFormat:     Anthropic,
@@ -164,6 +175,7 @@ var All = map[string]Harness{
 		DefaultModel:    "gpt-4o-mini",
 		ToolCallName:    "exec_command",
 		ToolCallArgs:    `{"cmd":"cat README.md"}`,
+		ToolCallGated:   ToolCall{Name: "exec_command", Args: gatedExecArgs},
 		HookToolMatcher: "Bash",
 		HookFormat:      JSONNested,
 		HookConfigDir:   ".codex",

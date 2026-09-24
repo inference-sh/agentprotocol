@@ -133,18 +133,19 @@ func TestModesAreNotSwitchableOff(t *testing.T) {
 	}
 }
 
-// Every ACP agent needs a tool it actually gates, or the in-flight probe asks
-// it to read a file and records "never asked the client" as an agent trait.
+// Every ACP agent, and every agent a native driver runs, needs a tool it
+// actually gates, or the in-flight probe asks it to read a file and records
+// "never asked the client" as an agent trait.
 // Names come from --probe tools, which reads what the agent declared to
 // the model; a tool an agent does not declare is answered "tool not found" and
 // never runs.
 func TestEveryACPAgentHasAGatedTool(t *testing.T) {
 	for name, h := range All {
-		if len(h.ACPCmd) == 0 {
+		if h.DriverKind() == "" {
 			continue
 		}
 		if h.ToolCallGated.Name == "" {
-			t.Errorf("%s speaks ACP but names no gated tool", name)
+			t.Errorf("%s has a session driver but names no gated tool", name)
 			continue
 		}
 		if h.ToolCallGated.Args == "" {

@@ -417,6 +417,21 @@ type block struct {
 	Arguments json.RawMessage `json:"arguments,omitempty"`
 }
 
+// MarshalJSON writes a text block's text even when it is empty. Both
+// agents read the field of every text block (pi's context estimate takes
+// its length, omp calls toWellFormed on it) and fail the turn before any
+// request when it is missing.
+func (b block) MarshalJSON() ([]byte, error) {
+	type plain block
+	if b.Type != "text" {
+		return json.Marshal(plain(b))
+	}
+	return json.Marshal(struct {
+		plain
+		Text string `json:"text"`
+	}{plain(b), b.Text})
+}
+
 // sections is a system message's named prompt sections in file order, which
 // is the order pi joins them in. A null section removes one an earlier
 // system message set.
@@ -649,11 +664,12 @@ func (v variant) custom(e *transcript.Entry, customType, attribution string, c c
 	}
 }
 
-// fileMention fills omp's @path read: text files go to the model as one
-// developer message of <file> elements. A mention of images only goes as
-// the user's, the elements followed by the images; a mixed one is split by
-// omp in two, and the entry keeps the text part, since an entry has one
-// role.
+// fileMention fills omp's @path read. The files are the person's (omp
+// attributes the message to the user), so the entry is theirs and travels
+// with the session. omp sends the text files as one developer message of
+// <file> elements, and the images as a user message of their elements
+// followed by the images (convertToLlm in messages.ts); the entry holds
+// both in that order.
 func (v variant) fileMention(e *transcript.Entry, files []mentionedFile) {
 	wrap := func(f mentionedFile) string {
 		inner := "\n"
@@ -672,9 +688,13 @@ func (v variant) fileMention(e *transcript.Entry, files []mentionedFile) {
 			texts = append(texts, wrap(f))
 		}
 	}
-	e.Role, e.Content = transcript.RoleSystem, text(strings.Join(texts, "\n"))
-	if len(texts) == 0 {
-		e.Role, e.Content = transcript.RoleUser, append(text(strings.Join(images, "\n")), attached.blocks()...)
+	e.Role = transcript.RoleUser
+	if len(texts) > 0 {
+		e.Content = text(strings.Join(texts, "\n"))
+	}
+	if len(images) > 0 {
+		e.Content = append(e.Content, text(strings.Join(images, "\n"))...)
+		e.Content = append(e.Content, attached.blocks()...)
 	}
 }
 
@@ -1580,14 +1600,21 @@ func (v variant) encode(e transcript.Entry, s *transcript.Session) (json.RawMess
 				continue
 			}
 			m = message{Role: "toolResult", ToolCallID: b.ToolID, ToolName: b.Name, IsError: b.Status == transcript.StatusError,
-				Content: []block{{Type: "text", Text: b.Text}}, Timestamp: t.UnixMilli()}
+				Timestamp: t.UnixMilli()}
+			var images []block
 			for _, img := range e.Content {
 				if img.Kind == transcript.BlockImage && img.ToolID == b.ToolID {
 					if c, ok := imageContent(img); ok {
-						m.Content = append(m.Content, c)
+						images = append(images, c)
 					}
 				}
 			}
+			// A result of images only has no text block; any other keeps
+			// its text, empty or not.
+			if b.Text != "" || len(images) == 0 {
+				m.Content = []block{{Type: "text", Text: b.Text}}
+			}
+			m.Content = append(m.Content, images...)
 		}
 	default:
 		return nil, nil

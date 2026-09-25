@@ -657,18 +657,20 @@ type part struct {
 
 // blob is an inlineData part: an image or file's bytes in base64, as
 // gemini records one read into a prompt (an ACP image, an @ reference) or
-// returned by a tool.
+// returned by a tool. It has no displayName: gemini never records one, and
+// @google/genai refuses a request carrying one outside Vertex AI
+// ("displayName parameter is not supported in Gemini API"), so a file's
+// name does not travel in its part.
 type blob struct {
-	MimeType    string `json:"mimeType"`
-	Data        string `json:"data"`
-	DisplayName string `json:"displayName,omitempty"`
+	MimeType string `json:"mimeType"`
+	Data     string `json:"data"`
 }
 
-// fileData is a fileData part: a file by reference.
+// fileData is a fileData part: a file by reference. It has no displayName,
+// for the reason blob has none.
 type fileData struct {
-	MimeType    string `json:"mimeType,omitempty"`
-	FileURI     string `json:"fileUri"`
-	DisplayName string `json:"displayName,omitempty"`
+	MimeType string `json:"mimeType,omitempty"`
+	FileURI  string `json:"fileUri"`
 }
 
 type functionCall struct {
@@ -968,9 +970,9 @@ func media(p part, toolID string) (transcript.Block, error) {
 		if err != nil {
 			return transcript.Block{}, fmt.Errorf("inlineData: %w", err)
 		}
-		return transcript.Block{Kind: mediaKind(p.InlineData.MimeType), ToolID: toolID, MediaType: p.InlineData.MimeType, Data: data, Name: p.InlineData.DisplayName}, nil
+		return transcript.Block{Kind: mediaKind(p.InlineData.MimeType), ToolID: toolID, MediaType: p.InlineData.MimeType, Data: data}, nil
 	}
-	return transcript.Block{Kind: mediaKind(p.FileData.MimeType), ToolID: toolID, MediaType: p.FileData.MimeType, URI: p.FileData.FileURI, Name: p.FileData.DisplayName}, nil
+	return transcript.Block{Kind: mediaKind(p.FileData.MimeType), ToolID: toolID, MediaType: p.FileData.MimeType, URI: p.FileData.FileURI}, nil
 }
 
 // mediaKind is the block an attachment of a media type is: an image, or any
@@ -987,9 +989,9 @@ func mediaKind(mediaType string) transcript.BlockKind {
 func mediaPart(b transcript.Block) (part, bool) {
 	switch {
 	case b.Data != nil:
-		return part{InlineData: &blob{MimeType: b.MediaType, Data: base64.StdEncoding.EncodeToString(b.Data), DisplayName: b.Name}}, true
+		return part{InlineData: &blob{MimeType: b.MediaType, Data: base64.StdEncoding.EncodeToString(b.Data)}}, true
 	case b.URI != "":
-		return part{FileData: &fileData{MimeType: b.MediaType, FileURI: b.URI, DisplayName: b.Name}}, true
+		return part{FileData: &fileData{MimeType: b.MediaType, FileURI: b.URI}}, true
 	}
 	return part{}, false
 }

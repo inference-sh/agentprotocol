@@ -1,12 +1,17 @@
 package kiro
 
 import (
+	"encoding/json"
+	"os"
 	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/copilot"
+	"github.com/inference-sh/agentprotocol/transcript/gemini"
+	"github.com/inference-sh/agentprotocol/transcript/kimi"
 	"github.com/inference-sh/agentprotocol/transcript/pi"
 	"github.com/inference-sh/agentprotocol/transcript/qwen"
 )
@@ -109,5 +114,98 @@ func TestCompactionKeepsInPlace(t *testing.T) {
 	at := slices.IndexFunc(p.Entries, func(e transcript.Entry) bool { return e.Compaction != nil })
 	if k := p.Entries[at].Compaction.Keep; k != "1cda7af0-e381-4a7c-8cff-00565c2a6d2e" {
 		t.Errorf("portable keeps from %q", k)
+	}
+}
+
+// TestAlternates moves sessions whose messages do not alternate into kiro:
+// gemini's (two answers in a row), copilot's (the same, then a compaction),
+// pi's (a prompt and two bash runs in a row, then a compaction) and kimi's
+// (two prompts in a row). kiro fails the first request of a history holding
+// two messages in a row from the same side, so each run of them is written
+// as one message, and none of their text is lost.
+func TestAlternates(t *testing.T) {
+	for _, src := range []struct {
+		name     string
+		codec    transcript.Codec
+		home, id string
+	}{
+		{"gemini", gemini.Codec, "../gemini/testdata/home", "170f5754-4e70-4ac2-8bd8-22e062f69964"},
+		{"copilot", copilot.Codec, "../copilot/testdata/home", "92371bbf-c936-4cea-ae4b-32090b3e29f8"},
+		{"pi", pi.Codec, "../pi/testdata/home", "01a0d2bd-7043-757c-80b2-3f24970d3f7c"},
+		{"kimi", kimi.Codec, "../kimi/testdata/home", "session_9ef8feda-5261-4097-892f-94cf87e40a76"},
+	} {
+		t.Run(src.name, func(t *testing.T) {
+			st, err := src.codec.Open(src.home)
+			if err != nil {
+				t.Fatal(err)
+			}
+			s, err := st.Read(t.Context(), src.id)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var texts []string
+			for _, e := range s.Portable().Lower(files.Caps).Entries {
+				for _, b := range e.Content {
+					if b.Kind == transcript.BlockText && b.Text != "" {
+						texts = append(texts, b.Text)
+					}
+				}
+			}
+			s.ID = ""
+			home := t.TempDir()
+			dst, err := Codec.Open(home)
+			if err != nil {
+				t.Fatal(err)
+			}
+			id, err := dst.Write(t.Context(), s)
+			if err != nil {
+				t.Fatal(err)
+			}
+			raw, err := os.ReadFile(filepath.Join(home, ".kiro", "sessions", "cli", id+".jsonl"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			side := map[string]string{"Prompt": "user", "ToolResults": "user", "AssistantMessage": "assistant", "user": "user", "assistant": "assistant"}
+			alternating := func(what string, kinds []string) {
+				for i := 1; i < len(kinds); i++ {
+					if side[kinds[i]] == side[kinds[i-1]] {
+						t.Errorf("%s: %s after %s: %v", what, kinds[i], kinds[i-1], kinds)
+						return
+					}
+				}
+			}
+			var run []string
+			for _, line := range strings.Split(strings.TrimSpace(string(raw)), "\n") {
+				var r struct {
+					Kind string `json:"kind"`
+					Data struct {
+						MessagesSnapshot []struct {
+							Role string `json:"role"`
+						} `json:"messages_snapshot"`
+					} `json:"data"`
+				}
+				if err := json.Unmarshal([]byte(line), &r); err != nil {
+					t.Fatal(err)
+				}
+				switch r.Kind {
+				case "Prompt", "ToolResults", "AssistantMessage":
+					run = append(run, r.Kind)
+				case "Compaction", "Clear":
+					alternating("rows", run)
+					run = nil
+					for _, m := range r.Data.MessagesSnapshot {
+						run = append(run, m.Role)
+					}
+					alternating("snapshot", run)
+				}
+			}
+			alternating("rows", run)
+			for _, text := range texts {
+				quoted, _ := json.Marshal(text)
+				if !strings.Contains(string(raw), string(quoted)) {
+					t.Errorf("text lost: %.60q", text)
+				}
+			}
+		})
 	}
 }

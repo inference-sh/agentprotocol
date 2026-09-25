@@ -81,11 +81,67 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 // own rows get.
 func prepare(home string, s *transcript.Session) error {
 	if s.Agent != "kiro" {
+		alternate(s)
 		kept := keptFrom(s)
 		transcript.AssignIDs(s, transcript.UUIDs, false)
 		snapshot(s, kept)
 	}
 	return nil
+}
+
+// alternate joins the adjacent messages of a portable session that kiro
+// would otherwise hold as two in a row from the same side. kiro's history
+// alternates a user message (a Prompt or a ToolResults row) with an
+// assistant one, as its own sessions do; given two assistant messages, two
+// prompts, two ToolResults rows or a prompt beside a ToolResults row, kiro
+// 2.24.0 loads the session and fails its first request on "invalid
+// conversation history received" without answering the prompt. Joined user
+// messages are a ToolResults row when either held a tool's result, which
+// kiro sends with the text beside the results. A compaction between two
+// messages keeps them apart, and a compaction keeping a message that is
+// joined keeps the message it joined.
+func alternate(s *transcript.Session) {
+	side := func(r transcript.Role) transcript.Role {
+		if r == transcript.RoleTool {
+			return transcript.RoleUser
+		}
+		return r
+	}
+	renamed := map[string]string{}
+	var out []transcript.Entry
+	last := -1 // the latest message in out since the latest compaction
+	for _, e := range s.Entries {
+		switch {
+		case e.Compaction != nil:
+			last = -1
+		case e.Role != transcript.RoleUser && e.Role != transcript.RoleAssistant && e.Role != transcript.RoleTool:
+			// Not a message kiro writes, so nothing between two that are.
+		case last >= 0 && side(e.Role) == side(out[last].Role):
+			prev := &out[last]
+			prev.Content = append(slices.Clip(prev.Content), e.Content...)
+			if e.Role == transcript.RoleTool {
+				prev.Role = transcript.RoleTool
+			}
+			switch {
+			case prev.ID == "":
+				prev.ID = e.ID
+			case e.ID != "":
+				renamed[e.ID] = prev.ID
+			}
+			continue
+		default:
+			last = len(out)
+		}
+		out = append(out, e)
+	}
+	for _, e := range out {
+		if c := e.Compaction; c != nil {
+			if to, ok := renamed[c.Keep]; ok {
+				c.Keep = to
+			}
+		}
+	}
+	s.Entries = out
 }
 
 // keptFrom finds, for each compaction of a portable session, the index of
@@ -663,10 +719,12 @@ func message(e transcript.Entry, s *transcript.Session) (string, data, error) {
 			}
 			results[b.ToolID] = out
 		case transcript.BlockImage:
-			// A tool's image went into its result above. Only a prompt
-			// carries an image of its own, and kiro has no block for any
-			// other file.
-			if b.ToolID != "" || kind != "Prompt" {
+			// A tool's image went into its result above. A user message
+			// carries an image of its own, a prompt joined to a
+			// ToolResults row included, which kiro sends with the row's
+			// text; an assistant message has none, and kiro has no block
+			// for any other file.
+			if b.ToolID != "" || kind == "AssistantMessage" {
 				continue
 			}
 			ib, ok, err := encodeImage(b)

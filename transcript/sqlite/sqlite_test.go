@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -10,6 +11,8 @@ import (
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/claude"
+	"github.com/inference-sh/agentprotocol/transcript/codex"
 	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
@@ -855,4 +858,93 @@ func TestHermesReasoningReplay(t *testing.T) {
 	s = readSample(t, Hermes, home, id)
 	sameLines(t, "context reasoning, deepseek", reasoning(s.Context()), []string{"THINK-2", "SENT-3"})
 	sameLines(t, "shown reasoning", reasoning(s.Linearize()), []string{"THINK-1", "THINK-2", "THINK-3"})
+}
+
+// TestGooseImportsLoad moves the sessions goose refused to load after an
+// import ("Session not found": a row whose content does not deserialize
+// fails the whole load) into goose: claude's and codex's image runs, where a
+// tool returned only an image, and kiro's image run and its /clear, which
+// carries a compaction without a summary. Every item written must have the
+// fields goose's content types require, and nothing the model is sent may
+// be an empty text.
+func TestGooseImportsLoad(t *testing.T) {
+	for _, src := range []struct {
+		name     string
+		codec    transcript.Codec
+		home, id string
+	}{
+		{"claude.images", claude.Codec, "../claude/testdata/home", "07f0f8b5-1255-4c04-b97b-e1f209e315ac"},
+		{"codex.images", codex.Codec, "../codex/testdata/home", "01a0d2e7-4559-78b3-a835-f49e78b998c0"},
+		{"kiro.images", Kiro, "../kiro/testdata/home", "d2db899b-7e34-4f60-be19-750e06623c82"},
+		{"kiro.clear", Kiro, "../kiro/testdata/home", "dcce2ace-938a-4799-a666-20d485cc9a42"},
+	} {
+		t.Run(src.name, func(t *testing.T) {
+			s := readSample(t, src.codec, src.home, src.id)
+			s.ID = ""
+			home := t.TempDir()
+			id, err := mustOpen(t, Goose, home).Write(t.Context(), s)
+			if err != nil {
+				t.Fatal(err)
+			}
+			db, err := sql.Open("sqlite", "file:"+filepath.Join(home, goosePath))
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer db.Close()
+			rows, err := db.Query("SELECT content_json, metadata_json FROM messages WHERE session_id = ?", id)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer rows.Close()
+			for rows.Next() {
+				var content, meta string
+				if err := rows.Scan(&content, &meta); err != nil {
+					t.Fatal(err)
+				}
+				var items []map[string]json.RawMessage
+				if err := json.Unmarshal([]byte(content), &items); err != nil {
+					t.Fatal(err)
+				}
+				checkGooseItems(t, items)
+				if strings.Contains(meta, `"agentVisible":true`) && content == `[{"type":"text","text":""}]` {
+					t.Errorf("the model is sent an empty message")
+				}
+			}
+			if err := rows.Err(); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
+
+// checkGooseItems checks each content item has the fields goose's
+// deserializer requires of its type (TextContent's text, ImageContent's data
+// and mimeType), a tool result's output items included.
+func checkGooseItems(t *testing.T, items []map[string]json.RawMessage) {
+	t.Helper()
+	required := map[string][]string{"text": {"text"}, "image": {"data", "mimeType"}, "document": {"data", "mimeType"}}
+	for _, it := range items {
+		var typ string
+		json.Unmarshal(it["type"], &typ)
+		for _, f := range required[typ] {
+			if _, ok := it[f]; !ok {
+				t.Errorf("%s item without %s: %v", typ, f, it)
+			}
+		}
+		if typ != "toolResponse" {
+			continue
+		}
+		var r struct {
+			Value struct {
+				Content []map[string]json.RawMessage `json:"content"`
+			} `json:"value"`
+		}
+		json.Unmarshal(it["toolResult"], &r)
+		checkGooseItems(t, r.Value.Content)
+		for _, c := range r.Value.Content {
+			if string(c["type"]) == `"text"` && string(c["text"]) == `""` && len(r.Value.Content) > 1 {
+				t.Errorf("tool output with an empty text item beside its image: %s", it["toolResult"])
+			}
+		}
+	}
 }

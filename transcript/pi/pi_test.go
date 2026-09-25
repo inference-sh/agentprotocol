@@ -205,14 +205,15 @@ func TestOMPCompactedContext(t *testing.T) {
 		"user: After compaction.",
 		"assistant: Hello from mock server.",
 	})
-	// omp sends an @file mention as a developer message holding the file.
+	// An @file mention is the person's: omp sends it as a developer
+	// message holding the file, attributed to the user.
 	var mention *transcript.Entry
 	for _, e := range s.Messages() {
 		if strings.HasPrefix(e.Text(), `<file path="notes.md">`) {
 			mention = &e
 		}
 	}
-	if mention == nil || mention.Role != transcript.RoleSystem || mention.Audience != transcript.AudienceAll {
+	if mention == nil || mention.Role != transcript.RoleUser || mention.Audience != transcript.AudienceAll {
 		t.Errorf("file mention = %+v", mention)
 	}
 }

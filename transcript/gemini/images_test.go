@@ -2,10 +2,14 @@ package gemini
 
 import (
 	"bytes"
+	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/claude"
 	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
@@ -126,7 +130,7 @@ func TestWriteMedia(t *testing.T) {
 		{ID: transcript.NewUUID(), Role: transcript.RoleUser, Content: []transcript.Block{
 			{Kind: transcript.BlockText, Text: "look"},
 			{Kind: transcript.BlockImage, MediaType: "image/png", Data: pngMagic},
-			{Kind: transcript.BlockFile, MediaType: "application/pdf", URI: "gs://b/a.pdf", Name: "a.pdf"},
+			{Kind: transcript.BlockFile, MediaType: "application/pdf", URI: "gs://b/a.pdf"},
 		}},
 		{ID: transcript.NewUUID(), Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockToolUse, ToolID: "c", Name: "read_file", Input: []byte(`{}`)}}},
 		{ID: transcript.NewUUID(), Role: transcript.RoleTool, Content: []transcript.Block{
@@ -168,4 +172,71 @@ func TestWriteMedia(t *testing.T) {
 
 func sameBlock(x, y transcript.Block) bool {
 	return x.Kind == y.Kind && x.Text == y.Text && x.ToolID == y.ToolID && x.MediaType == y.MediaType && x.Name == y.Name && x.URI == y.URI && bytes.Equal(x.Data, y.Data)
+}
+
+// TestImportedFileHasNoDisplayName moves claude's image run, whose second
+// prompt attaches doc.pdf, into gemini. The file is an inlineData part
+// without the file's name: @google/genai throws "displayName parameter is
+// not supported in Gemini API" on a part carrying displayName outside
+// Vertex AI, which failed the turn after the import.
+func TestImportedFileHasNoDisplayName(t *testing.T) {
+	src, err := claude.Codec.Open("../claude/testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := src.Read(t.Context(), "07f0f8b5-1255-4c04-b97b-e1f209e315ac")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.ID = ""
+	home := t.TempDir()
+	st, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := st.Write(t.Context(), s); err != nil {
+		t.Fatal(err)
+	}
+	paths, _ := filepath.Glob(filepath.Join(home, ".gemini", "tmp", "*", "chats", "*.jsonl"))
+	if len(paths) != 1 {
+		t.Fatalf("session files %v", paths)
+	}
+	raw, err := os.ReadFile(paths[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	var media []map[string]any
+	var walk func(v any)
+	walk = func(v any) {
+		switch x := v.(type) {
+		case map[string]any:
+			for k, e := range x {
+				if m, ok := e.(map[string]any); ok && (k == "inlineData" || k == "fileData") {
+					media = append(media, m)
+				}
+				walk(e)
+			}
+		case []any:
+			for _, e := range x {
+				walk(e)
+			}
+		}
+	}
+	for _, line := range strings.Split(strings.TrimSpace(string(raw)), "\n") {
+		var v any
+		if err := json.Unmarshal([]byte(line), &v); err != nil {
+			t.Fatal(err)
+		}
+		walk(v)
+	}
+	pdf := false
+	for _, m := range media {
+		if _, ok := m["displayName"]; ok {
+			t.Errorf("media part with displayName: %v", m["mimeType"])
+		}
+		pdf = pdf || m["mimeType"] == "application/pdf"
+	}
+	if !pdf {
+		t.Error("no PDF part written")
+	}
 }

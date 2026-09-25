@@ -2,6 +2,7 @@ package pi
 
 import (
 	"bytes"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"slices"
@@ -9,6 +10,8 @@ import (
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/claude"
+	"github.com/inference-sh/agentprotocol/transcript/codex"
 	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
@@ -179,6 +182,82 @@ func TestForeignImages(t *testing.T) {
 		}
 		if b := msgs[2].Content; !slices.Equal(kinds(b), []transcript.BlockKind{transcript.BlockToolResult, transcript.BlockImage}) || b[1].ToolID != "c1" || !bytes.Equal(b[1].Data, png) || b[0].Text != "Read image file" {
 			t.Errorf("tool result reads back as %+v", b)
+		}
+	}
+}
+
+// TestImportedImageRuns moves claude's and codex's image runs, where a
+// tool returned only an image, into pi and omp. Every text block written
+// carries its text: pi reads block.text.length off each one ("Cannot read
+// properties of undefined (reading 'length')") and omp calls
+// text.toWellFormed(), both before the first request. A result of images
+// only is written without a text block.
+func TestImportedImageRuns(t *testing.T) {
+	for _, src := range []struct {
+		name   string
+		codec  transcript.Codec
+		sample transcripttest.Sample
+	}{
+		{"claude", claude.Codec, transcripttest.Sample{Home: "../claude/testdata/home", ID: "07f0f8b5-1255-4c04-b97b-e1f209e315ac"}},
+		{"codex", codex.Codec, transcripttest.Sample{Home: "../codex/testdata/home", ID: "01a0d2e7-4559-78b3-a835-f49e78b998c0"}},
+	} {
+		for _, target := range []struct {
+			name  string
+			codec transcript.Codec
+			root  string
+		}{{"pi", Codec, ".pi"}, {"omp", OMP, ".omp"}} {
+			t.Run(src.name+"/"+target.name, func(t *testing.T) {
+				s := read(t, src.codec, src.sample)
+				s.ID = ""
+				home := t.TempDir()
+				st, err := target.codec.Open(home)
+				if err != nil {
+					t.Fatal(err)
+				}
+				id, err := st.Write(t.Context(), s)
+				if err != nil {
+					t.Fatal(err)
+				}
+				paths, _ := filepath.Glob(filepath.Join(home, target.root, "agent", "sessions", "*", "*_"+id+".jsonl"))
+				if len(paths) != 1 {
+					t.Fatalf("session files %v", paths)
+				}
+				raw, err := os.ReadFile(paths[0])
+				if err != nil {
+					t.Fatal(err)
+				}
+				images := 0
+				for _, line := range strings.Split(strings.TrimSpace(string(raw)), "\n") {
+					var r struct {
+						Message *struct {
+							Role    string                       `json:"role"`
+							Content []map[string]json.RawMessage `json:"content"`
+						} `json:"message"`
+					}
+					if err := json.Unmarshal([]byte(line), &r); err != nil {
+						t.Fatal(err)
+					}
+					if r.Message == nil {
+						continue
+					}
+					for _, b := range r.Message.Content {
+						switch string(b["type"]) {
+						case `"text"`:
+							var text *string
+							if json.Unmarshal(b["text"], &text) != nil || text == nil {
+								t.Errorf("%s text block without text: %s", r.Message.Role, line)
+							} else if *text == "" && r.Message.Role == "toolResult" && len(r.Message.Content) > 1 {
+								t.Errorf("empty text beside a tool's image: %s", line)
+							}
+						case `"image"`:
+							images++
+						}
+					}
+				}
+				if images == 0 {
+					t.Error("no image written")
+				}
+			})
 		}
 	}
 }

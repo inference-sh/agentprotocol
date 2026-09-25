@@ -65,7 +65,9 @@ func TestCarriedCompaction(t *testing.T) {
 
 // TestCarriedCompactionKeep moves omp's compacted rpc sample, whose
 // compaction keeps the answer before it, into pi: the entry kept is named
-// by the id pi gives it, so the model still gets it after the summary.
+// by the id pi gives it, so the model still gets it after the summary. The
+// file the prompt's @notes.md mention read in is the person's, and travels
+// as theirs.
 func TestCarriedCompactionKeep(t *testing.T) {
 	back := carry(t, read(t, OMP, ompCompacted))
 	const hello = "assistant: Hello from mock server."
@@ -74,6 +76,7 @@ func TestCarriedCompactionKeep(t *testing.T) {
 		hello,
 		"user: Ran `ls`\n```\nnotes.md\n\n```",
 		"user: Summarize @notes.md please.",
+		"user: <file path=\"notes.md\">\n[notes.md#DA5F]\n1",
 		hello,
 		"user: Third question.",
 		hello,

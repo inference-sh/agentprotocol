@@ -57,6 +57,22 @@ type gooseContent struct {
 	Name     string `json:"name,omitempty"`
 }
 
+// MarshalJSON writes a text item's text even when it is empty: goose's
+// TextContent requires the field, and a row whose content does not
+// deserialize fails the whole session's load, which goose reports as
+// "Session not found" (session_manager.rs get_conversation, acp
+// load_session.rs). An empty tool output or an empty summary is text too.
+func (c gooseContent) MarshalJSON() ([]byte, error) {
+	type plain gooseContent
+	if c.Type != "text" {
+		return json.Marshal(plain(c))
+	}
+	return json.Marshal(struct {
+		plain
+		Text string `json:"text"`
+	}{plain(c), c.Text})
+}
+
 // media is an image or document content item as a block.
 func (c gooseContent) media() transcript.Block {
 	b := transcript.Block{Kind: transcript.BlockImage, MediaType: c.MimeType, Name: c.Name}
@@ -534,7 +550,16 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 		}
 		retired := i < last
 		if e.Role == transcript.RoleOpaque {
-			if e.Compaction == nil {
+			// A compaction with no summary (another agent's clear) gives
+			// the model nothing in place of what it retired, as goose's
+			// own clear leaves it nothing (execute_commands.rs
+			// handle_clear_command); an empty summary row would only be an
+			// empty message.
+			summary := ""
+			if e.Compaction != nil {
+				summary = summaryText(e.Compaction.Summary)
+			}
+			if summary == "" {
 				continue
 			}
 			// The summary is a user message and the continuation an
@@ -544,7 +569,7 @@ func (st *gooseStore) Write(ctx context.Context, s *transcript.Session) (string,
 				audience = transcript.AudienceNone
 			}
 			for _, row := range []transcript.Entry{
-				{Role: transcript.RoleUser, Time: e.Time, Audience: audience, Content: []transcript.Block{{Kind: transcript.BlockText, Text: summaryText(e.Compaction.Summary)}}},
+				{Role: transcript.RoleUser, Time: e.Time, Audience: audience, Content: []transcript.Block{{Kind: transcript.BlockText, Text: summary}}},
 				{Role: transcript.RoleAssistant, Time: e.Time, Audience: audience, Content: []transcript.Block{{Kind: transcript.BlockText, Text: gooseContinuation}}},
 			} {
 				if err := insert(row); err != nil {
@@ -654,7 +679,13 @@ func gooseContentJSON(e transcript.Entry) (string, error) {
 				status = "error"
 			}
 			c := gooseContent{Type: "toolResponse", ID: b.ToolID, ToolResult: &gooseToolReslt{Status: status}}
-			c.ToolResult.Value.Content = append([]gooseContent{{Type: "text", Text: b.Text}}, returned[b.ToolID]...)
+			// An output of images only has no text item, as an MCP tool
+			// returning only an image has none.
+			var items []gooseContent
+			if b.Text != "" || len(returned[b.ToolID]) == 0 {
+				items = append(items, gooseContent{Type: "text", Text: b.Text})
+			}
+			c.ToolResult.Value.Content = append(items, returned[b.ToolID]...)
 			content = append(content, c)
 		}
 	}

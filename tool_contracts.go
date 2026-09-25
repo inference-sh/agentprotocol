@@ -102,4 +102,5 @@ const (
 	ToolTypeMCP      ToolType = "mcp"      // MCP tools - calls remote MCP server
 	ToolTypeClient   ToolType = "client"   // Client tools - executed by frontend
 	ToolTypeInternal ToolType = "internal" // Internal/built-in tools (plan, memory, widget, finish)
+	ToolTypeHarness  ToolType = "harness"  // Harness tools - run by the harness on its own machine; the api records and gates them but never executes
 )

@@ -319,3 +319,54 @@ func TestCompactionOpensWithPrompt(t *testing.T) {
 		}
 	}
 }
+
+// TestTrailingToolResult moves a session ending on a tool result into kiro:
+// kiro's own tool-call capture e53ccf60 with its last answer cut, as a
+// session another agent stopped mid-turn holds it. kiro refuses a history
+// ending on a user message, so the result is followed by a CancelledPrompt
+// row: the session loads, and the result is shown and not given to the
+// model.
+func TestTrailingToolResult(t *testing.T) {
+	src, err := Codec.Open("testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := src.Read(t.Context(), "e53ccf60-b53a-4fdd-a00f-05547225a99d")
+	if err != nil {
+		t.Fatal(err)
+	}
+	last := len(s.Entries) - 1
+	for s.Entries[last].Role != transcript.RoleAssistant {
+		last--
+	}
+	s.Entries = s.Entries[:last]
+	s.Agent, s.ID, s.Vendor = "elsewhere", "", nil
+	home := t.TempDir()
+	dst, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := dst.Write(t.Context(), s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(filepath.Join(home, ".kiro", "sessions", "cli", id+".jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	rows := strings.Split(strings.TrimSpace(string(raw)), "\n")
+	if n := len(rows); n < 2 || rows[n-1] != `{"version":"v1","kind":"CancelledPrompt"}` || !strings.Contains(rows[n-2], `"kind":"ToolResults"`) {
+		t.Fatalf("last rows = %.200q", rows[max(0, len(rows)-2):])
+	}
+	back, err := dst.Read(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, lin := back.Context(), back.Linearize()
+	if e := ctx[len(ctx)-1]; e.Role != transcript.RoleAssistant {
+		t.Errorf("the model is given %s last", e.Role)
+	}
+	if e := lin[len(lin)-1]; e.Role != transcript.RoleTool {
+		t.Errorf("the person is shown %s last, want the tool result", e.Role)
+	}
+}

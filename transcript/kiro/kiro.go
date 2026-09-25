@@ -149,19 +149,22 @@ func alternate(s *transcript.Session) {
 // cancelledPrompt is kiro's row for a prompt that got no answer.
 var cancelledPrompt = json.RawMessage(`{"version":"v1","kind":"CancelledPrompt"}`)
 
-// cancelLast follows a portable session's last prompt with a CancelledPrompt
-// row when nothing answered it. kiro fails the next request of a history
-// ending on a user message, since the prompt it sends next would be a second
-// one in a row. The row keeps the prompt in the session and shown on
-// session/load, and out of what the model is given, which is how kiro treats
-// a prompt it cancelled; the person's next prompt then follows an answer.
+// cancelLast follows a portable session's last user message with a
+// CancelledPrompt row when nothing answered it. kiro fails the next request
+// of a history ending on a user message, since the prompt it sends next
+// would be a second one in a row. The row keeps the message in the session
+// and shown on session/load, and out of what the model is given, which is
+// how kiro treats a prompt it cancelled; the person's next prompt then
+// follows an answer. A last tool result gets the row too: without it kiro
+// refuses the whole session, and with it only that result is left out of
+// the model's context (kiro-cli 2.24.0 sends the call without it).
 func cancelLast(s *transcript.Session) {
 	for i := len(s.Entries) - 1; i >= 0; i-- {
 		switch s.Entries[i].Role {
-		case transcript.RoleUser:
+		case transcript.RoleUser, transcript.RoleTool:
 			s.Entries = append(s.Entries, transcript.Entry{Raw: cancelledPrompt})
 			return
-		case transcript.RoleAssistant, transcript.RoleTool:
+		case transcript.RoleAssistant:
 			return
 		}
 		if s.Entries[i].Compaction != nil {

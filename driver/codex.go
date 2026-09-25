@@ -135,7 +135,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 		backend:   b,
 		runID:     cfg.RunID,
 		chatID:    cfg.ChatID,
-		events:    make(chan ap.AgentEvent, 256),
+		pump:      newEventPump(),
 		pending:   map[string]*codexApproval{},
 		byRPC:     map[string]string{},
 		openTools: map[string]string{},
@@ -223,6 +223,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 	s.id = thread.ID
 	s.mu.Unlock()
 
+	go s.pump.run()
 	s.emit(ap.NewEvent(ap.AgentEventRunStarted, s.runID, s.chatID, ap.RunStartedPayload{}))
 	go s.sendLoop()
 	go s.watch()
@@ -270,9 +271,7 @@ type codexSession struct {
 	stop    chan struct{}
 	watched chan struct{} // closed when watch has finished
 
-	evMu     sync.Mutex
-	events   chan ap.AgentEvent
-	evClosed bool
+	pump *eventPump
 
 	closeOnce sync.Once
 	closing   bool
@@ -298,7 +297,7 @@ func (s *codexSession) ID() string {
 	return s.id
 }
 
-func (s *codexSession) Events() <-chan ap.AgentEvent { return s.events }
+func (s *codexSession) Events() <-chan ap.AgentEvent { return s.pump.out }
 
 // Prompt queues input and returns. The send loop delivers prompts in order:
 // as a new turn when none is running, or as a steer into the running one. The
@@ -525,8 +524,16 @@ func approvalAnswer(p *codexApproval, allow, session bool, reason string) any {
 func cancelAnswer(p *codexApproval) any { return approvalAnswer(p, false, false, "cancelled") }
 
 // Close ends the session. Parked approvals are declined, codex's stdin is
-// closed, and the event channel closes once the process is gone.
+// closed, and once the process is gone, events not yet read are discarded and
+// the channel closes. After Kill it releases the events Kill left queued.
 func (s *codexSession) Close() error {
+	err := s.shutdown()
+	s.pump.stopNow()
+	return err
+}
+
+// shutdown stops codex, declining parked approvals.
+func (s *codexSession) shutdown() error {
 	var err error
 	s.closeOnce.Do(func() {
 		s.mu.Lock()
@@ -540,7 +547,6 @@ func (s *codexSession) Close() error {
 			p.settle(cancelAnswer(p))
 		}
 		err = s.proc.Close()
-		s.closeEvents()
 	})
 	// Codex was told to stop; how its exit status reads after that is not
 	// something a caller can act on.
@@ -553,11 +559,12 @@ func (s *codexSession) Close() error {
 
 // Kill implements Killer. Codex gets no grace to finish writing its rollout.
 // The session then ends as it does when codex crashes: an error event with
-// code process_exited, then Events closes. After Close it does nothing.
+// code process_exited, then Events closes once the queued events are read.
+// After Close it does nothing.
 func (s *codexSession) Kill() error {
 	_ = s.proc.Kill()
 	<-s.watched
-	return s.Close()
+	return s.shutdown()
 }
 
 var _ Killer = (*codexSession)(nil)
@@ -584,31 +591,11 @@ func (s *codexSession) watch() {
 		s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{Message: msg, Code: "process_exited"}))
 	}
 	<-s.proc.Exited()
-	s.closeEvents()
+	s.pump.end()
 	close(s.watched)
 }
 
-func (s *codexSession) emit(ev ap.AgentEvent) {
-	s.evMu.Lock()
-	defer s.evMu.Unlock()
-	if s.evClosed {
-		return
-	}
-	select {
-	case s.events <- ev:
-	default:
-		s.backend.diagnose("event dropped, consumer is not reading: " + string(ev.Type))
-	}
-}
-
-func (s *codexSession) closeEvents() {
-	s.evMu.Lock()
-	defer s.evMu.Unlock()
-	if !s.evClosed {
-		s.evClosed = true
-		close(s.events)
-	}
-}
+func (s *codexSession) emit(ev ap.AgentEvent) { s.pump.push(ev) }
 
 // --- server requests ---
 

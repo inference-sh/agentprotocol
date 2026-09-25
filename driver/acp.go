@@ -161,7 +161,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 	s := &acpSession{
 		runID:      cfg.RunID,
 		chatID:     cfg.ChatID,
-		events:     make(chan ap.AgentEvent, 64),
+		pump:       newEventPump(),
 		pending:    make(map[string]*pendingPermission),
 		emitReplay: b.EmitReplay,
 		firstEvent: b.FirstEventTimeout,
@@ -225,6 +225,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		s.id = sid
 	}
 
+	go s.pump.run()
 	s.emit(ap.NewEvent(ap.AgentEventRunStarted, s.runID, s.chatID, ap.RunStartedPayload{}))
 	go s.watch()
 	return s, nil
@@ -245,9 +246,7 @@ type acpSession struct {
 	runID  string
 	chatID string
 
-	events     chan ap.AgentEvent
-	evMu       sync.Mutex
-	evClosed   bool
+	pump       *eventPump
 	closeOnce  sync.Once
 	emitReplay bool
 	// stderr is the last of the agent's stderr, for error messages.
@@ -269,7 +268,7 @@ type acpSession struct {
 
 func (s *acpSession) ID() string { return s.id }
 
-func (s *acpSession) Events() <-chan ap.AgentEvent { return s.events }
+func (s *acpSession) Events() <-chan ap.AgentEvent { return s.pump.out }
 
 func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 	select {
@@ -440,27 +439,30 @@ func (s *acpSession) Resolve(ctx context.Context, requestID string, res Resoluti
 	return nil
 }
 
+// Close ends the session and waits for the agent to exit. Events not yet
+// read are discarded and the channel closes. After Kill it releases the
+// events Kill left queued.
 func (s *acpSession) Close() error {
 	var err error
 	s.closeOnce.Do(func() {
 		s.failPending()
 		err = s.proc.Wait()
-		s.closeEvents()
 	})
+	s.pump.stopNow()
 	return err
 }
 
 // Kill implements Killer. The agent gets no session/close and no grace; any
 // request parked on a person is cancelled. The session then ends as it does
 // when the agent crashes: a turn still running reports process_exited, and
-// Events closes. After Close it does nothing.
+// Events closes once the queued events are read. After Close it does nothing.
 func (s *acpSession) Kill() error {
 	var err error
 	s.closeOnce.Do(func() {
 		s.failPending()
 		err = s.proc.Kill()
 		s.reportExit()
-		s.closeEvents()
+		s.pump.end()
 	})
 	return err
 }
@@ -474,7 +476,7 @@ func (s *acpSession) watch() {
 		s.failPending()
 		_ = s.proc.Kill() // reaps it; ExitState is then its own exit
 		s.reportExit()
-		s.closeEvents()
+		s.pump.end()
 	})
 }
 
@@ -590,31 +592,7 @@ func (s *acpSession) dropPending(id string) {
 	s.mu.Unlock()
 }
 
-// emit publishes an event, dropping it if the consumer has stopped reading.
-// A slow reader must not wedge the agent's transport, and a session that is
-// closing has no one left to tell.
-func (s *acpSession) emit(ev ap.AgentEvent) {
-	// The lock orders a late event from the read loop or a prompt goroutine
-	// against the close in Close or Kill.
-	s.evMu.Lock()
-	defer s.evMu.Unlock()
-	if s.evClosed {
-		return
-	}
-	select {
-	case s.events <- ev:
-	default:
-	}
-}
-
-func (s *acpSession) closeEvents() {
-	s.evMu.Lock()
-	defer s.evMu.Unlock()
-	if !s.evClosed {
-		s.evClosed = true
-		close(s.events)
-	}
-}
+func (s *acpSession) emit(ev ap.AgentEvent) { s.pump.push(ev) }
 
 func toolNameOf(r acp.PermissionRequest) string {
 	if r.ToolCall == nil {

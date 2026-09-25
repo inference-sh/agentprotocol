@@ -256,8 +256,15 @@ func finishChat(s *transcript.Session) error {
 		if e.Role == transcript.RoleOpaque {
 			continue
 		}
-		e.Audience = transcript.AudienceModel
+		// In the Summary, a row of the conversation the compaction kept (a
+		// prompt, an answer, a tool call or its result, which grok writes
+		// with no synthetic_reason) stays the person's, and so moves on
+		// with the session; what grok injected (its system prompt,
+		// user_info, reminders) decoded as the model's and stays that.
+		// The row itself is shown from updates.jsonl, so here it is only
+		// the model's.
 		history = append(history, *e)
+		e.Audience = transcript.AudienceModel
 	}
 	sum := &s.Entries[i]
 	sum.Audience = transcript.AudienceModel

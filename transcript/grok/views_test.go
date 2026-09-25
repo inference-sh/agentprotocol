@@ -90,13 +90,38 @@ func TestCompactedSession(t *testing.T) {
 		}
 	}
 
+	// Moved on, the prompt the compaction kept travels in the marker's
+	// Summary with the summary, and grok's system prompt and user_info
+	// stay behind; applied, that is the conversation the model had.
+	if got := keptSummary(s); !slices.Equal(got, []string{"user: What was my previous question?", "user: This session is being continued from a"}) {
+		t.Errorf("marker summary %q, want the kept prompt, then the summary", got)
+	}
 	var moved []string
 	for _, e := range s.Portable().Lower(transcript.Capabilities{}).Entries {
 		moved = append(moved, e.Text())
 	}
-	if len(moved) != 3 || !strings.HasPrefix(moved[0], "This session is being continued") || moved[1] != "What was my previous question?" {
-		t.Errorf("portable = %.80q, want the summary and the turn after it", moved)
+	if len(moved) != 4 || moved[0] != "What was my previous question?" || !strings.HasPrefix(moved[1], "This session is being continued") || moved[2] != "What was my previous question?" {
+		t.Errorf("portable = %.80q, want the kept prompt, the summary and the turn after it", moved)
 	}
+}
+
+// keptSummary lists the Summary of a session's portable compaction marker
+// as role: text, each text cut to its first 38 bytes.
+func keptSummary(s *transcript.Session) []string {
+	var out []string
+	for _, e := range s.Portable().Entries {
+		if e.Compaction == nil {
+			continue
+		}
+		for _, m := range e.Compaction.Summary {
+			t := m.Text()
+			if len(t) > 38 {
+				t = t[:38]
+			}
+			out = append(out, string(m.Role)+": "+t)
+		}
+	}
+	return out
 }
 
 // What grok injects is context for the model: the <user_info> prefix, the
@@ -329,6 +354,10 @@ func TestWriteCompacted(t *testing.T) {
 	}
 	if got := texts([]transcript.Entry{ctx[0], ctx[2], ctx[3]}); !slices.Equal(got, []string{answer, "user: After compaction.", answer}) {
 		t.Errorf("context around the summary = %q", got)
+	}
+	// Moved on again, the answer the compaction kept goes with the summary.
+	if got := keptSummary(s); !slices.Equal(got, []string{answer, "user: " + summaryPreamble[:38]}) {
+		t.Errorf("marker summary %q, want the kept answer, then the summary", got)
 	}
 
 	dir := sessionDir(t, home, id)

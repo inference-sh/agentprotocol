@@ -360,7 +360,7 @@ func (s *codexSession) send(ctx context.Context, in Input) error {
 			return fmt.Errorf("steer codex turn: %w", err)
 		}
 		// The turn ended between our look and codex's. Start a new one.
-		s.backend.diagnose("turn/steer refused, starting a new turn instead: " + rpcErr.Message)
+		s.backend.diagnose("turn/steer refused, starting a new turn instead: " + rpcErr.Error())
 	}
 
 	res, err := s.proc.TurnStart(ctx, codexapp.TurnStartParams{ThreadID: thread, Input: input})

@@ -190,7 +190,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		OnUpdate:     s.onUpdate,
 		OnPermission: s.onPermission,
 		OnPeerError: func(e *acp.Error) {
-			b.diagnose(fmt.Sprintf("agent reported an unattributed error: %s (code %d)", e.Message, e.Code))
+			b.diagnose(fmt.Sprintf("agent reported an unattributed error: %v (code %d)", e, e.Code))
 		},
 		OnUnhandled: func(method string, _ json.RawMessage) {
 			b.diagnose("agent called a method this client does not implement: " + method)

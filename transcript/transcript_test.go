@@ -485,3 +485,31 @@ func TestPortableOneResultPerEntry(t *testing.T) {
 		t.Fatalf("portable: %+v", p)
 	}
 }
+
+// An image known only by its local path moves with its bytes; one whose
+// file is gone stays a reference.
+func TestPortableInlinesLocalFiles(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "pic.png")
+	if err := os.WriteFile(path, []byte{0x89, 'P', 'N', 'G'}, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	s := &Session{Entries: []Entry{{ID: "1", Role: RoleUser, Content: []Block{
+		{Kind: BlockText, Text: "look"},
+		{Kind: BlockImage, URI: path},
+		{Kind: BlockImage, URI: "file://" + path},
+		{Kind: BlockImage, URI: filepath.Join(dir, "gone.png")},
+	}}}}
+	c := s.Portable().Entries[0].Content
+	for _, k := range []int{1, 2} {
+		if string(c[k].Data) != "\x89PNG" || c[k].MediaType != "image/png" {
+			t.Errorf("block %d: %q %q", k, c[k].Data, c[k].MediaType)
+		}
+	}
+	if c[3].Data != nil || c[3].URI == "" {
+		t.Errorf("missing file: %+v", c[3])
+	}
+	if s.Entries[0].Content[1].Data != nil {
+		t.Error("portable changed the source block")
+	}
+}

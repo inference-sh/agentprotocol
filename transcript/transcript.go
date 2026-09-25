@@ -19,7 +19,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"mime"
+	"net/url"
+	"os"
+	"path/filepath"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 )
@@ -512,6 +517,9 @@ func (s *Session) Portable() *Session {
 			// The copy's blocks are its own: tool IDs change below.
 			e.ParentID, e.Raw, e.ModelContent = "", nil, nil
 			e.Content = append([]Block(nil), e.Content...)
+			for k := range e.Content {
+				e.Content[k] = inlineLocal(e.Content[k])
+			}
 			carried[e.ID] = e.ID != ""
 			out.Entries = append(out.Entries, splitResults(e)...)
 		}
@@ -547,6 +555,43 @@ func (s *Session) retired() map[int]bool {
 		}
 	}
 	return out
+}
+
+// maxInline is the largest local file Portable reads into a block.
+const maxInline = 20 << 20
+
+// inlineLocal gives an image or file known only by a local path its bytes,
+// when the file is there to read. Agents record an attachment by path
+// (codex its images, copilot and droid their files) and send the file when
+// they build a request; another agent's format may hold only bytes, and a
+// session moved to another machine has no path to read. A file that is
+// gone, or too large, stays a reference.
+func inlineLocal(b Block) Block {
+	if (b.Kind != BlockImage && b.Kind != BlockFile) || len(b.Data) > 0 || b.URI == "" {
+		return b
+	}
+	path := b.URI
+	if u, err := url.Parse(b.URI); err == nil && u.Scheme == "file" {
+		path = u.Path
+	} else if !filepath.IsAbs(path) {
+		return b
+	}
+	fi, err := os.Stat(path)
+	if err != nil || !fi.Mode().IsRegular() || fi.Size() > maxInline {
+		return b
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return b
+	}
+	b.Data = data
+	if b.MediaType == "" {
+		b.MediaType = mime.TypeByExtension(filepath.Ext(path))
+		if i := strings.IndexByte(b.MediaType, ';'); i >= 0 {
+			b.MediaType = b.MediaType[:i]
+		}
+	}
+	return b
 }
 
 // splitResults gives each tool result an entry of its own, with any image

@@ -289,7 +289,7 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 	settle := func() bool { return settled.CompareAndSwap(false, true) }
 
 	go func() {
-		res, err := s.proc.Prompt(context.WithoutCancel(ctx), in.Text)
+		res, err := s.proc.PromptBlocks(context.WithoutCancel(ctx), promptBlocks(in))
 		silent := s.release(life)
 		if err != nil {
 			select {
@@ -324,6 +324,16 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 		go s.awaitFirstEvent(life, settle)
 	}
 	return nil
+}
+
+// promptBlocks converts our input to ACP content: the text, then each file as
+// a resource_link, which every ACP agent accepts.
+func promptBlocks(in Input) []acp.ContentBlock {
+	blocks := []acp.ContentBlock{acp.TextBlock(in.Text)}
+	for _, f := range in.Files {
+		blocks = append(blocks, acp.ResourceLinkBlock(f.URI, f.Filename, f.ContentType, f.Size))
+	}
+	return blocks
 }
 
 // awaitFirstEvent fails the turn when the agent shows no sign of work within

@@ -202,10 +202,27 @@ type SessionRef struct {
 type ContentBlock struct {
 	Type string `json:"type"`
 	Text string `json:"text,omitempty"`
+
+	// URI, Name, MimeType and Size describe a resource_link block.
+	URI      string `json:"uri,omitempty"`
+	Name     string `json:"name,omitempty"`
+	MimeType string `json:"mimeType,omitempty"`
+	Size     int64  `json:"size,omitempty"`
 }
 
 // TextBlock builds the common case: a block of plain text.
 func TextBlock(s string) ContentBlock { return ContentBlock{Type: "text", Text: s} }
+
+// ResourceLinkBlock points the agent at a resource it can read itself. Every
+// agent must accept one in a prompt, unlike image and embedded resource
+// blocks, which depend on promptCapabilities. An empty name falls back to the
+// URI, since the protocol requires one.
+func ResourceLinkBlock(uri, name, mimeType string, size int64) ContentBlock {
+	if name == "" {
+		name = uri
+	}
+	return ContentBlock{Type: "resource_link", URI: uri, Name: name, MimeType: mimeType, Size: size}
+}
 
 // --- session/update ---
 

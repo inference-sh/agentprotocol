@@ -161,6 +161,32 @@ func TestPromptStreamsContentAndCompletesTheTurn(t *testing.T) {
 	}
 }
 
+func TestPromptSendsFilesAsResourceLinks(t *testing.T) {
+	b := backendRunning(t, "attachments")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir()})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+
+	in := driver.Input{Text: "look", Files: []ap.FileRef{
+		{URI: "file:///tmp/a.png", Filename: "a.png", ContentType: "image/png"},
+		{URI: "https://example.com/b.txt"},
+	}}
+	if err := sess.Prompt(context.Background(), in); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	delta, ok := findEvent(collect(t, sess.Events(), 4, 3*time.Second), ap.AgentEventContentDelta)
+	if !ok {
+		t.Fatal("no reply")
+	}
+	payload, _ := ap.PayloadAs[ap.ContentDeltaPayload](delta, ap.AgentEventContentDelta)
+	want := "resource_link file:///tmp/a.png a.png image/png; resource_link https://example.com/b.txt https://example.com/b.txt "
+	if payload.Delta != want {
+		t.Errorf("agent saw %q, want %q", payload.Delta, want)
+	}
+}
+
 func TestPermissionBecomesAnApprovalEventAndResolveAnswersIt(t *testing.T) {
 	// This is the whole point of the backend: a question asked by a process on
 	// one machine becomes an event a human can answer from somewhere else.
@@ -668,6 +694,21 @@ func runFakeAgent(script string) {
 				reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
 				time.Sleep(100 * time.Millisecond)
 				os.Exit(0)
+			}
+
+			if script == "attachments" {
+				// Echo the resource links the prompt carried.
+				var links []string
+				for _, blk := range p.Prompt[1:] {
+					links = append(links, blk.Type+" "+blk.URI+" "+blk.Name+" "+blk.MimeType)
+				}
+				out, _ := json.Marshal(strings.Join(links, "; "))
+				update(acp.SessionUpdate{
+					Kind:    acp.UpdateKindAgentMessageChunk,
+					Content: json.RawMessage(`{"type":"text","text":` + string(out) + `}`),
+				})
+				reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
+				continue
 			}
 
 			if script == "permission" {

@@ -149,7 +149,9 @@ type Input struct {
 	// Text is the message. Most prompts are only this.
 	Text string
 
-	// Files are attachments, for backends that accept them.
+	// Files are attachments. Every backend passes them on: in the agent's
+	// own form where its protocol has one (ACP resource links, codex
+	// images), otherwise named in the text.
 	Files []ap.FileRef
 }
 

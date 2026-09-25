@@ -13,14 +13,10 @@
 package codexapp
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
-	"strconv"
-	"sync"
 
 	"github.com/inference-sh/agentprotocol/internal/jsonrpc"
 )
@@ -28,26 +24,21 @@ import (
 // Message is one JSON-RPC message in either direction. Which fields are set
 // says what it is: Method and ID a request, Method alone a notification, ID
 // with Result or Error a response.
-type Message struct {
-	ID     json.RawMessage `json:"id,omitempty"`
-	Method string          `json:"method,omitempty"`
-	Params json.RawMessage `json:"params,omitempty"`
-	Result json.RawMessage `json:"result,omitempty"`
-	Error  *Error          `json:"error,omitempty"`
-}
+type Message = jsonrpc.Message
 
-// Error is a JSON-RPC error object. Its message includes the server's data.
+// Error is a JSON-RPC error object. Its text includes the data codex
+// attached, which is where the cause usually is.
 type Error = jsonrpc.Error
 
 // JSON-RPC error codes this client sends.
 const (
-	CodeMethodNotFound = -32601
-	CodeInternal       = -32603
+	CodeMethodNotFound = jsonrpc.CodeMethodNotFound
+	CodeInternal       = jsonrpc.CodeInternal
 )
 
 // ErrClosed is returned by calls made after the connection ended, and by calls
 // still waiting when it did.
-var ErrClosed = errors.New("codex app-server: connection closed")
+var ErrClosed = jsonrpc.ErrClosed
 
 // Handler receives what the server sends unprompted.
 type Handler struct {
@@ -66,197 +57,69 @@ type Handler struct {
 
 // Client is one JSON-RPC connection to an app-server.
 type Client struct {
-	r *bufio.Reader
-	w io.Writer
-	h Handler
-
-	wmu sync.Mutex
-
-	mu      sync.Mutex
-	nextID  int64
-	pending map[string]chan Message
-
-	done    chan struct{}
-	doneErr error
-	ctx     context.Context
-	cancel  context.CancelFunc
+	conn   *jsonrpc.Conn
+	h      Handler
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
 // NewClient wraps a stream. Call Start to begin reading.
 func NewClient(r io.Reader, w io.Writer, h Handler) *Client {
 	ctx, cancel := context.WithCancel(context.Background())
-	return &Client{
-		r:       bufio.NewReaderSize(r, 1<<16),
-		w:       w,
-		h:       h,
-		pending: map[string]chan Message{},
-		done:    make(chan struct{}),
-		ctx:     ctx,
-		cancel:  cancel,
+	c := &Client{h: h, ctx: ctx, cancel: cancel}
+	jh := jsonrpc.Handler{OnNotification: h.OnNotification}
+	if h.OnRequest != nil {
+		jh.OnRequest = func(m Message) { go c.answer(m) }
 	}
+	c.conn = jsonrpc.NewConn(r, w, "", jh)
+	return c
 }
 
 // Start runs the read loop until the stream ends.
-func (c *Client) Start() { go c.readLoop() }
+func (c *Client) Start() {
+	c.conn.Start()
+	go func() {
+		<-c.conn.Done()
+		c.cancel()
+	}()
+}
 
 // Done closes when the stream has ended.
-func (c *Client) Done() <-chan struct{} { return c.done }
+func (c *Client) Done() <-chan struct{} { return c.conn.Done() }
 
 // Err reports why the stream ended, once Done is closed. A clean EOF is nil.
-func (c *Client) Err() error {
-	select {
-	case <-c.done:
-		return c.doneErr
-	default:
-		return nil
-	}
-}
-
-func (c *Client) readLoop() {
-	var err error
-	defer func() {
-		c.mu.Lock()
-		c.doneErr = err
-		pending := c.pending
-		c.pending = map[string]chan Message{}
-		c.mu.Unlock()
-		for _, ch := range pending {
-			close(ch)
-		}
-		c.cancel()
-		close(c.done)
-	}()
-	for {
-		line, rerr := c.r.ReadBytes('\n')
-		if len(line) > 0 {
-			c.dispatch(line)
-		}
-		if rerr != nil {
-			if !errors.Is(rerr, io.EOF) {
-				err = rerr
-			}
-			return
-		}
-	}
-}
-
-func (c *Client) dispatch(line []byte) {
-	var m Message
-	if json.Unmarshal(line, &m) != nil {
-		// Not JSON-RPC. codex logs to stderr, so this is unexpected, but a
-		// stray line must not end the session.
-		return
-	}
-	switch {
-	case m.Method != "" && len(m.ID) > 0:
-		go c.answer(m)
-	case m.Method != "":
-		if c.h.OnNotification != nil {
-			c.h.OnNotification(m.Method, m.Params)
-		}
-	case len(m.ID) > 0:
-		key := string(m.ID)
-		c.mu.Lock()
-		ch, ok := c.pending[key]
-		delete(c.pending, key)
-		c.mu.Unlock()
-		if ok {
-			ch <- m
-		}
-	}
-}
+func (c *Client) Err() error { return c.conn.Err() }
 
 func (c *Client) answer(m Message) {
-	if c.h.OnRequest == nil {
-		_ = c.write(Message{ID: m.ID, Error: &Error{Code: CodeMethodNotFound, Message: "method not supported by this client: " + m.Method}})
-		return
-	}
 	result, rerr := c.h.OnRequest(c.ctx, m.ID, m.Method, m.Params)
 	if rerr != nil {
-		_ = c.write(Message{ID: m.ID, Error: rerr})
+		_ = c.conn.ReplyError(m.ID, rerr)
 		return
 	}
-	raw, err := json.Marshal(result)
-	if err != nil {
-		_ = c.write(Message{ID: m.ID, Error: &Error{Code: CodeInternal, Message: err.Error()}})
-		return
-	}
-	_ = c.write(Message{ID: m.ID, Result: raw})
-}
-
-func (c *Client) write(m Message) error {
-	data, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-	c.wmu.Lock()
-	defer c.wmu.Unlock()
-	_, err = c.w.Write(append(data, '\n'))
-	return err
+	_ = c.conn.Reply(m.ID, result)
 }
 
 // Call sends a request and decodes the result into out, which may be nil.
 func (c *Client) Call(ctx context.Context, method string, params, out any) error {
-	raw, err := json.Marshal(params)
+	raw, err := c.conn.Call(ctx, method, params)
 	if err != nil {
-		return fmt.Errorf("codex app-server: encode %s params: %w", method, err)
+		if _, peer := err.(*Error); peer || err == ctx.Err() {
+			return err
+		}
+		return fmt.Errorf("codex app-server: %s: %w", method, err)
 	}
-	ch := make(chan Message, 1)
-	c.mu.Lock()
-	select {
-	case <-c.done:
-		c.mu.Unlock()
-		return ErrClosed
-	default:
-	}
-	c.nextID++
-	id := json.RawMessage(strconv.FormatInt(c.nextID, 10))
-	c.pending[string(id)] = ch
-	c.mu.Unlock()
-
-	if err := c.write(Message{ID: id, Method: method, Params: raw}); err != nil {
-		c.forget(id)
-		return fmt.Errorf("codex app-server: send %s: %w", method, err)
-	}
-
-	select {
-	case m, ok := <-ch:
-		if !ok {
-			return fmt.Errorf("%s: %w", method, ErrClosed)
-		}
-		if m.Error != nil {
-			return fmt.Errorf("codex app-server: %s: %w", method, m.Error)
-		}
-		if out == nil || len(m.Result) == 0 {
-			return nil
-		}
-		if err := json.Unmarshal(m.Result, out); err != nil {
-			return fmt.Errorf("codex app-server: decode %s result: %w", method, err)
-		}
+	if out == nil || len(raw) == 0 {
 		return nil
-	case <-ctx.Done():
-		c.forget(id)
-		return ctx.Err()
 	}
-}
-
-func (c *Client) forget(id json.RawMessage) {
-	c.mu.Lock()
-	delete(c.pending, string(id))
-	c.mu.Unlock()
+	if err := json.Unmarshal(raw, out); err != nil {
+		return fmt.Errorf("codex app-server: decode %s result: %w", method, err)
+	}
+	return nil
 }
 
 // Notify sends a notification. params may be nil.
 func (c *Client) Notify(method string, params any) error {
-	m := Message{Method: method}
-	if params != nil {
-		raw, err := json.Marshal(params)
-		if err != nil {
-			return err
-		}
-		m.Params = raw
-	}
-	return c.write(m)
+	return c.conn.Notify(method, params)
 }
 
 // Initialize performs the handshake: the initialize request, then the

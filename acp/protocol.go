@@ -46,8 +46,8 @@ const (
 
 // JSON-RPC error codes this package produces.
 const (
-	ErrCodeMethodNotFound = -32601
-	ErrCodeInvalidRequest = -32600
+	ErrCodeMethodNotFound = jsonrpc.CodeMethodNotFound
+	ErrCodeInvalidRequest = jsonrpc.CodeInvalidRequest
 )
 
 // --- JSON-RPC envelope ---
@@ -83,7 +83,8 @@ func (m Message) IsRequest() bool { return m.ID != nil && m.Method != "" }
 // no reply.
 func (m Message) IsNotification() bool { return m.ID == nil && m.Method != "" }
 
-// Error is a JSON-RPC error object. Its message includes the agent's data.
+// Error is a JSON-RPC error object. Its text includes the data the agent
+// attached, which is where agents put the cause.
 type Error = jsonrpc.Error
 
 // --- initialize ---

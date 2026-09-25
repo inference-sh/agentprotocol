@@ -1,7 +1,6 @@
 package acp
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"errors"
@@ -9,6 +8,8 @@ import (
 	"io"
 	"sync"
 	"time"
+
+	"github.com/inference-sh/agentprotocol/internal/jsonrpc"
 )
 
 // DefaultCallTimeout bounds a protocol call that expects a reply. Agents
@@ -29,10 +30,6 @@ const DefaultCallTimeout = 60 * time.Second
 // prompt that never shows a first sign of work. A caller that wants a total
 // bound sets PromptTimeout or passes a context with a deadline.
 const DefaultPromptTimeout time.Duration = 0
-
-// maxLineBytes caps one JSON-RPC line. Agents inline file contents and tool
-// output into updates, so the default scanner limit is far too small.
-const maxLineBytes = 8 << 20
 
 // Handler is the policy half of the client. The transport decides nothing; it
 // hands every agent-initiated request here and sends back whatever comes out.
@@ -101,17 +98,13 @@ type Handler struct {
 // the protocol. That split is what lets the same client run over a pipe, a
 // socket, or an in-memory stream in a test.
 type Client struct {
-	w  io.WriteCloser
-	sc *bufio.Scanner
-	h  Handler
+	w    io.WriteCloser
+	conn *jsonrpc.Conn
+	h    Handler
 
 	info ClientInfo
 
-	writeMu sync.Mutex
-
 	mu        sync.Mutex
-	nextID    int
-	pending   map[int]chan Message
 	sessionID string
 
 	initRaw json.RawMessage
@@ -128,8 +121,6 @@ type Client struct {
 	lastUpdate   time.Time
 
 	closeOnce sync.Once
-	done      chan struct{}
-	readErr   error
 
 	// CallTimeout bounds a protocol call. Zero means DefaultCallTimeout.
 	CallTimeout time.Duration
@@ -150,35 +141,34 @@ type Client struct {
 // NewClient wires a client to a duplex stream. Nothing is sent until
 // Initialize runs.
 func NewClient(r io.Reader, w io.WriteCloser, info ClientInfo, h Handler) *Client {
-	sc := bufio.NewScanner(r)
-	sc.Buffer(make([]byte, 0, 64<<10), maxLineBytes)
-	return &Client{
+	c := &Client{
 		w:             w,
-		sc:            sc,
 		h:             h,
 		info:          info,
-		pending:       make(map[int]chan Message),
-		done:          make(chan struct{}),
 		CallTimeout:   DefaultCallTimeout,
 		PromptTimeout: DefaultPromptTimeout,
 	}
+	c.conn = jsonrpc.NewConn(r, w, "2.0", jsonrpc.Handler{
+		OnNotification: c.onNotification,
+		OnRequest:      c.onRequest,
+		OnPeerError:    h.OnPeerError,
+	})
+	return c
 }
 
 // Start begins reading. It returns immediately; the read loop runs until the
 // stream ends or Close is called.
 func (c *Client) Start() {
-	go c.readLoop()
+	c.conn.Start()
 }
 
 // Done is closed when the read loop stops, whether cleanly or by error.
-func (c *Client) Done() <-chan struct{} { return c.done }
+func (c *Client) Done() <-chan struct{} { return c.conn.Done() }
 
 // Err reports why the read loop stopped, or nil if it ended cleanly.
 func (c *Client) Err() error {
-	<-c.done
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	return c.readErr
+	<-c.conn.Done()
+	return c.conn.Err()
 }
 
 // SessionID is the session opened by NewSession, empty before that.
@@ -444,7 +434,7 @@ func (c *Client) LoadSession(ctx context.Context, sessionID, cwd string, servers
 			return c.loadResult(start, false),
 				fmt.Errorf("acp: load session %q: no answer and no replay within %s", sessionID, budget)
 
-		case <-c.done:
+		case <-c.conn.Done():
 			return c.loadResult(start, false),
 				fmt.Errorf("acp: load session %q: agent exited", sessionID)
 
@@ -542,167 +532,93 @@ func (c *Client) promptTimeout() time.Duration {
 }
 
 func (c *Client) call(ctx context.Context, method string, params any, budget time.Duration) (json.RawMessage, error) {
-	c.mu.Lock()
-	c.nextID++
-	id := c.nextID
-	ch := make(chan Message, 1)
-	c.pending[id] = ch
-	c.mu.Unlock()
-
-	defer func() {
-		c.mu.Lock()
-		delete(c.pending, id)
-		c.mu.Unlock()
-	}()
-
-	if err := c.write(Request{JSONRPC: "2.0", ID: &id, Method: method, Params: params}); err != nil {
-		return nil, err
-	}
-
-	// A budget of zero or less is no bound: the timer channel stays nil.
-	var expired <-chan time.Time
+	callCtx := ctx
 	if budget > 0 {
-		timer := time.NewTimer(budget)
-		defer timer.Stop()
-		expired = timer.C
+		var cancel context.CancelFunc
+		callCtx, cancel = context.WithTimeout(ctx, budget)
+		defer cancel()
 	}
-
-	select {
-	case msg := <-ch:
-		if msg.Error != nil {
-			return nil, fmt.Errorf("acp: %s: %w", method, msg.Error)
-		}
-		return msg.Result, nil
-	case <-ctx.Done():
-		return nil, ctx.Err()
-	case <-expired:
-		return nil, fmt.Errorf("acp: timeout after %s waiting for %s", budget, method)
-	case <-c.done:
-		if c.readErr != nil {
-			return nil, fmt.Errorf("acp: stream ended during %s: %w", method, c.readErr)
+	raw, err := c.conn.Call(callCtx, method, params)
+	var peer *Error
+	switch {
+	case err == nil:
+		return raw, nil
+	case errors.As(err, &peer):
+		return nil, fmt.Errorf("acp: %s: %w", method, peer)
+	case errors.Is(err, jsonrpc.ErrClosed):
+		if rerr := c.conn.Err(); rerr != nil {
+			return nil, fmt.Errorf("acp: stream ended during %s: %w", method, rerr)
 		}
 		return nil, fmt.Errorf("acp: stream ended during %s", method)
+	case ctx.Err() != nil:
+		return nil, ctx.Err()
+	case errors.Is(err, context.DeadlineExceeded):
+		return nil, fmt.Errorf("acp: timeout after %s waiting for %s", budget, method)
+	default:
+		return nil, fmt.Errorf("acp: %w", err)
 	}
 }
 
 // Notify sends a request that expects no reply.
 func (c *Client) Notify(method string, params any) error {
-	return c.write(Request{JSONRPC: "2.0", Method: method, Params: params})
-}
-
-func (c *Client) write(req Request) error {
-	data, err := json.Marshal(req)
-	if err != nil {
-		return fmt.Errorf("acp: encode %s: %w", req.Method, err)
-	}
-	data = append(data, '\n')
-
-	c.writeMu.Lock()
-	defer c.writeMu.Unlock()
-	if _, err := c.w.Write(data); err != nil {
-		return fmt.Errorf("acp: write %s: %w", req.Method, err)
+	if err := c.conn.Notify(method, params); err != nil {
+		return fmt.Errorf("acp: %w", err)
 	}
 	return nil
 }
 
-func (c *Client) readLoop() {
-	defer close(c.done)
-	for c.sc.Scan() {
-		line := c.sc.Bytes()
-		if len(line) == 0 {
-			continue
+func (c *Client) onNotification(method string, params json.RawMessage) {
+	if method != MethodSessionUpdate {
+		if c.h.OnUnhandled != nil {
+			c.h.OnUnhandled(method, params)
 		}
-		var msg Message
-		if json.Unmarshal(line, &msg) != nil {
-			// Agents print diagnostics to stdout alongside protocol
-			// traffic. A line we cannot parse is noise, not a fatal error.
-			continue
-		}
-		c.dispatch(msg)
+		return
 	}
-	if err := c.sc.Err(); err != nil {
-		c.mu.Lock()
-		c.readErr = err
-		c.mu.Unlock()
+	// Count it before handing it over, whether or not anyone is listening:
+	// LoadSession decides that replay has finished by watching these, and a
+	// client with no OnUpdate must still be able to load.
+	var n UpdateNotification
+	decoded := json.Unmarshal(params, &n) == nil
+
+	c.mu.Lock()
+	replay := c.loading
+	if replay {
+		c.replayed++
+		c.lastUpdate = time.Now()
+		if decoded {
+			if IsConversation(n.Update) {
+				c.conversation++
+			}
+			if IsUserTurn(n.Update) {
+				c.userTurn = true
+			}
+		}
+	}
+	c.mu.Unlock()
+
+	if c.h.OnUpdate != nil && decoded {
+		n.Replay = replay
+		c.h.OnUpdate(n)
 	}
 }
 
-func (c *Client) dispatch(msg Message) {
-	if msg.IsResponse() {
-		c.mu.Lock()
-		ch, ok := c.pending[*msg.ID]
-		c.mu.Unlock()
-		if ok {
-			ch <- msg
-		}
-		return
-	}
-
-	if msg.Method == MethodSessionUpdate {
-		// Count it before handing it over, whether or not anyone is
-		// listening: LoadSession decides that replay has finished by watching
-		// these, and a client with no OnUpdate must still be able to load.
-		var n UpdateNotification
-		decoded := json.Unmarshal(msg.Params, &n) == nil
-
-		c.mu.Lock()
-		replay := c.loading
-		if replay {
-			c.replayed++
-			c.lastUpdate = time.Now()
-			if decoded {
-				if IsConversation(n.Update) {
-					c.conversation++
-				}
-				if IsUserTurn(n.Update) {
-					c.userTurn = true
-				}
-			}
-		}
-		c.mu.Unlock()
-
-		if c.h.OnUpdate != nil && decoded {
-			n.Replay = replay
-			c.h.OnUpdate(n)
-		}
-		return
-	}
-
-	if msg.IsNotification() {
-		if c.h.OnUnhandled != nil {
-			c.h.OnUnhandled(msg.Method, msg.Params)
-		}
-		return
-	}
-
-	if msg.ID == nil {
-		// Neither an ID nor a method. JSON-RPC allows a peer to report a
-		// failure it cannot attribute to any request by sending an error with
-		// a null or absent id, and agents do: kiro answers a session/close
-		// notification this way. There is nobody to deliver it to and nothing
-		// to reply to, so surface it and move on.
-		if msg.Error != nil && c.h.OnPeerError != nil {
-			c.h.OnPeerError(msg.Error)
-		}
-		return
-	}
-
-	// An agent-initiated request gets its own goroutine, because answering one
-	// can take as long as a human takes to decide. On the read loop a parked
-	// permission request freezes the whole connection: no updates arrive, no
-	// reply to any call in flight is delivered, and a second permission
-	// request cannot even be read until the first is answered — which made the
-	// driver's map of pending permissions unreachable past one entry.
-	//
-	// Responses carry the id they answer, so the agent does not care what
-	// order they come back in. Notifications stay on the read loop, where
-	// their order is the content's order and must be preserved.
-	//
-	// duringLoad is read here, on the read loop, not inside the goroutine.
-	// The goroutine runs at an arbitrary later time, by which point a load may
-	// have finished and cleared the flag; capturing it at arrival is what
-	// makes "this request came in mid-replay" true of when it arrived rather
-	// than of when it happened to be scheduled.
+// onRequest hands an agent-initiated request to its own goroutine, because
+// answering one can take as long as a human takes to decide. On the read loop
+// a parked permission request freezes the whole connection: no updates
+// arrive, no reply to any call in flight is delivered, and a second
+// permission request cannot even be read until the first is answered — which
+// made the driver's map of pending permissions unreachable past one entry.
+//
+// Responses carry the id they answer, so the agent does not care what order
+// they come back in. Notifications stay on the read loop, where their order is
+// the content's order and must be preserved.
+//
+// duringLoad is read here, on the read loop, not inside the goroutine. The
+// goroutine runs at an arbitrary later time, by which point a load may have
+// finished and cleared the flag; capturing it at arrival is what makes "this
+// request came in mid-replay" true of when it arrived rather than of when it
+// happened to be scheduled.
+func (c *Client) onRequest(msg jsonrpc.Message) {
 	c.mu.Lock()
 	duringLoad := c.loading
 	c.mu.Unlock()
@@ -712,15 +628,9 @@ func (c *Client) dispatch(msg Message) {
 // handleRequest answers an agent-initiated request. Every path replies. An
 // unanswered request leaves the agent blocked on its own timeout, which
 // presents as a hang far from the cause.
-func (c *Client) handleRequest(msg Message, duringLoad bool) {
-	if msg.ID == nil {
-		// Unreachable via dispatch, which filters this case. Kept so that a
-		// future dispatch path cannot reintroduce a panic in the read loop,
-		// which would take down the whole host process.
-		return
-	}
+func (c *Client) handleRequest(msg jsonrpc.Message, duringLoad bool) {
 	ctx := context.Background()
-	id := *msg.ID
+	id := msg.ID
 
 	switch msg.Method {
 	case MethodRequestPermission:
@@ -799,26 +709,10 @@ func (c *Client) handleRequest(msg Message, duringLoad bool) {
 	}
 }
 
-func (c *Client) respond(id int, result any) {
-	data, err := json.Marshal(map[string]any{"jsonrpc": "2.0", "id": id, "result": result})
-	if err != nil {
-		c.respondError(id, ErrCodeInvalidRequest, "client produced an unencodable result")
-		return
-	}
-	c.writeRaw(append(data, '\n'))
+func (c *Client) respond(id json.RawMessage, result any) {
+	_ = c.conn.Reply(id, result)
 }
 
-func (c *Client) respondError(id, code int, message string) {
-	data, _ := json.Marshal(map[string]any{
-		"jsonrpc": "2.0",
-		"id":      id,
-		"error":   map[string]any{"code": code, "message": message},
-	})
-	c.writeRaw(append(data, '\n'))
-}
-
-func (c *Client) writeRaw(data []byte) {
-	c.writeMu.Lock()
-	defer c.writeMu.Unlock()
-	_, _ = c.w.Write(data)
+func (c *Client) respondError(id json.RawMessage, code int, message string) {
+	_ = c.conn.ReplyError(id, &Error{Code: code, Message: message})
 }

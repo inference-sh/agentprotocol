@@ -1,7 +1,6 @@
 package claudecode
 
 import (
-	"bufio"
 	"context"
 	"crypto/rand"
 	"encoding/hex"
@@ -10,6 +9,8 @@ import (
 	"fmt"
 	"io"
 	"sync"
+
+	"github.com/inference-sh/agentprotocol/internal/jsonrpc"
 )
 
 // Handler receives what the CLI sends that is not a reply to one of our
@@ -48,12 +49,11 @@ type Handler struct {
 type Client struct {
 	r io.Reader
 	h Handler
+	w *jsonrpc.LineWriter
 
-	wmu sync.Mutex
-	w   io.Writer
+	pending jsonrpc.Pending[string, ControlResponseBody]
 
 	mu       sync.Mutex
-	pending  map[string]chan ControlResponseBody
 	inflight map[string]context.CancelFunc
 	closed   bool
 
@@ -68,9 +68,8 @@ var ErrClosed = errors.New("claudecode: connection closed")
 func NewClient(r io.Reader, w io.Writer, h Handler) *Client {
 	return &Client{
 		r:        r,
-		w:        w,
+		w:        jsonrpc.NewLineWriter(w),
 		h:        h,
-		pending:  make(map[string]chan ControlResponseBody),
 		inflight: make(map[string]context.CancelFunc),
 		done:     make(chan struct{}),
 	}
@@ -89,16 +88,7 @@ func (c *Client) Err() error {
 }
 
 // Send writes one JSON line.
-func (c *Client) Send(v any) error {
-	data, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-	c.wmu.Lock()
-	defer c.wmu.Unlock()
-	_, err = c.w.Write(append(data, '\n'))
-	return err
-}
+func (c *Client) Send(v any) error { return c.w.WriteJSON(v) }
 
 // SendUser writes a text prompt.
 func (c *Client) SendUser(text string) error { return c.Send(NewUserMessage(text)) }
@@ -111,18 +101,13 @@ func (c *Client) Request(ctx context.Context, body any) (json.RawMessage, error)
 		return nil, err
 	}
 	id := newRequestID()
-	ch := make(chan ControlResponseBody, 1)
-
-	c.mu.Lock()
-	if c.closed {
-		c.mu.Unlock()
+	ch, ok := c.pending.Add(id)
+	if !ok {
 		return nil, ErrClosed
 	}
-	c.pending[id] = ch
-	c.mu.Unlock()
 
 	if err := c.Send(ControlRequest{Type: TypeControlRequest, RequestID: id, Request: raw}); err != nil {
-		c.forget(id)
+		c.pending.Forget(id)
 		return nil, fmt.Errorf("claudecode: send control request: %w", err)
 	}
 
@@ -136,7 +121,7 @@ func (c *Client) Request(ctx context.Context, body any) (json.RawMessage, error)
 		}
 		return res.Response, nil
 	case <-ctx.Done():
-		c.forget(id)
+		c.pending.Forget(id)
 		_ = c.Send(ControlCancel{Type: TypeControlCancel, RequestID: id})
 		return nil, ctx.Err()
 	}
@@ -192,24 +177,10 @@ func (c *Client) SetModel(ctx context.Context, model string) error {
 	return err
 }
 
-func (c *Client) forget(id string) {
-	c.mu.Lock()
-	delete(c.pending, id)
-	c.mu.Unlock()
-}
-
 func (c *Client) readLoop() {
 	defer c.shutdown()
 
-	sc := bufio.NewScanner(c.r)
-	// Lines carry whole tool results and file contents; the SDK imposes no
-	// line limit, so allow a generous one.
-	sc.Buffer(make([]byte, 0, 256<<10), 64<<20)
-	for sc.Scan() {
-		line := sc.Bytes()
-		if len(line) == 0 {
-			continue
-		}
+	c.readErr = jsonrpc.ReadLines(c.r, func(line []byte) {
 		var head struct {
 			Type    string `json:"type"`
 			Subtype string `json:"subtype"`
@@ -218,7 +189,7 @@ func (c *Client) readLoop() {
 			if c.h.OnMalformed != nil {
 				c.h.OnMalformed(append([]byte(nil), line...), err)
 			}
-			continue
+			return
 		}
 		raw := append(json.RawMessage(nil), line...)
 
@@ -226,7 +197,7 @@ func (c *Client) readLoop() {
 		case TypeControlResponse:
 			var res ControlResponse
 			if json.Unmarshal(raw, &res) == nil {
-				c.deliver(res.Response)
+				c.pending.Deliver(res.Response.RequestID, res.Response)
 			}
 		case TypeControlRequest:
 			var req ControlRequest
@@ -244,18 +215,7 @@ func (c *Client) readLoop() {
 				c.h.OnMessage(Message{Type: head.Type, Subtype: head.Subtype, Raw: raw})
 			}
 		}
-	}
-	c.readErr = sc.Err()
-}
-
-func (c *Client) deliver(res ControlResponseBody) {
-	c.mu.Lock()
-	ch, ok := c.pending[res.RequestID]
-	delete(c.pending, res.RequestID)
-	c.mu.Unlock()
-	if ok {
-		ch <- res
-	}
+	})
 }
 
 // serve answers a request from the CLI on its own goroutine, so a permission
@@ -344,20 +304,16 @@ func (c *Client) withdraw(id string) {
 
 // shutdown fails every waiting request and cancels every inbound one.
 func (c *Client) shutdown() {
+	c.pending.Close()
 	c.mu.Lock()
 	c.closed = true
-	pending := c.pending
-	c.pending = map[string]chan ControlResponseBody{}
-	// Swap the map out under the lock, as with pending: request goroutines
-	// delete their own entry when they finish, and ranging over the live map
-	// here raced with that.
+	// Swap the map out under the lock: request goroutines delete their own
+	// entry when they finish, and ranging over the live map here raced with
+	// that.
 	inflight := c.inflight
 	c.inflight = map[string]context.CancelFunc{}
 	c.mu.Unlock()
 
-	for _, ch := range pending {
-		close(ch)
-	}
 	for _, cancel := range inflight {
 		cancel()
 	}

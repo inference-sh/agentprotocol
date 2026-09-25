@@ -1,16 +1,15 @@
 package pirpc
 
 import (
-	"bufio"
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"strconv"
-	"sync"
 	"sync/atomic"
+
+	"github.com/inference-sh/agentprotocol/internal/jsonrpc"
 )
 
 // Handler receives what pi sends that is not a reply to one of our commands.
@@ -29,14 +28,10 @@ type Handler struct {
 type Client struct {
 	r io.Reader
 	h Handler
-
-	wmu sync.Mutex
-	w   io.Writer
+	w *jsonrpc.LineWriter
 
 	seq     atomic.Uint64
-	mu      sync.Mutex
-	pending map[string]chan Response
-	closed  bool
+	pending jsonrpc.Pending[string, Response]
 
 	done    chan struct{}
 	readErr error
@@ -47,7 +42,7 @@ var ErrClosed = errors.New("pirpc: connection closed")
 
 // NewClient wraps a stream. Call Start to begin reading.
 func NewClient(r io.Reader, w io.Writer, h Handler) *Client {
-	return &Client{r: r, w: w, h: h, pending: make(map[string]chan Response), done: make(chan struct{})}
+	return &Client{r: r, w: jsonrpc.NewLineWriter(w), h: h, done: make(chan struct{})}
 }
 
 // Start runs the read loop until the stream ends.
@@ -63,16 +58,7 @@ func (c *Client) Err() error {
 }
 
 // Send writes one JSON record.
-func (c *Client) Send(v any) error {
-	data, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-	c.wmu.Lock()
-	defer c.wmu.Unlock()
-	_, err = c.w.Write(append(data, '\n'))
-	return err
-}
+func (c *Client) Send(v any) error { return c.w.WriteJSON(v) }
 
 // NewID returns a command id unique to this client.
 func (c *Client) NewID() string { return "go-" + strconv.FormatUint(c.seq.Add(1), 10) }
@@ -81,22 +67,15 @@ func (c *Client) NewID() string { return "go-" + strconv.FormatUint(c.seq.Add(1)
 // sent separately, and returns the channel it will arrive on. The channel
 // closes without a value if the stream ends first. Forget releases it.
 func (c *Client) Expect(id string) (<-chan Response, error) {
-	ch := make(chan Response, 1)
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	if c.closed {
+	ch, ok := c.pending.Add(id)
+	if !ok {
 		return nil, ErrClosed
 	}
-	c.pending[id] = ch
 	return ch, nil
 }
 
 // Forget drops interest in a command's response.
-func (c *Client) Forget(id string) {
-	c.mu.Lock()
-	delete(c.pending, id)
-	c.mu.Unlock()
-}
+func (c *Client) Forget(id string) { c.pending.Forget(id) }
 
 // CommandError is a response with success false.
 type CommandError struct {
@@ -173,58 +152,26 @@ func (c *Client) Compact(ctx context.Context, instructions string) (CompactionRe
 func (c *Client) Answer(r UIResponse) error { return c.Send(r) }
 
 func (c *Client) readLoop() {
-	defer func() {
-		c.mu.Lock()
-		c.closed = true
-		for id, ch := range c.pending {
-			close(ch)
-			delete(c.pending, id)
-		}
-		c.mu.Unlock()
-		close(c.done)
-	}()
-	br := bufio.NewReaderSize(c.r, 64<<10)
-	for {
-		// LF only: a JSON string may hold U+2028 or U+2029, which are not
-		// record boundaries (rpc.md, Framing).
-		line, err := br.ReadBytes('\n')
-		if len(line) > 0 {
-			c.dispatch(bytes.TrimSuffix(bytes.TrimSuffix(line, []byte("\n")), []byte("\r")))
-		}
-		if err != nil {
-			if !errors.Is(err, io.EOF) {
-				c.readErr = err
-			}
-			return
-		}
-	}
+	c.readErr = jsonrpc.ReadLines(c.r, c.dispatch)
+	c.pending.Close()
+	close(c.done)
 }
 
 func (c *Client) dispatch(line []byte) {
-	if len(bytes.TrimSpace(line)) == 0 {
-		return
-	}
 	var head struct {
 		Type string `json:"type"`
 	}
 	if err := json.Unmarshal(line, &head); err != nil {
 		if c.h.OnMalformed != nil {
-			c.h.OnMalformed(line, err)
+			c.h.OnMalformed(append([]byte(nil), line...), err)
 		}
 		return
 	}
 	raw := json.RawMessage(append([]byte(nil), line...))
 	if head.Type == TypeResponse {
 		var res Response
-		if json.Unmarshal(raw, &res) == nil && res.ID != "" {
-			c.mu.Lock()
-			ch, ok := c.pending[res.ID]
-			delete(c.pending, res.ID)
-			c.mu.Unlock()
-			if ok {
-				ch <- res
-				return
-			}
+		if json.Unmarshal(raw, &res) == nil && res.ID != "" && c.pending.Deliver(res.ID, res) {
+			return
 		}
 	}
 	if c.h.OnRecord != nil {

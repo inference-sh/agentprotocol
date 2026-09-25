@@ -21,6 +21,8 @@ import (
 	"io"
 	"strconv"
 	"sync"
+
+	"github.com/inference-sh/agentprotocol/internal/jsonrpc"
 )
 
 // Message is one JSON-RPC message in either direction. Which fields are set
@@ -34,16 +36,8 @@ type Message struct {
 	Error  *Error          `json:"error,omitempty"`
 }
 
-// Error is a JSON-RPC error object.
-type Error struct {
-	Code    int             `json:"code"`
-	Message string          `json:"message"`
-	Data    json.RawMessage `json:"data,omitempty"`
-}
-
-func (e *Error) Error() string {
-	return fmt.Sprintf("codex app-server: %s (code %d)", e.Message, e.Code)
-}
+// Error is a JSON-RPC error object. Its message includes the server's data.
+type Error = jsonrpc.Error
 
 // JSON-RPC error codes this client sends.
 const (
@@ -231,7 +225,7 @@ func (c *Client) Call(ctx context.Context, method string, params, out any) error
 			return fmt.Errorf("%s: %w", method, ErrClosed)
 		}
 		if m.Error != nil {
-			return m.Error
+			return fmt.Errorf("codex app-server: %s: %w", method, m.Error)
 		}
 		if out == nil || len(m.Result) == 0 {
 			return nil

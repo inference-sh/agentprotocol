@@ -3,7 +3,7 @@ module github.com/inference-sh/agentprotocol/transcript/sqlite
 go 1.26.7
 
 require (
-	github.com/inference-sh/agentprotocol v0.12.0
+	github.com/inference-sh/agentprotocol v0.13.0
 	modernc.org/sqlite v1.39.1
 )
 

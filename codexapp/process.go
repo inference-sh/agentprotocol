@@ -4,26 +4,20 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"os/exec"
-	"sync"
 	"time"
+
+	"github.com/inference-sh/agentprotocol/internal/agentproc"
 )
 
 // Process is `codex app-server` running as a child, with a Client on its
 // stdio that has completed the handshake.
 type Process struct {
 	*Client
-	cmd *exec.Cmd
+	proc *agentproc.Process
 
 	// Init is what the server reported during initialize, including the
 	// CODEX_HOME it resolved.
 	Init InitializeResponse
-
-	stdin     io.Closer
-	waitOnce  sync.Once
-	waitErr   error
-	waited    chan struct{}
-	closeOnce sync.Once
 }
 
 // ProcessConfig describes how to launch the server.
@@ -61,37 +55,19 @@ func Spawn(ctx context.Context, cfg ProcessConfig, info ClientInfo, h Handler) (
 	if command == "" {
 		command = "codex"
 	}
-	cmd := exec.Command(command, append([]string{"app-server"}, cfg.Args...)...)
-	cmd.Dir = cfg.Dir
-	cmd.Env = cfg.Env
-	// A command codex runs could inherit and hold the pipes; do not let that
-	// keep Wait from returning once codex itself has exited.
-	cmd.WaitDelay = time.Second
-	if cfg.Stderr != nil {
-		cmd.Stderr = cfg.Stderr
-	} else {
-		cmd.Stderr = io.Discard
-	}
-	stdin, err := cmd.StdinPipe()
+	proc, err := agentproc.Start(agentproc.Options{
+		Command: command,
+		Args:    append([]string{"app-server"}, cfg.Args...),
+		Dir:     cfg.Dir,
+		Env:     cfg.Env,
+		Stderr:  cfg.Stderr,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("codex app-server: stdin pipe: %w", err)
+		return nil, fmt.Errorf("codex app-server: %w", err)
 	}
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, fmt.Errorf("codex app-server: stdout pipe: %w", err)
-	}
-	if err := cmd.Start(); err != nil {
-		return nil, fmt.Errorf("codex app-server: launch %s: %w", command, err)
-	}
-
-	p := &Process{
-		Client: NewClient(stdout, stdin, h),
-		cmd:    cmd,
-		stdin:  stdin,
-		waited: make(chan struct{}),
-	}
+	p := &Process{Client: NewClient(proc.Stdout, proc.Stdin, h), proc: proc}
 	p.Start()
-	go p.reap()
+	proc.Reap(p.Done())
 
 	init, err := p.Initialize(ctx, info)
 	if err != nil {
@@ -102,41 +78,17 @@ func Spawn(ctx context.Context, cfg ProcessConfig, info ClientInfo, h Handler) (
 	return p, nil
 }
 
-// reap waits for the child once the stream has ended, so the exit status is
-// collected even if nobody calls Close.
-func (p *Process) reap() {
-	<-p.Done()
-	p.wait()
-}
-
-func (p *Process) wait() error {
-	p.waitOnce.Do(func() {
-		p.waitErr = p.cmd.Wait()
-		close(p.waited)
-	})
-	<-p.waited
-	return p.waitErr
-}
-
 // Close ends the server: stdin closes, which codex treats as the end of the
 // connection, and the child is killed if it has not exited within
 // DefaultShutdownGrace. It is safe to call more than once.
-func (p *Process) Close() error {
-	p.closeOnce.Do(func() { _ = p.stdin.Close() })
-	select {
-	case <-p.Done():
-	case <-time.After(DefaultShutdownGrace):
-		_ = p.cmd.Process.Kill()
-	}
-	return p.wait()
-}
+func (p *Process) Close() error { return p.proc.Close(DefaultShutdownGrace) }
 
-// Kill stops the child at once.
+// Kill stops the child and the processes it started at once, and reaps it.
 func (p *Process) Kill() error {
-	p.closeOnce.Do(func() { _ = p.stdin.Close() })
-	_ = p.cmd.Process.Kill()
-	return p.wait()
+	p.proc.CloseStdin()
+	_ = p.proc.Kill()
+	return p.proc.ExitErr()
 }
 
 // Exited closes when the child has been reaped.
-func (p *Process) Exited() <-chan struct{} { return p.waited }
+func (p *Process) Exited() <-chan struct{} { return p.proc.Exited() }

@@ -3,9 +3,9 @@ package pirpc
 import (
 	"fmt"
 	"io"
-	"os"
-	"os/exec"
 	"time"
+
+	"github.com/inference-sh/agentprotocol/internal/agentproc"
 )
 
 // DefaultCommand is the binary launched when Options.Command is empty: the
@@ -65,11 +65,7 @@ func Args(o Options) []string {
 // Process is pi running as a child with a Client on its stdio.
 type Process struct {
 	*Client
-	cmd   *exec.Cmd
-	stdin io.WriteCloser
-
-	exited  chan struct{}
-	waitErr error
+	proc *agentproc.Process
 }
 
 // Spawn launches pi in RPC mode and starts reading. pi sends nothing until
@@ -79,64 +75,21 @@ func Spawn(o Options, h Handler) (*Process, error) {
 	if command == "" {
 		command = DefaultCommand
 	}
-	cmd := exec.Command(command, Args(o)...)
-	cmd.Dir = o.Dir
-	cmd.Env = o.Env
-	cmd.Stderr = o.Stderr
-	if cmd.Stderr == nil {
-		cmd.Stderr = io.Discard
-	}
-
-	stdin, err := cmd.StdinPipe()
+	proc, err := agentproc.Start(agentproc.Options{Command: command, Args: Args(o), Dir: o.Dir, Env: o.Env, Stderr: o.Stderr})
 	if err != nil {
-		return nil, fmt.Errorf("pirpc: stdin pipe: %w", err)
+		return nil, fmt.Errorf("pirpc: %w", err)
 	}
-	// An os.Pipe rather than StdoutPipe: pi's tools start processes of their
-	// own, and one that outlives pi can hold the write end open. Reaping must
-	// not wait for that EOF, and reading must not be cut short by Wait.
-	stdoutR, stdoutW, err := os.Pipe()
-	if err != nil {
-		return nil, fmt.Errorf("pirpc: stdout pipe: %w", err)
-	}
-	cmd.Stdout = stdoutW
-	if err := cmd.Start(); err != nil {
-		stdoutR.Close()
-		stdoutW.Close()
-		return nil, fmt.Errorf("pirpc: launch %s: %w", command, err)
-	}
-	stdoutW.Close()
-
-	p := &Process{
-		Client: NewClient(stdoutR, stdin, h),
-		cmd:    cmd,
-		stdin:  stdin,
-		exited: make(chan struct{}),
-	}
+	p := &Process{Client: NewClient(proc.Stdout, proc.Stdin, h), proc: proc}
 	p.Start()
-	go func() {
-		err := cmd.Wait()
-		// Let the read loop drain what pi wrote before it died; stop waiting
-		// for a descendant that kept the pipe.
-		select {
-		case <-p.Client.Done():
-		case <-time.After(2 * time.Second):
-			stdoutR.Close()
-			<-p.Client.Done()
-		}
-		p.waitErr = err
-		close(p.exited)
-	}()
+	proc.Reap(p.Client.Done())
 	return p, nil
 }
 
 // Exited closes when pi has been reaped and its output read.
-func (p *Process) Exited() <-chan struct{} { return p.exited }
+func (p *Process) Exited() <-chan struct{} { return p.proc.Exited() }
 
 // ExitErr is pi's exit status once Exited has closed.
-func (p *Process) ExitErr() error {
-	<-p.exited
-	return p.waitErr
-}
+func (p *Process) ExitErr() error { return p.proc.ExitErr() }
 
 // DefaultShutdownGrace is how long Close lets pi dispose of its session
 // after input ends.
@@ -148,30 +101,11 @@ func (p *Process) Close(grace time.Duration) error {
 	if grace <= 0 {
 		grace = DefaultShutdownGrace
 	}
-	_ = p.stdin.Close()
-	t := time.NewTimer(grace)
-	defer t.Stop()
-	select {
-	case <-p.exited:
-	case <-t.C:
-		_ = p.Kill()
-		<-p.exited
-	}
-	return p.waitErr
+	return p.proc.Close(grace)
 }
 
-// Kill terminates pi at once (SIGKILL).
-func (p *Process) Kill() error {
-	if p.cmd.Process == nil {
-		return nil
-	}
-	return p.cmd.Process.Kill()
-}
+// Kill terminates pi and the processes it started at once (SIGKILL).
+func (p *Process) Kill() error { return p.proc.Kill() }
 
 // Pid is the child's process id.
-func (p *Process) Pid() int {
-	if p.cmd.Process == nil {
-		return 0
-	}
-	return p.cmd.Process.Pid
-}
+func (p *Process) Pid() int { return p.proc.Pid() }

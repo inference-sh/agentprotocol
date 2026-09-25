@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"time"
+
+	"github.com/inference-sh/agentprotocol/internal/agentproc"
 )
 
 // Process is an ACP agent running as a local subprocess, with a Client already
@@ -17,7 +18,7 @@ import (
 // test, should use NewClient directly instead.
 type Process struct {
 	*Client
-	cmd   *exec.Cmd
+	proc  *agentproc.Process
 	state *os.ProcessState
 
 	// ShutdownGrace is how long Wait lets the agent finish after
@@ -78,32 +79,13 @@ func Spawn(ctx context.Context, cfg ProcessConfig, info ClientInfo, h Handler) (
 		return nil, fmt.Errorf("acp: no command to launch")
 	}
 
-	cmd := exec.Command(cfg.Command, cfg.Args...)
-	cmd.Dir = cfg.Dir
-	cmd.Env = cfg.Env
-	if cfg.Stderr != nil {
-		cmd.Stderr = cfg.Stderr
-	} else {
-		cmd.Stderr = io.Discard
-	}
-
-	stdin, err := cmd.StdinPipe()
+	proc, err := agentproc.Start(agentproc.Options{Command: cfg.Command, Args: cfg.Args, Dir: cfg.Dir, Env: cfg.Env, Stderr: cfg.Stderr})
 	if err != nil {
-		return nil, fmt.Errorf("acp: stdin pipe: %w", err)
+		return nil, fmt.Errorf("acp: %w", err)
 	}
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, fmt.Errorf("acp: stdout pipe: %w", err)
-	}
-	if err := cmd.Start(); err != nil {
-		return nil, fmt.Errorf("acp: launch %s: %w", cfg.Command, err)
-	}
-
-	p := &Process{
-		Client: NewClient(stdout, stdin, info, h),
-		cmd:    cmd,
-	}
+	p := &Process{Client: NewClient(proc.Stdout, proc.Stdin, info, h), proc: proc}
 	p.Start()
+	proc.Reap(p.Done())
 
 	if _, err := p.Initialize(ctx); err != nil {
 		_ = p.Kill()
@@ -165,35 +147,20 @@ func (p *Process) Wait() error {
 	if exit <= 0 {
 		exit = DefaultExitGrace
 	}
-	timer := time.NewTimer(exit)
-	defer timer.Stop()
-	select {
-	case <-p.Done():
-		return p.cmd.Wait()
-	case <-timer.C:
-	}
-	// cmd.Wait closes our end of stdout once the child is gone, which ends
-	// the read loop even if a grandchild still holds the pipe.
-	if p.cmd.Process != nil {
-		_ = p.cmd.Process.Kill()
-	}
-	err := p.cmd.Wait()
-	<-p.Done()
-	return err
+	return p.proc.Close(exit)
 }
 
-// Kill terminates the child without waiting for it to shut down cleanly and
-// reaps it. Use it when the agent is unresponsive, when a launch failed
-// partway, or to reap an agent that has already exited on its own; in that
-// last case ExitState reports how it ended rather than the kill.
+// Kill terminates the child and the processes it started without waiting
+// for it to shut down cleanly, and reaps it. Use it when the agent is
+// unresponsive, when a launch failed partway, or to reap an agent that has
+// already exited on its own; in that last case ExitState reports how it
+// ended rather than the kill.
 func (p *Process) Kill() error {
 	_ = p.Close()
-	if p.cmd.Process != nil {
-		_ = p.cmd.Process.Kill()
-	}
-	st, err := p.cmd.Process.Wait()
-	p.state = st
-	return err
+	_ = p.proc.Kill()
+	<-p.proc.Exited()
+	p.state = p.proc.State()
+	return nil
 }
 
 // ExitState is how the child ended, once Kill has reaped it; nil before that
@@ -204,12 +171,7 @@ func (p *Process) ExitState() *os.ProcessState {
 
 // Pid is the child's process id, useful for logging and for a supervisor that
 // wants to observe the process independently.
-func (p *Process) Pid() int {
-	if p.cmd.Process == nil {
-		return 0
-	}
-	return p.cmd.Process.Pid
-}
+func (p *Process) Pid() int { return p.proc.Pid() }
 
 // Environ returns the current environment with the given key set to value,
 // replacing any existing entry. It is the usual way to build ProcessConfig.Env

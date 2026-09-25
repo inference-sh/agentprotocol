@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/inference-sh/agentprotocol/internal/agentproc"
 )
 
 // DefaultCommand is the binary launched when Options.Command is empty: the
@@ -88,11 +89,7 @@ func Args(o Options) []string {
 // Process is the CLI running as a child with a Client on its stdio.
 type Process struct {
 	*Client
-	cmd   *exec.Cmd
-	stdin io.WriteCloser
-
-	exited  chan struct{}
-	waitErr error
+	proc *agentproc.Process
 }
 
 // Spawn launches the CLI and starts reading. It does not send initialize;
@@ -110,41 +107,13 @@ func Spawn(o Options, h Handler) (*Process, error) {
 	if command == "" {
 		command = DefaultCommand
 	}
-
-	cmd := exec.Command(command, Args(o)...)
-	cmd.Dir = o.Dir
-	cmd.Env = withEntrypoint(o.Env)
-	cmd.Stderr = o.Stderr
-	if cmd.Stderr == nil {
-		cmd.Stderr = io.Discard
-	}
-
-	stdin, err := cmd.StdinPipe()
+	proc, err := agentproc.Start(agentproc.Options{Command: command, Args: Args(o), Dir: o.Dir, Env: withEntrypoint(o.Env), Stderr: o.Stderr})
 	if err != nil {
-		return nil, fmt.Errorf("claudecode: stdin pipe: %w", err)
+		return nil, fmt.Errorf("claudecode: %w", err)
 	}
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, fmt.Errorf("claudecode: stdout pipe: %w", err)
-	}
-	if err := cmd.Start(); err != nil {
-		return nil, fmt.Errorf("claudecode: launch %s: %w", command, err)
-	}
-
-	p := &Process{
-		Client: NewClient(stdout, stdin, h),
-		cmd:    cmd,
-		stdin:  stdin,
-		exited: make(chan struct{}),
-	}
+	p := &Process{Client: NewClient(proc.Stdout, proc.Stdin, h), proc: proc}
 	p.Start()
-	go func() {
-		// Reap only after stdout is drained: Wait closes the pipe, and
-		// closing it early loses the last lines.
-		<-p.Client.Done()
-		p.waitErr = cmd.Wait()
-		close(p.exited)
-	}()
+	proc.Reap(p.Client.Done())
 	return p, nil
 }
 
@@ -163,14 +132,11 @@ func withEntrypoint(env []string) []string {
 	return append(append([]string(nil), env...), "CLAUDE_CODE_ENTRYPOINT=sdk-go")
 }
 
-// Exited closes when the child has been reaped.
-func (p *Process) Exited() <-chan struct{} { return p.exited }
+// Exited closes when the child has been reaped and its output read.
+func (p *Process) Exited() <-chan struct{} { return p.proc.Exited() }
 
 // ExitErr is the child's exit status once Exited has closed.
-func (p *Process) ExitErr() error {
-	<-p.exited
-	return p.waitErr
-}
+func (p *Process) ExitErr() error { return p.proc.ExitErr() }
 
 // DefaultShutdownGrace is how long Close lets the CLI finish after its input
 // ends: it writes the session transcript and runs SessionEnd hooks then.
@@ -183,33 +149,14 @@ func (p *Process) Close(grace time.Duration) error {
 	if grace <= 0 {
 		grace = DefaultShutdownGrace
 	}
-	_ = p.stdin.Close()
-	t := time.NewTimer(grace)
-	defer t.Stop()
-	select {
-	case <-p.exited:
-	case <-t.C:
-		_ = p.Kill()
-		<-p.exited
-	}
-	return p.waitErr
+	return p.proc.Close(grace)
 }
 
-// Kill terminates the child at once.
-func (p *Process) Kill() error {
-	if p.cmd.Process == nil {
-		return nil
-	}
-	return p.cmd.Process.Kill()
-}
+// Kill terminates the child and the processes it started at once.
+func (p *Process) Kill() error { return p.proc.Kill() }
 
 // Pid is the child's process id.
-func (p *Process) Pid() int {
-	if p.cmd.Process == nil {
-		return 0
-	}
-	return p.cmd.Process.Pid
-}
+func (p *Process) Pid() int { return p.proc.Pid() }
 
 // MCPConfigHTTP builds an --mcp-config value declaring one HTTP MCP server.
 func MCPConfigHTTP(name, url string, headers map[string]string) string {

@@ -1,6 +1,8 @@
 package claude
 
 import (
+	"strings"
+
 	"encoding/json"
 	"sort"
 	"time"
@@ -265,6 +267,12 @@ func (l *loader) summaries(chain []int) {
 				if l.rows[j].IsCompactSummary {
 					sum := l.s.Entries[j]
 					sum.Raw, sum.Audience = nil, transcript.AudienceAll
+					// The row holds the summary inside Claude's wrapping,
+					// which is Claude's own: the model gets it, and
+					// Portable leaves it behind with ModelContent.
+					if t, ok := strings.CutPrefix(sum.Text(), summaryIntro); ok {
+						sum.Content, sum.ModelContent = []transcript.Block{{Kind: transcript.BlockText, Text: strings.TrimSuffix(t, keptNote)}}, sum.Content
+					}
 					c.Summary = []transcript.Entry{sum}
 					l.s.Entries[j].Audience = transcript.AudienceNone
 				}

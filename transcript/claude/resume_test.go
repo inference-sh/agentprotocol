@@ -124,9 +124,10 @@ func TestCompactedResume(t *testing.T) {
 		{transcript.RoleUser, all, stdout},
 	})
 	// Moved to another agent, the session keeps the summary, the one
-	// record of what the compaction retired, and leaves the caveat.
+	// record of what the compaction retired, without Claude's wrapping of
+	// it, and leaves the caveat.
 	expect(t, "portable", s.Portable().Lower(transcript.Capabilities{}).Entries, []seen{
-		{transcript.RoleUser, all, summary},
+		{transcript.RoleUser, all, hello},
 		{transcript.RoleAssistant, all, hello},
 		{transcript.RoleUser, all, more},
 		{transcript.RoleAssistant, all, hello},

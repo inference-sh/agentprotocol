@@ -654,9 +654,12 @@ func inPlace(before, snap []transcript.Entry) (string, bool) {
 // history a compaction summarized: the summary in a context entry, which
 // kiro sends at the head of the first user message, ahead of the context
 // entries it builds for every request (agent instructions, workspace
-// files). Both of kiro's engines send it.
+// files). Both of kiro's engines send it. The wrapping is kiro's own: it is
+// ModelContent, which Portable leaves behind, and Content is the summary.
 func SummaryMessage(summary string) transcript.Entry {
-	return transcript.Entry{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: summaryPrefix + summary + summarySuffix}}}
+	return transcript.Entry{Role: transcript.RoleUser,
+		Content:      []transcript.Block{{Kind: transcript.BlockText, Text: summary}},
+		ModelContent: []transcript.Block{{Kind: transcript.BlockText, Text: summaryPrefix + summary + summarySuffix}}}
 }
 
 const (

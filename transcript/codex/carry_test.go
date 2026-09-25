@@ -1,7 +1,6 @@
 package codex_test
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript/codex"
@@ -56,8 +55,10 @@ func TestCarriedCompaction(t *testing.T) {
 		"user: After compaction.",
 		hello,
 	})
-	if !strings.Contains(ctx[0].Text(), "<summary>") {
-		t.Errorf("summary = %q, want pi's summary", ctx[0].Text())
+	// pi's own wrapping stays with pi: the model gets the summary behind
+	// Codex's preamble alone.
+	if sum := ctx[0].Text(); sum != summaryPrefix+"\nHello from mock server.\n\n---\n\n**Turn Context (split turn):**\n\nHello from mock server." {
+		t.Errorf("summary = %q, want pi's summary behind Codex's preamble, once", sum)
 	}
 }
 

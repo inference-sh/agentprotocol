@@ -111,9 +111,11 @@ func TestCompactedContext(t *testing.T) {
 	if got := lines(s.Context()); !slices.Equal(got, wantModel) {
 		t.Errorf("context:\n  %q\nwant\n  %q", got, wantModel)
 	}
-	// Another agent gets the summary in place of the turns it retired.
-	if got := lines(s.Portable().Lower(transcript.Capabilities{}).Entries); !slices.Equal(got, wantModel) {
-		t.Errorf("portable:\n  %q\nwant\n  %q", got, wantModel)
+	// Another agent gets the summary in place of the turns it retired,
+	// without Copilot's resume message around it.
+	wantPortable := append([]string{"user: SUMMARY-TEXT-XYZ"}, wantModel[1:]...)
+	if got := lines(s.Portable().Lower(transcript.Capabilities{}).Entries); !slices.Equal(got, wantPortable) {
+		t.Errorf("portable:\n  %q\nwant\n  %q", got, wantPortable)
 	}
 }
 

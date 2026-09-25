@@ -42,7 +42,7 @@ func TestCarriedCompaction(t *testing.T) {
 		"user: What is the project codename? Reply ONLY",
 		"assistant: ",
 		"tool: 1\ttest",
-		"user: The conversation history before this poi",
+		"user: Hello from mock server.\n\nIf you need spe",
 		hello,
 		"user: Tell me more about the project.",
 		hello,
@@ -58,8 +58,10 @@ func TestCarriedCompaction(t *testing.T) {
 		"user: <command-name>/compact</command-name>\n  ",
 		"user: <local-command-stdout>Compacted (ctrl+o ",
 	})
-	if !strings.Contains(ctx[0].Text(), "<summary>\nThis session is being continued") {
-		t.Errorf("summary = %q, want Claude's summary wrapped as pi wraps one", ctx[0].Text())
+	// Claude's own wrapping stays with Claude: the model gets the summary
+	// inside pi's wrapping alone.
+	if !strings.Contains(ctx[0].Text(), "<summary>\nHello from mock server.") || strings.Contains(ctx[0].Text(), "This session is being continued") {
+		t.Errorf("summary = %q, want Claude's summary wrapped as pi wraps one, once", ctx[0].Text())
 	}
 }
 
@@ -80,7 +82,7 @@ func TestCarriedCompactionKeep(t *testing.T) {
 		hello,
 		"user: Third question.",
 		hello,
-		"user: The conversation history before this poi",
+		"user: Hello from mock server.\n\n---\n\n**Turn Con",
 		"user: After compaction.",
 		hello,
 	})

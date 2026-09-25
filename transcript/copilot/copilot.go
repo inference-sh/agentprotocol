@@ -476,9 +476,12 @@ func finish(s *transcript.Session) error {
 			if !c.Success {
 				continue
 			}
+			// The wrapping is Copilot's own: the model gets it, and
+			// Portable leaves it behind with ModelContent.
 			e.Compaction = &transcript.Compaction{Summary: []transcript.Entry{{
 				ID: e.ID, Role: transcript.RoleUser, Time: e.Time,
-				Content: []transcript.Block{{Kind: transcript.BlockText, Text: resumeSummary(c.SummaryContent, prompts)}},
+				Content:      []transcript.Block{{Kind: transcript.BlockText, Text: c.SummaryContent}},
+				ModelContent: []transcript.Block{{Kind: transcript.BlockText, Text: resumeSummary(c.SummaryContent, prompts)}},
 			}}}
 		}
 	}

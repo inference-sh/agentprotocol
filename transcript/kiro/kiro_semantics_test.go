@@ -86,9 +86,11 @@ func TestCompactedContext(t *testing.T) {
 	if len(shown) != 16 || shown[0] != "user: first question alpha" || shown[3] != "call: read" || shown[15] != "assistant: ANSWER-SEVEN" {
 		t.Errorf("linearize: %q", shown)
 	}
-	// Another agent gets the summary in place of the turns it retired.
-	if got := lines(s.Portable().Lower(transcript.Capabilities{}).Entries); !slices.Equal(got, wantModel) {
-		t.Errorf("portable:\n  %q\nwant\n  %q", got, wantModel)
+	// Another agent gets the summary in place of the turns it retired,
+	// without kiro's context entry around it.
+	wantPortable := append([]string{"user: " + strings.TrimSuffix(strings.TrimPrefix(strings.TrimPrefix(wantModel[0], "user: "), summaryPrefix), summarySuffix)}, wantModel[1:]...)
+	if got := lines(s.Portable().Lower(transcript.Capabilities{}).Entries); !slices.Equal(got, wantPortable) {
+		t.Errorf("portable:\n  %q\nwant\n  %q", got, wantPortable)
 	}
 }
 

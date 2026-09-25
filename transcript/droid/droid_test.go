@@ -194,11 +194,16 @@ func TestCompactionKeepsAfterAnchor(t *testing.T) {
 }
 
 // Moved to another agent, a compacted session keeps the summary, the one
-// record of what the compaction retired.
+// record of what the compaction retired, without droid's preamble and
+// environment reminder, which the model got with it.
 func TestPortableKeepsSummary(t *testing.T) {
-	p := readCompact(t, compactChild).Portable().Lower(transcript.Capabilities{}).Entries
-	if len(p) == 0 || !strings.HasPrefix(p[0].Text(), "A previous instance of Droid has summarized") {
-		t.Errorf("portable = %+v, want the summary first", p)
+	s := readCompact(t, compactChild)
+	if ctx := s.Context(); len(ctx) == 0 || !strings.HasPrefix(ctx[0].Text(), "A previous instance of Droid has summarized") {
+		t.Errorf("context = %q, want the wrapped summary first", texts(ctx))
+	}
+	p := s.Portable().Lower(transcript.Capabilities{}).Entries
+	if len(p) == 0 || p[0].Text() != "Hello from mock server." {
+		t.Errorf("portable = %+v, want the bare summary first", p)
 	}
 }
 
@@ -327,7 +332,7 @@ func TestWriteCompacted(t *testing.T) {
 		t.Errorf("linearize = %q\nwant %q", got, want)
 	}
 	ctx := s.Context()
-	if len(ctx) != 4 || !strings.HasPrefix(ctx[0].Text(), "A previous instance of Droid has summarized the conversation thus far as follows:\n\n<summary>\nThe conversation history before this point was compacted") {
+	if len(ctx) != 4 || !strings.HasPrefix(ctx[0].Text(), "A previous instance of Droid has summarized the conversation thus far as follows:\n\n<summary>\nHello from mock server.") {
 		t.Fatalf("context = %q, want the summary first", texts(ctx))
 	}
 	if got := texts(ctx[1:]); strings.Join(got, "|") != strings.Join([]string{answer, "user:After compaction.", answer}, "|") {

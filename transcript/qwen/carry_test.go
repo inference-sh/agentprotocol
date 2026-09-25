@@ -67,8 +67,9 @@ func TestCarriedCompaction(t *testing.T) {
 		"user: <local-command-stdout>Compacted (ctrl+o to see full summary)",
 	})
 	ctx := back.Context()
+	// Claude's own wrapping stays with Claude.
 	same(t, "context", firstLines(ctx), []string{
-		"user: This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.",
+		"user: Hello from mock server.",
 		"assistant: Got it. Thanks for the additional context!",
 		hello,
 		"user: Tell me more about the project.",
@@ -100,8 +101,9 @@ func TestCarriedKeepAndShownOnly(t *testing.T) {
 		"user: After compaction.",
 		hello,
 	})
+	// pi's own wrapping stays with pi.
 	same(t, "context", firstLines(back.Context()), []string{
-		"user: The conversation history before this point was compacted into the following summary:",
+		"user: Hello from mock server.",
 		hello,
 		"user: After compaction.",
 		hello,

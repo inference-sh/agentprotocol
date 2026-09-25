@@ -270,6 +270,11 @@ func finishChat(s *transcript.Session) error {
 	sum.Audience = transcript.AudienceModel
 	self := *sum
 	self.Audience = transcript.AudienceAll
+	// The preamble is grok's own: the model gets it, and Portable leaves it
+	// behind with ModelContent.
+	if t, ok := strings.CutPrefix(self.Text(), summaryPreamble); ok && self.ModelContent == nil {
+		self.Content, self.ModelContent = []transcript.Block{{Kind: transcript.BlockText, Text: t}}, self.Content
+	}
 	sum.Compaction = &transcript.Compaction{Summary: append(history, self)}
 	return nil
 }

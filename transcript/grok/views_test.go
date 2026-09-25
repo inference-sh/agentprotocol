@@ -91,16 +91,16 @@ func TestCompactedSession(t *testing.T) {
 	}
 
 	// Moved on, the prompt the compaction kept travels in the marker's
-	// Summary with the summary, and grok's system prompt and user_info
-	// stay behind; applied, that is the conversation the model had.
-	if got := keptSummary(s); !slices.Equal(got, []string{"user: What was my previous question?", "user: This session is being continued from a"}) {
+	// Summary with the summary, and grok's system prompt, user_info and
+	// preamble stay behind; applied, that is the conversation the model had.
+	if got := keptSummary(s); !slices.Equal(got, []string{"user: What was my previous question?", "user: Summary:\nThe user asked for the projec"}) {
 		t.Errorf("marker summary %q, want the kept prompt, then the summary", got)
 	}
 	var moved []string
 	for _, e := range s.Portable().Lower(transcript.Capabilities{}).Entries {
 		moved = append(moved, e.Text())
 	}
-	if len(moved) != 4 || moved[0] != "What was my previous question?" || !strings.HasPrefix(moved[1], "This session is being continued") || moved[2] != "What was my previous question?" {
+	if len(moved) != 4 || moved[0] != "What was my previous question?" || !strings.HasPrefix(moved[1], "Summary:\nThe user asked") || moved[2] != "What was my previous question?" {
 		t.Errorf("portable = %.80q, want the kept prompt, the summary and the turn after it", moved)
 	}
 }
@@ -348,15 +348,16 @@ func TestWriteCompacted(t *testing.T) {
 	}
 	ctx := s.Context()
 	// The summary is a user row behind grok's preamble, as grok stores its
-	// own (format_compact_summary_content), pi's text after it.
-	if len(ctx) != 4 || ctx[1].Role != transcript.RoleUser || !strings.HasPrefix(ctx[1].Text(), summaryPreamble+"The conversation history before this point was compacted") {
+	// own (format_compact_summary_content), pi's text after it without pi's
+	// own wrapping.
+	if len(ctx) != 4 || ctx[1].Role != transcript.RoleUser || !strings.HasPrefix(ctx[1].Text(), summaryPreamble+"Hello from mock server.") {
 		t.Fatalf("context = %.60q, want the kept answer, then the summary", texts(ctx))
 	}
 	if got := texts([]transcript.Entry{ctx[0], ctx[2], ctx[3]}); !slices.Equal(got, []string{answer, "user: After compaction.", answer}) {
 		t.Errorf("context around the summary = %q", got)
 	}
 	// Moved on again, the answer the compaction kept goes with the summary.
-	if got := keptSummary(s); !slices.Equal(got, []string{answer, "user: " + summaryPreamble[:38]}) {
+	if got := keptSummary(s); !slices.Equal(got, []string{answer, "user: " + "Hello from mock server.\n\n---\n\n**Turn Context"[:38]}) {
 		t.Errorf("marker summary %q, want the kept answer, then the summary", got)
 	}
 

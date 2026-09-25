@@ -567,8 +567,10 @@ func (v variant) decode(raw json.RawMessage, s *transcript.Session) (transcript.
 		}
 	case "compaction":
 		// Shown where it happened; it reaches the model through the
-		// Compaction Finish sets on the newest one.
-		e.Role, e.Content, e.Audience = transcript.RoleUser, text(v.compactionSummary(r.Summary, r.Method, r.PreserveData)), transcript.AudienceUser
+		// Compaction Finish sets on the newest one. The wrapping is the
+		// agent's own, which Portable leaves behind with ModelContent.
+		e.Role, e.Content, e.Audience = transcript.RoleUser, text(r.Summary), transcript.AudienceUser
+		e.ModelContent = text(v.compactionSummary(r.Summary, r.Method, r.PreserveData))
 	}
 	return e, true, nil
 }
@@ -627,7 +629,8 @@ func (v variant) message(e *transcript.Entry, m stored) {
 	case "branchSummary":
 		e.Role, e.Content = transcript.RoleUser, text(v.branchSummary(m.Summary))
 	case "compactionSummary":
-		e.Role, e.Content = transcript.RoleUser, text(v.compactionSummary(m.Summary, m.Method, nil))
+		e.Role, e.Content = transcript.RoleUser, text(m.Summary)
+		e.ModelContent = text(v.compactionSummary(m.Summary, m.Method, nil))
 	}
 }
 

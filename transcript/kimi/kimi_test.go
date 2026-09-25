@@ -610,7 +610,8 @@ func TestWriteCompacted(t *testing.T) {
 	if got := texts(s.Linearize()); strings.Join(got, "|") != strings.Join(want, "|") {
 		t.Errorf("linearize = %q\nwant %q", got, want)
 	}
-	want = []string{"The conversation history before this poi", answer, "After compaction.", answer}
+	// The summary is pi's text, without pi's own wrapping of it.
+	want = []string{"Hello from mock server.\n\n---\n\n**Turn Con", answer, "After compaction.", answer}
 	if got := texts(s.Context()); strings.Join(got, "|") != strings.Join(want, "|") {
 		t.Errorf("context = %q\nwant %q", got, want)
 	}

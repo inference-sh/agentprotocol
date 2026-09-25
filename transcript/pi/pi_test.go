@@ -175,14 +175,14 @@ func TestPiCompactedContext(t *testing.T) {
 		"assistant: Hello from mock server.",
 		"user: Third question.",
 		"assistant: Hello from mock server.",
-		"user: The conversation history before this poi",
+		"user: Hello from mock server.\n\n---\n\n**Turn Con",
 		"user: After compaction.",
 		"assistant: Hello from mock server.",
 	})
 	// Moved to another agent, the session is the summary and what the model
-	// kept, without pi's own system prompt.
+	// kept, without pi's own system prompt or its wrapping of the summary.
 	equal(t, "portable", summary(s.Portable().Lower(transcript.Capabilities{}).Entries), []string{
-		"user: The conversation history before this poi",
+		"user: Hello from mock server.\n\n---\n\n**Turn Con",
 		"assistant: Hello from mock server.",
 		"user: After compaction.",
 		"assistant: Hello from mock server.",
@@ -372,7 +372,7 @@ func TestPiV1(t *testing.T) {
 		`{"type":"message","timestamp":"2026-01-01T00:00:05.000Z","message":{"role":"user","content":"three","timestamp":5}}`,
 	)
 	s := read(t, Codec, transcripttest.Sample{Home: h, ID: "s"})
-	equal(t, "linearize", summary(s.Linearize()), []string{"user: one", "assistant: ok", "user: two", "user: The conversation history before this poi", "user: three"})
+	equal(t, "linearize", summary(s.Linearize()), []string{"user: one", "assistant: ok", "user: two", "user: S", "user: three"})
 	equal(t, "context", summary(s.Context()), []string{"user: The conversation history before this poi", "user: two", "user: three"})
 	if s.Model != "m1" {
 		t.Errorf("model = %q", s.Model)

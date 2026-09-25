@@ -366,12 +366,17 @@ func summary(id string, at time.Time, c compactionState) transcript.Entry {
 		text = fmt.Sprintf(summaryPreamble, c.SummaryText)
 	}
 	// The summary is conversation, the one record of what it retired, so
-	// it moves with the session; droid sends its environment reminder in
-	// the same message.
+	// it moves with the session. The preamble and the environment reminder
+	// droid sends in the same message are droid's own: the model gets
+	// them, and Portable leaves them behind with ModelContent.
 	e := transcript.Entry{ID: id, Role: transcript.RoleUser, Time: at,
-		Content: []transcript.Block{{Kind: transcript.BlockText, Text: text}}}
+		Content: []transcript.Block{{Kind: transcript.BlockText, Text: c.SummaryText}}}
+	sent := []transcript.Block{{Kind: transcript.BlockText, Text: text}}
 	if c.SystemInfoText != "" {
-		e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: c.SystemInfoText})
+		sent = append(sent, transcript.Block{Kind: transcript.BlockText, Text: c.SystemInfoText})
+	}
+	if len(sent) > 1 || text != c.SummaryText {
+		e.ModelContent = sent
 	}
 	return e
 }

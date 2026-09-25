@@ -275,6 +275,11 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 				if i == 0 || hasCall(e) {
 					e.Audience = transcript.AudienceAll
 				}
+				// The trailer is Qwen's own: the model gets it, and
+				// Portable leaves it behind with ModelContent.
+				if t, ok := strings.CutSuffix(e.Text(), "\n\n"+resumeTrailer); i == 0 && ok && e.ModelContent == nil {
+					e.Content, e.ModelContent = []transcript.Block{{Kind: transcript.BlockText, Text: t}}, e.Content
+				}
 				c.Summary = append(c.Summary, e)
 			}
 			e.Compaction = c

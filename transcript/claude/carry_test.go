@@ -73,7 +73,9 @@ func TestCarriedCompaction(t *testing.T) {
 		"user: After compaction.",
 		hello,
 	})
-	if sum := ctx[0].Text(); !strings.Contains(sum, "<summary>") || !strings.HasSuffix(sum, "Recent messages are preserved verbatim.") {
-		t.Errorf("summary = %q, want pi's summary wrapped as Claude wraps one", sum)
+	// pi's own wrapping stays with pi: the model gets the summary inside
+	// Claude's wrapping alone.
+	if sum := ctx[0].Text(); strings.Contains(sum, "<summary>") || !strings.HasSuffix(sum, "Hello from mock server.\n\nRecent messages are preserved verbatim.") {
+		t.Errorf("summary = %q, want pi's summary wrapped as Claude wraps one, once", sum)
 	}
 }

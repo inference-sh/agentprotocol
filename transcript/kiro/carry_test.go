@@ -24,13 +24,15 @@ var carrySources = []struct {
 	codec       transcript.Codec
 	home, id    string
 	summary     string   // a piece of the compaction's summary
+	wrapper     string   // a piece of the source agent's own wrapping of it
 	retired     []string // prompts the compaction retired
 	shownOnly   string   // a prompt the source showed and never sent
 	kept, later []string // what the model is given after the summary
 }{{
 	// qwen's /compress keeps nothing after its summary.
 	name: "qwen", codec: qwen.Codec, home: "../qwen/testdata/home", id: "2d4caa81-62a5-40d0-bdd6-82814ff62697",
-	summary: "Resume the prior task using the summary above.",
+	summary: "SUMMARY CONTENT:\nHello from mock server.\n--- CONTEXT ENTRY END ---",
+	wrapper: "Resume the prior task using the summary above.",
 	retired: []string{"What is the project codename? Reply ONLY the codename.", "What files are in this repository?", "Summarise what you have done so far.", "What was the first thing I asked you?"},
 	later:   []string{"user: What was my previous question?", "assistant: Hello from mock server."},
 }, {
@@ -39,7 +41,8 @@ var carrySources = []struct {
 	name: "pi", codec: pi.Codec, home: "../pi/testdata/home", id: "01a0d2bd-7043-757c-80b2-3f24970d3f7c",
 	// kiro keeps whole turns, so the answer pi kept brings the prompt
 	// it answers along.
-	summary:   "compacted into the following summary",
+	summary:   "SUMMARY CONTENT:\nHello from mock server.\n\n---",
+	wrapper:   "compacted into the following summary",
 	retired:   []string{"What is the project codename? Reply ONLY the codename.", "Second question."},
 	shownOnly: "Ran `echo private`\n```\nprivate\n\n```",
 	kept:      []string{"user: Third question.", "assistant: Hello from mock server."},
@@ -89,6 +92,10 @@ func TestCarriesCompaction(t *testing.T) {
 			}
 			if len(ctx) == 0 || !strings.HasPrefix(ctx[0], "user: --- CONTEXT ENTRY BEGIN ---") || !strings.Contains(ctx[0], src.summary) {
 				t.Fatalf("context starts %q", ctx)
+			}
+			// The source's own wrapping stays with the source.
+			if strings.Contains(ctx[0], src.wrapper) {
+				t.Errorf("context entry holds the source's wrapping %q", src.wrapper)
 			}
 			if want := append(slices.Clone(src.kept), src.later...); !slices.Equal(ctx[1:], want) {
 				t.Errorf("after the summary:\n  %q\nwant\n  %q", ctx[1:], want)
@@ -310,8 +317,10 @@ func TestCompactionOpensWithPrompt(t *testing.T) {
 	if !slices.Equal(got, want) {
 		t.Errorf("context =\n  %q\nwant\n  %q", got, want)
 	}
-	if n := strings.Count(back.Context()[0].Text(), "This session is being continued"); n != 1 {
-		t.Errorf("summary given %d times", n)
+	// kiro's context entry wraps the summary once, and Claude's own
+	// wrapping stays with Claude.
+	if sum := back.Context()[0].Text(); strings.Count(sum, summaryPrefix) != 1 || strings.Contains(sum, "This session is being continued") {
+		t.Errorf("summary = %q, want it inside kiro's context entry alone", sum)
 	}
 	for _, e := range back.Linearize() {
 		if strings.HasPrefix(e.Text(), summaryPrefix) {

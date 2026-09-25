@@ -37,3 +37,19 @@ func ParseDataURL(u string) (mediaType string, data []byte, ok bool) {
 func DataURL(mediaType string, data []byte) string {
 	return "data:" + mediaType + ";base64," + base64.StdEncoding.EncodeToString(data)
 }
+
+// MediaBlock is an image or file block from base64 bytes, the form most
+// agents store an attachment in. ok is false when the payload does not
+// decode, and the caller drops the block: one bad attachment loses itself,
+// never the session or the other blocks, and no writer is handed an empty
+// image to emit.
+func MediaBlock(kind BlockKind, mediaType, b64, toolID string) (b Block, ok bool) {
+	data, err := base64.StdEncoding.DecodeString(b64)
+	if err != nil {
+		return Block{}, false
+	}
+	return Block{Kind: kind, MediaType: mediaType, Data: data, ToolID: toolID}, true
+}
+
+// IsMedia reports whether the block is an image or a file.
+func (b Block) IsMedia() bool { return b.Kind == BlockImage || b.Kind == BlockFile }

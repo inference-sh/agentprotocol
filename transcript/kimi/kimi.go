@@ -654,14 +654,8 @@ func (p *plan) compaction(e transcript.Entry, ms int64) (json.RawMessage, error)
 			}
 		}
 	}
-	var texts []string
-	for _, m := range e.Compaction.Summary {
-		if t := m.Text(); t != "" {
-			texts = append(texts, t)
-		}
-	}
 	return p.emit(e.ID, []any{compactionRow{Type: "context.apply_compaction", AgentID: "main",
-		Summary: strings.Join(texts, "\n\n"), CompactedCount: count, LegacyTail: true, Time: ms}})
+		Summary: e.Compaction.Text(nil), CompactedCount: count, LegacyTail: true, Time: ms}})
 }
 
 // The context-row payloads, as kimi writes them.
@@ -788,7 +782,7 @@ func mediaParts(e transcript.Entry, toolID string) []part {
 // document, or media known only by a local path, has no part and is left
 // out.
 func mediaPart(b transcript.Block) (part, bool) {
-	if b.Kind != transcript.BlockImage && b.Kind != transcript.BlockFile {
+	if !b.IsMedia() {
 		return part{}, false
 	}
 	var url string
@@ -863,7 +857,7 @@ func writeState(ctx context.Context, path string, s *transcript.Session) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(filepath.Join(dir, "state.json"), out, 0o644); err != nil {
+	if err := transcript.WriteFileAtomic(filepath.Join(dir, "state.json"), out); err != nil {
 		return err
 	}
 	if err := addToIndex(filepath.Join(dir, "..", "..", "..", "session_index.jsonl"), indexRow{SessionID: s.ID, SessionDir: dir, WorkDir: s.CWD}); err != nil {

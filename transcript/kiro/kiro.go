@@ -253,7 +253,7 @@ func keptFrom(s *transcript.Session) map[int]int {
 func snapshot(s *transcript.Session, kept map[int]int) {
 	for i, from := range kept {
 		c := s.Entries[i].Compaction
-		summary := transcript.Entry{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: storedSummary(c.Summary)}}}
+		summary := transcript.Entry{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: storedSummary(c)}}}
 		next := &transcript.Compaction{Summary: []transcript.Entry{summary}}
 		for _, e := range s.Entries[from:i] {
 			if e.Role != transcript.RoleOpaque {
@@ -267,18 +267,13 @@ func snapshot(s *transcript.Session, kept map[int]int) {
 // storedSummary is a summary as a Compaction row stores it: the text of its
 // entries, without the context entry kiro wraps it in on resume, which a
 // summary read from kiro carries.
-func storedSummary(summary []transcript.Entry) string {
-	var parts []string
-	for _, e := range summary {
-		t := e.Text()
+func storedSummary(c *transcript.Compaction) string {
+	return c.Text(func(t string) string {
 		if inner, ok := strings.CutPrefix(t, summaryPrefix); ok {
 			t = strings.TrimSuffix(inner, summarySuffix)
 		}
-		if t != "" {
-			parts = append(parts, t)
-		}
-	}
-	return strings.Join(parts, "\n\n")
+		return t
+	})
 }
 
 func (st *store) Read(ctx context.Context, id string) (*transcript.Session, error) {
@@ -901,7 +896,7 @@ func writeSidecar(ctx context.Context, path string, s *transcript.Session) error
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(strings.TrimSuffix(path, filepath.Ext(path))+".json", out, 0o644)
+	return transcript.WriteFileAtomic(strings.TrimSuffix(path, filepath.Ext(path))+".json", out)
 }
 
 func merge(dst map[string]json.RawMessage, v any) error {

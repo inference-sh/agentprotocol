@@ -263,13 +263,10 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 			// first and the summary after them, as after grok's own
 			// compaction.
 			c := p.compactions[e.ID]
-			for k, m := range model.Entries {
-				if e.Compaction.Keep != "" && m.ID == e.Compaction.Keep {
-					c.history = append(c.history, model.Entries[k:]...)
-					break
-				}
+			if k := e.Compaction.KeepIndex(model.Entries); k >= 0 {
+				c.history = append(c.history, model.Entries[k:]...)
 			}
-			if sum, ok := summaryEntry(e.Compaction.Summary); ok {
+			if sum, ok := summaryEntry(e.Compaction); ok {
 				p.meta[sum.ID] = true
 				c.history = append(c.history, sum)
 			}
@@ -314,7 +311,7 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 		}
 	}
 	if numUpdates > 0 {
-		if err := writeFile(filepath.Join(dir, updatesFile), buf.Bytes()); err != nil {
+		if err := transcript.WriteFileAtomic(filepath.Join(dir, updatesFile), buf.Bytes()); err != nil {
 			return "", err
 		}
 	}
@@ -339,17 +336,12 @@ const summaryPreamble = "This session is being continued from a previous convers
 // summary's text behind grok's preamble. A text that already opens with
 // that preamble (Claude Code uses the same words) is not wrapped again.
 // ok is false for a summary with no text.
-func summaryEntry(summary []transcript.Entry) (transcript.Entry, bool) {
-	var parts []string
-	for _, m := range summary {
-		if t := strings.TrimPrefix(m.Text(), summaryPreamble); t != "" {
-			parts = append(parts, t)
-		}
-	}
-	if len(parts) == 0 {
+func summaryEntry(c *transcript.Compaction) (transcript.Entry, bool) {
+	text := c.Text(func(t string) string { return strings.TrimPrefix(t, summaryPreamble) })
+	if text == "" {
 		return transcript.Entry{}, false
 	}
-	text := summaryPreamble + strings.Join(parts, "\n\n")
+	text = summaryPreamble + text
 	return transcript.Entry{ID: transcript.NewUUID(), Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: text}}}, true
 }
 
@@ -401,11 +393,7 @@ func (p *plan) writeCheckpoint(dir string, c *compaction, s *transcript.Session)
 	if err != nil {
 		return err
 	}
-	path := filepath.Join(dir, c.file())
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return err
-	}
-	return writeFile(path, out)
+	return transcript.WriteFileAtomic(filepath.Join(dir, c.file()), out)
 }
 
 // countRows counts the items in a written chat_history.jsonl: its lines that
@@ -419,14 +407,6 @@ func countRows(path string) (int, error) {
 		return true, nil
 	})
 	return n, err
-}
-
-func writeFile(path string, data []byte) error {
-	tmp := path + ".tmp"
-	if err := os.WriteFile(tmp, data, 0o644); err != nil {
-		return err
-	}
-	return os.Rename(tmp, path)
 }
 
 func peek(path string) (transcript.Info, error) {
@@ -518,5 +498,5 @@ func writeSummary(dir string, s *transcript.Session, numUpdates, numChat int) er
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join(dir, "summary.json"), out, 0o644)
+	return transcript.WriteFileAtomic(filepath.Join(dir, "summary.json"), out)
 }

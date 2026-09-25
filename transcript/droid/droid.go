@@ -261,11 +261,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolResult, ToolID: b.ToolUseID, Text: text, Status: st})
 			e.Content = append(e.Content, media...)
 		case "image", "document":
-			m, ok, err := decodeMedia(b, "")
-			if err != nil {
-				return transcript.Entry{}, false, fmt.Errorf("row %s: %s: %w", r.ID, b.Type, err)
-			}
-			if ok {
+			if m, ok := decodeMedia(b, ""); ok {
 				e.Content = append(e.Content, m)
 			}
 		}
@@ -305,10 +301,10 @@ func isReminder(text string) bool {
 
 // decodeMedia reads an image or document block. toolID is set for one a
 // tool returned.
-func decodeMedia(b block, toolID string) (transcript.Block, bool, error) {
+func decodeMedia(b block, toolID string) (transcript.Block, bool) {
 	src := b.Source
 	if src == nil {
-		return transcript.Block{}, false, nil
+		return transcript.Block{}, false
 	}
 	out := transcript.Block{Kind: transcript.BlockImage, ToolID: toolID, MediaType: src.MediaType}
 	if b.Type == "document" {
@@ -317,27 +313,27 @@ func decodeMedia(b block, toolID string) (transcript.Block, bool, error) {
 	switch src.Type {
 	case sourceBase64:
 		if src.Data != "" {
-			data, err := base64.StdEncoding.DecodeString(src.Data)
-			if err != nil {
-				return transcript.Block{}, false, err
+			m, ok := transcript.MediaBlock(out.Kind, out.MediaType, src.Data, toolID)
+			if !ok {
+				return transcript.Block{}, false
 			}
-			out.Data = data
+			out.Data = m.Data
 		}
 	case sourceText:
 		if b.Type != "document" {
-			return transcript.Block{}, false, nil
+			return transcript.Block{}, false
 		}
 		out.Data = []byte(src.Data)
 		if src.Mime != "" {
 			out.MediaType = src.Mime
 		}
 	default:
-		return transcript.Block{}, false, nil
+		return transcript.Block{}, false
 	}
 	if out.Data == nil && out.URI == "" {
-		return transcript.Block{}, false, nil
+		return transcript.Block{}, false
 	}
-	return out, true, nil
+	return out, true
 }
 
 // encodeMedia is the block droid stores an image or file as. droid keeps an
@@ -532,11 +528,7 @@ func result(raw json.RawMessage, toolID string) (string, []transcript.Block, err
 	for _, p := range bs {
 		switch p.Type {
 		case "image", "document":
-			m, ok, err := decodeMedia(p, toolID)
-			if err != nil {
-				return "", nil, fmt.Errorf("%s: %w", p.Type, err)
-			}
-			if ok {
+			if m, ok := decodeMedia(p, toolID); ok {
 				media = append(media, m)
 			}
 		default:
@@ -728,13 +720,7 @@ type anchorMessage struct {
 // results whose call it replaced, and keeps the retired messages in the
 // file.
 func encodeCompaction(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
-	var texts []string
-	for _, m := range e.Compaction.Summary {
-		if t := m.Text(); t != "" {
-			texts = append(texts, t)
-		}
-	}
-	text := strings.Join(texts, "\n\n")
+	text := e.Compaction.Text(nil)
 	end := -1
 	for i := range s.Entries {
 		if s.Entries[i].Compaction == e.Compaction {

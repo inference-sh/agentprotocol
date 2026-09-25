@@ -1,7 +1,6 @@
 package grok
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"strconv"
 	"strings"
@@ -105,11 +104,11 @@ func (c contentBlock) block(toolID string) (transcript.Block, bool) {
 	case "image":
 		b := transcript.Block{Kind: transcript.BlockImage, ToolID: toolID, MediaType: c.MimeType, URI: c.URI}
 		if c.Data != "" {
-			data, err := base64.StdEncoding.DecodeString(c.Data)
-			if err != nil {
+			m, ok := transcript.MediaBlock(b.Kind, b.MediaType, c.Data, toolID)
+			if !ok {
 				return transcript.Block{}, false
 			}
-			b.Data = data
+			b.Data = m.Data
 		}
 		return b, b.Data != nil || b.URI != ""
 	case "resource_link":
@@ -127,11 +126,11 @@ func (c contentBlock) block(toolID string) (transcript.Block, bool) {
 		case r.Text != nil:
 			b.Data = []byte(*r.Text)
 		case r.Blob != "":
-			data, err := base64.StdEncoding.DecodeString(r.Blob)
-			if err != nil {
+			m, ok := transcript.MediaBlock(b.Kind, b.MediaType, r.Blob, toolID)
+			if !ok {
 				return transcript.Block{}, false
 			}
-			b.Data = data
+			b.Data = m.Data
 		}
 		return b, true
 	}

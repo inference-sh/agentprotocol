@@ -325,14 +325,7 @@ func (st *store) writeInherited(path string, rows []transcript.Entry) error {
 		buf.Write(e.Raw)
 		buf.WriteByte('\n')
 	}
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return err
-	}
-	tmp := path + ".tmp"
-	if err := os.WriteFile(tmp, buf.Bytes(), 0o644); err != nil {
-		return err
-	}
-	return os.Rename(tmp, path)
+	return transcript.WriteFileAtomic(path, buf.Bytes())
 }
 
 // rowsBefore counts the rows the engine decodes from the first off bytes
@@ -687,13 +680,7 @@ func (p *plan) compacted(e transcript.Entry, s *transcript.Session) (json.RawMes
 	if !wrapped {
 		// Codex keeps its summary as a user message behind its own
 		// preamble, and finds it again by that preamble.
-		var text []string
-		for _, m := range summary {
-			if t := m.Text(); t != "" {
-				text = append(text, t)
-			}
-		}
-		message = summaryPrefix + "\n" + strings.Join(text, "\n\n")
+		message = summaryPrefix + "\n" + e.Compaction.Text(nil)
 		summary = []transcript.Entry{{ID: e.ID, Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: message}}}}
 	}
 	history := []json.RawMessage{}

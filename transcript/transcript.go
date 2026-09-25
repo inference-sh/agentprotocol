@@ -148,6 +148,32 @@ type Compaction struct {
 	Keep string
 }
 
+// Text is the summary as the single text agents store one as: the text of
+// each summary entry, blank-line separated. unwrap, when set, takes off a
+// wrapper the writing agent puts around a summary it stores bare.
+func (c *Compaction) Text(unwrap func(string) string) string {
+	var parts []string
+	for _, m := range c.Summary {
+		t := m.Text()
+		if unwrap != nil {
+			t = unwrap(t)
+		}
+		if t != "" {
+			parts = append(parts, t)
+		}
+	}
+	return strings.Join(parts, "\n\n")
+}
+
+// KeepIndex is the index in before, the entries ahead of the compaction, of
+// the entry it keeps from; -1 when Keep is empty or names none of them.
+func (c *Compaction) KeepIndex(before []Entry) int {
+	if c.Keep == "" {
+		return -1
+	}
+	return slices.IndexFunc(before, func(e Entry) bool { return e.ID == c.Keep })
+}
+
 // Entry is one message in a session.
 type Entry struct {
 	ID string `json:"id"`
@@ -391,43 +417,81 @@ func (s *Session) Context() []Entry {
 
 // context is Context with each entry's Content as the person saw it.
 func (s *Session) context() []Entry {
+	return applyCompactions(s.onBranch(), func(e Entry) bool { return e.Role != RoleOpaque && e.Audience.Model() })
+}
+
+// onBranch is the entries on the active branch, in order.
+func (s *Session) onBranch() []Entry {
+	branch := s.Branch()
+	out := make([]Entry, len(branch))
+	for k, i := range branch {
+		out[k] = s.Entries[i]
+	}
+	return out
+}
+
+// applyCompactions returns the entries include picks, with every compaction
+// applied: at a compaction, everything gathered so far is replaced by its
+// Summary followed by the gathered entries from Keep on.
+func applyCompactions(entries []Entry, include func(Entry) bool) []Entry {
 	type placed struct {
-		at int // position on the branch
+		at int
 		e  Entry
 	}
-	branch := s.Branch()
-	var ctx []placed
-	for at, i := range branch {
-		e := s.Entries[i]
-		if c := e.Compaction; c != nil {
-			keep := len(branch)
-			if c.Keep != "" {
-				for k := 0; k < at; k++ {
-					if s.Entries[branch[k]].ID == c.Keep {
-						keep = k
-						break
-					}
-				}
+	var got []placed
+	for at, e := range entries {
+		c := e.Compaction
+		if c == nil {
+			if include(e) {
+				got = append(got, placed{at, e})
 			}
-			next := make([]placed, 0, len(c.Summary)+len(ctx))
-			for _, m := range c.Summary {
-				next = append(next, placed{at, m})
-			}
-			for _, p := range ctx {
-				if p.at >= keep {
-					next = append(next, p)
-				}
-			}
-			ctx = next
 			continue
 		}
-		if e.Role != RoleOpaque && e.Audience.Model() {
-			ctx = append(ctx, placed{at, e})
+		from := c.KeepIndex(entries[:at])
+		if from < 0 {
+			from = len(entries)
 		}
+		next := make([]placed, 0, len(c.Summary)+len(got))
+		for _, m := range c.Summary {
+			next = append(next, placed{at, m})
+		}
+		for _, p := range got {
+			if p.at >= from {
+				next = append(next, p)
+			}
+		}
+		got = next
 	}
-	out := make([]Entry, len(ctx))
-	for i, p := range ctx {
+	out := make([]Entry, len(got))
+	for i, p := range got {
 		out[i] = p.e
+	}
+	return out
+}
+
+// Unkept moves each compaction of a portable session to just before the
+// first entry it keeps, and leaves it keeping nothing, for a writer whose
+// agent's compaction keeps nothing of what came before it. The model is
+// then given the summary followed by the kept entries, as it was before the
+// move; the person sees the same order, since no agent shows a summary in
+// the place of the history it retired. A compaction whose kept entries hold
+// an earlier compaction stays where it is and keeps nothing.
+func Unkept(entries []Entry) []Entry {
+	out := slices.Clone(entries)
+	for i := 0; i < len(out); i++ {
+		c := out[i].Compaction
+		if c == nil || c.Keep == "" {
+			continue
+		}
+		marker := out[i]
+		marker.Compaction = &Compaction{Summary: c.Summary}
+		out[i] = marker
+		j := c.KeepIndex(out[:i])
+		if j < 0 || slices.ContainsFunc(out[j:i], func(e Entry) bool { return e.Compaction != nil }) {
+			continue
+		}
+		copy(out[j+1:i+1], out[j:i])
+		out[j] = marker
 	}
 	return out
 }
@@ -452,6 +516,7 @@ func (s *Session) Portable() *Session {
 	out.Vendor = nil
 	out.Entries = nil
 	branch := s.Branch()
+	on := s.onBranch()
 	carried := map[string]bool{}
 	// Keep names an entry by ID; if that entry does not travel, the first
 	// one after it that does is where the kept history starts.
@@ -480,13 +545,8 @@ func (s *Session) Portable() *Session {
 					c.Summary = append(c.Summary, m)
 				}
 			}
-			if e.Compaction.Keep != "" {
-				for k := 0; k < at; k++ {
-					if s.Entries[branch[k]].ID == e.Compaction.Keep {
-						keeps = append(keeps, pending{len(out.Entries), k})
-						break
-					}
-				}
+			if k := e.Compaction.KeepIndex(on[:at]); k >= 0 {
+				keeps = append(keeps, pending{len(out.Entries), k})
 			}
 			out.Entries = append(out.Entries, Entry{ID: e.ID, Time: e.Time, Compaction: c})
 		case e.Role == RoleOpaque || e.Audience == AudienceNone || e.Audience == AudienceModel:
@@ -518,12 +578,9 @@ func (s *Session) retired() map[int]bool {
 		if c == nil {
 			continue
 		}
-		upto := at
-		for k := 0; k < at; k++ {
-			if c.Keep != "" && s.Entries[k].ID == c.Keep {
-				upto = k
-				break
-			}
+		upto := c.KeepIndex(s.Entries[:at])
+		if upto < 0 {
+			upto = at
 		}
 		for k := 0; k < upto; k++ {
 			if s.Entries[k].Compaction == nil {
@@ -544,7 +601,7 @@ const maxInline = 20 << 20
 // session moved to another machine has no path to read. A file that is
 // gone, or too large, stays a reference.
 func inlineLocal(b Block) Block {
-	if (b.Kind != BlockImage && b.Kind != BlockFile) || len(b.Data) > 0 || b.URI == "" {
+	if !b.IsMedia() || len(b.Data) > 0 || b.URI == "" {
 		return b
 	}
 	path := b.URI
@@ -605,7 +662,7 @@ func splitResults(e Entry) []Entry {
 		switch {
 		case b.Kind == BlockToolResult:
 			results = append(results, []Block{b})
-		case b.ToolID != "" && (b.Kind == BlockImage || b.Kind == BlockFile) && len(results) > 0 && results[len(results)-1][0].ToolID == b.ToolID:
+		case b.ToolID != "" && b.IsMedia() && len(results) > 0 && results[len(results)-1][0].ToolID == b.ToolID:
 			results[len(results)-1] = append(results[len(results)-1], b)
 		default:
 			rest = append(rest, b)
@@ -732,39 +789,7 @@ func (s *Session) lower(c Capabilities) *Session {
 		}
 		return &out
 	}
-	type placed struct {
-		at int
-		e  Entry
-	}
-	var got []placed
-	for at, e := range s.Entries {
-		if cp := e.Compaction; cp != nil {
-			from := len(s.Entries)
-			for k := 0; k < at; k++ {
-				if cp.Keep != "" && s.Entries[k].ID == cp.Keep {
-					from = k
-					break
-				}
-			}
-			next := make([]placed, 0, len(cp.Summary)+len(got))
-			for _, m := range cp.Summary {
-				next = append(next, placed{at, m})
-			}
-			for _, p := range got {
-				if p.at >= from {
-					next = append(next, p)
-				}
-			}
-			got = next
-			continue
-		}
-		if keep(e) {
-			got = append(got, placed{at, e})
-		}
-	}
-	for _, p := range got {
-		out.Entries = append(out.Entries, p.e)
-	}
+	out.Entries = applyCompactions(s.Entries, keep)
 	return &out
 }
 

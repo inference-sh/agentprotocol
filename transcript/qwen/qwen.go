@@ -357,20 +357,14 @@ func content(m message, status transcript.Status) (transcript.Entry, error) {
 			fr := p.FunctionResponse
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockToolResult, ToolID: fr.ID, Name: fr.Name, Text: responseText(fr.Response), Status: status})
 			for _, np := range fr.Parts {
-				b, ok, err := media(np, fr.ID)
-				if err != nil {
-					return transcript.Entry{}, err
-				}
-				if ok {
+				if b, ok := media(np, fr.ID); ok {
 					e.Content = append(e.Content, b)
 				}
 			}
 		case p.InlineData != nil || p.FileData != nil:
-			b, _, err := media(p, "")
-			if err != nil {
-				return transcript.Entry{}, err
+			if b, ok := media(p, ""); ok {
+				e.Content = append(e.Content, b)
 			}
-			e.Content = append(e.Content, b)
 		case p.Thought:
 			e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: p.Text})
 		default:
@@ -384,19 +378,18 @@ func content(m message, status transcript.Status) (transcript.Entry, error) {
 }
 
 // media reads an inlineData or fileData part as an image or file block.
-// toolID is set for one a tool returned.
-func media(p part, toolID string) (transcript.Block, bool, error) {
+// toolID is set for one a tool returned. ok is false for a part that is
+// neither, or whose data does not decode.
+func media(p part, toolID string) (transcript.Block, bool) {
 	switch {
 	case p.InlineData != nil:
-		data, err := base64.StdEncoding.DecodeString(p.InlineData.Data)
-		if err != nil {
-			return transcript.Block{}, false, fmt.Errorf("inlineData: %w", err)
-		}
-		return transcript.Block{Kind: mediaKind(p.InlineData.MimeType), ToolID: toolID, MediaType: p.InlineData.MimeType, Data: data, Name: p.InlineData.DisplayName}, true, nil
+		b, ok := transcript.MediaBlock(mediaKind(p.InlineData.MimeType), p.InlineData.MimeType, p.InlineData.Data, toolID)
+		b.Name = p.InlineData.DisplayName
+		return b, ok
 	case p.FileData != nil:
-		return transcript.Block{Kind: mediaKind(p.FileData.MimeType), ToolID: toolID, MediaType: p.FileData.MimeType, URI: p.FileData.FileURI, Name: p.FileData.DisplayName}, true, nil
+		return transcript.Block{Kind: mediaKind(p.FileData.MimeType), ToolID: toolID, MediaType: p.FileData.MimeType, URI: p.FileData.FileURI, Name: p.FileData.DisplayName}, true
 	}
-	return transcript.Block{}, false, nil
+	return transcript.Block{}, false
 }
 
 // mediaKind is the block an attachment of a media type is: an image, or any
@@ -543,7 +536,7 @@ func restoreRetired(s *transcript.Session) {
 			continue
 		}
 		upto := i
-		if k := slices.IndexFunc(s.Entries[:i], func(m transcript.Entry) bool { return c.Keep != "" && m.ID == c.Keep }); k >= 0 {
+		if k := c.KeepIndex(s.Entries[:i]); k >= 0 {
 			upto = k
 		}
 		for k := range s.Entries[:upto] {
@@ -618,13 +611,7 @@ func compactions(s *transcript.Session) {
 		if e.Raw != nil {
 			continue
 		}
-		var text []string
-		for _, m := range c.Summary {
-			if t := m.Text(); t != "" {
-				text = append(text, t)
-			}
-		}
-		summary := strings.Join(text, "\n\n")
+		summary := c.Text(nil)
 		if !strings.HasSuffix(summary, resumeTrailer) {
 			summary += "\n\n" + resumeTrailer
 		}

@@ -19,3 +19,13 @@ func TestDataURL(t *testing.T) {
 		}
 	}
 }
+
+func TestMediaBlock(t *testing.T) {
+	b, ok := MediaBlock(BlockImage, "image/png", "AQID", "call_1")
+	if !ok || !b.IsMedia() || string(b.Data) != "\x01\x02\x03" || b.MediaType != "image/png" || b.ToolID != "call_1" {
+		t.Errorf("MediaBlock = %+v, %v", b, ok)
+	}
+	if _, ok := MediaBlock(BlockImage, "image/png", "!!", ""); ok {
+		t.Error("MediaBlock accepted bad base64")
+	}
+}

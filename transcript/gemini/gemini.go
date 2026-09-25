@@ -415,7 +415,7 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 		if cur, err := os.ReadFile(path); err == nil && string(cur) == string(out) {
 			return s.ID, nil
 		}
-		return s.ID, writeFile(path, out)
+		return s.ID, transcript.WriteFileAtomic(path, out)
 	}
 
 	meta := map[string]json.RawMessage{}
@@ -459,7 +459,7 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 	if v, ok := s.Vendor.(*Vendor); ok && v.FileName != "" {
 		name = v.FileName
 	}
-	return s.ID, writeFile(filepath.Join(dir, name), out)
+	return s.ID, transcript.WriteFileAtomic(filepath.Join(dir, name), out)
 }
 
 // fileMinute is the minute a new session file is named for. gemini 0.61's
@@ -503,17 +503,6 @@ func appendLine(b []byte, row []byte) []byte {
 	}
 	b = append(b, row...)
 	return append(b, '\n')
-}
-
-func writeFile(path string, data []byte) error {
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return err
-	}
-	tmp := path + ".tmp"
-	if err := os.WriteFile(tmp, data, 0o644); err != nil {
-		return err
-	}
-	return os.Rename(tmp, path)
 }
 
 // claimProject returns the directory name gemini uses for a project root,
@@ -580,7 +569,7 @@ func claimProject(home, root string) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		if err := writeFile(registry, out); err != nil {
+		if err := transcript.WriteFileAtomic(registry, out); err != nil {
 			return "", err
 		}
 	}
@@ -885,11 +874,9 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 			case p.isThought():
 				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockReasoning, Text: p.Text})
 			case p.InlineData != nil || p.FileData != nil:
-				b, err := media(p, "")
-				if err != nil {
-					return transcript.Entry{}, false, fmt.Errorf("row %s: %w", r.ID, err)
+				if b, ok := media(p, ""); ok {
+					e.Content = append(e.Content, b)
 				}
-				e.Content = append(e.Content, b)
 			case p.Text != "":
 				e.Content = append(e.Content, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
 			}
@@ -939,21 +926,17 @@ func userBlocks(content []part) (blocks []transcript.Block, answered int, err er
 				if np.InlineData == nil && np.FileData == nil {
 					continue
 				}
-				b, err := media(np, fr.ID)
-				if err != nil {
-					return nil, 0, err
+				if b, ok := media(np, fr.ID); ok {
+					blocks = append(blocks, b)
 				}
-				blocks = append(blocks, b)
 			}
 		case p.InlineData != nil || p.FileData != nil:
-			b, err := media(p, toolID)
-			if err != nil {
-				return nil, 0, err
-			}
 			if toolID != "" {
 				answered++
 			}
-			blocks = append(blocks, b)
+			if b, ok := media(p, toolID); ok {
+				blocks = append(blocks, b)
+			}
 		default:
 			toolID = ""
 			blocks = append(blocks, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
@@ -963,16 +946,13 @@ func userBlocks(content []part) (blocks []transcript.Block, answered int, err er
 }
 
 // media reads an inlineData or fileData part as an image or file block.
-// toolID is set for one a tool returned.
-func media(p part, toolID string) (transcript.Block, error) {
+// toolID is set for one a tool returned. ok is false for inline data that
+// does not decode.
+func media(p part, toolID string) (transcript.Block, bool) {
 	if p.InlineData != nil {
-		data, err := base64.StdEncoding.DecodeString(p.InlineData.Data)
-		if err != nil {
-			return transcript.Block{}, fmt.Errorf("inlineData: %w", err)
-		}
-		return transcript.Block{Kind: mediaKind(p.InlineData.MimeType), ToolID: toolID, MediaType: p.InlineData.MimeType, Data: data}, nil
+		return transcript.MediaBlock(mediaKind(p.InlineData.MimeType), p.InlineData.MimeType, p.InlineData.Data, toolID)
 	}
-	return transcript.Block{Kind: mediaKind(p.FileData.MimeType), ToolID: toolID, MediaType: p.FileData.MimeType, URI: p.FileData.FileURI}, nil
+	return transcript.Block{Kind: mediaKind(p.FileData.MimeType), ToolID: toolID, MediaType: p.FileData.MimeType, URI: p.FileData.FileURI}, true
 }
 
 // mediaKind is the block an attachment of a media type is: an image, or any

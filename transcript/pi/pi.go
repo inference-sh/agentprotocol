@@ -394,12 +394,7 @@ func (b block) image(toolID string) (transcript.Block, bool) {
 		img.URI = b.Data
 		return img, true
 	}
-	data, err := base64.StdEncoding.DecodeString(b.Data)
-	if err != nil {
-		return transcript.Block{}, false
-	}
-	img.Data = data
-	return img, true
+	return transcript.MediaBlock(transcript.BlockImage, b.MimeType, b.Data, toolID)
 }
 
 type block struct {
@@ -1491,13 +1486,7 @@ func prepare(home string, s *transcript.Session) error {
 		if !validID(e.ID) {
 			e.ID = newID()
 		}
-		keep[i] = -1
-		for k := 0; k < i && c.Keep != ""; k++ {
-			if s.Entries[k].ID == c.Keep {
-				keep[i] = k
-				break
-			}
-		}
+		keep[i] = c.KeepIndex(s.Entries[:i])
 	}
 	if len(keep) == 0 {
 		return nil
@@ -1524,18 +1513,12 @@ func prepare(home string, s *transcript.Session) error {
 // it is this agent's own wrapping of a summary, the wrapper comes off, since
 // the agent stores the summary bare and wraps it again on load.
 func (v variant) encodeCompaction(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) {
-	var text []string
-	for _, m := range e.Compaction.Summary {
-		if t := m.Text(); t != "" {
-			text = append(text, v.unwrapSummary(t))
-		}
-	}
 	t := e.Time
 	if t.IsZero() {
 		t = s.Updated
 	}
 	r := compactionRow{Type: "compaction", ID: e.ID, Timestamp: t.UTC().Format("2006-01-02T15:04:05.000Z"),
-		Summary: strings.Join(text, "\n\n"), FirstKeptEntryID: e.Compaction.Keep}
+		Summary: e.Compaction.Text(v.unwrapSummary), FirstKeptEntryID: e.Compaction.Keep}
 	if r.FirstKeptEntryID == "" {
 		r.FirstKeptEntryID = e.ID
 	}

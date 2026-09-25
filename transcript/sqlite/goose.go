@@ -73,16 +73,21 @@ func (c gooseContent) MarshalJSON() ([]byte, error) {
 	}{plain(c), c.Text})
 }
 
-// media is an image or document content item as a block.
-func (c gooseContent) media() transcript.Block {
+// media is an image or document content item as a block. goose writes the
+// bytes with the standard alphabet (goose-sdk bindings.rs); an item that
+// does not decode is left out, as every codec drops bad media, rather than
+// kept as an empty image a writer would emit.
+func (c gooseContent) media() (transcript.Block, bool) {
 	b := transcript.Block{Kind: transcript.BlockImage, MediaType: c.MimeType, Name: c.Name}
 	if c.Type == "document" {
 		b.Kind = transcript.BlockFile
 	}
-	// goose writes the bytes with the standard alphabet (goose-sdk
-	// bindings.rs); a row that does not decode keeps an empty block.
-	b.Data, _ = base64.StdEncoding.DecodeString(c.Data)
-	return b
+	data, err := base64.StdEncoding.DecodeString(c.Data)
+	if err != nil {
+		return transcript.Block{}, false
+	}
+	b.Data = data
+	return b, true
 }
 
 // gooseAnnotations are the MCP annotations goose keeps on text, images and
@@ -277,7 +282,10 @@ func gooseEntry(role, contentJSON string, meta gooseMeta) (transcript.Entry, err
 			}
 		case "image", "document":
 			// A document carries no annotations, so it is for both.
-			b := c.media()
+			b, ok := c.media()
+			if !ok {
+				continue
+			}
 			if c.Annotations.includes("assistant") {
 				model, toModel = append(model, b), true
 			}
@@ -338,7 +346,10 @@ func gooseToolResult(c gooseContent) (model, user []transcript.Block) {
 		}
 		for _, rc := range r.Value.Content {
 			if rc.Type == "image" {
-				b := rc.media()
+				b, ok := rc.media()
+				if !ok {
+					continue
+				}
 				b.ToolID = c.ID
 				if rc.Annotations.includes("assistant") {
 					mImages = append(mImages, b)

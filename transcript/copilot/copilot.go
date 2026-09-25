@@ -22,7 +22,6 @@ import (
 	"mime"
 	"os"
 	"path/filepath"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -152,7 +151,7 @@ var defaultStart = map[string]json.RawMessage{
 // history, and the session gets its session.start fields.
 func prepare(home string, s *transcript.Session) error {
 	if s.Agent != "copilot" {
-		s.Entries = unkept(s.Entries)
+		s.Entries = transcript.Unkept(s.Entries)
 		link(s)
 	}
 	return prepareStart(home, s)
@@ -184,33 +183,6 @@ func link(s *transcript.Session) {
 // compaction reports an entry that is a compaction to be written.
 func compaction(e transcript.Entry) bool {
 	return e.Raw == nil && e.Role == transcript.RoleOpaque && e.Compaction != nil
-}
-
-// unkept moves each compaction of a portable session to just before the
-// first entry it keeps, and leaves it keeping nothing: Copilot's
-// compaction replaces everything before it. The model is then given the
-// summary followed by the kept entries, as it was before the move, and the
-// person sees the same order, since session/load shows no summary. A
-// compaction whose kept entries hold an earlier compaction stays where it
-// is and keeps nothing.
-func unkept(entries []transcript.Entry) []transcript.Entry {
-	out := slices.Clone(entries)
-	for i := 0; i < len(out); i++ {
-		c := out[i].Compaction
-		if c == nil || c.Keep == "" {
-			continue
-		}
-		marker := out[i]
-		marker.Compaction = &transcript.Compaction{Summary: c.Summary}
-		out[i] = marker
-		j := slices.IndexFunc(out[:i], func(e transcript.Entry) bool { return e.ID == c.Keep })
-		if j < 0 || slices.ContainsFunc(out[j:i], func(e transcript.Entry) bool { return e.Compaction != nil }) {
-			continue
-		}
-		copy(out[j+1:i+1], out[j:i])
-		out[j] = marker
-	}
-	return out
 }
 
 // prepareStart gives a session with no session.start of its own the fixed
@@ -593,9 +565,9 @@ func attach(s *transcript.Session) error {
 				if r.Data == "" {
 					continue // omitted: too large, or its asset is gone
 				}
-				b, err := binaryBlock(r.Type == "image", r.MimeType, r.Data)
-				if err != nil {
-					return fmt.Errorf("event %s: %w", ev.ID, err)
+				b, ok := binaryBlock(r.Type == "image", r.MimeType, r.Data)
+				if !ok {
+					continue
 				}
 				b.ToolID = tr.ToolCallID
 				e.Content = append(e.Content, b)
@@ -622,9 +594,9 @@ func (a attachment) block(assets map[string]binary) (transcript.Block, bool, err
 	var b transcript.Block
 	switch {
 	case data != "":
-		var err error
-		if b, err = binaryBlock(image, mt, data); err != nil {
-			return transcript.Block{}, false, err
+		var ok bool
+		if b, ok = binaryBlock(image, mt, data); !ok {
+			return transcript.Block{}, false, nil
 		}
 	case a.Path != "":
 		b = transcript.Block{Kind: transcript.BlockFile, MediaType: mt, URI: a.Path}
@@ -657,17 +629,14 @@ func (a attachment) extensionType() string {
 	return mt
 }
 
-// binaryBlock decodes base64 bytes into an image or file block.
-func binaryBlock(image bool, mt, data string) (transcript.Block, error) {
-	raw, err := base64.StdEncoding.DecodeString(data)
-	if err != nil {
-		return transcript.Block{}, fmt.Errorf("binary data: %w", err)
-	}
+// binaryBlock decodes base64 bytes into an image or file block. ok is false
+// when they do not decode.
+func binaryBlock(image bool, mt, data string) (transcript.Block, bool) {
 	kind := transcript.BlockFile
 	if image {
 		kind = transcript.BlockImage
 	}
-	return transcript.Block{Kind: kind, MediaType: mt, Data: raw}, nil
+	return transcript.MediaBlock(kind, mt, data, "")
 }
 
 // resumeLead opens the message that stands in for compacted history.
@@ -693,20 +662,15 @@ func resumeSummary(summary string, prompts []string) string {
 // storedSummary is a compaction's summary as Copilot stores it: the text of
 // its entries, without the wrapping Copilot adds on resume, which a summary
 // read from Copilot carries.
-func storedSummary(summary []transcript.Entry) string {
-	var parts []string
-	for _, e := range summary {
-		t := e.Text()
+func storedSummary(c *transcript.Compaction) string {
+	return c.Text(func(t string) string {
 		if strings.HasPrefix(t, resumeLead) {
 			if _, after, ok := strings.Cut(t, "<summary>\n"); ok {
 				t = strings.TrimSuffix(after, "\n</summary>\n")
 			}
 		}
-		if t != "" {
-			parts = append(parts, t)
-		}
-	}
-	return strings.Join(parts, "\n\n")
+		return t
+	})
 }
 
 func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
@@ -769,7 +733,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		// context after its own compaction carries the same list (the
 		// messages_snapshot of sample ec590b04, Copilot CLI 1.0.88).
 		ev.Type = "session.compaction_complete"
-		data = compactionComplete{Success: true, SummaryContent: storedSummary(e.Compaction.Summary)}
+		data = compactionComplete{Success: true, SummaryContent: storedSummary(e.Compaction)}
 	case transcript.RoleUser, transcript.RoleSystem:
 		ev.Type = "user.message"
 		data = userMessage{Content: e.Text(), Attachments: attachments(e.Content), MessageID: e.ID}
@@ -809,7 +773,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		// inline (PersistedBinaryImage); one known only by reference has no
 		// such form and is left out.
 		for _, b := range e.Content {
-			if (b.Kind == transcript.BlockImage || b.Kind == transcript.BlockFile) && len(b.Data) > 0 {
+			if b.IsMedia() && len(b.Data) > 0 {
 				typ := "resource"
 				if b.Kind == transcript.BlockImage {
 					typ = "image"
@@ -838,7 +802,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 func attachments(content []transcript.Block) []attachment {
 	var out []attachment
 	for _, b := range content {
-		if b.Kind != transcript.BlockImage && b.Kind != transcript.BlockFile {
+		if !b.IsMedia() {
 			continue
 		}
 		switch {
@@ -876,7 +840,7 @@ func writeWorkspace(ctx context.Context, path string, s *transcript.Session) err
 	fmt.Fprintf(&b, "fork_count: 0\n")
 	fmt.Fprintf(&b, "created_at: %s\n", stamp(s.Created))
 	fmt.Fprintf(&b, "updated_at: %s\n", stamp(s.Updated))
-	return os.WriteFile(filepath.Join(filepath.Dir(path), "workspace.yaml"), []byte(b.String()), 0o644)
+	return transcript.WriteFileAtomic(filepath.Join(filepath.Dir(path), "workspace.yaml"), []byte(b.String()))
 }
 
 // yamlString quotes a scalar when YAML would otherwise misread it.

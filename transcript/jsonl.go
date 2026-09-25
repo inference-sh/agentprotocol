@@ -458,14 +458,7 @@ func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
 	}
 
 	path := st.pathFor(s)
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return "", err
-	}
-	tmp := path + ".tmp"
-	if err := os.WriteFile(tmp, buf.Bytes(), 0o644); err != nil {
-		return "", err
-	}
-	if err := os.Rename(tmp, path); err != nil {
+	if err := WriteFileAtomic(path, buf.Bytes()); err != nil {
 		return "", err
 	}
 	if st.cfg.After != nil {
@@ -474,6 +467,27 @@ func (st *jsonlStore) Write(ctx context.Context, s *Session) (string, error) {
 		}
 	}
 	return s.ID, nil
+}
+
+// WriteFileAtomic writes a file an agent loads a session from, creating its
+// directory. The data goes to a temporary file that is renamed into place,
+// so a crash leaves the old file or the new one, never a truncated one that
+// the agent refuses to load. Every file a codec writes goes through it: an
+// index or sidecar left torn is as fatal to loading as the transcript.
+func WriteFileAtomic(path string, data []byte) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	tmp := path + ".tmp"
+	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+		os.Remove(tmp)
+		return err
+	}
+	if err := os.Rename(tmp, path); err != nil {
+		os.Remove(tmp)
+		return err
+	}
+	return nil
 }
 
 // PeekFirstLine reads the first non-empty line of a file and hands it to

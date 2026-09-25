@@ -534,3 +534,47 @@ func TestPortableTextFileAsText(t *testing.T) {
 		t.Errorf("other files changed: %+v %+v", c[2], c[3])
 	}
 }
+
+func TestCompactionText(t *testing.T) {
+	c := &Compaction{Summary: []Entry{text("1", "", RoleUser, "<w>one</w>"), {}, text("2", "", RoleUser, "two")}}
+	if got := c.Text(nil); got != "<w>one</w>\n\ntwo" {
+		t.Errorf("Text(nil) = %q", got)
+	}
+	unwrap := func(s string) string { return strings.TrimSuffix(strings.TrimPrefix(s, "<w>"), "</w>") }
+	if got := c.Text(unwrap); got != "one\n\ntwo" {
+		t.Errorf("Text(unwrap) = %q", got)
+	}
+}
+
+func TestUnkept(t *testing.T) {
+	es := []Entry{
+		{ID: "a", Role: RoleUser},
+		{ID: "b", Role: RoleAssistant},
+		{ID: "c", Role: RoleOpaque, Compaction: &Compaction{Keep: "b"}},
+		{ID: "d", Role: RoleUser},
+	}
+	got := Unkept(es)
+	var ids []string
+	for _, e := range got {
+		ids = append(ids, e.ID)
+	}
+	if strings.Join(ids, ",") != "a,c,b,d" || got[1].Compaction.Keep != "" {
+		t.Errorf("Unkept order = %v, keep %q", ids, got[1].Compaction.Keep)
+	}
+	if es[2].Compaction.Keep != "b" {
+		t.Error("Unkept changed its input")
+	}
+}
+
+func TestWriteFileAtomic(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "a", "b.json")
+	if err := WriteFileAtomic(path, []byte("x")); err != nil {
+		t.Fatal(err)
+	}
+	if data, err := os.ReadFile(path); err != nil || string(data) != "x" {
+		t.Errorf("read %q, %v", data, err)
+	}
+	if _, err := os.Stat(path + ".tmp"); !os.IsNotExist(err) {
+		t.Errorf("temporary file left behind: %v", err)
+	}
+}

@@ -354,11 +354,11 @@ func media(b block, toolID string) (transcript.Block, bool) {
 	out.MediaType = b.Source.MediaType
 	switch b.Source.Type {
 	case "base64":
-		data, err := base64.StdEncoding.DecodeString(b.Source.Data)
-		if err != nil {
+		m, ok := transcript.MediaBlock(out.Kind, out.MediaType, b.Source.Data, toolID)
+		if !ok {
 			return transcript.Block{}, false
 		}
-		out.Data = data
+		out.Data = m.Data
 	case "text":
 		out.Data = []byte(b.Source.Data)
 	case "url":
@@ -393,7 +393,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	// writes it.
 	returned := map[string][]block{}
 	for _, b := range e.Content {
-		if (b.Kind == transcript.BlockImage || b.Kind == transcript.BlockFile) && b.ToolID != "" {
+		if b.IsMedia() && b.ToolID != "" {
 			if m, ok := encodeMedia(b); ok {
 				returned[b.ToolID] = append(returned[b.ToolID], m)
 			}
@@ -578,16 +578,11 @@ func compactions(s *transcript.Session) {
 		}
 		markers = append(markers, marker{len(out), keep})
 		out = append(out, e)
-		var text []string
-		for _, m := range e.Compaction.Summary {
-			if t := m.Text(); t != "" {
-				text = append(text, t)
-			}
-		}
-		if len(text) == 0 {
+		text := e.Compaction.Text(nil)
+		if text == "" {
 			continue
 		}
-		body := summaryIntro + strings.Join(text, "\n\n")
+		body := summaryIntro + text
 		if keep >= 0 {
 			body += keptNote
 		}

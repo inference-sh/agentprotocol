@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/claude"
 	"github.com/inference-sh/agentprotocol/transcript/copilot"
 	"github.com/inference-sh/agentprotocol/transcript/gemini"
 	"github.com/inference-sh/agentprotocol/transcript/kimi"
@@ -207,5 +208,114 @@ func TestAlternates(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// TestTrailingPrompt moves Claude's compacted sample, which ends on the
+// /compact exchange Claude records as user messages, into kiro. kiro fails
+// the next request of a history ending on a user message, so the prompt is
+// followed by a CancelledPrompt row, kiro's own for a prompt it got no answer
+// to: the prompt stays in the session for the person and is not given to
+// the model.
+func TestTrailingPrompt(t *testing.T) {
+	src, err := claude.Codec.Open("../claude/testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := src.Read(t.Context(), "6deafb15-b5f3-476d-85d6-0d87ecca9ff4")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.ID = ""
+	home := t.TempDir()
+	dst, err := Codec.Open(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := dst.Write(t.Context(), s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(filepath.Join(home, ".kiro", "sessions", "cli", id+".jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	rows := strings.Split(strings.TrimSpace(string(raw)), "\n")
+	if n := len(rows); n < 2 || rows[n-1] != `{"version":"v1","kind":"CancelledPrompt"}` || !strings.Contains(rows[n-2], `"kind":"Prompt"`) {
+		t.Fatalf("last rows = %.200q", rows[max(0, len(rows)-2):])
+	}
+	back, err := dst.Read(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, lin := back.Context(), back.Linearize()
+	if last := ctx[len(ctx)-1]; last.Role != transcript.RoleAssistant {
+		t.Errorf("the model is given %s %.60q last", last.Role, last.Text())
+	}
+	if last := lin[len(lin)-1]; last.Role != transcript.RoleUser || !strings.Contains(last.Text(), "/compact") {
+		t.Errorf("the person is shown %s %.60q last", last.Role, last.Text())
+	}
+}
+
+// TestCompactionOpensWithPrompt moves Claude's compacted sample into kiro.
+// Claude's compaction keeps nothing, and its model's answer comes right
+// after the boundary; a kiro history opening with that answer fails its
+// first request. The Compaction row keeps the answer's turn from its prompt
+// on, so the model is given the summary, that prompt, its tool call and
+// result, and the answer, and nothing is lost or repeated.
+func TestCompactionOpensWithPrompt(t *testing.T) {
+	src, err := claude.Codec.Open("../claude/testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := src.Read(t.Context(), "6deafb15-b5f3-476d-85d6-0d87ecca9ff4")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.ID = ""
+	dst, err := Codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := dst.Write(t.Context(), s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	back, err := dst.Read(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, e := range back.Context() {
+		line := string(e.Role) + ": " + e.Text()
+		for _, b := range e.Content {
+			if b.Kind == transcript.BlockToolUse || b.Kind == transcript.BlockToolResult {
+				line += string(b.Kind)
+			}
+		}
+		if strings.HasPrefix(e.Text(), summaryPrefix) {
+			line = "summary"
+		}
+		got = append(got, line)
+	}
+	want := []string{
+		"summary",
+		"user: What is the project codename? Reply ONLY the codename.",
+		"assistant: tool_use",
+		"tool: tool_result",
+		"assistant: Hello from mock server.",
+		"user: Tell me more about the project.",
+		"assistant: Hello from mock server.",
+	}
+	if !slices.Equal(got, want) {
+		t.Errorf("context =\n  %q\nwant\n  %q", got, want)
+	}
+	if n := strings.Count(back.Context()[0].Text(), "This session is being continued"); n != 1 {
+		t.Errorf("summary given %d times", n)
+	}
+	for _, e := range back.Linearize() {
+		if strings.HasPrefix(e.Text(), summaryPrefix) {
+			t.Error("the summary is shown as a message")
+		}
 	}
 }

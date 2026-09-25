@@ -82,6 +82,8 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 func prepare(home string, s *transcript.Session) error {
 	if s.Agent != "kiro" {
 		alternate(s)
+		cancelLast(s)
+		keepAnsweredPrompts(s)
 		kept := keptFrom(s)
 		transcript.AssignIDs(s, transcript.UUIDs, false)
 		snapshot(s, kept)
@@ -142,6 +144,74 @@ func alternate(s *transcript.Session) {
 		}
 	}
 	s.Entries = out
+}
+
+// cancelledPrompt is kiro's row for a prompt that got no answer.
+var cancelledPrompt = json.RawMessage(`{"version":"v1","kind":"CancelledPrompt"}`)
+
+// cancelLast follows a portable session's last prompt with a CancelledPrompt
+// row when nothing answered it. kiro fails the next request of a history
+// ending on a user message, since the prompt it sends next would be a second
+// one in a row. The row keeps the prompt in the session and shown on
+// session/load, and out of what the model is given, which is how kiro treats
+// a prompt it cancelled; the person's next prompt then follows an answer.
+func cancelLast(s *transcript.Session) {
+	for i := len(s.Entries) - 1; i >= 0; i-- {
+		switch s.Entries[i].Role {
+		case transcript.RoleUser:
+			s.Entries = append(s.Entries, transcript.Entry{Raw: cancelledPrompt})
+			return
+		case transcript.RoleAssistant, transcript.RoleTool:
+			return
+		}
+		if s.Entries[i].Compaction != nil {
+			return
+		}
+	}
+}
+
+// keepAnsweredPrompts gives a compaction that keeps nothing, and is followed
+// by an answer, the turn that answer belongs to: kiro sends a compaction's
+// summary at the head of the first prompt after it and fails the first
+// request of a history that opens with an answer ("invalid conversation
+// history received"). Claude's compaction, for one, keeps nothing and its
+// model answers the summary itself. The kept range reaches back to the
+// answer's prompt, which moves from the history the compaction retired to
+// what it keeps, as keptFrom does for a range starting inside a turn. An
+// answer with no prompt before it, back to the start or an earlier
+// compaction, has nothing to open the history with and is left out.
+func keepAnsweredPrompts(s *transcript.Session) {
+	for i := 0; i < len(s.Entries); i++ {
+		c := s.Entries[i].Compaction
+		if c == nil || c.Keep != "" {
+			continue
+		}
+		next := -1
+		for k := i + 1; k < len(s.Entries) && s.Entries[k].Compaction == nil; k++ {
+			if r := s.Entries[k].Role; r == transcript.RoleUser || r == transcript.RoleAssistant || r == transcript.RoleTool {
+				next = k
+				break
+			}
+		}
+		if next < 0 || s.Entries[next].Role != transcript.RoleAssistant {
+			continue
+		}
+		prompt := -1
+		for k := i - 1; k >= 0 && s.Entries[k].Compaction == nil; k-- {
+			if s.Entries[k].Role == transcript.RoleUser {
+				prompt = k
+				break
+			}
+		}
+		if prompt < 0 {
+			s.Entries = slices.Delete(s.Entries, next, next+1)
+			continue
+		}
+		if s.Entries[prompt].ID == "" {
+			s.Entries[prompt].ID = transcript.NewUUID()
+		}
+		c.Keep = s.Entries[prompt].ID
+	}
 }
 
 // keptFrom finds, for each compaction of a portable session, the index of
@@ -490,9 +560,13 @@ func encodeImage(b transcript.Block) (block, bool, error) {
 // kiro gives the model, after a Compaction row, a context entry holding the
 // row's summary and then the messages the row's snapshot kept; after a Clear
 // row, nothing from before it. session/load replays every message either
-// way. The Rewind command forks into a new session and leaves this one as it
-// was, and a cancelled prompt is answered with an ordinary message, so
-// neither needs anything here.
+// way. A CancelledPrompt row takes the user message before it out of what
+// the model is given, which session/load still replays (event_log.rs in
+// kiro-cli-chat 2.24.0: "CancelledPrompt: expected last message to be user
+// message"). The Rewind command forks into a new session and leaves this
+// one as it was, and a prompt cancelled over ACP is answered with an
+// ordinary message ("Response was interrupted by the user"), so neither
+// needs anything here.
 func compacted(s *transcript.Session) error {
 	for i := range s.Entries {
 		e := &s.Entries[i]
@@ -504,6 +578,17 @@ func compacted(s *transcript.Session) error {
 			continue
 		}
 		switch r.Kind {
+		case "CancelledPrompt":
+			for j := i - 1; j >= 0; j-- {
+				m := &s.Entries[j]
+				if m.Role == transcript.RoleOpaque {
+					continue
+				}
+				if m.Role == transcript.RoleUser || m.Role == transcript.RoleTool {
+					m.Audience = transcript.AudienceUser
+				}
+				break
+			}
 		case "Clear":
 			e.Compaction = &transcript.Compaction{}
 		case "Compaction":

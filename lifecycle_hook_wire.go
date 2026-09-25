@@ -47,14 +47,21 @@ type ContextInjection struct {
 	Role     string `json:"role,omitempty"`      // default "system"
 	TTLTurns int    `json:"ttl_turns,omitempty"` // 0 = permanent
 	DedupKey string `json:"dedup_key,omitempty"` // new injection with same key supersedes prior
+	// Items names what this injection put in front of the model — resource
+	// refs, file paths, whatever the producer deals in. A hook that offers the
+	// same things every turn reads its own past Items back to see what it has
+	// already offered, instead of keeping a ledger somewhere else and hoping
+	// the two stay in step.
+	Items []string `json:"items,omitempty"`
 }
 
 // ContextInjectionMeta is stored on ChatMessage.InjectionMeta for injected messages.
 type ContextInjectionMeta struct {
-	InjectedAtTurn int    `json:"injected_at_turn"`
-	TTLTurns       int    `json:"ttl_turns"`
-	DedupKey       string `json:"dedup_key,omitempty"`
-	Source         string `json:"source,omitempty"` // hook handler that produced this injection
+	InjectedAtTurn int      `json:"injected_at_turn"`
+	TTLTurns       int      `json:"ttl_turns"`
+	DedupKey       string   `json:"dedup_key,omitempty"`
+	Source         string   `json:"source,omitempty"` // hook handler that produced this injection
+	Items          []string `json:"items,omitempty"`  // what this injection named; see ContextInjection.Items
 }
 
 // CompactionMeta is stored on ChatMessage for context compaction markers.

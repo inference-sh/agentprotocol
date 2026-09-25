@@ -83,4 +83,85 @@ const (
 	HookHandlerWebhook HookHandlerType = "webhook"
 	HookHandlerTask    HookHandlerType = "task"
 	HookHandlerGate    HookHandlerType = "gate"
+	HookHandlerBuiltin HookHandlerType = "builtin"
 )
+
+var validHandlerTypes = map[HookHandlerType]bool{
+	HookHandlerWebhook: true,
+	HookHandlerTask:    true,
+	HookHandlerGate:    true,
+	HookHandlerBuiltin: true,
+}
+
+func (t HookHandlerType) IsValid() bool {
+	return validHandlerTypes[t]
+}
+
+// BuiltinHook names a hook handler the platform implements itself. A builtin
+// runs in-process on the turn that fired it: no URL to host, no round trip, no
+// agent spawn. That is what lets it return an injection at all — a task hook
+// spawns an agent and discards its answer, so only webhook, gate and builtin
+// can put anything into context.
+//
+// This registry is the single source of truth. The runtime dispatches from it,
+// agent config is validated against it, and clients enumerate it to show what
+// an agent can switch on without hosting anything.
+type BuiltinHook string
+
+const (
+	// BuiltinHookBeltSuggest searches the team's skills, knowledge and apps
+	// for what the turn is about and injects the matches, so an agent picks up
+	// procedural knowledge it was never prompted with.
+	BuiltinHookBeltSuggest BuiltinHook = "belt:suggest"
+)
+
+// BuiltinHookDefinition describes a builtin hook and where it may be used.
+type BuiltinHookDefinition struct {
+	Name        BuiltinHook `json:"name"`
+	Description string      `json:"description"`
+	// Events the builtin may be attached to. A builtin that reads the turn's
+	// prompt is meaningless on agent.complete, so the set is part of its
+	// definition rather than a convention.
+	Events []HookEvent `json:"events"`
+}
+
+var builtinHookDefs = []BuiltinHookDefinition{
+	{
+		Name:        BuiltinHookBeltSuggest,
+		Description: "Search skills, knowledge and apps for this turn's prompt and inject the matches",
+		Events:      []HookEvent{HookEventTurnStart},
+	},
+}
+
+var builtinHooksByName map[BuiltinHook]BuiltinHookDefinition
+
+func init() {
+	builtinHooksByName = make(map[BuiltinHook]BuiltinHookDefinition, len(builtinHookDefs))
+	for _, d := range builtinHookDefs {
+		builtinHooksByName[d.Name] = d
+	}
+}
+
+func (b BuiltinHook) IsValid() bool {
+	_, ok := builtinHooksByName[b]
+	return ok
+}
+
+// SupportsEvent reports whether the builtin may be attached to an event.
+func (b BuiltinHook) SupportsEvent(e HookEvent) bool {
+	def, ok := builtinHooksByName[b]
+	if !ok {
+		return false
+	}
+	for _, allowed := range def.Events {
+		if allowed == e {
+			return true
+		}
+	}
+	return false
+}
+
+// BuiltinHookDefinitions returns the canonical list of builtin hooks.
+func BuiltinHookDefinitions() []BuiltinHookDefinition {
+	return builtinHookDefs
+}

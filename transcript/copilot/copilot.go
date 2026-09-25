@@ -19,6 +19,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"mime"
 	"os"
 	"path/filepath"
 	"slices"
@@ -610,20 +611,23 @@ func (a attachment) block(assets map[string]binary) (transcript.Block, bool, err
 	if a.Type != "file" && a.Type != "blob" {
 		return transcript.Block{}, false, nil
 	}
-	data, mime := a.Data, a.MimeType
+	data, mt := a.Data, a.MimeType
 	if asset, ok := assets[a.AssetID]; ok && data == "" {
-		data, mime = asset.Data, asset.MimeType
+		data, mt = asset.Data, asset.MimeType
 	}
-	image := strings.HasPrefix(mime, "image/")
+	if mt == "" {
+		mt = a.extensionType()
+	}
+	image := strings.HasPrefix(mt, "image/")
 	var b transcript.Block
 	switch {
 	case data != "":
 		var err error
-		if b, err = binaryBlock(image, mime, data); err != nil {
+		if b, err = binaryBlock(image, mt, data); err != nil {
 			return transcript.Block{}, false, err
 		}
 	case a.Path != "":
-		b = transcript.Block{Kind: transcript.BlockFile, MediaType: mime, URI: a.Path}
+		b = transcript.Block{Kind: transcript.BlockFile, MediaType: mt, URI: a.Path}
 		if image {
 			b.Kind = transcript.BlockImage
 		}
@@ -636,8 +640,25 @@ func (a attachment) block(assets map[string]binary) (transcript.Block, bool, err
 	return b, true, nil
 }
 
+// extensionType is the media type of an attachment's file by its
+// extension, without parameters; empty when the extension is unknown.
+// Copilot records a type only for an image it sends natively; a file it
+// lists in <tagged_files> (a text file an ACP client embedded, say) has
+// just its path.
+func (a attachment) extensionType() string {
+	name := a.Path
+	if name == "" {
+		name = a.DisplayName
+	}
+	mt, _, err := mime.ParseMediaType(mime.TypeByExtension(filepath.Ext(name)))
+	if err != nil {
+		return ""
+	}
+	return mt
+}
+
 // binaryBlock decodes base64 bytes into an image or file block.
-func binaryBlock(image bool, mime, data string) (transcript.Block, error) {
+func binaryBlock(image bool, mt, data string) (transcript.Block, error) {
 	raw, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
 		return transcript.Block{}, fmt.Errorf("binary data: %w", err)
@@ -646,7 +667,7 @@ func binaryBlock(image bool, mime, data string) (transcript.Block, error) {
 	if image {
 		kind = transcript.BlockImage
 	}
-	return transcript.Block{Kind: kind, MediaType: mime, Data: raw}, nil
+	return transcript.Block{Kind: kind, MediaType: mt, Data: raw}, nil
 }
 
 // resumeLead opens the message that stands in for compacted history.
@@ -741,7 +762,12 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			return nil, nil
 		}
 		// Copilot records a compaction's summary as the model wrote it and
-		// wraps it when it resumes (see finish).
+		// wraps it when it resumes (see finish). The wrapping lists, word
+		// for word, every prompt the person gave before the compaction, the
+		// retired ones included, so a retired prompt reaches the model on
+		// resume inside that message. That is Copilot's own shape: its
+		// context after its own compaction carries the same list (the
+		// messages_snapshot of sample ec590b04, Copilot CLI 1.0.88).
 		ev.Type = "session.compaction_complete"
 		data = compactionComplete{Success: true, SummaryContent: storedSummary(e.Compaction.Summary)}
 	case transcript.RoleUser, transcript.RoleSystem:

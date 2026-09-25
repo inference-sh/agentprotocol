@@ -203,7 +203,11 @@ func isSummary(e transcript.Entry) bool {
 // hideSummaryOutput marks the model's answer to a local compaction request
 // as not shown. Codex records that answer in the history before replacing
 // the history with it, and never displays it as a message
-// (core/src/compact.rs: the summary is the last assistant message).
+// (core/src/compact.rs: the summary is the last assistant message). The
+// compaction turn records no prompt of its own, so that answer follows the
+// previous turn's last item; an answer right after a prompt answers the
+// prompt, and is shown even when its text is the summary's (a session
+// another agent wrote, whose last answer and summary can read the same).
 func hideSummaryOutput(s *transcript.Session, comp int, message string) {
 	summary, ok := strings.CutPrefix(message, summaryPrefix+"\n")
 	if !ok {
@@ -211,11 +215,21 @@ func hideSummaryOutput(s *transcript.Session, comp int, message string) {
 	}
 	for k := comp - 1; k >= 0; k-- {
 		e := &s.Entries[k]
-		if e.Role == transcript.RoleAssistant && e.Text() != "" {
-			if e.Text() == summary && e.Audience == transcript.AudienceAll {
-				e.Audience = transcript.AudienceModel
-			}
+		if e.Role != transcript.RoleAssistant || e.Text() == "" {
+			continue
+		}
+		if e.Text() != summary || e.Audience != transcript.AudienceAll {
 			return
 		}
+		for j := k - 1; j >= 0; j-- {
+			if p := s.Entries[j]; p.Role != transcript.RoleOpaque {
+				if p.Role == transcript.RoleUser && p.Audience == transcript.AudienceAll {
+					return
+				}
+				break
+			}
+		}
+		e.Audience = transcript.AudienceModel
+		return
 	}
 }

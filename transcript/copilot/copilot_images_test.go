@@ -40,7 +40,8 @@ func kinds(bs []transcript.Block) []transcript.BlockKind {
 }
 
 // TestImages reads the prompt's image from the session.binary_asset its
-// attachment names, the embedded resource as the file Copilot saved it to,
+// attachment names, the embedded resource as the file Copilot saved it to
+// (typed by its extension, as Copilot records no type for it),
 // and the image view returned after the tool's result; and gives the model
 // each prompt as Copilot sent it on resume.
 func TestImages(t *testing.T) {
@@ -76,7 +77,8 @@ func TestImages(t *testing.T) {
 
 	res := users[1]
 	if len(res.Content) != 2 || res.Content[1].Kind != transcript.BlockFile ||
-		res.Content[1].URI != "/tmp/acp-resource-4b85201a-9c36-4b8b-83bf-1d82d0e73d9e.txt" || res.Content[1].Name != "notes.txt" {
+		res.Content[1].URI != "/tmp/acp-resource-4b85201a-9c36-4b8b-83bf-1d82d0e73d9e.txt" || res.Content[1].Name != "notes.txt" ||
+		res.Content[1].MediaType != "text/plain" {
 		t.Errorf("resource prompt: %+v", res.Content)
 	}
 	const sent = "<current_datetime>2026-09-24T10:09:44.060+00:00</current_datetime>\n\nread the attached notes\n[Resource link: file:///tmp/other.md]\n\n\n\n<tagged_files>\n* /tmp/acp-resource-4b85201a-9c36-4b8b-83bf-1d82d0e73d9e.txt (1 lines)\n</tagged_files>"

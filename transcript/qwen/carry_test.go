@@ -6,6 +6,7 @@ import (
 
 	"github.com/inference-sh/agentprotocol/transcript"
 	"github.com/inference-sh/agentprotocol/transcript/claude"
+	"github.com/inference-sh/agentprotocol/transcript/grok"
 	"github.com/inference-sh/agentprotocol/transcript/pi"
 )
 
@@ -117,5 +118,40 @@ func TestCarriedKeepAndShownOnly(t *testing.T) {
 	}
 	if !kept {
 		t.Error("the kept turn does not travel on with the compaction")
+	}
+}
+
+// TestCarriedRetiredToolCall moves grok's resumed compacted sample (a
+// session grok resumed in the harness-test container) into Qwen. grok shows
+// the history its compaction retired and no longer sends it, a tool call
+// and its result among it. Qwen keeps that history in the rows before its
+// chat_compression, the call and result included, and the model gets
+// neither.
+func TestCarriedRetiredToolCall(t *testing.T) {
+	back := carry(t, grok.Codec, "../grok/testdata/home", "69722182-94aa-4598-a445-42cdcbf44bd9")
+	const hello = "assistant: Hello from mock server."
+	same(t, "linearize", firstLines(back.Linearize()), []string{
+		"user: What is the project codename? Reply ONLY the codename.",
+		"assistant: ",
+		"tool: ",
+		hello,
+		"user: What files are in this repository?",
+		hello,
+		"user: Summarise what you have done so far.",
+		hello,
+		"user: What was the first thing I asked you?",
+		hello,
+		"user: /compress",
+		"user: What was my previous question?",
+		hello,
+		"user: What was my previous question?",
+		hello,
+	})
+	for _, e := range back.Context() {
+		for _, b := range e.Content {
+			if b.Kind == transcript.BlockToolUse || b.Kind == transcript.BlockToolResult {
+				t.Errorf("the retired %s reaches the model", b.Kind)
+			}
+		}
 	}
 }

@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
 
@@ -523,8 +524,43 @@ func prepare(home string, s *transcript.Session) error {
 	if s.Agent != agent && !sessionFile.MatchString(s.ID+".jsonl") {
 		s.ID = transcript.NewUUID()
 	}
+	restoreRetired(s)
 	compactions(s)
 	return nil
+}
+
+// restoreRetired makes an entry a new compaction marker retires, which the
+// source agent showed and no longer sent, an ordinary row again when a
+// shown-only realtime row, which holds a prompt's or an answer's text
+// alone, would lose part of it: a tool call, its result, an image. Qwen
+// keeps the rows before a chat_compression for the person and gives the
+// model the compressed history instead, so the row stays out of the
+// model's view all the same.
+func restoreRetired(s *transcript.Session) {
+	for i, e := range s.Entries {
+		c := e.Compaction
+		if c == nil || e.Raw != nil {
+			continue
+		}
+		upto := i
+		if k := slices.IndexFunc(s.Entries[:i], func(m transcript.Entry) bool { return c.Keep != "" && m.ID == c.Keep }); k >= 0 {
+			upto = k
+		}
+		for k := range s.Entries[:upto] {
+			if m := &s.Entries[k]; m.Raw == nil && m.Compaction == nil && m.Audience == transcript.AudienceUser && !realtimeHolds(*m) {
+				m.Audience = transcript.AudienceAll
+			}
+		}
+	}
+}
+
+// realtimeHolds reports whether a realtime_message row holds all of an
+// entry: a prompt's or an answer's text and nothing else.
+func realtimeHolds(e transcript.Entry) bool {
+	if e.Role != transcript.RoleUser && e.Role != transcript.RoleAssistant {
+		return false
+	}
+	return !slices.ContainsFunc(e.Content, func(b transcript.Block) bool { return b.Kind != transcript.BlockText })
 }
 
 // resumeTrailer and acknowledgement are what composePostCompactHistory

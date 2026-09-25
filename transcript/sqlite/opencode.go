@@ -957,6 +957,7 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 	// first message it keeps.
 	held := map[string]string{}
 	lastAnswer := ""
+	retired := openRetired(s.Entries)
 	for i, e := range s.Entries {
 		if e.Raw != nil {
 			continue
@@ -986,8 +987,14 @@ func (st *openStore) Write(ctx context.Context, s *transcript.Session) (string, 
 		// An entry shown and not sent is its text, marked ignored, which
 		// the model is not given and the TUI shows (message-v2.ts
 		// toModelMessages). Only a prompt can be one in opencode; Kilo
-		// also ignores an answer's text.
+		// also ignores an answer's text. History a later compaction
+		// retires that ignored text cannot hold (a tool call, an image,
+		// opencode's answers) is written as it is: the compaction keeps
+		// it from the model all the same (filterCompacted).
 		shownOnly := e.Audience == transcript.AudienceUser
+		if shownOnly && retired[i] && !openIgnorable(e, kilo) {
+			shownOnly = false
+		}
 		if shownOnly && (len(openIgnored(e)) == 0 || e.Role == transcript.RoleAssistant && !kilo) {
 			continue
 		}
@@ -1059,6 +1066,36 @@ func openKept(before []transcript.Entry, keep string, held map[string]string) st
 		}
 	}
 	return ""
+}
+
+// openRetired reports, for each new entry, whether a compaction marker
+// after it retires it: it comes before the marker and before the first
+// entry the marker keeps.
+func openRetired(entries []transcript.Entry) map[int]bool {
+	out := map[int]bool{}
+	for i, e := range entries {
+		c := e.Compaction
+		if c == nil || e.Raw != nil {
+			continue
+		}
+		upto := i
+		if k := slices.IndexFunc(entries[:i], func(m transcript.Entry) bool { return c.Keep != "" && m.ID == c.Keep }); k >= 0 {
+			upto = k
+		}
+		for k := range upto {
+			out[k] = entries[k].Compaction == nil
+		}
+	}
+	return out
+}
+
+// openIgnorable reports whether ignored text holds all of an entry: a
+// prompt's text, or in Kilo an answer's.
+func openIgnorable(e transcript.Entry, kilo bool) bool {
+	if e.Role != transcript.RoleUser && (e.Role != transcript.RoleAssistant || !kilo) {
+		return false
+	}
+	return !slices.ContainsFunc(e.Content, func(b transcript.Block) bool { return b.Kind != transcript.BlockText })
 }
 
 // openIgnored is a shown-only entry as parts: its text, ignored. Its images
@@ -1403,8 +1440,8 @@ func openParts(e transcript.Entry, results map[string]toolResult, ms int64, newP
 			text := b.Text
 			parts = append(parts, openPartOut{Type: "text", Text: &text})
 		case transcript.BlockImage, transcript.BlockFile:
-			if e.Role == transcript.RoleUser && b.ToolID == "" {
-				parts = append(parts, openPartOut{Type: "file", openFile: openFileOf(b)})
+			if f, ok := openFileOf(b); ok && e.Role == transcript.RoleUser && b.ToolID == "" {
+				parts = append(parts, openPartOut{Type: "file", openFile: f})
 			}
 		case transcript.BlockReasoning:
 			text := b.Text
@@ -1424,8 +1461,17 @@ func openParts(e transcript.Entry, results map[string]toolResult, ms int64, newP
 				out, title := r.text, b.Name
 				st.Output, st.Title = &out, &title
 				for _, m := range r.media {
+					// opencode sends a tool's attachment only as the bytes
+					// of a data: URL, and a media one a provider takes no
+					// media from in a tool result as a file part in a user
+					// message, so an attachment without its bytes is left
+					// out (message-v2.ts toModelOutput, toModelMessages).
+					if len(m.Data) == 0 {
+						continue
+					}
 					a := newPart()
-					a.Type, a.openFile = "file", openFileOf(m)
+					f, _ := openFileOf(m)
+					a.Type, a.openFile = "file", f
 					st.Attachments = append(st.Attachments, a)
 				}
 			}
@@ -1435,19 +1481,36 @@ func openParts(e transcript.Entry, results map[string]toolResult, ms int64, newP
 	return parts
 }
 
-// openFileOf is an image or file block as a file part holds it. opencode
-// sends the model a file part's URL as it is and reads bytes only from a
-// data: URL, so a block with its bytes becomes one; a path it points at
-// becomes a file: URL, the form opencode keeps a local file in.
-func openFileOf(b transcript.Block) openFile {
+// openFileOf is an image or file block as a file part holds it, and
+// whether opencode can hold it. opencode hands the provider a file part's
+// URL as it is (message-v2.ts toModelMessages), and the AI SDK takes only
+// http:, https: and data: URLs, refusing the request otherwise; so a block
+// with its bytes becomes a data: URL, and a remote URL stays. A local path
+// becomes a file: URL only for a text file or a directory, the one form
+// opencode keeps a local file in: its prompt reads any other local file
+// into a data: URL before storing it (prompt.ts), and never sends the model
+// a text file's or directory's part. Any other path, with no bytes to send,
+// has no form here and is left out, as is a provider's upload id.
+func openFileOf(b transcript.Block) (openFile, bool) {
 	f := openFile{Mime: b.MediaType, Filename: b.Name, URL: mediaURL(b)}
 	if f.Mime == "" {
 		f.Mime = "application/octet-stream"
 	}
-	if filepath.IsAbs(f.URL) {
-		f.URL = (&neturl.URL{Scheme: "file", Path: f.URL}).String()
+	if len(b.Data) > 0 {
+		return f, true
 	}
-	return f
+	if u, err := neturl.Parse(f.URL); err == nil && (u.Scheme == "http" || u.Scheme == "https" || u.Scheme == "data") {
+		return f, true
+	}
+	path := f.URL
+	if u, err := neturl.Parse(path); err == nil && u.Scheme == "file" {
+		path = u.Path
+	}
+	if !filepath.IsAbs(path) || f.Mime != "text/plain" && f.Mime != "application/x-directory" {
+		return openFile{}, false
+	}
+	f.URL = (&neturl.URL{Scheme: "file", Path: path}).String()
+	return f, true
 }
 
 func isObject(raw json.RawMessage) bool {

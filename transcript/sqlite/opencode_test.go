@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/copilot"
+	"github.com/inference-sh/agentprotocol/transcript/grok"
 	"github.com/inference-sh/agentprotocol/transcript/transcripttest"
 )
 
@@ -614,6 +617,110 @@ func TestOpencodeImagesImported(t *testing.T) {
 			// result and image inside the assistant message, Portable in a
 			// tool entry of their own.
 			sameLines(t, "images", media(back.Portable().Lower(transcript.Capabilities{}).Entries), slices.DeleteFunc(want, func(x string) bool { return strings.Contains(x, "text/plain") }))
+		})
+	}
+}
+
+// TestOpencodeFileURLs writes Copilot's image sample (a container run of
+// Copilot CLI 1.0.88: a pasted PNG, an embedded text file Copilot keeps by
+// path, a tool's PNG) and an image known only by its path into opencode and
+// Kilo. Each file part's URL is one the AI SDK takes (http:, https:,
+// data:), or a file: URL for a text file, which opencode keeps and never
+// sends; the image with no bytes has no part. The import run found opencode
+// and Kilo refusing the session ("URL scheme must be http, https, or data,
+// got file:").
+func TestOpencodeFileURLs(t *testing.T) {
+	st, err := copilot.Codec.Open("../copilot/testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, codec := range []transcript.Codec{Opencode, Kilo} {
+		agent := codec.(openCodec).agent
+		t.Run(agent, func(t *testing.T) {
+			s, err := st.Read(t.Context(), "d96d5f9f-c78a-4ae3-8c8f-daef56c1200c")
+			if err != nil {
+				t.Fatal(err)
+			}
+			s.Entries = append(s.Entries,
+				transcript.Entry{ID: "by-path", ParentID: s.Entries[len(s.Entries)-1].ID, Role: transcript.RoleUser, Content: []transcript.Block{
+					{Kind: transcript.BlockText, Text: "and this one"},
+					{Kind: transcript.BlockImage, MediaType: "image/png", URI: "/tmp/elsewhere.png"},
+				}})
+			s.Agent, s.ID = "elsewhere", ""
+			home := t.TempDir()
+			id, err := mustOpen(t, codec, home).Write(t.Context(), s)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, row := range dump(t, filepath.Join(home, ".local/share", agent, agent+".db"))["part"] {
+				for _, u := range regexp.MustCompile(`"url":"([a-z]+):`).FindAllStringSubmatch(row, -1) {
+					if u[1] != "data" && !(u[1] == "file" && strings.Contains(row, `"mime":"text/plain"`)) {
+						t.Errorf("file part with a %s: URL: %.200s", u[1], row)
+					}
+				}
+			}
+			back := readSample(t, codec, home, id)
+			sameLines(t, "shown", media(back.Linearize()), []string{
+				"user: image image/png   73",
+				"user: file text/plain notes.txt  file:///tmp/acp-resource-4b85201a-9c36-4b8b-83bf-1d82d0e73d9e.txt",
+				"assistant: image image/png  call_mock_1 72",
+			})
+			sameLines(t, "sent", media(back.Context()), []string{
+				"user: image image/png   73",
+				"assistant: image image/png  call_mock_1 72",
+			})
+		})
+	}
+}
+
+// TestOpencodeRetiredToolCall writes grok's resumed compacted sample (a
+// session grok resumed in the harness-test container) into opencode and
+// Kilo. grok shows the history its compaction retired and no longer sends
+// it, a tool call and its result among it, which ignored text cannot hold.
+// It is written as ordinary history before the compaction, which keeps it
+// from the model: the person is shown the call and its result, and the
+// model is given neither.
+func TestOpencodeRetiredToolCall(t *testing.T) {
+	st, err := grok.Codec.Open("../grok/testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, codec := range []transcript.Codec{Opencode, Kilo} {
+		t.Run(codec.(openCodec).agent, func(t *testing.T) {
+			s, err := st.Read(t.Context(), "69722182-94aa-4598-a445-42cdcbf44bd9")
+			if err != nil {
+				t.Fatal(err)
+			}
+			s.Agent, s.ID = "elsewhere", ""
+			home := t.TempDir()
+			id, err := mustOpen(t, codec, home).Write(t.Context(), s)
+			if err != nil {
+				t.Fatal(err)
+			}
+			back := readSample(t, codec, home, id)
+			tools := func(es []transcript.Entry) []string {
+				var out []string
+				for _, e := range es {
+					for _, b := range e.Content {
+						if b.Kind == transcript.BlockToolUse || b.Kind == transcript.BlockToolResult {
+							out = append(out, string(b.Kind)+" "+b.ToolID)
+						}
+					}
+				}
+				return out
+			}
+			sameLines(t, "shown", tools(back.Linearize()), []string{"tool_use call_mock_1", "tool_result call_mock_1"})
+			sameLines(t, "sent", tools(back.Context()), nil)
+			// The summary's answer is shown too, as opencode shows its own.
+			answers := 0
+			for _, e := range back.Linearize() {
+				if e.Role == transcript.RoleAssistant && e.Text() == "Hello from mock server." {
+					answers++
+				}
+			}
+			if answers != 6 {
+				t.Errorf("%d answers shown, want the 6 grok showed", answers)
+			}
 		})
 	}
 }

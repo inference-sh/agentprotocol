@@ -256,7 +256,11 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 			model.Entries = append(model.Entries, e)
 		case e.Compaction != nil:
 			// grok compacts to the messages it keeps and then the summary
-			// (build_compacted_history in xai-chat-state compaction_utils.rs).
+			// (build_compacted_history in xai-chat-state compaction_utils.rs:
+			// summary_before_recent needs a carrier grok-build does not
+			// compile in), so on resume the model is given the kept entries
+			// first and the summary after them, as after grok's own
+			// compaction.
 			c := p.compactions[e.ID]
 			for k, m := range model.Entries {
 				if e.Compaction.Keep != "" && m.ID == e.Compaction.Keep {

@@ -60,3 +60,35 @@ func TestCarriedCompaction(t *testing.T) {
 		t.Errorf("summary = %q, want pi's summary", ctx[0].Text())
 	}
 }
+
+// TestCarriedAnswerBeforeCompaction moves Codex's own compacted sample (a
+// harness-test container run whose mock model answers every request, the
+// compaction's included, with the same text) back in as another agent's
+// session. The answer right before the compaction reads the same as the
+// summary, and is still shown: it answers a prompt, which the compaction's
+// own answer never does.
+func TestCarriedAnswerBeforeCompaction(t *testing.T) {
+	src, err := codex.Codec.Open("testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := src.Read(t.Context(), "01a0d2bd-6231-7420-8e6e-f0e9d20b29cd")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := texts(s.Linearize())
+	s.Agent, s.ID = "elsewhere", ""
+	st, err := codex.Codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	back, err := st.Read(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	equal(t, "linearize", texts(back.Linearize()), want)
+}

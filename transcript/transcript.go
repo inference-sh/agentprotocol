@@ -549,31 +549,43 @@ func (s *Session) retired() map[int]bool {
 	return out
 }
 
-// splitResults puts an entry's tool results in a tool entry of their own,
-// after the entry with the rest, which is the shape every writer takes:
-// opencode files a call's result inside the assistant message that made
-// it. An image or file a tool returned goes with its result. The tool
-// entry's ID is derived from the entry's, so Keep still names the first.
+// splitResults gives each tool result an entry of its own, with any image
+// or file the tool returned, which is the shape every writer takes: opencode
+// files a call's result inside the assistant message that made it, gemini
+// puts parallel results in one entry, and a writer that records one result
+// per row (pi, copilot, hermes) kept only one of them. The first entry keeps
+// the source entry's ID, so Keep still names it; the rest derive theirs.
 func splitResults(e Entry) []Entry {
-	var rest, results []Block
+	var rest []Block
+	var results [][]Block
 	for _, b := range e.Content {
 		switch {
-		case b.Kind == BlockToolResult, b.ToolID != "" && (b.Kind == BlockImage || b.Kind == BlockFile):
-			results = append(results, b)
+		case b.Kind == BlockToolResult:
+			results = append(results, []Block{b})
+		case b.ToolID != "" && (b.Kind == BlockImage || b.Kind == BlockFile) && len(results) > 0 && results[len(results)-1][0].ToolID == b.ToolID:
+			results[len(results)-1] = append(results[len(results)-1], b)
 		default:
 			rest = append(rest, b)
 		}
 	}
-	if len(results) == 0 || len(rest) == 0 || e.Role == RoleTool {
+	if len(results) == 0 || (len(results) == 1 && len(rest) == 0) {
 		return []Entry{e}
 	}
-	tool := e
-	e.Content, tool.Content = rest, results
-	tool.Role = RoleTool
-	if tool.ID != "" {
-		tool.ID += "-results"
+	var out []Entry
+	if len(rest) > 0 {
+		head := e
+		head.Content = rest
+		out = append(out, head)
 	}
-	return []Entry{e, tool}
+	for n, r := range results {
+		tool := e
+		tool.Role, tool.Content = RoleTool, r
+		if len(out) > 0 && tool.ID != "" {
+			tool.ID = fmt.Sprintf("%s-result-%d", e.ID, n+1)
+		}
+		out = append(out, tool)
+	}
+	return out
 }
 
 // uniqueToolIDs gives every tool call a session carries an ID no other call

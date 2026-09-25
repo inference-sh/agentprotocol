@@ -446,7 +446,11 @@ func TestPortableUniqueToolIDs(t *testing.T) {
 		}},
 	}}
 	p := s.Portable().Entries
-	calls, results := p[0].Content, p[1].Content
+	calls := p[0].Content
+	var results []Block
+	for _, e := range p[1:] {
+		results = append(results, e.Content...)
+	}
 	ids := map[string]bool{}
 	for i := range calls {
 		if ids[calls[i].ToolID] || calls[i].ToolID == "" {
@@ -459,5 +463,25 @@ func TestPortableUniqueToolIDs(t *testing.T) {
 	}
 	if s.Entries[0].Content[1].ToolID != "read" {
 		t.Error("portable changed the source session's blocks")
+	}
+}
+
+// Parallel results filed in one entry travel as one entry each, every
+// image with its own result.
+func TestPortableOneResultPerEntry(t *testing.T) {
+	s := &Session{Entries: []Entry{
+		{ID: "1", Role: RoleAssistant, Content: []Block{
+			{Kind: BlockToolUse, ToolID: "a", Name: "read"},
+			{Kind: BlockToolUse, ToolID: "b", Name: "read"},
+		}},
+		{ID: "2", ParentID: "1", Role: RoleTool, Content: []Block{
+			{Kind: BlockToolResult, ToolID: "a", Text: "ra"},
+			{Kind: BlockImage, ToolID: "a", MediaType: "image/png", Data: []byte{1}},
+			{Kind: BlockToolResult, ToolID: "b", Text: "rb"},
+		}},
+	}}
+	p := s.Portable().Entries
+	if len(p) != 3 || p[1].ID != "2" || len(p[1].Content) != 2 || p[2].Content[0].Text != "rb" || p[2].ID == "2" {
+		t.Fatalf("portable: %+v", p)
 	}
 }

@@ -556,3 +556,20 @@ func TestOMPRemoteCompaction(t *testing.T) {
 		"user: Preserved user", "user: Prior model work/tool state available.\nM", "user: q2",
 	})
 }
+
+// An entry holding several results would lose all but one in pi's
+// one-result messages, so the writer refuses it instead of dropping any.
+func TestToolEntryWithSeveralResults(t *testing.T) {
+	st, err := Codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = st.Write(t.Context(), &transcript.Session{Agent: "pi", CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "q"}}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockToolUse, ToolID: "a", Name: "read"}, {Kind: transcript.BlockToolUse, ToolID: "b", Name: "read"}}},
+		{Role: transcript.RoleTool, Content: []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: "a", Text: "ra"}, {Kind: transcript.BlockToolResult, ToolID: "b", Text: "rb"}}},
+	}})
+	if err == nil {
+		t.Error("a tool entry with two results was written")
+	}
+}

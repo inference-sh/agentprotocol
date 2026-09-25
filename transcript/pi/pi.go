@@ -1595,6 +1595,18 @@ func (v variant) encode(e transcript.Entry, s *transcript.Session) (json.RawMess
 			}
 		}
 	case transcript.RoleTool:
+		// pi keeps one result per toolResult message. Portable gives a
+		// moved session's results an entry each; an entry built by hand
+		// with several would lose all but one, so it is refused.
+		results := 0
+		for _, b := range e.Content {
+			if b.Kind == transcript.BlockToolResult {
+				results++
+			}
+		}
+		if results > 1 {
+			return nil, fmt.Errorf("pi: tool entry %s holds %d results; pi records one per message", e.ID, results)
+		}
 		for _, b := range e.Content {
 			if b.Kind != transcript.BlockToolResult {
 				continue

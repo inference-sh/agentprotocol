@@ -513,3 +513,24 @@ func TestPortableInlinesLocalFiles(t *testing.T) {
 		t.Error("portable changed the source block")
 	}
 }
+
+// A text file moves as text, named, to a writer that records no files; an
+// image and a PDF stay what they are.
+func TestPortableTextFileAsText(t *testing.T) {
+	s := &Session{Entries: []Entry{{ID: "1", Role: RoleUser, Content: []Block{
+		{Kind: BlockText, Text: "read this"},
+		{Kind: BlockFile, MediaType: "text/plain", Name: "notes.md", Data: []byte("the codename is HERON")},
+		{Kind: BlockFile, MediaType: "application/pdf", Name: "doc.pdf", Data: []byte("%PDF")},
+		{Kind: BlockImage, MediaType: "image/png", Data: []byte{1}},
+	}}}}
+	if c := s.Portable().Lower(Capabilities{Files: true}).Entries[0].Content; c[1].Kind != BlockFile {
+		t.Errorf("a writer with files got %+v", c[1])
+	}
+	c := s.Portable().Lower(Capabilities{}).Entries[0].Content
+	if c[1].Kind != BlockText || c[1].Text != "<file name=\"notes.md\">\nthe codename is HERON\n</file>" {
+		t.Errorf("text file: %+v", c[1])
+	}
+	if c[2].Kind != BlockFile || c[3].Kind != BlockImage {
+		t.Errorf("other files changed: %+v %+v", c[2], c[3])
+	}
+}

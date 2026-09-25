@@ -22,11 +22,14 @@ import (
 	"mime"
 	"net/url"
 	"os"
+	"path"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 )
 
 // Role is who produced an entry.
@@ -594,6 +597,27 @@ func inlineLocal(b Block) Block {
 	return b
 }
 
+// asText turns a text file with its bytes into a text block holding its
+// name and contents, for a writer without Files. A model reads a text file
+// as text whichever agent sent it, and most formats have no part for a
+// file the agent sends: opencode turns one into text when the prompt is
+// submitted and never replays the file part, and codex, grok, hermes, kiro
+// and pi keep none. Other files stay files.
+func asText(b Block) Block {
+	if b.Kind != BlockFile || len(b.Data) == 0 || !strings.HasPrefix(b.MediaType, "text/") || !utf8.Valid(b.Data) {
+		return b
+	}
+	name := b.Name
+	if name == "" && b.URI != "" {
+		name = path.Base(b.URI)
+	}
+	text := string(b.Data)
+	if name != "" {
+		text = "<file name=\"" + name + "\">\n" + text + "\n</file>"
+	}
+	return Block{Kind: BlockText, Text: text, ToolID: b.ToolID}
+}
+
 // splitResults gives each tool result an entry of its own, with any image
 // or file the tool returned, which is the shape every writer takes: opencode
 // files a call's result inside the assistant message that made it, gemini
@@ -687,6 +711,9 @@ type Capabilities struct {
 	Compaction bool
 	// UserOnly: the writer can store an entry that is shown and not sent.
 	UserOnly bool
+	// Files: the writer records a text file as a file its agent sends the
+	// model (a document block). Without it a text file travels as text.
+	Files bool
 }
 
 // Lower reduces a portable session to what a writer with these
@@ -697,6 +724,24 @@ type Capabilities struct {
 // from the model, so it travels as ordinary history before the marker.
 // With both, the session is returned as it is.
 func (s *Session) Lower(c Capabilities) *Session {
+	lowered := s.lower(c)
+	if c.Files {
+		return lowered
+	}
+	for i, e := range lowered.Entries {
+		if !slices.ContainsFunc(e.Content, func(b Block) bool { return asText(b).Kind != b.Kind }) {
+			continue
+		}
+		content := make([]Block, len(e.Content))
+		for k, b := range e.Content {
+			content[k] = asText(b)
+		}
+		lowered.Entries[i].Content = content
+	}
+	return lowered
+}
+
+func (s *Session) lower(c Capabilities) *Session {
 	out := *s
 	keep := func(e Entry) bool { return e.Audience.Model() || c.UserOnly }
 	out.Entries = nil

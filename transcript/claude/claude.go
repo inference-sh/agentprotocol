@@ -51,7 +51,9 @@ var Codec = transcript.JSONL{
 	// history before them in the file, which is what another agent's
 	// compaction becomes. It has no row that is shown and never sent other
 	// than an API error it made up itself.
-	Caps: transcript.Capabilities{Compaction: true},
+	// Claude records a compaction as a compact boundary and a summary row,
+	// and sends a text file as a text document.
+	Caps: transcript.Capabilities{Compaction: true, Files: true},
 }
 
 // Vendor is what a Claude session carries in Session.Vendor: the stamps

@@ -370,3 +370,38 @@ func TestRemindersFollowSummary(t *testing.T) {
 		t.Errorf("linearize has %d messages, want the 12 of every turn", n)
 	}
 }
+
+// Parallel calls' results, one entry each after Portable, are written as
+// one message: droid answers a message's calls from the message after it
+// and cancels any call it finds no result for there.
+func TestParallelResultsOneMessage(t *testing.T) {
+	st, err := Codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := st.Write(t.Context(), &transcript.Session{Agent: "elsewhere", CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "q"}}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockToolUse, ToolID: "a", Name: "Read"}, {Kind: transcript.BlockToolUse, ToolID: "b", Name: "Read"}}},
+		{Role: transcript.RoleTool, Content: []transcript.Block{{Kind: transcript.BlockToolResult, ToolID: "a", Text: "ra"}, {Kind: transcript.BlockToolResult, ToolID: "b", Text: "rb"}}},
+		{Role: transcript.RoleAssistant, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "done"}}},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	back, err := st.Read(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var tools int
+	for _, e := range back.Messages() {
+		if e.Role == transcript.RoleTool {
+			tools++
+			if len(e.Content) != 2 {
+				t.Errorf("tool message holds %d results, want 2", len(e.Content))
+			}
+		}
+	}
+	if tools != 1 {
+		t.Errorf("%d tool messages, want 1", tools)
+	}
+}

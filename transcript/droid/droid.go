@@ -46,11 +46,33 @@ var Codec = transcript.JSONL{
 	Finish:      finish,
 	Encode:      encode,
 	WriteHeader: writeHeader,
+	Prepare:     joinResults,
 	Tree:        true,
 	// droid keeps the messages a compaction retired in the file, behind a
-	// compaction_state row anchored after them, and keeps a message the
-	// person sees and the model never gets as user_only.
-	Caps: transcript.Capabilities{Compaction: true, UserOnly: true},
+	// compaction_state row anchored after them, keeps a message the person
+	// sees and the model never gets as user_only, and sends a text file as a
+	// text document.
+	Caps: transcript.Capabilities{Compaction: true, UserOnly: true, Files: true},
+}
+
+// joinResults puts the results of one turn's tool calls back in one
+// message. droid answers a message's calls from the single message after
+// it, as the Anthropic API does, and reports any call it finds no result
+// for there as cancelled; Portable gives each result an entry of its own.
+// Only entries this write creates are joined.
+func joinResults(home string, s *transcript.Session) error {
+	var out []transcript.Entry
+	for _, e := range s.Entries {
+		if n := len(out); n > 0 && e.Raw == nil && e.Role == transcript.RoleTool && e.Audience == out[n-1].Audience &&
+			out[n-1].Raw == nil && out[n-1].Role == transcript.RoleTool {
+			prev := &out[n-1]
+			prev.Content = append(append([]transcript.Block(nil), prev.Content...), e.Content...)
+			continue
+		}
+		out = append(out, e)
+	}
+	s.Entries = out
+	return nil
 }
 
 // Vendor is what a droid session carries in Session.Vendor: the

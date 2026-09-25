@@ -17,7 +17,7 @@ import (
 
 // KindPi names the native pi backend: the pi coding agent driven over its own
 // RPC mode (pi --mode rpc), with no adapter in between.
-const KindPi = "pi"
+const KindPi = string(harness.DriverPi)
 
 // PiBackend runs pi as a local process and speaks its RPC protocol.
 //

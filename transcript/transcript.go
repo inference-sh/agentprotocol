@@ -30,6 +30,8 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+
+	"github.com/inference-sh/agentprotocol"
 )
 
 // Role is who produced an entry.
@@ -244,56 +246,28 @@ type Info struct {
 	Holders []int `json:"holders,omitempty"`
 }
 
-// LiveState is whether a process is using a session right now.
-type LiveState string
-
-const (
-	// LiveUnknown: nothing available could tell.
-	LiveUnknown LiveState = "unknown"
-	// LiveIdle: no process is using the session.
-	LiveIdle LiveState = "idle"
-	// LiveActive: a process is, or may be, using the session.
-	LiveActive LiveState = "active"
+// Liveness vocabulary, declared in agentprotocol so the api's wire shares it.
+type (
+	LiveState = agentprotocol.LiveState
+	Evidence  = agentprotocol.Evidence
+	// Liveness is whether a session is in use, and why that is believed.
+	Liveness = agentprotocol.SessionLiveness
 )
 
-// Evidence is what a Liveness answer rests on.
-type Evidence string
-
 const (
-	// EvidenceLockFile: the agent's own in-use marker for this session names
-	// a running process. Proof.
-	EvidenceLockFile Evidence = "lock-file"
-	// EvidenceOpenFile: a process holds the session's own file or directory
-	// open. Proof.
-	EvidenceOpenFile Evidence = "open-file"
-	// EvidenceNoProcess: no process of the agent is running. Proof of idle.
-	EvidenceNoProcess Evidence = "no-process"
-	// EvidenceProcessInCwd: a process of the agent runs in the session's
-	// directory. It may be serving another session there. Heuristic.
-	EvidenceProcessInCwd Evidence = "process-in-cwd"
-	// EvidenceNoProcessInCwd: the agent runs, but not in the session's
-	// directory. Heuristic: agents rarely serve a session from elsewhere.
-	EvidenceNoProcessInCwd Evidence = "no-process-in-cwd"
-	// EvidenceHeldElsewhere: every agent process in the session's directory
-	// holds another session by the agent's own in-use markers. Proof of idle.
-	EvidenceHeldElsewhere Evidence = "held-elsewhere"
-	// EvidenceRecentWrite: the session was written within the recent window.
-	// Heuristic.
-	EvidenceRecentWrite Evidence = "recent-write"
-	// EvidenceNone: nothing to go on.
-	EvidenceNone Evidence = "none"
-)
+	LiveUnknown = agentprotocol.LiveUnknown
+	LiveIdle    = agentprotocol.LiveIdle
+	LiveActive  = agentprotocol.LiveActive
 
-// Liveness is whether a session is in use, and why that is believed.
-type Liveness struct {
-	State    LiveState `json:"state"`
-	Evidence Evidence  `json:"evidence"`
-	// Heuristic is true when the answer is inferred rather than proven.
-	Heuristic bool `json:"heuristic"`
-	// PID is the process the evidence points at, when there is one.
-	PID    int    `json:"pid,omitempty"`
-	Detail string `json:"detail,omitempty"`
-}
+	EvidenceLockFile       = agentprotocol.EvidenceLockFile
+	EvidenceOpenFile       = agentprotocol.EvidenceOpenFile
+	EvidenceNoProcess      = agentprotocol.EvidenceNoProcess
+	EvidenceProcessInCwd   = agentprotocol.EvidenceProcessInCwd
+	EvidenceNoProcessInCwd = agentprotocol.EvidenceNoProcessInCwd
+	EvidenceHeldElsewhere  = agentprotocol.EvidenceHeldElsewhere
+	EvidenceRecentWrite    = agentprotocol.EvidenceRecentWrite
+	EvidenceNone           = agentprotocol.EvidenceNone
+)
 
 // ErrReadOnly is returned by Write on a store whose format is derived from
 // something the agent does not read back, so a written file would change

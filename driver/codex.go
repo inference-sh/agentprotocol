@@ -17,7 +17,7 @@ import (
 )
 
 // KindCodex names the native Codex backend.
-const KindCodex = "codex"
+const KindCodex = string(harness.DriverCodex)
 
 // CodexBackend runs Codex through `codex app-server`, the JSON-RPC server in
 // the codex CLI that OpenAI's IDE extension uses. No adapter sits in between.

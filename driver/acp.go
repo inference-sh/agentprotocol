@@ -12,10 +12,11 @@ import (
 
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/acp"
+	"github.com/inference-sh/agentprotocol/harness"
 )
 
 // KindACP names the ACP backend.
-const KindACP = "acp"
+const KindACP = string(harness.DriverACP)
 
 // ACPBackend runs agents that speak the Agent Client Protocol as local
 // processes: Claude Code, Codex, Gemini CLI, Cursor, Grok.

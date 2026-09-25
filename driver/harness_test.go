@@ -10,19 +10,6 @@ import (
 	"github.com/inference-sh/agentprotocol/harness"
 )
 
-func TestDriverNamesMatchBackendKinds(t *testing.T) {
-	for name, want := range map[string]string{
-		harness.DriverACP:        driver.KindACP,
-		harness.DriverClaudeCode: driver.KindClaude,
-		harness.DriverCodex:      driver.KindCodex,
-		harness.DriverPi:         driver.KindPi,
-	} {
-		if name != want {
-			t.Errorf("harness driver %q, backend kind %q", name, want)
-		}
-	}
-}
-
 func TestForHarness(t *testing.T) {
 	for name, h := range harness.All {
 		b, err := driver.ForHarness(h, nil)
@@ -36,7 +23,7 @@ func TestForHarness(t *testing.T) {
 			t.Errorf("%s: %v", name, err)
 			continue
 		}
-		if b.Kind() != h.DriverKind() {
+		if b.Kind() != string(h.DriverKind()) {
 			t.Errorf("%s: backend %s, registry says %s", name, b.Kind(), h.DriverKind())
 		}
 		if acp, ok := b.(*driver.ACPBackend); ok {

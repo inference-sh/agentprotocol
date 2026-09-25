@@ -13,11 +13,12 @@ import (
 
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/claudecode"
+	"github.com/inference-sh/agentprotocol/harness"
 )
 
 // KindClaude names the native Claude Code backend: the claude binary driven
 // over its stream-json control protocol, with no SDK or adapter in between.
-const KindClaude = "claude-code"
+const KindClaude = string(harness.DriverClaudeCode)
 
 // ClaudeBackend runs Claude Code as a local process and speaks the protocol
 // the Claude Agent SDK speaks to it.

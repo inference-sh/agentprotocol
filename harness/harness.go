@@ -1,6 +1,9 @@
 package harness
 
-import "github.com/inference-sh/agentprotocol/transcript"
+import (
+	"github.com/inference-sh/agentprotocol"
+	"github.com/inference-sh/agentprotocol/transcript"
+)
 
 // HookFormat describes how a harness expects hook configuration.
 type HookFormat int
@@ -79,6 +82,9 @@ type ConfigFile struct {
 	Path    string // relative to $HOME
 	Content string
 }
+
+// HarnessID is a registry id: a key of All and a Harness.Name.
+type HarnessID = agentprotocol.HarnessID
 
 // Harness describes a coding agent CLI and how belt integrates with it.
 type Harness struct {
@@ -262,7 +268,7 @@ type Harness struct {
 	// Driver names the agentprotocol driver that runs this agent as a
 	// session: DriverACP, DriverClaudeCode, DriverCodex or DriverPi. Empty means ACP
 	// when the agent has an ACPCmd; DriverKind resolves that.
-	Driver string
+	Driver DriverKind
 
 	// SDK mode — agent-specific programmatic protocol over stdio (e.g. claude stream-json)
 	SDKCmd  []string // command to start agent in SDK mode
@@ -302,17 +308,20 @@ type Events struct {
 	PreCompact   string
 }
 
-// Session drivers, matching the Kind of the driver package's backends.
+// DriverKind names a session driver, matching the Kind of the driver
+// package's backends.
+type DriverKind = agentprotocol.DriverKind
+
 const (
-	DriverACP        = "acp"
-	DriverClaudeCode = "claude-code"
-	DriverCodex      = "codex"
-	DriverPi         = "pi"
+	DriverACP        = agentprotocol.DriverACP
+	DriverClaudeCode = agentprotocol.DriverClaudeCode
+	DriverCodex      = agentprotocol.DriverCodex
+	DriverPi         = agentprotocol.DriverPi
 )
 
 // DriverKind is the driver that runs this agent as a session, or "" when
 // nothing can: the agent has neither a native driver nor an ACP command.
-func (h Harness) DriverKind() string {
+func (h Harness) DriverKind() DriverKind {
 	if h.Driver != "" {
 		return h.Driver
 	}

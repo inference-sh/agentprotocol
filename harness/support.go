@@ -1,6 +1,10 @@
 package harness
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/inference-sh/agentprotocol"
+)
 
 // TestedVersions is the range of an agent's versions inference has
 // verified: Min the oldest, Max the newest, both as the agent prints them
@@ -24,23 +28,16 @@ type Requirement struct {
 	Evidence string
 }
 
-// SupportLevel is what Support concluded about an installed version.
-type SupportLevel string
+// SupportLevel is what Support concluded about an installed version; see
+// agentprotocol.SupportLevel for what each level means.
+type SupportLevel = agentprotocol.SupportLevel
 
 const (
-	// Supported: the version is inside the tested range.
-	Supported SupportLevel = "supported"
-	// NewerThanTested: newer than anything tested. Likely fine; warn.
-	NewerThanTested SupportLevel = "newer-than-tested"
-	// OlderThanTested: older than anything tested but not below
-	// Harness.Requires. It may work; warn.
-	OlderThanTested SupportLevel = "older-than-tested"
-	// OlderThanSupported: below Harness.Requires, so something the driver
-	// needs is missing. Do not drive it; show Reason and UpgradeCmd.
-	OlderThanSupported SupportLevel = "older-than-supported"
-	// SupportUnknown: the version could not be read, the agent is not in
-	// the registry, or nothing about it has been tested. Warn.
-	SupportUnknown SupportLevel = "unknown"
+	Supported          = agentprotocol.SupportLevelSupported
+	NewerThanTested    = agentprotocol.SupportLevelNewerThanTested
+	OlderThanTested    = agentprotocol.SupportLevelOlderThanTested
+	OlderThanSupported = agentprotocol.SupportLevelOlderThanSupported
+	SupportUnknown     = agentprotocol.SupportLevelUnknown
 )
 
 // SupportVerdict is Support's answer, shaped for display: Reason is a

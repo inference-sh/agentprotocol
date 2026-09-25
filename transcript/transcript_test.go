@@ -411,3 +411,53 @@ func TestAssignIDsLinksMarker(t *testing.T) {
 		t.Errorf("chain: %q <- %q (%q) <- %q", s.Entries[0].ID, m.ID, m.ParentID, s.Entries[2].ParentID)
 	}
 }
+
+// A result filed inside the assistant message that made the call travels
+// in a tool entry of its own, the shape every writer takes.
+func TestPortableSplitsResults(t *testing.T) {
+	s := &Session{Entries: []Entry{
+		text("1", "", RoleUser, "u1"),
+		{ID: "2", ParentID: "1", Role: RoleAssistant, Content: []Block{
+			{Kind: BlockText, Text: "reading"},
+			{Kind: BlockToolUse, ToolID: "c1", Name: "read"},
+			{Kind: BlockToolResult, ToolID: "c1", Text: "data"},
+			{Kind: BlockImage, ToolID: "c1", MediaType: "image/png", Data: []byte{1}},
+		}},
+	}}
+	p := s.Portable().Entries
+	if len(p) != 3 || p[1].Role != RoleAssistant || len(p[1].Content) != 2 || p[2].Role != RoleTool || len(p[2].Content) != 2 {
+		t.Fatalf("portable: %+v", p)
+	}
+}
+
+// Parallel calls that share an ID each travel with their own, and each
+// result with its call's.
+func TestPortableUniqueToolIDs(t *testing.T) {
+	s := &Session{Entries: []Entry{
+		{ID: "1", Role: RoleAssistant, Content: []Block{
+			{Kind: BlockToolUse, ToolID: "read", Name: "read"},
+			{Kind: BlockToolUse, ToolID: "read", Name: "read"},
+			{Kind: BlockToolUse, Name: "ls"},
+		}},
+		{ID: "2", ParentID: "1", Role: RoleTool, Content: []Block{
+			{Kind: BlockToolResult, ToolID: "read", Text: "a"},
+			{Kind: BlockToolResult, ToolID: "read", Text: "b"},
+			{Kind: BlockToolResult, ToolID: "", Text: "c"},
+		}},
+	}}
+	p := s.Portable().Entries
+	calls, results := p[0].Content, p[1].Content
+	ids := map[string]bool{}
+	for i := range calls {
+		if ids[calls[i].ToolID] || calls[i].ToolID == "" {
+			t.Fatalf("call ids not unique: %+v", calls)
+		}
+		ids[calls[i].ToolID] = true
+		if results[i].ToolID != calls[i].ToolID {
+			t.Errorf("result %d id %q, call id %q", i, results[i].ToolID, calls[i].ToolID)
+		}
+	}
+	if s.Entries[0].Content[1].ToolID != "read" {
+		t.Error("portable changed the source session's blocks")
+	}
+}

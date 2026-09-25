@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"sort"
 	"sync"
 	"time"
@@ -493,6 +494,7 @@ func (s *Session) Portable() *Session {
 			for _, m := range e.Compaction.Summary {
 				if m.Audience == AudienceAll {
 					m.Raw, m.ParentID, m.ModelContent, m.Compaction = nil, "", nil, nil
+					m.Content = append([]Block(nil), m.Content...)
 					c.Summary = append(c.Summary, m)
 				}
 			}
@@ -507,11 +509,14 @@ func (s *Session) Portable() *Session {
 			out.Entries = append(out.Entries, Entry{ID: e.ID, Time: e.Time, Compaction: c})
 		case e.Role == RoleOpaque || e.Audience == AudienceNone || e.Audience == AudienceModel:
 		default:
+			// The copy's blocks are its own: tool IDs change below.
 			e.ParentID, e.Raw, e.ModelContent = "", nil, nil
+			e.Content = append([]Block(nil), e.Content...)
 			carried[e.ID] = e.ID != ""
-			out.Entries = append(out.Entries, e)
+			out.Entries = append(out.Entries, splitResults(e)...)
 		}
 	}
+	uniqueToolIDs(out.Entries)
 	for _, p := range keeps {
 		out.Entries[p.entry].Compaction.Keep = next(p.keep)
 	}
@@ -542,6 +547,79 @@ func (s *Session) retired() map[int]bool {
 		}
 	}
 	return out
+}
+
+// splitResults puts an entry's tool results in a tool entry of their own,
+// after the entry with the rest, which is the shape every writer takes:
+// opencode files a call's result inside the assistant message that made
+// it. An image or file a tool returned goes with its result. The tool
+// entry's ID is derived from the entry's, so Keep still names the first.
+func splitResults(e Entry) []Entry {
+	var rest, results []Block
+	for _, b := range e.Content {
+		switch {
+		case b.Kind == BlockToolResult, b.ToolID != "" && (b.Kind == BlockImage || b.Kind == BlockFile):
+			results = append(results, b)
+		default:
+			rest = append(rest, b)
+		}
+	}
+	if len(results) == 0 || len(rest) == 0 || e.Role == RoleTool {
+		return []Entry{e}
+	}
+	tool := e
+	e.Content, tool.Content = rest, results
+	tool.Role = RoleTool
+	if tool.ID != "" {
+		tool.ID += "-results"
+	}
+	return []Entry{e, tool}
+}
+
+// uniqueToolIDs gives every tool call a session carries an ID no other call
+// shares, and moves its result with it. Some agents leave a call's ID empty
+// or repeat one across parallel calls (gemini, calls with the same input),
+// and a writer that pairs results by ID then keeps one of each. A result
+// takes the ID of the earliest unanswered call it named.
+func uniqueToolIDs(es []Entry) {
+	seen := map[string]bool{}
+	pending := map[string][]string{} // original ID to the IDs its calls now have
+	n := 0
+	for i := range es {
+		for k := range es[i].Content {
+			b := &es[i].Content[k]
+			switch b.Kind {
+			case BlockToolUse:
+				id := b.ToolID
+				if id == "" || seen[id] {
+					for {
+						n++
+						id = fmt.Sprintf("call_%d", n)
+						if !seen[id] {
+							break
+						}
+					}
+				}
+				seen[id] = true
+				pending[b.ToolID] = append(pending[b.ToolID], id)
+				b.ToolID = id
+			case BlockToolResult:
+				if q := pending[b.ToolID]; len(q) > 0 {
+					orig := b.ToolID
+					b.ToolID = q[0]
+					pending[orig] = q[1:]
+					// Images the tool returned follow its result.
+					for j := k + 1; j < len(es[i].Content); j++ {
+						m := &es[i].Content[j]
+						if m.Kind == BlockToolResult || m.ToolID != orig {
+							break
+						}
+						m.ToolID = b.ToolID
+					}
+				}
+			}
+		}
+	}
 }
 
 // Capabilities are what a writer can record of a portable session beyond

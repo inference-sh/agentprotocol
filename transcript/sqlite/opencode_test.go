@@ -610,7 +610,10 @@ func TestOpencodeImagesImported(t *testing.T) {
 			back := readSample(t, c.codec, home, id)
 			// The text file reached the model only as text, which moved; its
 			// part was the person's alone.
-			sameLines(t, "images", media(back.Context()), slices.DeleteFunc(want, func(x string) bool { return strings.Contains(x, "text/plain") }))
+			// Both sides in the portable shape: opencode files a tool's
+			// result and image inside the assistant message, Portable in a
+			// tool entry of their own.
+			sameLines(t, "images", media(back.Portable().Lower(transcript.Capabilities{}).Entries), slices.DeleteFunc(want, func(x string) bool { return strings.Contains(x, "text/plain") }))
 		})
 	}
 }

@@ -518,9 +518,6 @@ const kiloTransient = "kilocode.lifecycle"
 
 // openViews maps each part of a message to its blocks and who gets them.
 func openViews(r openRow, kilo bool, resume openModelRef) []openView {
-	// The TUI shows a prompt's files beneath its typed text, and shows
-	// nothing of a prompt without any (TUI UserMessage).
-	typed := slices.ContainsFunc(r.parts, func(p openPart) bool { return p.Type == "text" && !p.Synthetic && p.Text != "" })
 	var out []openView
 	for _, p := range r.parts {
 		v := openView{id: p.ID, model: true, user: true}
@@ -541,10 +538,13 @@ func openViews(r openRow, kilo bool, resume openModelRef) []openView {
 			case "file":
 				// A text file or a directory reaches the model as the
 				// synthetic text opencode read it into; the part itself is
-				// only shown (message-v2.ts toModelMessages).
+				// only shown (message-v2.ts toModelMessages). The file is
+				// the person's whether or not the TUI draws it (it does not
+				// beneath a prompt without typed text): as a model-only
+				// entry it would read as opencode's own context and be
+				// left behind when the session moves.
 				v.blocks = []transcript.Block{mediaBlock(p.Mime, p.URL, p.Filename)}
 				v.model = p.Mime != "text/plain" && p.Mime != "application/x-directory"
-				v.user = typed
 			case "compaction":
 				text("What did we do so far?")
 				v.user = false

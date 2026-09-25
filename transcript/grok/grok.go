@@ -25,6 +25,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"
@@ -268,10 +269,9 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 					break
 				}
 			}
-			for _, m := range e.Compaction.Summary {
-				m.ID = transcript.NewUUID()
-				p.meta[m.ID] = m.Role == transcript.RoleUser
-				c.history = append(c.history, m)
+			if sum, ok := summaryEntry(e.Compaction.Summary); ok {
+				p.meta[sum.ID] = true
+				c.history = append(c.history, sum)
 			}
 			model.Entries = append([]transcript.Entry(nil), c.history...)
 			shown = append(shown, e)
@@ -328,6 +328,29 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 		return "", err
 	}
 	return id, writeSummary(dir, s, numUpdates, chatRows)
+}
+
+// summaryPreamble opens the summary grok stores for its own compaction
+// (format_compact_summary_content in xai-chat-state compaction_utils.rs).
+const summaryPreamble = "This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.\n\n"
+
+// summaryEntry is another agent's compaction summary as grok stores its
+// own: one user row, marked compaction_meta when written, holding the
+// summary's text behind grok's preamble. A text that already opens with
+// that preamble (Claude Code uses the same words) is not wrapped again.
+// ok is false for a summary with no text.
+func summaryEntry(summary []transcript.Entry) (transcript.Entry, bool) {
+	var parts []string
+	for _, m := range summary {
+		if t := strings.TrimPrefix(m.Text(), summaryPreamble); t != "" {
+			parts = append(parts, t)
+		}
+	}
+	if len(parts) == 0 {
+		return transcript.Entry{}, false
+	}
+	text := summaryPreamble + strings.Join(parts, "\n\n")
+	return transcript.Entry{ID: transcript.NewUUID(), Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: text}}}, true
 }
 
 // assignIDs gives the session's new entries ids, and a compaction one if it

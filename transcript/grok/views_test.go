@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/transcript/claude"
 	"github.com/inference-sh/agentprotocol/transcript/pi"
 )
 
@@ -290,8 +291,8 @@ func TestForeignWritesUpdates(t *testing.T) {
 // way grok compacts: updates.jsonl holds the whole history with a
 // compaction_checkpoint after the retired part, whose checkpoint file holds
 // the compacted history, and chat_history.jsonl holds the kept answer, then
-// the summary, then the turn after. The private command's output is in
-// updates.jsonl alone.
+// the summary as grok words its own, then the turn after. The private
+// command's output is in updates.jsonl alone.
 func TestWriteCompacted(t *testing.T) {
 	src, err := pi.Codec.Open("../pi/testdata/home")
 	if err != nil {
@@ -321,7 +322,9 @@ func TestWriteCompacted(t *testing.T) {
 		t.Errorf("linearize:\n  %q\nwant\n  %q", got, want)
 	}
 	ctx := s.Context()
-	if len(ctx) != 4 || !strings.HasPrefix(ctx[1].Text(), "The conversation history before this point was compacted") {
+	// The summary is a user row behind grok's preamble, as grok stores its
+	// own (format_compact_summary_content), pi's text after it.
+	if len(ctx) != 4 || ctx[1].Role != transcript.RoleUser || !strings.HasPrefix(ctx[1].Text(), summaryPreamble+"The conversation history before this point was compacted") {
 		t.Fatalf("context = %.60q, want the kept answer, then the summary", texts(ctx))
 	}
 	if got := texts([]transcript.Entry{ctx[0], ctx[2], ctx[3]}); !slices.Equal(got, []string{answer, "user: After compaction.", answer}) {
@@ -424,5 +427,51 @@ func TestEchoAfterCompaction(t *testing.T) {
 		if e.Text() == "/stats" {
 			t.Error("the echo reaches the model")
 		}
+	}
+}
+
+// Claude Code's compacted sample (claude 2.1.281 in the harness-test
+// container, /compact keeping the last two turns) carries a summary that
+// already opens with the words grok's own does. Written into grok, it is
+// one compaction_meta user row with the preamble once, which the reader
+// finds as the summary again.
+func TestWriteClaudeSummary(t *testing.T) {
+	src, err := claude.Codec.Open("../claude/testdata/home")
+	if err != nil {
+		t.Fatal(err)
+	}
+	in, err := src.Read(t.Context(), "6deafb15-b5f3-476d-85d6-0d87ecca9ff4")
+	if err != nil {
+		t.Fatal(err)
+	}
+	in.Agent = "elsewhere"
+	home := t.TempDir()
+	st, _ := Codec.Open(home)
+	id, err := st.Write(t.Context(), in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var metas []string
+	for _, row := range lines(t, filepath.Join(sessionDir(t, home, id), chatFile)) {
+		var r chatRow
+		if json.Unmarshal(row, &r) == nil && r.SyntheticReason == compactionMeta {
+			metas = append(metas, contentText(r.Content))
+		}
+	}
+	if len(metas) != 1 || !strings.HasPrefix(metas[0], summaryPreamble) || strings.Count(metas[0], summaryPreamble) != 1 {
+		t.Fatalf("compaction_meta rows %.120q, want one summary with grok's preamble once", metas)
+	}
+	s := read(t, home, id)
+	var summary int
+	for _, e := range s.Context() {
+		if e.Text() == metas[0] {
+			summary++
+			if e.Role != transcript.RoleUser {
+				t.Errorf("summary role %s", e.Role)
+			}
+		}
+	}
+	if summary != 1 {
+		t.Errorf("the summary is %d times in the context", summary)
 	}
 }

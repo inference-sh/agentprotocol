@@ -1,10 +1,9 @@
 package claude
 
 import (
-	"strings"
-
 	"encoding/json"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/inference-sh/agentprotocol/transcript"

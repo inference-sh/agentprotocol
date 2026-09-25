@@ -15,6 +15,7 @@ package codexapp
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 
@@ -103,7 +104,9 @@ func (c *Client) answer(m Message) {
 func (c *Client) Call(ctx context.Context, method string, params, out any) error {
 	raw, err := c.conn.Call(ctx, method, params)
 	if err != nil {
-		if _, peer := err.(*Error); peer || err == ctx.Err() {
+		// A peer error stays reachable with errors.As; the prefix says
+		// which server and call it came from, as Error's text used to.
+		if ctxErr := ctx.Err(); ctxErr != nil && errors.Is(err, ctxErr) {
 			return err
 		}
 		return fmt.Errorf("codex app-server: %s: %w", method, err)

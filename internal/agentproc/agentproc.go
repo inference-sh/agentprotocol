@@ -4,6 +4,7 @@
 package agentproc
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -84,6 +85,12 @@ func Start(o Options) (*Process, error) {
 func (p *Process) Reap(readDone <-chan struct{}) {
 	go func() {
 		err := p.cmd.Wait()
+		// The child exited 0 and a process it started still held stderr
+		// when WaitDelay ran out. That is the grandchild's doing, not how
+		// the child ended.
+		if errors.Is(err, exec.ErrWaitDelay) {
+			err = nil
+		}
 		select {
 		case <-readDone:
 		case <-time.After(DrainTimeout):

@@ -50,7 +50,9 @@ func ReadLines(r io.Reader, fn func(line []byte)) error {
 		if len(bytes.TrimSpace(line)) > 0 {
 			fn(line)
 		}
-		long = long[:0]
+		// Let a long line's buffer go rather than hold up to MaxLine for
+		// the rest of the session.
+		long = nil
 		if err != nil {
 			if errors.Is(err, io.EOF) {
 				return nil

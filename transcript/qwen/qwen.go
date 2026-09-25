@@ -268,10 +268,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 			// Qwen's own context.
 			c := &transcript.Compaction{}
 			for i, m := range p.CompressedHistory {
-				e, err := content(m, transcript.StatusOK)
-				if err != nil {
-					return transcript.Entry{}, false, fmt.Errorf("row %s: compression: %w", r.UUID, err)
-				}
+				e := content(m, transcript.StatusOK)
 				if i == 0 || hasCall(e) {
 					e.Audience = transcript.AudienceAll
 				}
@@ -321,10 +318,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	if r.ToolCallResult != nil && r.ToolCallResult.Status != "" && r.ToolCallResult.Status != "success" {
 		status = transcript.StatusError
 	}
-	c, err := content(*r.Message, status)
-	if err != nil {
-		return transcript.Entry{}, false, fmt.Errorf("row %s: %w", r.UUID, err)
-	}
+	c := content(*r.Message, status)
 	e.Content = c.Content
 	if r.Type == "user" && len(r.SystemPayload) > 0 {
 		var p promptPayload
@@ -347,7 +341,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 // content maps a Gemini-shaped message to an entry, for the history a
 // compression keeps as much as for a row's own message. A user message that
 // only answers function calls is a tool entry.
-func content(m message, status transcript.Status) (transcript.Entry, error) {
+func content(m message, status transcript.Status) transcript.Entry {
 	e := transcript.Entry{Role: transcript.RoleUser, Audience: transcript.AudienceModel}
 	if m.Role == "model" {
 		e.Role = transcript.RoleAssistant
@@ -379,7 +373,7 @@ func content(m message, status transcript.Status) (transcript.Entry, error) {
 	if e.Role == transcript.RoleUser && results > 0 && results == len(m.Parts) {
 		e.Role = transcript.RoleTool
 	}
-	return e, nil
+	return e
 }
 
 // media reads an inlineData or fileData part as an image or file block.

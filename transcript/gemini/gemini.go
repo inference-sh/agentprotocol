@@ -832,17 +832,12 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 	switch r.Type {
 	case "user":
 		e.Role = transcript.RoleUser
-		blocks, answered, err := userBlocks(content)
-		if err != nil {
-			return transcript.Entry{}, false, fmt.Errorf("row %s: %w", r.ID, err)
-		}
+		blocks, answered := userBlocks(content)
 		e.Content = blocks
 		if answered > 0 && answered == len(content) {
 			e.Role = transcript.RoleTool
 		}
-		if e.Content, e.ModelContent, err = ownContent(e.Content, r.DisplayContent); err != nil {
-			return transcript.Entry{}, false, fmt.Errorf("row %s: displayContent: %w", r.ID, err)
-		}
+		e.Content, e.ModelContent = ownContent(e.Content, r.DisplayContent)
 		// The session context is the one record gemini leaves out on resume
 		// and yet gives the model: it starts every resumed chat with a fresh
 		// copy under the same id (core utils/environmentContext.ts,
@@ -910,7 +905,7 @@ func decode(raw json.RawMessage, s *transcript.Session) (transcript.Entry, bool,
 // and then its media, and a record holds each call's in turn); either way
 // they follow the result with its call's id. answered counts the parts
 // that are a tool's: its response and what it returned.
-func userBlocks(content []part) (blocks []transcript.Block, answered int, err error) {
+func userBlocks(content []part) (blocks []transcript.Block, answered int) {
 	toolID := "" // the call whose response came last
 	for _, p := range content {
 		switch {
@@ -942,7 +937,7 @@ func userBlocks(content []part) (blocks []transcript.Block, answered int, err er
 			blocks = append(blocks, transcript.Block{Kind: transcript.BlockText, Text: p.Text})
 		}
 	}
-	return blocks, answered, nil
+	return blocks, answered
 }
 
 // media reads an inlineData or fileData part as an image or file block.
@@ -1086,13 +1081,10 @@ func withoutReasoning(content []transcript.Block) []transcript.Block {
 // after the prompt (core/client.ts wraps it in <hook_context>), which the
 // model is given and is not the person's. ModelContent is nil when the two
 // are the same.
-func ownContent(content []transcript.Block, display json.RawMessage) (own, model []transcript.Block, err error) {
+func ownContent(content []transcript.Block, display json.RawMessage) (own, model []transcript.Block) {
 	if ps, err := parts(display); err == nil && strings.TrimSpace(partsString(ps)) != "" {
-		own, _, err := userBlocks(ps)
-		if err != nil {
-			return nil, nil, err
-		}
-		return own, content, nil
+		own, _ := userBlocks(ps)
+		return own, content
 	}
 	for _, b := range content {
 		if b.Kind == transcript.BlockText && strings.HasPrefix(strings.TrimSpace(b.Text), hookContext) {
@@ -1101,7 +1093,7 @@ func ownContent(content []transcript.Block, display json.RawMessage) (own, model
 		own = append(own, b)
 	}
 	if len(own) == len(content) || len(own) == 0 {
-		return content, nil, nil
+		return content, nil
 	}
-	return own, content, nil
+	return own, content
 }

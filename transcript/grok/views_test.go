@@ -357,7 +357,7 @@ func TestWriteCompacted(t *testing.T) {
 		t.Errorf("context around the summary = %q", got)
 	}
 	// Moved on again, the answer the compaction kept goes with the summary.
-	if got := keptSummary(s); !slices.Equal(got, []string{answer, "user: " + "Hello from mock server.\n\n---\n\n**Turn Context"[:38]}) {
+	if got := keptSummary(s); !slices.Equal(got, []string{answer, "user: Hello from mock server.\n\n---\n\n**Turn C"}) {
 		t.Errorf("marker summary %q, want the kept answer, then the summary", got)
 	}
 

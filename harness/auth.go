@@ -136,6 +136,13 @@ type AuthMethod struct {
 	Command []string
 	EnvVars []string
 
+	// KeyEnv are the EnvVars that sign the agent in on their own: one set
+	// to a non-empty value is a credential present, which CredentialsPresent
+	// reports. Filled only where measured, and never with a name other
+	// tools share (GH_TOKEN), since it being set says nothing about this
+	// agent.
+	KeyEnv []string
+
 	// ACPMethodID is the id the agent returns in ACP initialize's
 	// authMethods for this method, when it has one.
 	ACPMethodID string

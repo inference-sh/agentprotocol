@@ -3,6 +3,7 @@ package harness
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -139,6 +140,33 @@ func TestCredentialsPresentIgnoresDirectoriesAndUnknown(t *testing.T) {
 	}
 	if ok, _ := CredentialsPresent("zz-not-registered"); ok {
 		t.Error("unknown agent")
+	}
+}
+
+func TestCredentialsPresentKeyEnv(t *testing.T) {
+	isolate(t)
+	t.Setenv("CURSOR_API_KEY", "")
+	if ok, _ := CredentialsPresent("cursor"); ok {
+		t.Error("no key and no login file")
+	}
+	if ok, _ := CredentialsPresent("cursor", "CURSOR_API_KEY="); ok {
+		t.Error("an empty key is no credential")
+	}
+	ok, where := CredentialsPresent("cursor", "CURSOR_API_KEY=k")
+	if !ok || where != "$CURSOR_API_KEY" {
+		t.Errorf("got %v %q, want the key named, never its value", ok, where)
+	}
+}
+
+func TestKeyEnvIsInEnvVars(t *testing.T) {
+	for name, h := range All {
+		for _, m := range h.Auth.Methods {
+			for _, k := range m.KeyEnv {
+				if !slices.Contains(m.EnvVars, k) {
+					t.Errorf("%s: KeyEnv %s is not one of the method's EnvVars", name, k)
+				}
+			}
+		}
 	}
 }
 

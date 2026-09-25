@@ -6,9 +6,11 @@ import (
 	"strings"
 )
 
-// CredentialsPresent reports whether one of the agent's login files
-// (Auth.LoginFiles) exists for the account env selects, and which path it
-// found. It only stats: no file is opened or read.
+// CredentialsPresent reports whether a credential the agent would use is
+// there: an AuthMethod.KeyEnv variable set in env, or one of its login files
+// (Auth.LoginFiles) for the account env selects. It returns where it found
+// it: "$NAME" for a variable, else the path. Nothing is opened or read, and
+// no variable's value is returned.
 //
 // env is read like CheckLogin's: entries appended to the current
 // environment, the last one for a name winning. HOME and Auth.AccountDirEnv
@@ -19,9 +21,10 @@ import (
 // It is a weaker signal than a status check. A file that exists may hold an
 // expired or revoked token, and one that does not exist says nothing when
 // the agent keeps its login in the OS keyring (Auth.Keyring) or takes it
-// from an env var. It returns false for an agent with no LoginFiles
-// (copilot, kiro and omp keep their logins in a directory, database or
-// keyring whose existence proves nothing). Use a Cheap status check first
+// from an env var not in KeyEnv. A KeyEnv variable that is set may hold a
+// bad key. With no KeyEnv set it returns false for an agent with no
+// LoginFiles (copilot, kiro and omp keep their logins in a directory,
+// database or keyring whose existence proves nothing). Use a Cheap status check first
 // where the agent has one.
 func CredentialsPresent(name string, env ...string) (bool, string) {
 	h, ok := All[name]
@@ -29,6 +32,13 @@ func CredentialsPresent(name string, env ...string) (bool, string) {
 		return false, ""
 	}
 	a := h.Auth
+	for _, m := range a.Methods {
+		for _, k := range m.KeyEnv {
+			if lookupEnv(env, k) != "" {
+				return true, "$" + k
+			}
+		}
+	}
 	home := lookupEnv(env, "HOME")
 	if home == "" {
 		home, _ = os.UserHomeDir()

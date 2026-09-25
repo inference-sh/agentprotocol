@@ -97,7 +97,7 @@ var authTable = map[string]Auth{
 				Command: []string{"cursor-agent", "login"}, EnvVars: []string{"NO_OPEN_BROWSER"}, ACPMethodID: "cursor_login",
 				Note: "with NO_OPEN_BROWSER=1 it prints a cursor.com/loginDeepControl URL and polls; open it on any machine, nothing is pasted back. Same without a TTY. " +
 					"ACP cursor_login only uses an existing login"},
-			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"CURSOR_API_KEY"},
+			{Kind: AuthAPIKey, Headless: HeadlessEnvToken, EnvVars: []string{"CURSOR_API_KEY"}, KeyEnv: []string{"CURSOR_API_KEY"},
 				Note: "also --api-key; CURSOR_AUTH_TOKEN / --auth-token take a token of a kind not confirmed"},
 		},
 		Status: &StatusCheck{
@@ -106,7 +106,7 @@ var authTable = map[string]Auth{
 			LoggedOutExit: 0, LoggedOutContains: `"isAuthenticated": false`, LoggedInExit: 0,
 			Output: `JSON, exit 0 either way. Logged out (measured, indented JSON): {"status": "unauthenticated", "isAuthenticated": false, "hasAccessToken": false, "hasRefreshToken": false, "message": "Not logged in"}. ` +
 				`Logged in (source): status "authenticated" or "partially-authenticated", isAuthenticated true, userInfo {email,userId,firstName,lastName,teamId,teamName}; booleans for the tokens, never the tokens`,
-			Note: "0.65s, same answer with no network logged out; but every run writes /tmp/cursor-agent-logs-<uid>/session-*.log and a logged-in run calls GetMe over the network, so not Cheap. CURSOR_API_KEY in the env is ignored",
+			Note: "0.65s, same answer with no network logged out; but every run writes /tmp/cursor-agent-logs-<uid>/session-*.log and a logged-in run calls GetMe over the network, so not Cheap. CURSOR_API_KEY in the env is ignored: it says \"Not logged in\" while a key in the env runs turns (measured 2026-09-25, 2026.09.23)",
 		},
 		AccountDirEnv:      "XDG_CONFIG_HOME",
 		CredentialPaths:    []string{".config/cursor/auth.json"},

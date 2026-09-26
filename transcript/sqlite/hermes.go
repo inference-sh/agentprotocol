@@ -488,6 +488,14 @@ func hermesAudience(s *transcript.Session, rows []hermesRow) {
 		model := r.active
 		if isSummary && r.active {
 			full.Audience, full.Compaction, full.Raw = transcript.AudienceAll, nil, nil
+			// The prefix and end marker are hermes' own: the model gets
+			// them, and Portable leaves them behind with ModelContent.
+			if bare, ok := hermesBareSummary(r.content); ok {
+				if full.ModelContent == nil {
+					full.ModelContent = full.Content
+				}
+				full.Content = []transcript.Block{{Kind: transcript.BlockText, Text: bare}}
+			}
 			before := (&transcript.Session{Entries: s.Entries[:i]}).Context()
 			stored := map[string][]transcript.Block{}
 			for _, x := range s.Entries[:i] {
@@ -615,6 +623,37 @@ func hermesSummaryPrior(content string) string {
 		return strings.TrimLeft(after, " \t\r\n")
 	}
 	return ""
+}
+
+// hermesBareSummary is a summary row without hermes' framing: the carried
+// message merged in before it, then the summary between the prefix line and
+// the end marker. False when content is not framed as hermes frames one.
+func hermesBareSummary(content string) (string, bool) {
+	text := hermesText(content)
+	if _, after, ok := strings.Cut(text, hermesPriorDelimiter); ok {
+		text = after
+	}
+	text, _, _ = strings.Cut(text, hermesSummaryEnd)
+	text = strings.TrimLeft(text, " \t\r\n")
+	switch {
+	case strings.HasPrefix(text, hermesSummaryPrefix):
+		_, body, ok := strings.Cut(text, "\n")
+		if !ok {
+			return "", false
+		}
+		text = body
+	case strings.HasPrefix(text, hermesLegacySummaryPrefix):
+		text = text[len(hermesLegacySummaryPrefix):]
+	default:
+		return "", false
+	}
+	var parts []string
+	for _, p := range []string{hermesSummaryPrior(content), strings.TrimSpace(text)} {
+		if p != "" {
+			parts = append(parts, p)
+		}
+	}
+	return strings.Join(parts, "\n\n"), len(parts) > 0
 }
 
 // hermesJSONPrefix marks content hermes stored as a JSON list of parts

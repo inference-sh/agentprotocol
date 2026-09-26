@@ -20,7 +20,10 @@ import (
 type carrySource struct {
 	name    string
 	read    func(t *testing.T) *transcript.Session
-	summary string   // a piece of the compaction's summary
+	summary string // a piece of the compaction's summary
+	// wrapper is a piece of the source agent's own wrapping of the
+	// summary, which stays with the source.
+	wrapper string
 	retired []string // prompts the compaction retired
 	// shownOnly is a prompt the source showed and never sent, which a
 	// target that stores such prompts must show and not send.
@@ -45,7 +48,8 @@ var carrySources = []carrySource{{
 		}
 		return s
 	},
-	summary: "Resume the prior task using the summary above.",
+	summary: "Hello from mock server.",
+	wrapper: "Resume the prior task using the summary above.",
 	retired: []string{"What is the project codename? Reply ONLY the codename.", "What files are in this repository?", "Summarise what you have done so far.", "What was the first thing I asked you?"},
 	kept:    []string{"user: What was my previous question?", "assistant: Hello from mock server."},
 }, {
@@ -64,7 +68,8 @@ var carrySources = []carrySource{{
 		}
 		return s
 	},
-	summary:   "compacted into the following summary",
+	summary:   "Hello from mock server.\n\n---\n\n**Turn Context (split turn):**",
+	wrapper:   "compacted into the following summary",
 	retired:   []string{"What is the project codename? Reply ONLY the codename.", "Second question.", "Third question."},
 	shownOnly: "Ran `echo private`\n```\nprivate\n\n```",
 	kept:      []string{"assistant: Hello from mock server.", "user: After compaction.", "assistant: Hello from mock server."},
@@ -124,6 +129,13 @@ func checkCarried(t *testing.T, got *transcript.Session, src carrySource, userOn
 	at := slices.IndexFunc(ctx, func(e transcript.Entry) bool { return strings.Contains(e.Text(), src.summary) })
 	if at < 0 {
 		t.Fatalf("no summary in the context %q", said(ctx))
+	}
+	if src.wrapper != "" {
+		for _, e := range ctx {
+			if strings.Contains(e.Text(), src.wrapper) {
+				t.Errorf("the model is given the source's wrapping %q in %q", src.wrapper, e.Text())
+			}
+		}
 	}
 	var rest []string
 	for i, e := range ctx {
@@ -206,7 +218,7 @@ func TestHermesOlderSchemaCarriesSummary(t *testing.T) {
 		t.Fatal(err)
 	}
 	ctx := said(got.Context())
-	if len(ctx) == 0 || !strings.Contains(got.Context()[0].Text(), src.summary) {
+	if len(ctx) == 0 || !strings.Contains(got.Context()[0].Text(), src.summary) || strings.Contains(got.Context()[0].Text(), src.wrapper) {
 		t.Fatalf("context = %q", ctx)
 	}
 	sameLines(t, "after the summary", ctx[1:], src.kept)

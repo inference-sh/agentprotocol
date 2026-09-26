@@ -537,10 +537,27 @@ func TestHermes019Audience(t *testing.T) {
 			t.Errorf("the model is given archived history: %q", e.Text())
 		}
 	}
-	// Another agent gets the prompts as the person typed them.
-	port := said(s.Portable().Lower(transcript.Capabilities{}).Entries)
-	if len(port) != 6 || port[0] != "user: What is the project codename? Reply ONLY the codename." || port[1] != ctx[1] {
+	// Another agent gets the prompts as the person typed them, and the
+	// summary with the reply merged into it, without hermes' framing.
+	entries := s.Portable().Lower(transcript.Capabilities{}).Entries
+	port := said(entries)
+	if len(port) != 6 || port[0] != "user: What is the project codename? Reply ONLY the codename." ||
+		!strings.HasPrefix(entries[1].Text(), "Hello from mock server.\n\n## Historical Task Snapshot\n") || entries[1].Role != transcript.RoleAssistant {
 		t.Errorf("portable: %q", port)
+	}
+	noHermesFraming(t, entries)
+}
+
+// noHermesFraming checks that entries carry none of the framing hermes puts
+// around a summary; it is hermes' own and stays with hermes.
+func noHermesFraming(t *testing.T, entries []transcript.Entry) {
+	t.Helper()
+	for _, e := range entries {
+		for _, m := range []string{hermesSummaryPrefix, hermesSummaryEnd, hermesPriorHeader, hermesPriorDelimiter} {
+			if strings.Contains(e.Text(), m) {
+				t.Errorf("portable carries hermes' framing %q in %q", m, e.Text())
+			}
+		}
 	}
 }
 
@@ -573,9 +590,10 @@ func TestHermesAudience(t *testing.T) {
 		t.Fatalf("model context: %q", said(ctx))
 	}
 	port := s.Portable().Lower(transcript.Capabilities{}).Entries
-	if len(port) != 8 || port[0].Text() != ctx[0].Text() {
-		t.Errorf("portable does not start with the summary: %q", said(port))
+	if len(port) != 8 || !strings.HasPrefix(port[0].Text(), "## Historical Task Snapshot\n") || !strings.Contains(ctx[0].Text(), port[0].Text()) {
+		t.Errorf("portable does not start with the bare summary: %q", said(port))
 	}
+	noHermesFraming(t, port)
 	retired := map[string]bool{}
 	for _, e := range s.Entries {
 		if !e.Audience.Model() {

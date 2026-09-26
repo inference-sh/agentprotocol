@@ -47,8 +47,9 @@ func TestKiroV1Compacted(t *testing.T) {
 	if got := kiroTexts(s.Linearize()); got != history {
 		t.Errorf("linearize:\n  %s", got)
 	}
-	if got := kiroTexts(s.Portable().Lower(transcript.Capabilities{}).Entries); !strings.HasPrefix(got, "user: summary: SUMMARY-TEXT-XYZ | ") {
-		t.Errorf("portable: %s", got)
+	// kiro's context entry is kiro's own: Portable carries the bare summary.
+	if got := kiroTexts(s.Portable().Lower(transcript.Capabilities{}).Entries); got != "user: SUMMARY-TEXT-XYZ | "+history {
+		t.Errorf("portable:\n  %s\nwant\n  user: SUMMARY-TEXT-XYZ | %s", got, history)
 	}
 	before, err := st.Read(t.Context(), kiroV1BeforeID)
 	if err != nil {

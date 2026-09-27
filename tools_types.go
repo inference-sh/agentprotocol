@@ -126,7 +126,19 @@ type ToolParameters struct {
 type ToolParameterProperties map[string]ToolParameterProperty
 
 type ToolParameterProperty struct {
-	Type        ToolParamType            `json:"type"`
+	// Type is the JSON Schema type of the value. Empty when AnyOf is set: the
+	// value then has one of several shapes, and naming a single type would be
+	// telling the model something untrue about what it may send.
+	Type ToolParamType `json:"type,omitempty"`
+	// AnyOf lists the shapes a value may take, each described as a property of
+	// its own. Anthropic and OpenAI both accept anyOf in tool schemas. Before
+	// this field existed the converter picked one branch and dropped the rest,
+	// so an app that accepted "401" or 401 could only tell the model about one.
+	AnyOf []ToolParameterProperty `json:"anyOf,omitempty"`
+	// Enum is the closed set of values a scalar may take, kept as data so a
+	// consumer choosing arguments does not have to parse it back out of the
+	// description.
+	Enum        []any                    `json:"enum,omitempty"`
 	Title       string                   `json:"title"`
 	Description string                   `json:"description"`
 	Properties  *ToolParameterProperties `json:"properties,omitempty"`

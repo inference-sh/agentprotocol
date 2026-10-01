@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"os"
 	"os/exec"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -232,6 +233,58 @@ func TestPermissionBecomesAnApprovalEventAndResolveAnswersIt(t *testing.T) {
 	}
 	if _, ok := findEvent(all, ap.AgentEventTurnCompleted); !ok {
 		t.Errorf("turn never completed after approval; got %v", typesOf(all))
+	}
+}
+
+// fakeAutoApproveFlag stands in for an agent's own skip-permissions flag.
+const fakeAutoApproveFlag = "--fake-yolo"
+
+func TestSkipApprovalsPassesTheAgentsOwnFlag(t *testing.T) {
+	b := backendRunning(t, "permission")
+	b.AutoApproveArgs = []string{fakeAutoApproveFlag}
+	sess, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir(), Approvals: driver.ApprovalsSkip})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+	_ = sess.Prompt(context.Background(), driver.TextInput("do something risky"))
+	events := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+	if _, ok := findEvent(events, ap.AgentEventApprovalRequired); ok {
+		t.Error("asked for approval in a session that skips them")
+	}
+	if got := textOf(events); got != "ran unasked" {
+		t.Errorf("text = %q, want the agent launched with its skip flag", got)
+	}
+}
+
+func TestSkipApprovalsAllowsForAnAgentWithoutAFlag(t *testing.T) {
+	sess, err := backendRunning(t, "permission").Open(context.Background(),
+		driver.SessionConfig{WorkDir: t.TempDir(), Approvals: driver.ApprovalsSkip})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+	_ = sess.Prompt(context.Background(), driver.TextInput("do something risky"))
+	events := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+	if _, ok := findEvent(events, ap.AgentEventApprovalRequired); ok {
+		t.Error("asked for approval in a session that skips them")
+	}
+	if got := textOf(events); got != "done o_allow" {
+		t.Errorf("text = %q, want the request allowed once", got)
+	}
+}
+
+func TestAutoApproveArgsUnusedWhenAsking(t *testing.T) {
+	b := backendRunning(t, "permission")
+	b.AutoApproveArgs = []string{fakeAutoApproveFlag}
+	sess, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir()})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+	_ = sess.Prompt(context.Background(), driver.TextInput("do something risky"))
+	if _, ok := findEvent(collect(t, sess.Events(), 3, 3*time.Second), ap.AgentEventApprovalRequired); !ok {
+		t.Error("the agent's skip flag reached a session that asks")
 	}
 }
 
@@ -711,6 +764,16 @@ func runFakeAgent(script string) {
 				continue
 			}
 
+			if script == "permission" && slices.Contains(os.Args, fakeAutoApproveFlag) {
+				// Launched with its own skip flag: runs the tool unasked.
+				update(acp.SessionUpdate{
+					Kind:    acp.UpdateKindAgentMessageChunk,
+					Content: json.RawMessage(`{"type":"text","text":"ran unasked"}`),
+				})
+				reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
+				continue
+			}
+
 			if script == "permission" {
 				pendingPrompt = *msg.ID
 				send(map[string]any{
@@ -740,10 +803,14 @@ func runFakeAgent(script string) {
 			reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
 
 		case msg.IsResponse() && msg.ID != nil && *msg.ID == 9001:
-			// The permission answer came back; finish the turn.
+			// The permission answer came back; finish the turn, naming the
+			// option chosen.
+			var res acp.PermissionResponse
+			_ = json.Unmarshal(msg.Result, &res)
+			text, _ := json.Marshal("done " + res.Outcome.OptionID)
 			update(acp.SessionUpdate{
 				Kind:    acp.UpdateKindAgentMessageChunk,
-				Content: json.RawMessage(`{"type":"text","text":"done"}`),
+				Content: json.RawMessage(`{"type":"text","text":` + string(text) + `}`),
 			})
 			if pendingPrompt != 0 {
 				reply(pendingPrompt, map[string]any{"stopReason": "end_turn"})

@@ -54,6 +54,8 @@ type CodexBackend struct {
 	// It is always sent, so a user config that says "never" does not silently
 	// turn approvals off for a session driven from here. Setting "never" is
 	// possible, and is the caller's decision, never this package's default.
+	// SessionConfig.Approvals set to ApprovalsSkip overrides it with "never"
+	// for that session.
 	ApprovalPolicy string
 
 	// Sandbox is the sandbox mode: "read-only", "workspace-write" or
@@ -173,6 +175,9 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 	policy := codexapp.AskForApprovalUntrusted
 	if b.ApprovalPolicy != "" {
 		policy = codexapp.AskForApproval(mustJSON(b.ApprovalPolicy))
+	}
+	if cfg.Approvals == ApprovalsSkip {
+		policy = codexapp.AskForApprovalNever
 	}
 	reviewer := codexapp.ApprovalsReviewerUser
 	if b.ApprovalsReviewer != "" {

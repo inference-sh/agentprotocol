@@ -39,13 +39,12 @@ type ClaudeBackend struct {
 	// Env is the child environment. Nil inherits the parent's.
 	Env []string
 
-	// PermissionMode is passed as --permission-mode when set: default,
-	// acceptEdits, plan or dontAsk. Empty leaves the user's configured mode.
-	// bypassPermissions is refused.
+	// PermissionMode is passed as --permission-mode when set. Empty leaves
+	// the user's configured mode. SessionConfig.Approvals set to
+	// ApprovalsSkip overrides it with bypassPermissions for that session.
 	PermissionMode string
 
-	// ExtraArgs are appended to the CLI's arguments. Arguments that skip
-	// permission checks are refused.
+	// ExtraArgs are appended to the CLI's arguments.
 	ExtraArgs []string
 
 	// OnDiagnostic receives protocol-level observations that are not
@@ -110,10 +109,6 @@ func (b *ClaudeBackend) diagnose(msg string) {
 // Either way the ID is replaced by whatever system/init later reports, should
 // the two ever differ.
 func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error) {
-	if b.PermissionMode == claudecode.PermissionModeBypassPermissions {
-		return nil, errors.New("driver: ClaudeBackend does not run in bypassPermissions mode")
-	}
-
 	s := &claudeSession{
 		backend: b,
 		runID:   cfg.RunID,
@@ -133,6 +128,9 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 		PermissionMode: b.PermissionMode,
 		ExtraArgs:      b.ExtraArgs,
 		MCPConfig:      claudeMCPConfig(cfg.Metadata),
+	}
+	if cfg.Approvals == ApprovalsSkip {
+		opts.PermissionMode = claudecode.PermissionModeBypassPermissions
 	}
 	if cfg.ResumeSessionID != "" {
 		opts.ResumeSessionID = cfg.ResumeSessionID

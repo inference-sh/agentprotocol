@@ -156,13 +156,10 @@ func (c *Client) Interrupt(ctx context.Context) error {
 	return err
 }
 
-// SetPermissionMode changes how tool permissions are handled. Selecting
-// bypassPermissions is refused here: it needs a launch flag this package
-// never passes, and approvals are meant to reach a person.
+// SetPermissionMode changes how tool permissions are handled. Claude accepts
+// bypassPermissions only in a process launched with it
+// (Options.PermissionMode) or with --allow-dangerously-skip-permissions.
 func (c *Client) SetPermissionMode(ctx context.Context, mode string) error {
-	if mode == PermissionModeBypassPermissions {
-		return errors.New("claudecode: bypassPermissions is not offered")
-	}
 	_, err := c.Request(ctx, map[string]any{"subtype": SubtypeSetPermissionMode, "mode": mode})
 	return err
 }

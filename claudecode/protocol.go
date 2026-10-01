@@ -60,8 +60,8 @@ const (
 	ResponseError   = "error"
 )
 
-// Permission modes, as the CLI names them. BypassPermissions is listed so a
-// caller can recognise and refuse it; this package never selects it.
+// Permission modes, as the CLI names them. This package selects none of
+// them on its own.
 const (
 	PermissionModeDefault           = "default"
 	PermissionModeAcceptEdits       = "acceptEdits"

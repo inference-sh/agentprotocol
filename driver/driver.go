@@ -142,7 +142,31 @@ type SessionConfig struct {
 	// Empty starts fresh. A backend that cannot resume ignores this, which
 	// Capabilities.Resume says in advance.
 	ResumeSessionID string
+
+	// Approvals is who decides the agent's permission requests. Empty
+	// (ApprovalsAsk) sends every request to the caller as an
+	// approval-required event. ApprovalsSkip is the caller's choice to let
+	// the agent run every tool without asking; this package never picks it.
+	Approvals Approvals
 }
+
+// Approvals is how a session's permission requests are decided.
+type Approvals string
+
+const (
+	// ApprovalsAsk sends every permission request the agent raises to the
+	// caller as an approval-required event, to answer with Resolve.
+	ApprovalsAsk Approvals = ""
+
+	// ApprovalsSkip launches the agent in its own skip-permissions mode:
+	// claude's bypassPermissions, codex's "never" approval policy, an ACP
+	// agent's ACPAutoApproveArgs. An ACP agent with no such flag has each
+	// request allowed by the backend, without an event. A request an agent
+	// in its skip mode still raises (a question for the user, say) reaches
+	// the caller as usual. The agent's sandbox, where it has one, is left as
+	// configured.
+	ApprovalsSkip Approvals = "skip"
+)
 
 // Input is what a caller sends into a session.
 type Input struct {

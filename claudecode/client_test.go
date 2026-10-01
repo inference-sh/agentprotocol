@@ -205,14 +205,8 @@ func TestArgs(t *testing.T) {
 	if got := Args(Options{SessionID: "new"}); !slices.Contains(got, "--session-id=new") {
 		t.Errorf("Args = %v", got)
 	}
-}
-
-func TestSpawnRefusesBypass(t *testing.T) {
-	if _, err := Spawn(Options{PermissionMode: PermissionModeBypassPermissions}, Handler{}); err == nil {
-		t.Error("spawned in bypassPermissions")
-	}
-	if _, err := Spawn(Options{ExtraArgs: []string{"--allow-dangerously-skip-permissions"}}, Handler{}); err == nil {
-		t.Error("spawned with a skip-permissions flag")
+	if got := strings.Join(Args(Options{PermissionMode: PermissionModeBypassPermissions}), " "); !strings.Contains(got, "--permission-mode bypassPermissions") {
+		t.Errorf("Args = %v", got)
 	}
 }
 

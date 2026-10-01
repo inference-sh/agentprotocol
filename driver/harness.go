@@ -11,7 +11,8 @@ import (
 //
 // It passes the agent's launch command and nothing else from the registry:
 // ACPArgs and the SDK arguments pin models and endpoints for harness-test's
-// mock, and ACPAutoApproveArgs would take approvals away from the person.
+// mock. ACPAutoApproveArgs is handed to the ACP backend, which uses it only
+// for a session opened with ApprovalsSkip.
 // env is the child environment, where an account profile is selected; nil
 // inherits the parent's.
 //
@@ -27,7 +28,12 @@ func ForHarness(h harness.Harness, env []string) (Backend, error) {
 	case harness.DriverPi:
 		return &PiBackend{Command: h.Binary, Env: env}, nil
 	case harness.DriverACP:
-		return &ACPBackend{Command: h.ACPCmd[0], Args: append([]string(nil), h.ACPCmd[1:]...), Env: env}, nil
+		return &ACPBackend{
+			Command:         h.ACPCmd[0],
+			Args:            append([]string(nil), h.ACPCmd[1:]...),
+			AutoApproveArgs: append([]string(nil), h.ACPAutoApproveArgs...),
+			Env:             env,
+		}, nil
 	case "":
 		return nil, fmt.Errorf("driver: %s has no session driver", h.Name)
 	default:

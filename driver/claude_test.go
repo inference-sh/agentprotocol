@@ -481,16 +481,14 @@ func TestClaudeKillAfterCloseIsHarmless(t *testing.T) {
 	killAfterClose(t, openClaude(t, b, driver.SessionConfig{}))
 }
 
-func TestClaudeRefusesToSkipPermissions(t *testing.T) {
-	b, _ := claudeRunning(t, "echo")
-	b.PermissionMode = claudecode.PermissionModeBypassPermissions
-	if _, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir()}); err == nil {
-		t.Error("opened in bypassPermissions mode")
-	}
-	b.PermissionMode = ""
-	b.ExtraArgs = []string{"--dangerously-skip-permissions"}
-	if _, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir()}); err == nil {
-		t.Error("opened with --dangerously-skip-permissions")
+func TestClaudeSkipApprovalsLaunchesInBypassMode(t *testing.T) {
+	b, record := claudeRunning(t, "echo")
+	b.PermissionMode = claudecode.PermissionModeAcceptEdits
+	sess := openClaude(t, b, driver.SessionConfig{Approvals: driver.ApprovalsSkip})
+	until(t, sess.Events(), ap.AgentEventRunStarted)
+	args := strings.Join(readRecord(t, record).Args, " ")
+	if !strings.Contains(args, "--permission-mode bypassPermissions") || strings.Contains(args, "acceptEdits") {
+		t.Errorf("argv = %s, want bypassPermissions over the backend's mode", args)
 	}
 }
 

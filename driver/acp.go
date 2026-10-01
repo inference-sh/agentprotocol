@@ -38,6 +38,12 @@ type ACPBackend struct {
 	Command string
 	Args    []string
 
+	// AutoApproveArgs are appended to Args for a session opened with
+	// ApprovalsSkip: the agent's own flag for not asking
+	// (harness.Harness.ACPAutoApproveArgs). Empty means the agent has none,
+	// and such a session has the backend allow each request instead.
+	AutoApproveArgs []string
+
 	// Env is the child environment, and is where an account profile is
 	// selected. Nil inherits the parent's.
 	Env []string
@@ -159,7 +165,13 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		return nil, errors.New("driver: ACPBackend has no command")
 	}
 
+	args := b.Args
+	if cfg.Approvals == ApprovalsSkip {
+		args = append(append([]string(nil), b.Args...), b.AutoApproveArgs...)
+	}
+
 	s := &acpSession{
+		autoAllow:  cfg.Approvals == ApprovalsSkip && len(b.AutoApproveArgs) == 0,
 		runID:      cfg.RunID,
 		chatID:     cfg.ChatID,
 		pump:       newEventPump(),
@@ -183,7 +195,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 
 	proc, err := acp.Spawn(ctx, acp.ProcessConfig{
 		Command: b.Command,
-		Args:    b.Args,
+		Args:    args,
 		Dir:     cfg.WorkDir,
 		Env:     b.Env,
 		Stderr:  stderr,
@@ -246,6 +258,10 @@ type acpSession struct {
 	id     string
 	runID  string
 	chatID string
+
+	// autoAllow answers every permission request with allow: the session
+	// skips approvals and the agent has no flag of its own for it.
+	autoAllow bool
 
 	pump       *eventPump
 	closeOnce  sync.Once
@@ -567,6 +583,9 @@ func answeredWord(answered bool) string {
 func (s *acpSession) onPermission(ctx context.Context, req acp.PermissionRequest) (acp.PermissionResponse, error) {
 	if !req.DuringLoad {
 		s.alive()
+	}
+	if s.autoAllow {
+		return acp.ResponseForResolution(req, ap.InterruptResolutionAllow), nil
 	}
 	payload := acp.ApprovalForPermission(req)
 	id := payload.ToolInvocationID

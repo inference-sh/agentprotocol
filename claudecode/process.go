@@ -2,7 +2,6 @@ package claudecode
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -44,7 +43,8 @@ type Options struct {
 	ResumeSessionID string
 
 	// PermissionMode is passed as --permission-mode when set. Empty leaves
-	// the user's configured mode. bypassPermissions is refused.
+	// the user's configured mode. bypassPermissions skips every permission
+	// check; claude refuses it when run as root outside a sandbox.
 	PermissionMode string
 
 	// MCPConfig is passed as --mcp-config when set: a JSON object of the form
@@ -95,14 +95,6 @@ type Process struct {
 // Spawn launches the CLI and starts reading. It does not send initialize;
 // the caller does, so it can choose the system prompt and hooks.
 func Spawn(o Options, h Handler) (*Process, error) {
-	if o.PermissionMode == PermissionModeBypassPermissions {
-		return nil, errors.New("claudecode: bypassPermissions is not offered")
-	}
-	for _, a := range o.ExtraArgs {
-		if strings.Contains(a, "dangerously-skip-permissions") || strings.Contains(a, PermissionModeBypassPermissions) {
-			return nil, fmt.Errorf("claudecode: refusing %q; approvals go to the person", a)
-		}
-	}
 	command := o.Command
 	if command == "" {
 		command = DefaultCommand

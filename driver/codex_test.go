@@ -397,6 +397,14 @@ func TestCodexSendsApprovalPolicyThatAsks(t *testing.T) {
 	}
 }
 
+func TestCodexSkipApprovalsSendsNever(t *testing.T) {
+	sess := openCodex(t, "normal", driver.SessionConfig{Approvals: driver.ApprovalsSkip})
+	_ = sess.Prompt(context.Background(), driver.TextInput("policy?"))
+	if got := deltas(until(t, sess.Events(), ap.AgentEventTurnCompleted)); got != `policy="never" reviewer=user` {
+		t.Errorf("thread started with %s, want the never policy", got)
+	}
+}
+
 func TestCodexPassesThreadConfigOnStartAndResume(t *testing.T) {
 	for _, resume := range []string{"", "thr_old"} {
 		b, _ := codexBackend(t, "normal")

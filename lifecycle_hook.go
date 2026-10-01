@@ -113,6 +113,13 @@ const (
 	// for what the turn is about and injects the matches, so an agent picks up
 	// procedural knowledge it was never prompted with.
 	BuiltinHookBeltSuggest BuiltinHook = "belt:suggest"
+
+	// BuiltinHookBeltExtract reviews the conversation for reusable knowledge
+	// and saves it to the team's registry, deduplicated against what is
+	// there, so belt:suggest can hand it back later. It runs in the
+	// background: on agent.complete every tenth user turn, and before
+	// compaction drops the turns it would have learned from.
+	BuiltinHookBeltExtract BuiltinHook = "belt:extract"
 )
 
 // BuiltinHookDefinition describes a builtin hook and where it may be used.
@@ -130,6 +137,11 @@ var builtinHookDefs = []BuiltinHookDefinition{
 		Name:        BuiltinHookBeltSuggest,
 		Description: "Search skills, knowledge and apps for this turn's prompt and inject the matches",
 		Events:      []HookEvent{HookEventTurnStart},
+	},
+	{
+		Name:        BuiltinHookBeltExtract,
+		Description: "Save reusable knowledge from the conversation to the team's registry, deduplicated against existing entries",
+		Events:      []HookEvent{HookEventAgentComplete, HookEventPreCompact},
 	},
 }
 

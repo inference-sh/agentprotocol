@@ -35,7 +35,7 @@ var hookEventDefs = []HookEventDefinition{
 	{HookEventAgentError, "Fires when the agent encounters an error", false},
 	{HookEventAgentComplete, "Fires when the agent run completes", false},
 	{HookEventAgentIdle, "Fires when the agent has no pending work", false},
-	{HookEventPreCompact, "Fires before context compaction", true},
+	{HookEventPreCompact, "Fires before context compaction; deny or stop skips it", false},
 	{HookEventPostCompact, "Fires after context compaction", false},
 }
 

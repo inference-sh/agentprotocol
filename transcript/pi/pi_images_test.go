@@ -103,7 +103,7 @@ func TestImagesOMP(t *testing.T) {
 // reference, as omp's loader leaves it.
 func TestImagesOMPMissingBlob(t *testing.T) {
 	home := t.TempDir()
-	rel := ".omp/agent/sessions/-proj/2026-09-24T10-13-58-746Z_01a0d2e8-5d5a-731c-be28-3811486b3f17.jsonl"
+	rel := ".omp/agent/sessions/-tmp-harness-test-omp-img-proj/2026-09-24T10-13-58-746Z_01a0d2e8-5d5a-731c-be28-3811486b3f17.jsonl"
 	raw, err := os.ReadFile(filepath.Join("testdata/home", rel))
 	if err != nil {
 		t.Fatal(err)

@@ -15,6 +15,7 @@ package pi
 
 import (
 	"bytes"
+	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
@@ -32,8 +33,8 @@ import (
 var Codec = codec("pi", ".pi/agent/sessions", transcript.DashWrappedCwd, piVariant)
 
 // OMP is the Oh My Pi session store. It shares pi's rows. Its directory
-// name is a dash and the last path element, as observed on one sample;
-// listing does not depend on it because the header carries the cwd.
+// is named by ompSessionDir; listing does not depend on it because the
+// header carries the cwd.
 var OMP transcript.Codec = ompCodec{codec("omp", ".omp/agent/sessions", ompDir, ompVariant)}
 
 // ompCodec reads the images omp moves out of its rows. omp writes an
@@ -41,7 +42,8 @@ var OMP transcript.Codec = ompCodec{codec("omp", ".omp/agent/sessions", ompDir, 
 // and keeps "blob:sha256:<hash>" in its place (session-persistence.ts,
 // truncateForPersistence); its loader reads them back
 // (session-loader.ts, resolveBlobRefsInEntries). The store is under the
-// home, which only Open knows.
+// home, which only Open knows. A session it writes afresh takes its model
+// from the same store (nameModel).
 type ompCodec struct{ transcript.JSONL }
 
 func (c ompCodec) Open(home string) (transcript.Store, error) {
@@ -55,7 +57,16 @@ func (c ompCodec) Open(home string) (transcript.Store, error) {
 		resolveBlobs(s, blobs)
 		return nil
 	}
-	return j.Open(home)
+	var st transcript.Store
+	prep := j.Prepare
+	j.Prepare = func(home string, s *transcript.Session) error {
+		if err := prep(home, s); err != nil {
+			return err
+		}
+		return nameModel(st, s)
+	}
+	st, err := j.Open(home)
+	return st, err
 }
 
 // blobPrefix marks omp's reference to a stored blob (blob-store.ts).
@@ -105,8 +116,47 @@ func blobHash(h string) bool {
 	return err == nil && strings.ToLower(h) == h
 }
 
-// ompDir is the project directory rule Oh My Pi was seen to use.
+// ompDir marks the project directory rule of Oh My Pi, ompSessionDir.
 const ompDir transcript.ProjectDir = -1
+
+// ompSessionDir is the directory omp keeps a working directory's sessions
+// in (getDefaultSessionDirName, session-paths.ts): a cwd under the temp
+// root is "-tmp-" and its path below the root with separators and colons as
+// dashes, one under the home is "-" and its path below the home, and any
+// other "--<absolute path>--". From 18.5.0 the temp root is checked first,
+// so a cwd in a home under /tmp is named from the temp root, and omp moves
+// the directory 18.4 named from the home to it.
+func ompSessionDir(home, cwd string) string {
+	canonical := func(p string) string {
+		p = filepath.Clean(p)
+		if r, err := filepath.EvalSymlinks(p); err == nil {
+			return r
+		}
+		return p
+	}
+	encode := func(prefix, rel string) string {
+		if rel == "." {
+			return prefix
+		}
+		name := strings.NewReplacer("/", "-", "\\", "-", ":", "-").Replace(rel)
+		if strings.HasSuffix(prefix, "-") {
+			return prefix + name
+		}
+		return prefix + "-" + name
+	}
+	within := func(root, p string) (string, bool) {
+		rel, err := filepath.Rel(root, p)
+		return rel, err == nil && rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)) && !filepath.IsAbs(rel)
+	}
+	c := canonical(cwd)
+	if rel, ok := within(canonical(os.TempDir()), c); ok {
+		return encode("-tmp", rel)
+	}
+	if rel, ok := within(canonical(home), c); ok {
+		return encode("-", rel)
+	}
+	return transcript.DashWrappedCwd.Name(c)
+}
 
 // variant is which of the two agents a codec reads for. They write the same
 // rows and differ in how some of them reach the model.
@@ -127,7 +177,13 @@ func codec(agent, root string, project transcript.ProjectDir, v variant) transcr
 			PathFor: func(home string, s *transcript.Session) string {
 				dir := project.Name(s.CWD)
 				if project == ompDir {
-					dir = "-" + filepath.Base(s.CWD)
+					// A session omp already keeps is written over its own
+					// file: omp loads the file it wrote, wherever an
+					// earlier version's rule put it.
+					if kept, _ := filepath.Glob(filepath.Join(home, root, "*", "*_"+s.ID+".jsonl")); s.ID != "" && len(kept) == 1 {
+						return kept[0]
+					}
+					dir = ompSessionDir(home, s.CWD)
 				}
 				return filepath.Join(home, root, dir, fileStamp(s.Created)+"_"+s.ID+".jsonl")
 			},
@@ -138,7 +194,7 @@ func codec(agent, root string, project transcript.ProjectDir, v variant) transcr
 		Finish:      v.finish,
 		Prepare:     prepare,
 		Encode:      v.encode,
-		WriteHeader: writeHeader,
+		WriteHeader: v.writeHeader,
 		Tree:        true,
 		IDs:         ids,
 		// Both agents record a compaction as a compaction entry that keeps
@@ -1411,6 +1467,67 @@ func applyEdits(s *transcript.Session, rows []row, msgs []stored, branch []int, 
 		}
 	}
 	return omitted
+}
+
+// writeHeader is the header rows of a session written afresh. omp's also
+// records the model the session runs on, as a model_change at the root of
+// the branch the way omp starts every session, and the entries that began
+// the branch follow it.
+func (v variant) writeHeader(s *transcript.Session) ([]json.RawMessage, error) {
+	rows, err := writeHeader(s)
+	if err != nil || v != ompVariant || s.Model == "" {
+		return rows, err
+	}
+	id := newID()
+	mc, err := json.Marshal(modelChangeRow{Type: "model_change", ID: id,
+		Timestamp: s.Created.UTC().Format("2006-01-02T15:04:05.000Z"), Model: s.Model})
+	if err != nil {
+		return nil, err
+	}
+	for i := range s.Entries {
+		if e := &s.Entries[i]; e.Raw == nil && e.ParentID == "" {
+			e.ParentID = id
+		}
+	}
+	return append(rows, mc), nil
+}
+
+// modelChangeRow is omp's model_change entry for the default role, as
+// appendModelChange writes it (session-manager.ts).
+type modelChangeRow struct {
+	Type      string  `json:"type"`
+	ID        string  `json:"id"`
+	ParentID  *string `json:"parentId"`
+	Timestamp string  `json:"timestamp"`
+	Model     string  `json:"model"`
+}
+
+// nameModel names the model of a session omp gets afresh. omp's ACP
+// session/load restores the session's own model and from 18.6 refuses the
+// load when the session names none it can resolve: with no model_change it
+// takes "<provider>/<model>" from an assistant message, which this writer
+// has no values for ("Could not restore model undefined/undefined"). The
+// model is the session's own when it is an omp session, else that of the
+// newest session in the store that records one, as the opencode writer
+// names one. A session from another agent names its model in that agent's
+// terms, so its Model is kept only when the store has none.
+func nameModel(st transcript.Store, s *transcript.Session) error {
+	fresh := len(s.Entries) == 0 || s.Entries[0].Raw == nil
+	if !fresh || (s.Agent == "omp" && s.Model != "") {
+		return nil
+	}
+	ctx := context.Background()
+	infos, err := st.List(ctx, "")
+	if err != nil {
+		return err
+	}
+	for _, in := range infos {
+		if latest, err := st.Read(ctx, in.ID); err == nil && latest.Model != "" {
+			s.Model = latest.Model
+			return nil
+		}
+	}
+	return nil
 }
 
 func writeHeader(s *transcript.Session) ([]json.RawMessage, error) {

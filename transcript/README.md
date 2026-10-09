@@ -159,8 +159,11 @@ append into the agent's own database, against every sample.
 
 New entries are written with every field the agent validates on load, taken
 from the agent's own source or from a real file it wrote. Where a value has
-no source in the session (the model an opencode message ran with, kiro's
-agent name), it is copied from the agent's latest session in the same store.
+no source in the session (the model an opencode message ran with, the model
+an omp session runs on, kiro's agent name), it is copied from the agent's
+latest session in the same store. A session the store already holds is written
+over its own file where the agent's directory rule has moved since it was
+written (omp).
 
 ## Coverage
 

@@ -12,7 +12,8 @@ import (
 )
 
 // The sample is one ACP run of Oh My Pi in the harness-test container: a
-// prompt and an answer. pi's own headless run wrote no session file, so its
+// prompt and an answer. The omp samples were captured with 18.2 to 18.4 and
+// sit in the directories 18.5 moves them to (ompSessionDir). pi's own headless run wrote no session file, so its
 // rows are covered through the fork, which shares them.
 const (
 	sampleCWD = "/tmp/harness-test-omp-511720626/test-repo"

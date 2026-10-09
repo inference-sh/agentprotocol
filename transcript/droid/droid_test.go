@@ -379,6 +379,63 @@ func TestRemindersFollowSummary(t *testing.T) {
 // Parallel calls' results, one entry each after Portable, are written as
 // one message: droid answers a message's calls from the message after it
 // and cancels any call it finds no result for there.
+// droid 0.236 refuses session/load of a session whose tool_use input is not
+// an object. codex's apply_patch is a freeform tool: its input is the patch
+// text, a JSON string (seedkinds' foreign.codex-apply_patch, bisected in the
+// harness-test container: the session loads with that one row's input
+// wrapped, and fails with it as written).
+func TestToolInputIsObject(t *testing.T) {
+	st, err := Codec.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	inputs := map[string]string{
+		"patch": `"*** Begin Patch\n*** End Patch\n"`,
+		"list":  `["a","b"]`,
+		"null":  `null`,
+		"none":  ``,
+		"obj":   `{"file_path":"a.md"}`,
+	}
+	want := map[string]string{
+		"patch": `{"input":"*** Begin Patch\n*** End Patch\n"}`,
+		"list":  `{"input":["a","b"]}`,
+		"null":  `{"input":null}`,
+		"none":  `{}`,
+		"obj":   `{"file_path":"a.md"}`,
+	}
+	var calls []transcript.Block
+	var results []transcript.Block
+	for id, in := range inputs {
+		calls = append(calls, transcript.Block{Kind: transcript.BlockToolUse, ToolID: id, Name: "apply_patch", Input: []byte(in)})
+		results = append(results, transcript.Block{Kind: transcript.BlockToolResult, ToolID: id, Text: "ok"})
+	}
+	id, err := st.Write(t.Context(), &transcript.Session{Agent: "codex", CWD: "/tmp/p", Entries: []transcript.Entry{
+		{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "q"}}},
+		{Role: transcript.RoleAssistant, Content: calls},
+		{Role: transcript.RoleTool, Content: results},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	back, err := st.Read(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]string{}
+	for _, e := range back.Messages() {
+		for _, b := range e.Content {
+			if b.Kind == transcript.BlockToolUse {
+				got[b.ToolID] = string(b.Input)
+			}
+		}
+	}
+	for id, w := range want {
+		if got[id] != w {
+			t.Errorf("%s: input %s, want %s", id, got[id], w)
+		}
+	}
+}
+
 func TestParallelResultsOneMessage(t *testing.T) {
 	st, err := Codec.Open(t.TempDir())
 	if err != nil {

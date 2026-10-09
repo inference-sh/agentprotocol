@@ -336,6 +336,24 @@ func decodeMedia(b block, toolID string) (transcript.Block, bool) {
 	return out, true
 }
 
+// objectInput is a tool call's input as droid stores it: a JSON object. Its
+// session schema types tool_use input as a record (input:record(unknown) in
+// the 0.235 and 0.236 bundles), and from 0.236 a session/load holding any
+// other input fails ("Load session request failed"). Another agent's call can
+// carry a string (codex's freeform apply_patch) or nothing; a string or other
+// value is kept under "input", as the opencode writer does, and nothing is {}.
+func objectInput(in json.RawMessage) json.RawMessage {
+	if len(in) == 0 {
+		return json.RawMessage(`{}`)
+	}
+	var m map[string]json.RawMessage
+	if json.Unmarshal(in, &m) == nil && m != nil {
+		return in
+	}
+	wrapped, _ := json.Marshal(map[string]json.RawMessage{"input": in})
+	return wrapped
+}
+
 // encodeMedia is the block droid stores an image or file as. droid keeps an
 // image only as base64 bytes, and a document only as a PDF or as text, so
 // an image or file given by reference alone, or a file of another type, has
@@ -625,11 +643,7 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 		case transcript.BlockText:
 			content = append(content, block{Type: "text", Text: b.Text})
 		case transcript.BlockToolUse:
-			in := b.Input
-			if len(in) == 0 {
-				in = json.RawMessage(`{}`)
-			}
-			content = append(content, block{Type: "tool_use", ID: b.ToolID, Name: b.Name, Input: in})
+			content = append(content, block{Type: "tool_use", ID: b.ToolID, Name: b.Name, Input: objectInput(b.Input)})
 		case transcript.BlockToolResult:
 			var out any = b.Text
 			if media := returned[b.ToolID]; media != nil {

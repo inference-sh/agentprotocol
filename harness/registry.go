@@ -639,7 +639,7 @@ var All = map[string]Harness{
 		// not why; the others cite an investigation.
 		KnownIssues: map[string]string{
 			"acp:event:PRE_COMPACT":      "ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)",
-			"acp:event:PROMPT":           "the ACP agent (exec --output-format acp, also each acp-daemon child) calls the turn runner directly; UserPromptSubmit runs only in the JSON-RPC processUserMessage path (droid 0.217 source)",
+			"acp:event:PROMPT":           "before 0.236.0 the ACP agent (exec --output-format acp, also each acp-daemon child) calls the turn runner directly; UserPromptSubmit runs only in the JSON-RPC processUserMessage path (droid 0.217 source). 0.236.0 runs it over ACP, and its context reaches the model (harness-test nightly 2026-10-08)",
 			"headless:event:PRE_COMPACT": "PreCompact fires only from the TUI's manual compaction; exec never compacts (droid 0.217 source)",
 			"sdk:event:PRE_COMPACT":      "SDK mode is droid exec -o stream-jsonrpc; PreCompact still fires only from the TUI's manual compaction (same investigation as headless)",
 			"headless:event:PROMPT":      "plain exec (-o text/json/stream-json) runs the turn through kDA, which never calls executeUserPromptSubmitHooks; only -o stream-jsonrpc goes through the JSON-RPC processUserMessage path (droid 0.217 source)",

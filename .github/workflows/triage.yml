@@ -1,15 +1,17 @@
 name: Triage
 
 # A failed Nightly is sorted by tests/triage.sh from its own artifacts
-# (docs/ci-playbook.md). When every failure is drift (auto classes), the new
-# expected files are committed to main and a nightly for those agents confirms
-# them. When any failure needs review, the auto part goes to a triage/<run>
-# branch, the table goes to this job's summary, and this job fails.
+# (conformance/docs/ci-playbook.md). The new expected files for the drift
+# (auto classes) go to the branch triage/<run>. When every failure is drift, a
+# nightly for those agents runs on the branch to confirm them; when any needs
+# review, the table goes to this job's summary and this job fails.
 
 on:
   workflow_run:
     workflows: [Nightly]
     types: [completed]
+    # A confirming nightly on a triage branch reports on that branch.
+    branches: [main]
   workflow_dispatch:
     inputs:
       run:
@@ -61,13 +63,15 @@ jobs:
           agents=$(jq -r '[.items[] | select(.auto and .class != "already-accepted") | .agent] | unique | join(",")' $RUNNER_TEMP/triage/triage.json)
           git add tests/expected
           git commit -q -m "nightly $RUN: accept drift ($agents)" -m "$news" -m "tests/triage.sh $RUN --apply"
+          # main takes changes only through a pull request (the organization's
+          # ruleset), so the accepted drift goes to a branch for a person to
+          # merge. With nothing to review, a nightly for the changed agents
+          # runs on that branch to confirm it.
+          git push -f origin HEAD:refs/heads/triage/$RUN
+          echo "accepted drift on branch triage/$RUN: https://github.com/${{ github.repository }}/compare/main...triage/$RUN" >> $GITHUB_STEP_SUMMARY
           if [ "${{ steps.triage.outputs.status }}" = 0 ]; then
-            git push origin HEAD:main
-            gh workflow run nightly.yml -f agents="$agents"
-            echo "committed to main; confirming nightly dispatched for $agents" >> $GITHUB_STEP_SUMMARY
-          else
-            git push -f origin HEAD:refs/heads/triage/$RUN
-            echo "auto part on branch triage/$RUN: https://github.com/${{ github.repository }}/compare/main...triage/$RUN" >> $GITHUB_STEP_SUMMARY
+            gh workflow run nightly.yml --ref triage/$RUN -f agents="$agents"
+            echo "confirming nightly dispatched on triage/$RUN for $agents" >> $GITHUB_STEP_SUMMARY
           fi
       - name: Review needed
         if: steps.triage.outputs.status == '1'

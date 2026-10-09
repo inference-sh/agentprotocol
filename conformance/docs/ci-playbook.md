@@ -86,15 +86,18 @@ Done when that run is green. The next scheduled run is the second confirmation.
 ## Automation
 
 `.github/workflows/triage.yml` runs `tests/triage.sh <run> --apply` after
-every failed Nightly (or `gh workflow run triage.yml -f run=<id>`):
+every failed Nightly on main (or `gh workflow run triage.yml -f run=<id>`).
+main takes changes only through a pull request (the organization's ruleset),
+so the accepted drift always goes to the branch `triage/<run>` as
+`nightly <run>: accept drift (<agents>)`:
 
-- every failure auto: commits the new expected files to main as
-  `nightly <run>: accept drift (<agents>)` and dispatches a nightly for those
-  agents. The README matrix is left to a person; the versions are in the
-  triage job's summary.
-- any failure needs review: pushes the auto part to `triage/<run>`, writes the
-  table to the job summary and fails, naming the review classes. Work them
-  from this playbook, then merge or drop the branch.
+- every failure auto: dispatches a nightly for those agents on the branch.
+  When it is green, open a pull request from the branch and merge it. The
+  README matrix is left to a person; the versions are in the triage job's
+  summary.
+- any failure needs review: writes the table to the job summary and fails,
+  naming the review classes. Work them from this playbook on the branch, then
+  merge it or drop it.
 
 A new failure mode gets a class here first, then a row in the table, then a
 branch in the script.

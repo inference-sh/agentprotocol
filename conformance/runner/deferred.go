@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/belt-sh/harness-test/server"
+	"github.com/inference-sh/agentprotocol/conformance/server"
 )
 
 // deferredToolNames are the tools an agent ships to keep its other tools out

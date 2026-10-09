@@ -1,8 +1,8 @@
 name: Agents
 
 # Drives the real claude, codex and pi binaries through the driver backends
-# (TestClaudeRealBinary, TestCodexReal*, TestPiReal*) against harness-test's
-# mock model server, wrapped by driver/testdata/mock. No real API keys: each
+# (TestClaudeRealBinary, TestCodexReal*, TestPiReal*) against the conformance
+# suite's mock model server, wrapped by conformance/cmd/drivermock. No real API keys: each
 # agent gets a dummy key, a base URL on the mock, and a temp config dir.
 #
 # Two matrix entries:
@@ -26,7 +26,7 @@ permissions:
 
 env:
   GOWORK: "off"
-  # Pinned agent versions: what harness-test's image runs and what the tests
+  # Pinned agent versions: what the conformance image runs and what the tests
   # were last verified on.
   CLAUDE_VERSION: 2.1.281
   CODEX_VERSION: 0.156.1
@@ -50,17 +50,12 @@ jobs:
         with:
           path: agentprotocol
 
-      - uses: actions/checkout@v6
-        with:
-          repository: belt-sh/harness-test
-          path: harness-test
-
       - uses: actions/setup-go@v6
         with:
           go-version-file: agentprotocol/go.mod
           cache-dependency-path: |
             agentprotocol/go.sum
-            harness-test/go.sum
+            agentprotocol/conformance/go.sum
 
       - uses: actions/setup-node@v6
         with:
@@ -74,7 +69,7 @@ jobs:
           prefix="$RUNNER_TEMP/agents"
           npm install -g --prefix "$prefix" --no-fund --no-audit \
             "@anthropic-ai/claude-code@$CLAUDE_VERSION" "@openai/codex@$CODEX_VERSION"
-          # pi's install scripts are not needed to run it (harness-test's
+          # pi's install scripts are not needed to run it (the conformance
           # registry installs it the same way).
           npm install -g --prefix "$prefix" --no-fund --no-audit --ignore-scripts \
             "@earendil-works/pi-coding-agent@$PI_VERSION"
@@ -85,11 +80,8 @@ jobs:
           echo "pi     $(pi --version)"
 
       - name: Build mock
-        working-directory: agentprotocol/driver/testdata/mock
-        run: |
-          go mod edit -replace "github.com/belt-sh/harness-test=$GITHUB_WORKSPACE/harness-test"
-          go mod tidy
-          go build -o "$RUNNER_TEMP/apmock" .
+        working-directory: agentprotocol/conformance
+        run: go build -o "$RUNNER_TEMP/apmock" ./cmd/drivermock
 
       - name: Start mocks
         # One mock per agent so an armed tool call or a delay cannot leak

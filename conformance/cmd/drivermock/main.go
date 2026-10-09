@@ -1,6 +1,6 @@
-// Command mock runs harness-test's mock inference server behind a small
-// control proxy for the real-binary tests in driver/ (claude, codex and pi).
-// It prints its URL on stdout and serves on that one address:
+// Command drivermock runs the conformance suite's mock inference server
+// behind a small control proxy for the real-binary tests in driver/ (claude,
+// codex and pi). It prints its URL on stdout and serves on that one address:
 //
 //	POST   /ctl/toolcall {"Name","Args"}  answer the next model request with this tool call
 //	POST   /tool         {"Name","Args"}  the same, as the claude test names it
@@ -9,16 +9,12 @@
 //	POST   /mcp                           an MCP server (streamable HTTP, JSON only) with one tool, echo
 //	GET    /mcp/calls                     the MCP methods called
 //
-// Everything else goes to harness-test's server: /v1/messages (Anthropic),
+// Everything else goes to the conformance server: /v1/messages (Anthropic),
 // /v1/responses (codex), /v1/chat/completions (pi), GET and DELETE /log.
+// Run one instance per agent so armed tool calls and delays do not leak
+// between tests:
 //
-// harness-test depends on agentprotocol, so this lives in its own module under
-// testdata. Point it at a harness-test checkout, then run one instance per
-// agent so armed tool calls and delays do not leak between tests:
-//
-//	cd driver/testdata/mock
-//	go mod edit -replace github.com/belt-sh/harness-test=/path/to/harness-test
-//	go mod tidy && go build -o /tmp/apmock .
+//	cd conformance && go build -o /tmp/apmock ./cmd/drivermock
 //	/tmp/apmock &   # prints http://127.0.0.1:PORT
 //
 //	AGENTPROTOCOL_CLAUDE_MOCK_URL=URL AGENTPROTOCOL_CLAUDE_MOCK_CONTROL=URL go test -race -run TestClaudeRealBinary ./driver/
@@ -39,7 +35,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/belt-sh/harness-test/server"
+	"github.com/inference-sh/agentprotocol/conformance/server"
 )
 
 func main() {

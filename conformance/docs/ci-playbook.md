@@ -1,5 +1,7 @@
 # CI playbook: a red nightly
 
+Commands run from `conformance/` in the agentprotocol repository.
+
 The nightly fails on any change, so most red nights are drift: an agent
 released something new. This is the path from a red run to a green one, in
 the order to follow it. Every step works from the failed run's artifacts; no
@@ -76,7 +78,7 @@ out.
 ```bash
 git push
 gh workflow run nightly.yml -f agents=<agent>,<agent>
-gh run watch -R belt-sh/harness-test $(gh run list -R belt-sh/harness-test -w Nightly -L 1 --json databaseId -q '.[0].databaseId')
+gh run watch -R inference-sh/agentprotocol $(gh run list -R inference-sh/agentprotocol -w Nightly -L 1 --json databaseId -q '.[0].databaseId')
 ```
 
 Done when that run is green. The next scheduled run is the second confirmation.

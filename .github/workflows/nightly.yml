@@ -24,6 +24,11 @@ on:
         required: false
         default: ''
 
+# The conformance suite is the conformance/ module of this repository.
+defaults:
+  run:
+    working-directory: conformance
+
 jobs:
   plan:
     runs-on: ubuntu-latest
@@ -34,7 +39,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: conformance/go.mod
       - id: plan
         # Agents and their modes come from the registry. The probe set runs for
         # every agent with a session driver and a committed expected file.
@@ -67,7 +72,7 @@ jobs:
       - name: Build Docker image
         run: |
           tests/fetch-belt.sh
-          docker build -f tests/Dockerfile -t harness-test .
+          docker build -f tests/Dockerfile -t harness-test ..
       - name: Test ${{ matrix.name }} (${{ matrix.modes }})
         id: test
         run: |
@@ -115,7 +120,7 @@ jobs:
       - name: Build Docker image
         run: |
           tests/fetch-belt.sh
-          docker build -f tests/Dockerfile -t harness-test .
+          docker build -f tests/Dockerfile -t harness-test ..
       - name: Probes vs tests/expected/${{ matrix.agent }}.json
         run: |
           set -o pipefail
@@ -150,7 +155,7 @@ jobs:
       - name: Build Docker image
         run: |
           echo '#!/bin/sh' > tests/belt && chmod +x tests/belt
-          docker build -f tests/Dockerfile -t harness-test .
+          docker build -f tests/Dockerfile -t harness-test ..
       - name: Commands and flags vs tests/expected/${{ matrix.name }}.surface.txt
         # A changed surface fails this job and nothing else: the version is
         # printed, never compared, so a release that changes nothing on the

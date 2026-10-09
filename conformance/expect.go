@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/belt-sh/harness-test/runner"
+	"github.com/inference-sh/agentprotocol/conformance/runner"
 	"github.com/inference-sh/agentprotocol/harness"
 )
 

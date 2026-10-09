@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/belt-sh/harness-test/server"
+	"github.com/inference-sh/agentprotocol/conformance/server"
 	"github.com/inference-sh/agentprotocol/driver"
 	"github.com/inference-sh/agentprotocol/harness"
 )

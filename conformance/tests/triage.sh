@@ -25,7 +25,7 @@
 set -eu
 cd "$(dirname "$0")/.."
 
-repo=${REPO:-belt-sh/harness-test}
+repo=${REPO:-inference-sh/agentprotocol}
 run=""; apply=""
 for a in "$@"; do
   case "$a" in

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/belt-sh/harness-test/server"
+	"github.com/inference-sh/agentprotocol/conformance/server"
 )
 
 // The probe finds the search tool by name, so the names have to be the ones
@@ -118,9 +118,8 @@ func TestTheSharedTurnDoesNotArmATheCallersToolCall(t *testing.T) {
 	if i < 0 {
 		t.Fatal("startProbeTurn is gone")
 	}
-	body := src[i:strings.Index(src[i:], "\n}\n")+i]
+	body := src[i : strings.Index(src[i:], "\n}\n")+i]
 	if strings.Contains(body, "r.armToolCall(") {
 		t.Error("startProbeTurn arms a tool call, overwriting whatever the caller armed")
 	}
 }
-

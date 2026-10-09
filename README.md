@@ -101,7 +101,7 @@ Imports only ever flow downward. `a2a` and `acp` depend on the root; `codexapp` 
 
 The registry of coding-agent CLIs — claude, codex, gemini, cursor, goose, kiro and the rest — with what each one needs to be found and driven: binary name, config and hook directories, hook file format, the mode it answers ACP in, install command, known quirks. `DetectInstalled` reports which are on a machine and where.
 
-It lives here rather than in a test suite because three things consume it at runtime: a CLI installing hooks into an agent, a daemon reporting which agents a machine hosts, and a server deciding how to launch one. One registry, or the ids drift. The conformance suite that proves it against real agents is [harness-test](https://github.com/belt-sh/harness-test).
+It lives here rather than in a test suite because three things consume it at runtime: a CLI installing hooks into an agent, a daemon reporting which agents a machine hosts, and a server deciding how to launch one. One registry, or the ids drift. The conformance suite that proves it against real agents is [conformance/](conformance/) (the harness-test binary), in this repository.
 
 #### Signing in
 

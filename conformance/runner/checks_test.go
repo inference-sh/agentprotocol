@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/inference-sh/agentprotocol/conformance/server"
 	"github.com/inference-sh/agentprotocol/harness"
-	"github.com/belt-sh/harness-test/server"
 )
 
 // The checks must be able to fail. Each of these used to skip, and a skip

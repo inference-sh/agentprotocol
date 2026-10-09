@@ -28,8 +28,8 @@ import (
 //	AGENTPROTOCOL_CLAUDE_MOCK_URL      the Messages API base, e.g. http://127.0.0.1:4000
 //	AGENTPROTOCOL_CLAUDE_MOCK_CONTROL  the mock's control base
 //
-// The mock is testdata/mock, harness-test's server package (github.com/
-// belt-sh/harness-test/server) behind a small wrapper that serves both on one
+// The mock is conformance/cmd/drivermock, the conformance suite's server
+// package (conformance/server) behind a small wrapper that serves both on one
 // address, so both variables take the URL it prints. The control endpoints:
 //
 //	POST   /text  {"Text": "..."}               canned reply

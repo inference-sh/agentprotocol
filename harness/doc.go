@@ -14,6 +14,6 @@
 // forking the entry per version.
 //
 // The package depends only on the standard library. The conformance suite
-// that exercises the registry against real agents lives in
-// github.com/belt-sh/harness-test.
+// that exercises the registry against real agents is the conformance module
+// of this repository.
 package harness

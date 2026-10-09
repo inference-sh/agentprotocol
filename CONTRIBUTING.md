@@ -1,6 +1,6 @@
 # Contributing
 
-## Agents run in harness-test's container, never on your machine
+## Agents run in the conformance container, never on your machine
 
 Nothing that executes an agent binary runs on a developer's machine: not a
 test, not a measurement, not a quick timing loop. That covers everything in
@@ -29,7 +29,7 @@ How to work instead:
   `driver.Backend`/`Session`, point `HOME` and `PATH` at temp dirs so nothing
   real is found. A test that would find and run an installed agent is a bug.
 - **Anything that needs a real agent** — a new driver, a status check, a
-  version probe, a timing — runs in `inference-sh/harness-test`'s container,
-  against its mock model.
+  version probe, a timing — runs in the conformance suite's container
+  (`conformance/`, the harness-test binary), against its mock model.
 - **Callers of this module** (belt's daemon, the api) follow the same rule
   for their own tests.

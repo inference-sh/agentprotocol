@@ -16,8 +16,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/belt-sh/harness-test/server"
 	ap "github.com/inference-sh/agentprotocol"
+	"github.com/inference-sh/agentprotocol/conformance/server"
 	"github.com/inference-sh/agentprotocol/driver"
 	"github.com/inference-sh/agentprotocol/harness"
 )

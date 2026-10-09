@@ -72,7 +72,7 @@ seeded session does not hit the bug above.
 Reproduce:
 
 ```
-cd harness-test/tests
+git clone https://github.com/inference-sh/agentprotocol && cd agentprotocol/conformance/tests
 docker compose run --build test --harness gemini --mode acp --probe resume=kill
 docker compose run --build test --harness gemini --mode acp --probe resume=kill,resumeafter=65s
 ```

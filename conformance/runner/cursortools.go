@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/belt-sh/harness-test/tests/expected"
+	"github.com/inference-sh/agentprotocol/conformance/tests/expected"
 )
 
 // Cursor's tool row cannot be read off the wire: the CLI never sends its

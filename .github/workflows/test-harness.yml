@@ -17,6 +17,11 @@ on:
         type: string
         default: ""
 
+# The conformance suite is the conformance/ module of this repository.
+defaults:
+  run:
+    working-directory: conformance
+
 jobs:
   plan:
     runs-on: ubuntu-latest
@@ -28,7 +33,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: conformance/go.mod
       - id: modes
         run: |
           modes=$(go run . --modes-for ${{ inputs.harness }})
@@ -57,7 +62,7 @@ jobs:
         # --hooks belt run installs its real hook commands through the package.
         run: |
           tests/fetch-belt.sh
-          docker build -f tests/Dockerfile -t harness-test .
+          docker build -f tests/Dockerfile -t harness-test ..
       - name: Test ${{ matrix.mode }} (mock hooks)
         # The version reaches the shell as a variable, never as workflow text.
         env:

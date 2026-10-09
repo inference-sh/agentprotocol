@@ -51,7 +51,7 @@ same submission step the JSON-RPC path already uses.
 ## Reproduction
 
 ```
-git clone https://github.com/belt-sh/harness-test && cd harness-test/tests
+git clone https://github.com/inference-sh/agentprotocol && cd agentprotocol/conformance/tests
 docker compose run --build test --harness droid --mode acp
 docker compose run --build test --harness droid --mode both   # headless + TUI
 docker compose run --build test --harness droid --mode sdk

@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+# The conformance suite is the conformance/ module of this repository.
+defaults:
+  run:
+    working-directory: conformance
+
 jobs:
   unit:
     runs-on: ubuntu-latest
@@ -13,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.24'
+          go-version-file: conformance/go.mod
       - run: go test ./... -count=1 -v
 
   mock-server:
@@ -22,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.24'
+          go-version-file: conformance/go.mod
       - run: go build -o harness-test .
       - name: Smoke test mock server
         run: |
@@ -51,6 +56,6 @@ jobs:
         run: |
           echo '#!/bin/sh' > tests/belt
           chmod +x tests/belt
-          docker build -f tests/Dockerfile -t harness-test .
+          docker build -f tests/Dockerfile -t harness-test ..
       - name: Verify binary
         run: docker run --rm --entrypoint harness-test harness-test --list

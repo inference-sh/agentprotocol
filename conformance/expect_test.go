@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/belt-sh/harness-test/runner"
+	"github.com/inference-sh/agentprotocol/conformance/runner"
 )
 
 func TestCompareRunReportsEveryDifference(t *testing.T) {

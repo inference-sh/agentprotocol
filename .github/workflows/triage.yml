@@ -24,6 +24,11 @@ permissions:
   actions: write   # download artifacts, dispatch the confirming nightly
   contents: write  # commit the accepted drift
 
+# The conformance suite is the conformance/ module of this repository.
+defaults:
+  run:
+    working-directory: conformance
+
 jobs:
   triage:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'failure'
@@ -38,7 +43,7 @@ jobs:
           ref: main
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: conformance/go.mod
       - name: Triage nightly ${{ env.RUN }}
         id: triage
         run: |

@@ -1,0 +1,5 @@
+# The conformance image is built from the repository root.
+.git
+**/go.work
+**/go.work.sum
+conformance/runner/test-repo

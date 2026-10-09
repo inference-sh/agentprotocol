@@ -3,9 +3,11 @@
 # either download failing mid-stream failed CI jobs (2026-09-24).
 FROM golang:1.26.7-bookworm AS builder
 
+# The build context is the agentprotocol repository: this module replaces the
+# library with the code beside it, so the image tests that code.
 COPY . /build
-WORKDIR /build
-RUN go build -o /harness-test .
+WORKDIR /build/conformance
+RUN GOWORK=off go build -o /harness-test .
 
 # -------------------------------------------------------------------
 FROM node:22-slim
@@ -18,7 +20,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /harness-test /usr/local/bin/harness-test
 
 # belt CLI for --hooks belt mode: tests/fetch-belt.sh downloads the released binary
-COPY tests/belt /usr/local/bin/belt
+COPY conformance/tests/belt /usr/local/bin/belt
 
 # Non-root user (Claude/Codex refuse --dangerously-skip-permissions as root)
 RUN useradd -m -s /bin/bash testuser

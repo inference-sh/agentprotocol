@@ -1,30 +1,36 @@
 # harness-test
 
-Conformance test suite for coding agent CLIs. Tests 16 agents across 4 control modes, 4 API formats, and 7 hook formats.
+Conformance test suite for coding agent CLIs. It is the `conformance/` module of
+[agentprotocol](../README.md) and builds against the library beside it, so a
+change to the library and the run that proves it land in one commit. It was
+belt-sh/harness-test until 2026-10-09; its history came along. Commands below
+run from `conformance/`.
+
+Tests Tests 16 agents across 4 control modes, 4 API formats, and 7 hook formats.
 
 Verifies: prompt/response, tool calls, hook lifecycle, streaming, model selection, context injection.
 
 Built for [belt.sh](https://belt.sh) — connect your agent to skills, knowledge, and tools.
 
-[![Build](https://github.com/belt-sh/harness-test/actions/workflows/build.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/build.yml)
-[![Nightly](https://github.com/belt-sh/harness-test/actions/workflows/nightly.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/nightly.yml)
+[![Build](https://github.com/inference-sh/agentprotocol/actions/workflows/build.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/build.yml)
+[![Nightly](https://github.com/inference-sh/agentprotocol/actions/workflows/nightly.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/nightly.yml)
 
-[![claude](https://github.com/belt-sh/harness-test/actions/workflows/claude.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/claude.yml)
-[![codex](https://github.com/belt-sh/harness-test/actions/workflows/codex.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/codex.yml)
-[![copilot](https://github.com/belt-sh/harness-test/actions/workflows/copilot.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/copilot.yml)
-[![cursor](https://github.com/belt-sh/harness-test/actions/workflows/cursor.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/cursor.yml)
-[![droid](https://github.com/belt-sh/harness-test/actions/workflows/droid.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/droid.yml)
-[![gemini](https://github.com/belt-sh/harness-test/actions/workflows/gemini.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/gemini.yml)
-[![goose](https://github.com/belt-sh/harness-test/actions/workflows/goose.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/goose.yml)
-[![grok](https://github.com/belt-sh/harness-test/actions/workflows/grok.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/grok.yml)
-[![hermes](https://github.com/belt-sh/harness-test/actions/workflows/hermes.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/hermes.yml)
-[![kilo](https://github.com/belt-sh/harness-test/actions/workflows/kilo.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/kilo.yml)
-[![kimi](https://github.com/belt-sh/harness-test/actions/workflows/kimi.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/kimi.yml)
-[![kiro](https://github.com/belt-sh/harness-test/actions/workflows/kiro.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/kiro.yml)
-[![omp](https://github.com/belt-sh/harness-test/actions/workflows/omp.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/omp.yml)
-[![opencode](https://github.com/belt-sh/harness-test/actions/workflows/opencode.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/opencode.yml)
-[![pi](https://github.com/belt-sh/harness-test/actions/workflows/pi.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/pi.yml)
-[![qwen](https://github.com/belt-sh/harness-test/actions/workflows/qwen.yml/badge.svg)](https://github.com/belt-sh/harness-test/actions/workflows/qwen.yml)
+[![claude](https://github.com/inference-sh/agentprotocol/actions/workflows/claude.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/claude.yml)
+[![codex](https://github.com/inference-sh/agentprotocol/actions/workflows/codex.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/codex.yml)
+[![copilot](https://github.com/inference-sh/agentprotocol/actions/workflows/copilot.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/copilot.yml)
+[![cursor](https://github.com/inference-sh/agentprotocol/actions/workflows/cursor.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/cursor.yml)
+[![droid](https://github.com/inference-sh/agentprotocol/actions/workflows/droid.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/droid.yml)
+[![gemini](https://github.com/inference-sh/agentprotocol/actions/workflows/gemini.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/gemini.yml)
+[![goose](https://github.com/inference-sh/agentprotocol/actions/workflows/goose.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/goose.yml)
+[![grok](https://github.com/inference-sh/agentprotocol/actions/workflows/grok.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/grok.yml)
+[![hermes](https://github.com/inference-sh/agentprotocol/actions/workflows/hermes.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/hermes.yml)
+[![kilo](https://github.com/inference-sh/agentprotocol/actions/workflows/kilo.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/kilo.yml)
+[![kimi](https://github.com/inference-sh/agentprotocol/actions/workflows/kimi.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/kimi.yml)
+[![kiro](https://github.com/inference-sh/agentprotocol/actions/workflows/kiro.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/kiro.yml)
+[![omp](https://github.com/inference-sh/agentprotocol/actions/workflows/omp.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/omp.yml)
+[![opencode](https://github.com/inference-sh/agentprotocol/actions/workflows/opencode.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/opencode.yml)
+[![pi](https://github.com/inference-sh/agentprotocol/actions/workflows/pi.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/pi.yml)
+[![qwen](https://github.com/inference-sh/agentprotocol/actions/workflows/qwen.yml/badge.svg)](https://github.com/inference-sh/agentprotocol/actions/workflows/qwen.yml)
 
 ## Compatibility matrix
 
@@ -1160,7 +1166,7 @@ Each check writes a distinct codename into the model's context and looks for it 
 
 ### Pushing
 
-`git config core.hooksPath .githooks` once per clone; the pre-push hook runs build, vet and the unit tests and refuses a push that fails them. CI runs every harness on push, so a broken build otherwise turns all 17 badges red until the next fix.
+`git config core.hooksPath .githooks` once per clone (at the repository root); the pre-push hook runs build, vet and the unit tests and refuses a push that fails them. CI runs every harness on push, so a broken build otherwise turns all 17 badges red until the next fix.
 
 ### Real belt hooks (`--hooks belt`)
 

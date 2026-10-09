@@ -1,4 +1,4 @@
-module github.com/belt-sh/harness-test
+module github.com/inference-sh/agentprotocol/conformance
 
 go 1.26.7
 
@@ -21,3 +21,7 @@ require (
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.39.1 // indirect
 )
+
+replace github.com/inference-sh/agentprotocol => ../
+
+replace github.com/inference-sh/agentprotocol/transcript/sqlite => ../transcript/sqlite

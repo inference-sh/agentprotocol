@@ -1,0 +1,13 @@
+name: copilot
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    uses: ./.github/workflows/test-harness.yml
+    with:
+      harness: copilot

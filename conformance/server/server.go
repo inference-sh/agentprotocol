@@ -1,0 +1,824 @@
+package server
+
+import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/tls"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/json"
+	"encoding/pem"
+	"fmt"
+	"io"
+	"math/big"
+	"net"
+	"net/http"
+	"os"
+	"slices"
+	"sort"
+	"strings"
+	"sync"
+	"time"
+)
+
+const DefaultToolName = "Read"
+const DefaultToolArgs = `{"file_path":"README.md"}`
+
+type LogEntry struct {
+	Timestamp time.Time         `json:"ts"`
+	Method    string            `json:"method"`
+	Path      string            `json:"path"`
+	Headers   map[string]string `json:"headers,omitempty"`
+	Body      json.RawMessage   `json:"body,omitempty"`
+	Model     string            `json:"model,omitempty"`
+
+	// Streamed records that the mock answered this request with a stream.
+	// The mock is the only thing that knows: the checks used to re-derive it
+	// from five per-protocol path and header patterns, one of which could
+	// never match because Path carries no query string.
+	Streamed bool `json:"streamed,omitempty"`
+}
+
+// LLMHosts are API domains that agents call. Used by --intercept mode to
+// map these to 127.0.0.1 via /etc/hosts so all LLM traffic hits the mock.
+var LLMHosts = []string{
+	"api.openai.com",
+	"api.anthropic.com",
+	"generativelanguage.googleapis.com",
+	"api.x.ai",
+	"openrouter.ai",
+	"api.moonshot.cn",
+	"dashscope.aliyuncs.com",
+	"api.factory.ai",
+	"kilo.codes",
+	"opencode.ai",
+	// Kiro (Amazon Q backend + kiro runtime)
+	"q.us-east-1.amazonaws.com",
+	"q.eu-central-1.amazonaws.com",
+	"runtime.us-east-1.kiro.dev",
+	"runtime.eu-central-1.kiro.dev",
+	"app.kiro.dev",
+	"prod.us-east-1.auth.desktop.kiro.dev",
+	"management.us-east-1.kiro.dev",
+	"cognito-identity.us-east-1.amazonaws.com",
+	"client-telemetry.us-east-1.amazonaws.com",
+	"prod.us-east-1.telemetry-v2.kiro.dev",
+}
+
+type MockServer struct {
+	srv           *http.Server
+	listener      net.Listener
+	tlsListener   net.Listener
+	proxyListener net.Listener
+	caPEM         []byte            // PEM-encoded CA cert (set after StartIntercept)
+	tlsCerts      []tls.Certificate // server certs signed by our CA
+
+	mu             sync.Mutex
+	log            []LogEntry
+	response       string
+	toolCallMode   bool
+	toolCallServed bool
+	answers        int             // canned text answers served (see AnswersServed)
+	requestedHooks map[string]bool // runner tags the backend must request this phase (cursor)
+	toolName       string
+	toolArgs       string
+	toolCallPath   string
+	cursor         map[string]*cursorSession // Cursor agent run streams by request id
+}
+
+func New() *MockServer {
+	s := &MockServer{
+		response: "Hello from mock server.",
+	}
+	mux := http.NewServeMux()
+
+	// LLM APIs — registered with /v1, /api/v1 (OpenRouter), and bare prefix
+	for _, prefix := range []string{"/v1", "/api/v1", ""} {
+		mux.HandleFunc("POST "+prefix+"/chat/completions", s.handleChatCompletions)
+		mux.HandleFunc("POST "+prefix+"/responses", s.handleResponses)
+		mux.HandleFunc("POST "+prefix+"/messages", s.handleMessages)
+		mux.HandleFunc("GET "+prefix+"/models", s.handleModels)
+	}
+
+	// Gemini API
+	mux.HandleFunc("POST /v1beta/models/", s.handleGemini)
+	mux.HandleFunc("POST /v1alpha/models/", s.handleGemini)
+
+	// AWS Bedrock / Amazon Q (kiro uses q.*.amazonaws.com)
+	mux.HandleFunc("POST /model/{modelId}/converse", s.handleBedrockConverse)
+	mux.HandleFunc("POST /model/{modelId}/converse-stream", s.handleBedrockConverseStream)
+	mux.HandleFunc("POST /model/{modelId}/invoke", s.handleBedrockConverse)
+	mux.HandleFunc("POST /model/{modelId}/invoke-with-response-stream", s.handleBedrockConverseStream)
+
+	// Kiro runtime API — catch-all for /runtime/ paths
+	mux.HandleFunc("/runtime/", s.handleKiroRuntime)
+
+	// Factory proxy paths (Droid TUI routes LLM calls through /api/llm/{provider}/...)
+	mux.HandleFunc("POST /api/llm/a/v1/messages", s.handleMessages)
+	mux.HandleFunc("POST /api/llm/o/v1/chat/completions", s.handleChatCompletions)
+	mux.HandleFunc("POST /api/llm/o/v1/responses", s.handleResponses)
+
+	// Harness management endpoints (Grok auth, settings, sessions)
+	stub := s.stubJSON(map[string]any{})
+	settings := s.stubJSON(map[string]any{"models": map[string]any{"default": "mock-model"}})
+	user := s.stubJSON(map[string]any{"userId": "mock-user", "email": "mock@test.invalid"})
+	privacy := s.stubJSON(map[string]any{"opted_out": false})
+	for _, prefix := range []string{"/v1", ""} {
+		mux.HandleFunc("GET "+prefix+"/user", user)
+		mux.HandleFunc("GET "+prefix+"/settings", settings)
+		mux.HandleFunc("GET "+prefix+"/privacy/coding-data-retention", privacy)
+	}
+	mux.HandleFunc("GET /api-key", stub)
+	mux.HandleFunc("GET /billing", stub)
+	mux.HandleFunc("GET /feedback/config", stub)
+	mux.HandleFunc("GET /bundle/archive", stub)
+	mux.HandleFunc("POST /sessions/{id}/data", s.handleGrokRecord)
+	mux.HandleFunc("PUT /sessions/{id}", s.handleGrokRecord)
+
+	// Droid (Factory) auth stubs
+	mux.HandleFunc("GET /api/cli/whoami", s.stubJSON(map[string]any{
+		"userId": "mock-user-001", "orgId": "mock-org-001", "region": "global",
+	}))
+	mux.HandleFunc("GET /api/cli/org", s.stubJSON(map[string]any{
+		"id": "mock-org-001", "name": "Mock Org",
+	}))
+
+	// Kimi managed API stubs
+	mux.HandleFunc("GET /coding/v1/me", s.stubJSON(map[string]any{
+		"id": "mock-user", "email": "mock@test.invalid",
+	}))
+	mux.HandleFunc("GET /coding/v1/models", s.stubJSON(map[string]any{
+		"models": []map[string]any{
+			{"id": "mock-model", "name": "Mock Model", "max_context_size": 128000},
+		},
+	}))
+	mux.HandleFunc("GET /coding/v1/usages", s.stubJSON(map[string]any{
+		"used": 0, "limit": 1000000,
+	}))
+
+	// Kiro auth + Cognito stubs; Cursor's /auth/exchange_user_api_key wants both tokens
+	mux.HandleFunc("POST /auth/", func(w http.ResponseWriter, r *http.Request) {
+		s.record(r, nil, "")
+		writeJSON(w, map[string]any{"accessToken": "mock-token", "refreshToken": "mock-refresh", "expiresIn": 86400})
+	})
+
+	// Cursor agent CLI (Connect-protobuf), see cursor.go
+	mux.HandleFunc("POST /agent.v1.AgentService/RunSSE", s.handleCursorRunSSE)
+	mux.HandleFunc("POST /aiserver.v1.BidiService/BidiAppend", s.handleCursorBidiAppend)
+	for _, svc := range []string{"AiService", "DashboardService", "ServerConfigService", "AnalyticsService", "MetricsService", "RepositoryService", "AutomationsService", "BackgroundComposerService"} {
+		mux.HandleFunc("POST /aiserver.v1."+svc+"/", s.cursorUnary)
+	}
+	mux.HandleFunc("POST /agent.v1.AgentService/", s.cursorUnary)
+
+	// Test utilities
+	mux.HandleFunc("GET /log", s.handleGetLog)
+	mux.HandleFunc("GET /log/count", s.handleLogCount)
+	mux.HandleFunc("DELETE /log", s.handleClearLog)
+	mux.HandleFunc("POST /response", s.handleSetResponse)
+
+	// Catch-all: handle AWS service APIs (Cognito, CodeWhisperer, telemetry)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		target := r.Header.Get("X-Amz-Target")
+		switch target {
+		// Cognito Identity
+		case "AWSCognitoIdentityService.GetId":
+			writeJSON(w, map[string]any{"IdentityId": "us-east-1:mock-identity-id"})
+		case "AWSCognitoIdentityService.GetCredentialsForIdentity":
+			writeJSON(w, map[string]any{
+				"IdentityId": "us-east-1:mock-identity-id",
+				"Credentials": map[string]any{
+					"AccessKeyId": "ASIAMOCKKEY", "SecretKey": "mocksecretkey",
+					"SessionToken": "mocksessiontoken", "Expiration": 4102444800,
+				},
+			})
+		case "AWSCognitoIdentityService.GetOpenIdToken":
+			writeJSON(w, map[string]any{"IdentityId": "us-east-1:mock-identity-id", "Token": "mock-openid-token"})
+		// CodeWhisperer management
+		case "AmazonCodeWhispererService.GetProfile":
+			writeJSON(w, map[string]any{"profileArn": "arn:aws:codewhisperer:us-east-1:mock:profile/mock", "profileName": "mock"})
+		case "AmazonCodeWhispererService.GetUsageLimits":
+			writeJSON(w, map[string]any{"usageLimits": []any{}})
+		case "AmazonCodeWhispererService.ListAvailableModels":
+			writeJSON(w, map[string]any{"models": []map[string]any{
+				{"modelId": "kiro-default", "modelName": "Kiro Default", "provider": "kiro"},
+			}})
+		case "AmazonCodeWhispererService.SendTelemetryEvent":
+			writeJSON(w, map[string]any{})
+		// CodeWhisperer streaming (LLM call)
+		case "AmazonCodeWhispererStreamingService.GenerateAssistantResponse":
+			body, _ := io.ReadAll(r.Body)
+			// Record the model kiro actually asked for, not a constant: with the
+			// constant, the model check compared "kiro-default" with itself.
+			var kreq struct {
+				ConversationState struct {
+					CurrentMessage struct {
+						UserInputMessage struct {
+							ModelID string `json:"modelId"`
+						} `json:"userInputMessage"`
+					} `json:"currentMessage"`
+				} `json:"conversationState"`
+			}
+			json.Unmarshal(body, &kreq)
+			// Always an event stream on this path.
+			s.markStreamed(s.record(r, body, kreq.ConversationState.CurrentMessage.UserInputMessage.ModelID))
+			w.Header().Set("Content-Type", "application/vnd.amazon.eventstream")
+			w.WriteHeader(200)
+			// Tool call round-trip: toolUseEvent carries the input as a JSON
+			// string (streamed in fragments; one fragment with stop=true is
+			// enough). kiro replies with userInputMessageContext.toolResults.
+			if s.shouldToolCall(s.bodyOffersTool(body), r.URL.Path) {
+				name, args := s.getToolCall()
+				writeEventStreamMessage(w, "toolUseEvent",
+					[]byte(mustJSON(map[string]any{"toolUseId": "mock-tool-1", "name": name, "input": args, "stop": true})))
+				writeEventStreamMessage(w, "messageMetadataEvent",
+					[]byte(mustJSON(map[string]any{"conversationId": "mock-conv-1"})))
+				if f, ok := w.(http.Flusher); ok {
+					f.Flush()
+				}
+				return
+			}
+			text := s.getResponse()
+			writeEventStreamMessage(w, "assistantResponseEvent",
+				[]byte(mustJSON(map[string]any{"content": text})))
+			writeEventStreamMessage(w, "messageMetadataEvent",
+				[]byte(mustJSON(map[string]any{
+					"conversationId": "mock-conv-1",
+					"usage":          map[string]any{"inputTokens": 10, "outputTokens": 5},
+				})))
+			if f, ok := w.(http.Flusher); ok {
+				f.Flush()
+			}
+		default:
+			w.WriteHeader(200)
+		}
+	})
+
+	s.srv = &http.Server{Handler: mux}
+	return s
+}
+
+// --- Public API ---
+
+func (s *MockServer) SetResponse(text string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.response = text
+}
+
+func (s *MockServer) PrepareToolCall(name, args, path string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.toolName = name
+	s.toolArgs = args
+	s.toolCallPath = path
+	s.toolCallMode = true
+	s.toolCallServed = false
+}
+
+func (s *MockServer) LogCount() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return len(s.log)
+}
+
+func (s *MockServer) Log() []LogEntry {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	cp := make([]LogEntry, len(s.log))
+	copy(cp, s.log)
+	return cp
+}
+
+func (s *MockServer) ClearLog() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.log = nil
+}
+
+func (s *MockServer) Start() (string, error) {
+	var err error
+	s.listener, err = net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		return "", err
+	}
+	go s.srv.Serve(s.listener)
+	return fmt.Sprintf("http://%s", s.listener.Addr()), nil
+}
+
+// StartIntercept starts both HTTP (random port) and HTTPS (port 443) listeners.
+// Uses a CA cert to sign server certs for all LLM API domains. The CA PEM is
+// available via CAPem() for injection into runtimes (NODE_EXTRA_CA_CERTS etc.).
+func (s *MockServer) StartIntercept() (string, error) {
+	baseURL, err := s.Start()
+	if err != nil {
+		return "", err
+	}
+
+	caKey, caDER, err := generateCA()
+	if err != nil {
+		return baseURL, fmt.Errorf("generate CA: %w", err)
+	}
+
+	bundle, err := generateMITMCert(caKey, caDER, LLMHosts)
+	if err != nil {
+		return baseURL, fmt.Errorf("generate server cert: %w", err)
+	}
+	s.caPEM = bundle.caPEM
+	s.tlsCerts = []tls.Certificate{bundle.cert}
+
+	tlsLn, err := tls.Listen("tcp", "127.0.0.1:443", &tls.Config{
+		Certificates: s.tlsCerts,
+	})
+	if err != nil {
+		// Port 443 requires root; fall back to random port (proxy still works)
+		tlsLn, err = tls.Listen("tcp", "127.0.0.1:0", &tls.Config{
+			Certificates: s.tlsCerts,
+		})
+		if err != nil {
+			return baseURL, fmt.Errorf("tls listen: %w", err)
+		}
+	}
+	s.tlsListener = tlsLn
+
+	tlsSrv := &http.Server{Handler: s.srv.Handler}
+	go tlsSrv.Serve(tlsLn)
+
+	return baseURL, nil
+}
+
+// CAPem returns the PEM-encoded CA certificate used by the MITM listener.
+// Returns nil if StartIntercept hasn't been called.
+func (s *MockServer) CAPem() []byte {
+	return s.caPEM
+}
+
+// ProxyAddr returns the MITM proxy address (e.g. "http://127.0.0.1:34567")
+// for use as HTTPS_PROXY. Returns empty if StartProxy hasn't been called.
+func (s *MockServer) ProxyAddr() string {
+	if s.proxyListener == nil {
+		return ""
+	}
+	return fmt.Sprintf("http://%s", s.proxyListener.Addr())
+}
+
+// HostsEntries returns /etc/hosts lines mapping LLM API domains to 127.0.0.1.
+func HostsEntries() string {
+	var lines []string
+	for _, host := range LLMHosts {
+		lines = append(lines, fmt.Sprintf("127.0.0.1 %s", host))
+	}
+	return strings.Join(lines, "\n")
+}
+
+type caBundle struct {
+	cert   tls.Certificate
+	caCert []byte // DER-encoded CA certificate
+	caPEM  []byte // PEM-encoded CA certificate (for NODE_EXTRA_CA_CERTS etc.)
+}
+
+func generateCA() (*ecdsa.PrivateKey, []byte, error) {
+	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	serial, _ := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
+	tmpl := &x509.Certificate{
+		SerialNumber:          serial,
+		Subject:               pkix.Name{Organization: []string{"harness-test CA"}},
+		NotBefore:             time.Now().Add(-time.Hour),
+		NotAfter:              time.Now().Add(24 * time.Hour),
+		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageCRLSign,
+		BasicConstraintsValid: true,
+		IsCA:                  true,
+		MaxPathLen:            0,
+	}
+
+	caDER, err := x509.CreateCertificate(rand.Reader, tmpl, tmpl, &key.PublicKey, key)
+	if err != nil {
+		return nil, nil, err
+	}
+	return key, caDER, nil
+}
+
+func generateMITMCert(caKey *ecdsa.PrivateKey, caDER []byte, hosts []string) (caBundle, error) {
+	caCert, err := x509.ParseCertificate(caDER)
+	if err != nil {
+		return caBundle{}, err
+	}
+
+	serverKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		return caBundle{}, err
+	}
+
+	serial, _ := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
+	tmpl := &x509.Certificate{
+		SerialNumber: serial,
+		Subject:      pkix.Name{Organization: []string{"harness-test"}},
+		NotBefore:    time.Now().Add(-time.Hour),
+		NotAfter:     time.Now().Add(24 * time.Hour),
+		KeyUsage:     x509.KeyUsageDigitalSignature,
+		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
+		IPAddresses:  []net.IP{net.ParseIP("127.0.0.1")},
+	}
+	for _, h := range hosts {
+		tmpl.DNSNames = append(tmpl.DNSNames, h)
+	}
+
+	serverDER, err := x509.CreateCertificate(rand.Reader, tmpl, caCert, &serverKey.PublicKey, caKey)
+	if err != nil {
+		return caBundle{}, err
+	}
+
+	caPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: caDER})
+
+	return caBundle{
+		cert: tls.Certificate{
+			Certificate: [][]byte{serverDER, caDER},
+			PrivateKey:  serverKey,
+		},
+		caCert: caDER,
+		caPEM:  caPEM,
+	}, nil
+}
+
+func (s *MockServer) Close() {
+	if s.srv != nil {
+		s.srv.Close()
+	}
+	if s.tlsListener != nil {
+		s.tlsListener.Close()
+	}
+	if s.proxyListener != nil {
+		s.proxyListener.Close()
+	}
+}
+
+func (s *MockServer) handleKiroRuntime(w http.ResponseWriter, r *http.Request) {
+	body, _ := io.ReadAll(r.Body)
+	s.record(r, body, "")
+
+	text := s.getResponse()
+	writeJSON(w, map[string]any{
+		"output": map[string]any{
+			"message": map[string]any{
+				"role":    "assistant",
+				"content": []map[string]any{{"text": text}},
+			},
+		},
+		"stopReason": "end_turn",
+	})
+}
+
+// Response is the canned answer, read without counting it as served —
+// getResponse counts, and the runner waits on that count to know a turn ended.
+func (s *MockServer) Response() string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.response
+}
+
+// --- Internal helpers ---
+
+func (s *MockServer) getResponse() string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.answers++
+	return s.response
+}
+
+// AnswersServed counts canned text answers handed out since the server started.
+// The runner waits on this, not on words scraped from a terminal: the old
+// wait list contained "codename", which is in the prompt itself, and "build",
+// which is in Cursor's empty input box, so it "saw the answer" as soon as the
+// TUI drew and killed the session three seconds later.
+func (s *MockServer) AnswersServed() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.answers
+}
+
+func (s *MockServer) getToolCall() (string, string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.toolName != "" {
+		return s.toolName, s.toolArgs
+	}
+	return DefaultToolName, DefaultToolArgs
+}
+
+func (s *MockServer) getToolCallParsed() (string, any) {
+	name, argsJSON := s.getToolCall()
+	var parsed any
+	json.Unmarshal([]byte(argsJSON), &parsed)
+	return name, parsed
+}
+
+func (s *MockServer) shouldToolCall(hasTools bool, requestPath string) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if !hasTools {
+		return false
+	}
+	if s.toolCallMode {
+		if s.toolCallPath != "" && !strings.HasSuffix(requestPath, s.toolCallPath) {
+			return false
+		}
+		s.toolCallMode = false
+		s.toolCallServed = true
+		return true
+	}
+	return false
+}
+
+// ToolCallServed reports whether the prepared tool call was handed to the agent
+// since the last ClearLog. Agents route a turn through models and retries of
+// their own, so a turn can end without ever being offered the tool; the tool
+// hooks cannot fire then, and that is a gap in this harness, not a regression.
+func (s *MockServer) ToolCallServed() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.toolCallServed
+}
+
+// parseRequest reads the body, records the request, and returns the parsed
+// fields along with the log index, so a handler that streams can say so.
+func (s *MockServer) parseRequest(r *http.Request) (llmRequest, []byte, int) {
+	body, _ := io.ReadAll(r.Body)
+	var req llmRequest
+	json.Unmarshal(body, &req)
+	return req, body, s.record(r, body, req.Model)
+}
+
+// markStreamed records that the mock answered request i with a stream.
+func (s *MockServer) markStreamed(i int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if i >= 0 && i < len(s.log) {
+		s.log[i].Streamed = true
+	}
+}
+
+// record appends a request to the log and returns its index.
+//
+// The dump and the header map are built before the lock: s.mu also serves
+// AnswersServed and LogCount, which the runner polls several times a second
+// through every turn, and holding it across a full-body Printf blocks the
+// response path of every other request.
+func (s *MockServer) record(r *http.Request, body []byte, model string) int {
+	// HARNESS_DUMP=1 prints every recorded request body (for protocol work).
+	if os.Getenv("HARNESS_DUMP") != "" {
+		fmt.Printf("[dump] %s %s %s (%d bytes)\n%s\n", time.Now().Format("15:04:05.000"), r.Method, r.URL.Path, len(body), body)
+	}
+
+	headers := make(map[string]string)
+	for k, v := range r.Header {
+		headers[strings.ToLower(k)] = strings.Join(v, ", ")
+	}
+	entry := LogEntry{
+		Timestamp: time.Now(),
+		Method:    r.Method,
+		Path:      r.URL.Path,
+		Headers:   headers,
+		Body:      json.RawMessage(body),
+		Model:     model,
+	}
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.log = append(s.log, entry)
+	dumpRequestBody(r.URL.Path, body)
+	return len(s.log) - 1
+}
+
+// dumpRequestBody appends every request the mock received to the file named by
+// HARNESS_DUMP_BODIES. Reading tools off the wire is only as good as the
+// parser, and the parser is not what a disagreement should be settled with.
+func dumpRequestBody(path string, body []byte) {
+	name := os.Getenv("HARNESS_DUMP_BODIES")
+	if name == "" || len(body) == 0 {
+		return
+	}
+	f, err := os.OpenFile(name, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+	fmt.Fprintf(f, "=== %s %d bytes\n%s\n", path, len(body), body)
+}
+
+// --- Handlers: models, test endpoints, Grok ---
+
+func (s *MockServer) handleModels(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, ModelList{
+		Data: []ModelEntry{
+			{ID: "mock-model", Object: "model", OwnedBy: "mock"},
+			{ID: "gpt-4o-mini", Object: "model", OwnedBy: "mock"},
+		},
+	})
+}
+
+func (s *MockServer) handleGetLog(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, s.Log())
+}
+
+func (s *MockServer) handleLogCount(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, map[string]int{"count": s.LogCount()})
+}
+
+func (s *MockServer) handleClearLog(w http.ResponseWriter, _ *http.Request) {
+	s.ClearLog()
+	w.WriteHeader(204)
+}
+
+func (s *MockServer) handleSetResponse(w http.ResponseWriter, r *http.Request) {
+	body, _ := io.ReadAll(r.Body)
+	var req struct {
+		Text string `json:"text"`
+	}
+	if json.Unmarshal(body, &req) == nil && req.Text != "" {
+		s.SetResponse(req.Text)
+	}
+	w.WriteHeader(204)
+}
+
+func (s *MockServer) stubJSON(data any) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		s.record(r, nil, "")
+		writeJSON(w, data)
+	}
+}
+
+func (s *MockServer) handleGrokRecord(w http.ResponseWriter, r *http.Request) {
+	body, _ := io.ReadAll(r.Body)
+	s.record(r, body, "")
+	writeJSON(w, map[string]any{"ok": true})
+}
+
+// --- SSE helpers ---
+
+type sseEvent struct {
+	Type string
+	Data any
+}
+
+func typed(eventType string, data map[string]any) sseEvent {
+	data["type"] = eventType
+	return sseEvent{Type: eventType, Data: data}
+}
+
+func beginSSE(w http.ResponseWriter) http.Flusher {
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.WriteHeader(200)
+	f, _ := w.(http.Flusher)
+	return f
+}
+
+func streamSSEEvents(w http.ResponseWriter, events []sseEvent) {
+	f := beginSSE(w)
+	for i, evt := range events {
+		if m, ok := evt.Data.(map[string]any); ok {
+			m["sequence_number"] = i // Responses API clients (grok) require it
+		}
+		fmt.Fprintf(w, "event: %s\ndata: %s\n\n", evt.Type, mustJSON(evt.Data))
+		if f != nil {
+			f.Flush()
+		}
+	}
+}
+
+func streamData(w http.ResponseWriter, f http.Flusher, v any) {
+	fmt.Fprintf(w, "data: %s\n\n", mustJSON(v))
+	if f != nil {
+		f.Flush()
+	}
+}
+
+func writeJSON(w http.ResponseWriter, v any) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(v)
+}
+
+func mustJSON(v any) string {
+	b, _ := json.Marshal(v)
+	return string(b)
+}
+
+// bodyOffersTool reports whether this request declares the tool the mock is
+// about to call. Agents route one turn across several models with different
+// toolsets (gemini answers a prepared write_file call from its small flash
+// toolset with "Tool not found" and never runs it, so no tool hook fires), so
+// the prepared call must go to a request that actually offers it.
+//
+// It asks toolNamesIn rather than walking the body again: the old copy matched
+// the tool's name as a substring of the whole marshalled tools section, so a
+// name appearing in another tool's description or a parameter enum counted as
+// an offer.
+func (s *MockServer) bodyOffersTool(body []byte) bool {
+	name, _ := s.getToolCall()
+	if name == "" {
+		return false
+	}
+	return slices.Contains(toolNamesIn(body), name)
+}
+
+// DeclaredTools is every tool name the agent offered the model, across all
+// requests recorded since the last ClearLog.
+//
+// Which tools an agent declares is knowledge this registry needs and cannot
+// guess: an agent only asks its client for permission when it is about to do
+// something it gates, and the tool name it gates is its own. Reading them off
+// the wire beats writing twelve guesses into the registry.
+func (s *MockServer) DeclaredTools() []string {
+	s.mu.Lock()
+	entries := make([]LogEntry, len(s.log))
+	copy(entries, s.log)
+	s.mu.Unlock()
+
+	seen := map[string]bool{}
+	for _, e := range entries {
+		for _, n := range toolNamesIn(e.Body) {
+			seen[n] = true
+		}
+	}
+	out := make([]string, 0, len(seen))
+	for n := range seen {
+		out = append(out, n)
+	}
+	sort.Strings(out)
+	return out
+}
+
+// toolNamesIn collects the name of every tool declared in a request. Only
+// "tools" and "functionDeclarations" sections are searched, for the same
+// reason bodyOffersTool confines itself to them: a tool name in conversation
+// history is not a declaration.
+func toolNamesIn(body []byte) []string {
+	var doc any
+	if json.Unmarshal(body, &doc) != nil {
+		return nil
+	}
+	var names []string
+	var collect func(any)
+	collect = func(v any) {
+		switch t := v.(type) {
+		case map[string]any:
+			// A tool is declared either flat ({"name":...}) or wrapped in the
+			// OpenAI function envelope ({"function":{"name":...}}).
+			if fn, ok := t["function"].(map[string]any); ok {
+				if n, ok := fn["name"].(string); ok && n != "" {
+					names = append(names, n)
+				}
+			}
+			if n, ok := t["name"].(string); ok && n != "" {
+				names = append(names, n)
+			}
+			for _, sub := range t {
+				collect(sub)
+			}
+		case []any:
+			for _, sub := range t {
+				collect(sub)
+			}
+		}
+	}
+	var walk func(any)
+	walk = func(v any) {
+		switch t := v.(type) {
+		case map[string]any:
+			for k, sub := range t {
+				if k == "tools" || k == "functionDeclarations" {
+					collect(sub)
+					continue
+				}
+				walk(sub)
+			}
+		case []any:
+			for _, sub := range t {
+				walk(sub)
+			}
+		}
+	}
+	walk(doc)
+	return names
+}
+
+// SetRequestedHooks tells the mock which hook events to request from an agent
+// that runs them only on a backend request (see Harness.ServerRequestedHooks).
+func (s *MockServer) SetRequestedHooks(tags []string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.requestedHooks = map[string]bool{}
+	for _, t := range tags {
+		s.requestedHooks[t] = true
+	}
+}
+
+func (s *MockServer) requestsHook(tag string) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.requestedHooks[tag]
+}

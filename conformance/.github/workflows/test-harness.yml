@@ -1,0 +1,73 @@
+name: Test Harness (reusable)
+
+# Runs every mode the registry gives this agent (harness-test --modes-for), each
+# twice: the runner's mock hooks, then the released belt CLI's real hook
+# commands (--hooks belt). The mode list is read from the registry at run time,
+# so adding a mode to an agent in agentprotocol adds it here.
+
+on:
+  workflow_call:
+    inputs:
+      harness:
+        required: true
+        type: string
+      agent_version:
+        # Installs this exact version instead of the latest (--agent-version).
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      modes: ${{ steps.modes.outputs.modes }}
+      docker: ${{ steps.modes.outputs.docker }}
+      flags: ${{ steps.modes.outputs.flags }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - id: modes
+        run: |
+          modes=$(go run . --modes-for ${{ inputs.harness }})
+          echo "modes=$modes" >> "$GITHUB_OUTPUT"
+          # An agent with no BYOK endpoint (kiro) only works through the MITM
+          # intercept, which rewrites /etc/hosts and installs a CA: root.
+          if go run . --list --json | jq -e '.[] | select(.name == "${{ inputs.harness }}") | .needs_intercept == true' > /dev/null; then
+            echo "docker=--user root" >> "$GITHUB_OUTPUT"
+            echo "flags=--intercept" >> "$GITHUB_OUTPUT"
+          fi
+          echo "${{ inputs.harness }}: $modes"
+
+  test:
+    needs: plan
+    if: needs.plan.outputs.modes != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: ${{ fromJson(needs.plan.outputs.modes) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        id: build
+        # tests/belt is the released belt CLI from dist.inference.sh; the
+        # --hooks belt run installs its real hook commands through the package.
+        run: |
+          tests/fetch-belt.sh
+          docker build -f tests/Dockerfile -t harness-test .
+      - name: Test ${{ matrix.mode }} (mock hooks)
+        # The version reaches the shell as a variable, never as workflow text.
+        env:
+          AGENT_VERSION: ${{ inputs.agent_version }}
+        run: docker run --rm ${{ needs.plan.outputs.docker }} harness-test --harness ${{ inputs.harness }} --mode ${{ matrix.mode }} ${{ needs.plan.outputs.flags }} ${AGENT_VERSION:+--agent-version "$AGENT_VERSION"}
+        timeout-minutes: 8
+      - name: Test ${{ matrix.mode }} (belt hooks)
+        # Runs when the mock-hooks step failed too, not when there is no image.
+        if: (success() || failure()) && steps.build.outcome == 'success'
+        env:
+          AGENT_VERSION: ${{ inputs.agent_version }}
+        run: docker run --rm ${{ needs.plan.outputs.docker }} harness-test --harness ${{ inputs.harness }} --mode ${{ matrix.mode }} --hooks belt ${{ needs.plan.outputs.flags }} ${AGENT_VERSION:+--agent-version "$AGENT_VERSION"}
+        timeout-minutes: 8

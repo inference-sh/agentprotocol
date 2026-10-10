@@ -83,8 +83,11 @@ type MockServer struct {
 	requestedHooks map[string]bool // runner tags the backend must request this phase (cursor)
 	toolName       string
 	toolArgs       string
-	toolCallPath   string
-	cursor         map[string]*cursorSession // Cursor agent run streams by request id
+	// toolNamespace is the namespace of a Responses tool declared inside
+	// one (codex's multi_agent_v1), sent with the function call.
+	toolNamespace string
+	toolCallPath  string
+	cursor        map[string]*cursorSession // Cursor agent run streams by request id
 }
 
 func New() *MockServer {
@@ -267,8 +270,15 @@ func (s *MockServer) SetResponse(text string) {
 }
 
 func (s *MockServer) PrepareToolCall(name, args, path string) {
+	s.PrepareToolCallIn("", name, args, path)
+}
+
+// PrepareToolCallIn is PrepareToolCall for a tool declared in a namespace.
+// Only the Responses API has namespaces; the other formats ignore it.
+func (s *MockServer) PrepareToolCallIn(namespace, name, args, path string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	s.toolNamespace = namespace
 	s.toolName = name
 	s.toolArgs = args
 	s.toolCallPath = path
@@ -498,6 +508,12 @@ func (s *MockServer) AnswersServed() int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.answers
+}
+
+func (s *MockServer) toolCallNamespace() string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.toolNamespace
 }
 
 func (s *MockServer) getToolCall() (string, string) {

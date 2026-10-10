@@ -63,6 +63,7 @@ type SessionDriver struct {
 	permissions []PermissionObservation
 	load        LoadResult
 	usage       UsageObservation
+	subagents   SubagentObservation
 
 	// updates wakes a waiter; the text itself is appended as it arrives, so a
 	// dropped wakeup costs nothing. turnOver is signalled when a turn ends.
@@ -298,6 +299,7 @@ func (d *SessionDriver) onEvent(ev ap.AgentEvent, replay bool) {
 	case ap.AgentEventUsageUpdated, ap.AgentEventContextUpdated, ap.AgentEventLimitsUpdated, ap.AgentEventAccountUpdated:
 		d.recordUsage(ev)
 	}
+	d.recordSubagent(ev)
 	d.wake(d.updates)
 }
 
@@ -330,6 +332,57 @@ func (d *SessionDriver) recordUsage(ev ap.AgentEvent) {
 			d.usage.Accounts = append(d.usage.Accounts, p.Account)
 		}
 	}
+}
+
+// SubagentObservation is the subagent events a session emitted, and the
+// events that carried a subagent's own output.
+type SubagentObservation struct {
+	Started   []ap.SubagentStartedPayload
+	Updated   []ap.SubagentUpdatedPayload
+	Completed []ap.SubagentCompletedPayload
+	// Output counts content and tool events naming a subagent; ToolsStarted
+	// are the agent's own tool calls, which a subagent hangs off.
+	Output       int
+	ToolsStarted []string
+}
+
+func (d *SessionDriver) recordSubagent(ev ap.AgentEvent) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	o := &d.subagents
+	switch ev.Type {
+	case ap.AgentEventSubagentStarted:
+		if p, ok := ap.PayloadAs[ap.SubagentStartedPayload](ev, ev.Type); ok {
+			o.Started = append(o.Started, p)
+		}
+	case ap.AgentEventSubagentUpdated:
+		if p, ok := ap.PayloadAs[ap.SubagentUpdatedPayload](ev, ev.Type); ok {
+			o.Updated = append(o.Updated, p)
+		}
+	case ap.AgentEventSubagentCompleted:
+		if p, ok := ap.PayloadAs[ap.SubagentCompletedPayload](ev, ev.Type); ok {
+			o.Completed = append(o.Completed, p)
+		}
+	case ap.AgentEventContentDelta:
+		if p, ok := ap.PayloadAs[ap.ContentDeltaPayload](ev, ev.Type); ok && p.SubagentID != "" {
+			o.Output++
+		}
+	case ap.AgentEventToolStarted:
+		if p, ok := ap.PayloadAs[ap.ToolStartedPayload](ev, ev.Type); ok {
+			if p.SubagentID != "" {
+				o.Output++
+			} else {
+				o.ToolsStarted = append(o.ToolsStarted, p.ToolInvocationID)
+			}
+		}
+	}
+}
+
+// Subagents is the subagent events so far.
+func (d *SessionDriver) Subagents() SubagentObservation {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	return d.subagents
 }
 
 // Usage is the usage events so far.

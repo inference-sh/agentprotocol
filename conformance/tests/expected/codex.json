@@ -4,7 +4,7 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage",
+      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents",
       "checks": {
         "acp/compact.run": "finding:as-prompt",
         "acp/deferred.armed": "pass:no-search-tool",
@@ -68,6 +68,9 @@
         "acp/session.completed": "pass",
         "acp/session.start": "pass",
         "acp/streaming": "pass",
+        "acp/subagents.completed": "pass:idle",
+        "acp/subagents.output": "pass",
+        "acp/subagents.started": "pass:linked",
         "acp/transcript": "pass",
         "acp/usage.account": "pass:signed-in",
         "acp/usage.context": "pass:with-window",

@@ -60,6 +60,10 @@ const (
 )
 
 type TestRunner struct {
+	// subagentOutput asks the native drivers for a subagent's own output
+	// (probeSubagents).
+	subagentOutput bool
+
 	harness          harness.Harness
 	server           *server.MockServer
 	baseURL          string
@@ -295,6 +299,10 @@ func (r *TestRunner) Run() Result {
 		if r.probes.Usage {
 			r.resetPhase(ModeACP)
 			r.probeUsage()
+		}
+		if r.probes.Subagents {
+			r.resetPhase(ModeACP)
+			r.probeSubagents()
 		}
 		if r.probes.Seed {
 			r.resetPhase(ModeACP)
@@ -1265,11 +1273,12 @@ func (r *TestRunner) acpInvocationGated() (bin string, args []string, dir string
 func (r *TestRunner) sessionBackend(gated, emitReplay bool) BackendFactory {
 	dir := r.workDir()
 	env := r.envIn(dir)
+	output := r.subagentOutput
 	switch r.harness.DriverKind() {
 	case harness.DriverClaudeCode:
 		bin := r.harness.Binary
 		return func(diagnose func(string)) driver.Backend {
-			return &driver.ClaudeBackend{Command: bin, Env: env, Stderr: os.Stderr, OnDiagnostic: diagnose}
+			return &driver.ClaudeBackend{Command: bin, Env: env, Stderr: os.Stderr, OnDiagnostic: diagnose, SubagentOutput: output}
 		}
 	case harness.DriverPi:
 		bin, args := r.harness.Binary, r.piProviderArgs()
@@ -1281,7 +1290,7 @@ func (r *TestRunner) sessionBackend(gated, emitReplay bool) BackendFactory {
 		return func(diagnose func(string)) driver.Backend {
 			return &driver.CodexBackend{Command: bin, Args: args, Env: env, Stderr: os.Stderr,
 				Config:     codexThreadConfig,
-				ClientName: "harness-test", ClientVersion: "1.0.0", OnDiagnostic: diagnose}
+				ClientName: "harness-test", ClientVersion: "1.0.0", OnDiagnostic: diagnose, SubagentOutput: output}
 		}
 	default:
 		bin, args, _ := r.acpInvocation()

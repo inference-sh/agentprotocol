@@ -86,12 +86,16 @@ type Probes struct {
 	// context window's fill, the account and rate limits, in a session and
 	// through the registry's prober (usage.go).
 	Usage bool
+
+	// Subagents makes the agent start a subagent and checks it is reported
+	// (subagents.go).
+	Subagents bool
 }
 
 // ParseProbes reads a comma-separated probe list:
 //
 //	resume, resume=kill, resumeafter=65s, inflight, inflight=cancel, inflight=hold, compact,
-//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage
+//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents
 func ParseProbes(spec string) (Probes, error) {
 	var p Probes
 	for _, part := range strings.Split(spec, ",") {
@@ -155,6 +159,8 @@ func ParseProbes(spec string) (Probes, error) {
 			p.Hidden = true
 		case "usage":
 			p.Usage = true
+		case "subagents":
+			p.Subagents = true
 		default:
 			return p, fmt.Errorf("unknown probe %q (want resume, resumeafter, inflight, compact, tools, deferred, transcript, seed, seedkinds, env, detect or hidden)", name)
 		}

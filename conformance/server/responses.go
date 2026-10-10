@@ -35,7 +35,7 @@ func (s *MockServer) handleResponses(w http.ResponseWriter, r *http.Request) {
 
 	if s.shouldToolCall(req.hasTools() && s.bodyOffersTool(body), r.URL.Path) {
 		name, args := s.getToolCall()
-		s.responsesFunctionCall(w, name, args)
+		s.responsesFunctionCallIn(w, s.toolCallNamespace(), name, args)
 		return
 	}
 
@@ -84,14 +84,18 @@ func (s *MockServer) responsesText(w http.ResponseWriter, text string) {
 }
 
 func (s *MockServer) responsesFunctionCall(w http.ResponseWriter, name, args string) {
+	s.responsesFunctionCallIn(w, "", name, args)
+}
+
+func (s *MockServer) responsesFunctionCallIn(w http.ResponseWriter, namespace, name, args string) {
 	empty := ""
 	fc := ResponseItem{
 		Type: "function_call", ID: "fc_mock_1", CallID: "call_mock_1",
-		Name: name, Arguments: &empty, Status: "in_progress",
+		Name: name, Namespace: namespace, Arguments: &empty, Status: "in_progress",
 	}
 	fcDone := ResponseItem{
 		Type: "function_call", ID: "fc_mock_1", CallID: "call_mock_1",
-		Name: name, Arguments: &args, Status: "completed",
+		Name: name, Namespace: namespace, Arguments: &args, Status: "completed",
 	}
 
 	events := []sseEvent{

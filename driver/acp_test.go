@@ -724,6 +724,19 @@ func runFakeAgent(script string) {
 				continue
 			}
 
+			if script == "usage" {
+				// usage_update as the ACP schema has it: used and size
+				// required, cost optional.
+				used, size := int64(52000), int64(200000)
+				update(acp.SessionUpdate{
+					Kind:    acp.UpdateKindAgentMessageChunk,
+					Content: json.RawMessage(`{"type":"text","text":"done"}`),
+				})
+				update(acp.SessionUpdate{Kind: acp.UpdateKindUsageUpdate, Used: &used, Size: &size, Cost: &acp.Cost{Amount: 0.12, Currency: "USD"}})
+				reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
+				continue
+			}
+
 			if script == "no-work" {
 				// hermes before 0.18.0 after a failed model call: the error
 				// on stderr, end_turn with nothing in the turn.
@@ -988,6 +1001,27 @@ func TestTheFirstEventBoundDoesNotCutAWorkingTurn(t *testing.T) {
 		case <-deadline:
 			t.Fatalf("turn did not complete; events %v", typesOf(got))
 		}
+	}
+}
+
+// A usage_update is the window's fill.
+func TestUsageUpdateIsTheContextFill(t *testing.T) {
+	b := backendRunning(t, "usage")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{RunID: "r", ChatID: "c", WorkDir: t.TempDir()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer sess.Close()
+	if err := sess.Prompt(context.Background(), driver.TextInput("hi")); err != nil {
+		t.Fatal(err)
+	}
+	got := collect(t, sess.Events(), 4, 5*time.Second)
+	ev, ok := findEvent(got, ap.AgentEventContextUpdated)
+	if !ok {
+		t.Fatalf("no context.updated in %v", typesOf(got))
+	}
+	if c, _ := ap.PayloadAs[ap.ContextUpdatedPayload](ev, ap.AgentEventContextUpdated); c.UsedTokens != 52000 || c.MaxTokens != 200000 {
+		t.Errorf("context = %+v", c)
 	}
 }
 

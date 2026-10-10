@@ -12,6 +12,8 @@ import (
 	"github.com/inference-sh/agentprotocol/transcript/kiro"
 	"github.com/inference-sh/agentprotocol/transcript/pi"
 	"github.com/inference-sh/agentprotocol/transcript/qwen"
+	claudeusage "github.com/inference-sh/agentprotocol/usage/claude"
+	codexusage "github.com/inference-sh/agentprotocol/usage/codex"
 )
 
 var standardEvents = Events{
@@ -122,6 +124,7 @@ var All = map[string]Harness{
 		Name: "claude", Binary: "claude",
 		Driver:        DriverClaudeCode,
 		Sessions:      claude.Codec,
+		Usage:         claudeusage.Prober{},
 		ToolCallGated: ToolCall{Name: "WebFetch", Args: gatedWebFetchArgs},
 		InstallCmd:    []string{"npm", "install", "-g", "@anthropic-ai/claude-code"},
 		DetectEnvVars: []string{"CLAUDECODE", "CLAUDE_CODE", "CLAUDE_CODE_ENTRYPOINT"},
@@ -161,6 +164,7 @@ var All = map[string]Harness{
 	},
 	"codex": {
 		Sessions: codex.Codec,
+		Usage:    codexusage.Prober{},
 		Name:     "codex", Binary: "codex",
 		Driver:        DriverCodex,
 		InstallCmd:    []string{"npm", "install", "-g", "@openai/codex"},

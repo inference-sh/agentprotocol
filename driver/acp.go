@@ -13,6 +13,7 @@ import (
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/acp"
 	"github.com/inference-sh/agentprotocol/harness"
+	acpusage "github.com/inference-sh/agentprotocol/usage/acp"
 )
 
 // KindACP names the ACP backend.
@@ -541,6 +542,13 @@ func (s *acpSession) failPending() {
 }
 
 func (s *acpSession) onUpdate(n acp.UpdateNotification) {
+	// The window's fill is the session's state, not part of its history,
+	// so it counts during a replay too: it is the fill the resume starts
+	// from.
+	if u, ok := n.Update.Usage(); ok {
+		s.emit(ap.NewEvent(ap.AgentEventContextUpdated, s.runID, s.chatID, acpusage.Context(u)))
+		return
+	}
 	if n.Replay && !s.emitReplay {
 		// History from a resumed session, not progress. Emitting it would
 		// announce last week's tool calls as if they were running now, which

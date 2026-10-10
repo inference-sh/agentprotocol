@@ -34,8 +34,13 @@ const (
 	// Hook lifecycle
 	AgentEventHookExecuted AgentEventType = "hook.executed"
 
-	// Usage
-	AgentEventUsageUpdated AgentEventType = "usage.updated"
+	// Usage: a turn's tokens (usage.updated), the context window's fill
+	// (context.updated), the plan's rate limits (limits.updated) and the
+	// account the agent runs as (account.updated).
+	AgentEventUsageUpdated   AgentEventType = "usage.updated"
+	AgentEventContextUpdated AgentEventType = "context.updated"
+	AgentEventLimitsUpdated  AgentEventType = "limits.updated"
+	AgentEventAccountUpdated AgentEventType = "account.updated"
 
 	// Context management
 	AgentEventContextCompacted AgentEventType = "context.compacted"
@@ -131,12 +136,21 @@ type HookExecutedPayload struct {
 	DurationMs int64        `json:"duration_ms,omitempty"`
 }
 
+// UsageUpdatedPayload is what one turn used, emitted once when the turn
+// ends. PromptTokens counts every input token, cached or not:
+// CachedInputTokens (read from a prompt cache) and CacheCreationTokens
+// (written to one) are parts of it. ReasoningTokens is part of
+// CompletionTokens. CostUSD is the agent's own figure, 0 when it reports
+// none.
 type UsageUpdatedPayload struct {
-	PromptTokens     int     `json:"prompt_tokens"`
-	CompletionTokens int     `json:"completion_tokens"`
-	TotalTokens      int     `json:"total_tokens"`
-	ReasoningTokens  int     `json:"reasoning_tokens,omitempty"`
-	CostUSD          float64 `json:"cost_usd,omitempty"`
+	PromptTokens        int             `json:"prompt_tokens"`
+	CompletionTokens    int             `json:"completion_tokens"`
+	TotalTokens         int             `json:"total_tokens"`
+	CachedInputTokens   int             `json:"cached_input_tokens,omitempty"`
+	CacheCreationTokens int             `json:"cache_creation_tokens,omitempty"`
+	ReasoningTokens     int             `json:"reasoning_tokens,omitempty"`
+	CostUSD             float64         `json:"cost_usd,omitempty"`
+	Status              TurnUsageStatus `json:"status,omitempty"`
 }
 
 type ContextCompactedPayload struct {

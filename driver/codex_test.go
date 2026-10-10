@@ -13,6 +13,7 @@ import (
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/codexapp"
 	"github.com/inference-sh/agentprotocol/driver"
+	"github.com/inference-sh/agentprotocol/usage"
 )
 
 // The codex tests use the same trick as the ACP ones: this test binary is
@@ -112,6 +113,63 @@ func TestCodexTurnStreamsTextAndCompletes(t *testing.T) {
 		if e.RunID != "run_1" {
 			t.Errorf("%s not stamped with run id", e.Type)
 		}
+	}
+}
+
+// Each turn's usage is the growth of the thread's total; the window's fill
+// is the last call against the model's window; the account and limits are
+// read once and the limits pushed after.
+func TestCodexReportsUsage(t *testing.T) {
+	sess := openCodex(t, "", driver.SessionConfig{})
+	if err := sess.Prompt(context.Background(), driver.TextInput("one")); err != nil {
+		t.Fatal(err)
+	}
+	first := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+	if err := sess.Prompt(context.Background(), driver.TextInput("two")); err != nil {
+		t.Fatal(err)
+	}
+	second := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+	all := append(append([]ap.AgentEvent{}, first...), second...)
+
+	for i, events := range [][]ap.AgentEvent{first, second} {
+		ev, ok := findEvent(events, ap.AgentEventUsageUpdated)
+		if !ok {
+			t.Fatalf("turn %d: no usage.updated", i+1)
+		}
+		u, _ := ap.PayloadAs[ap.UsageUpdatedPayload](ev, ap.AgentEventUsageUpdated)
+		if u.TotalTokens != 15 || u.Status != ap.TurnUsageComplete {
+			t.Errorf("turn %d usage = %+v, want the 15 tokens it added", i+1, u)
+		}
+	}
+	ev, ok := findEvent(first, ap.AgentEventContextUpdated)
+	if !ok {
+		t.Fatal("no context.updated")
+	}
+	if c, _ := ap.PayloadAs[ap.ContextUpdatedPayload](ev, ap.AgentEventContextUpdated); c.UsedTokens != 15 || c.MaxTokens != 272000 {
+		t.Errorf("context = %+v", c)
+	}
+	ev, ok = findEvent(all, ap.AgentEventAccountUpdated)
+	if !ok {
+		t.Fatal("no account.updated")
+	}
+	if a, _ := ap.PayloadAs[ap.AccountUpdatedPayload](ev, ap.AgentEventAccountUpdated); a.Account.Email != "a@x.dev" || a.Account.Plan != "pro" {
+		t.Errorf("account = %+v", a.Account)
+	}
+	// The read and the pushes race; whichever comes first, the pushed
+	// figure is the one that stands.
+	var st usage.State
+	n := 0
+	for _, ev := range all {
+		if l, ok := ap.PayloadAs[ap.LimitsUpdatedPayload](ev, ap.AgentEventLimitsUpdated); ok {
+			st.ApplyUpdate(l, time.Now())
+			n++
+		}
+	}
+	if n == 0 || st.Limits == nil || len(st.Limits.Windows) != 2 {
+		t.Fatalf("limits = %+v from %d updates", st.Limits, n)
+	}
+	if p, w := st.Limits.Windows[0], st.Limits.Windows[1]; p.ID != "primary" || p.UsedPercent != 38 || p.DurationMinutes != 300 || w.ID != "secondary" || w.UsedPercent != 8 {
+		t.Errorf("limits = %+v", st.Limits.Windows)
 	}
 }
 
@@ -451,6 +509,8 @@ type fakeCodex struct {
 	review string
 	config json.RawMessage
 	turns  int
+	// used is the thread's running token total, as codex reports it.
+	used int
 
 	active     string
 	nextServer int
@@ -624,6 +684,13 @@ func (f *fakeCodex) handle(m codexapp.Message) {
 			}
 			f.finish(turn, reply)
 		}
+	case codexapp.MethodAccountRead:
+		// Shapes from codex 0.156.1's schema (GetAccountResponse).
+		f.reply(m.ID, map[string]any{"account": map[string]any{"type": "chatgpt", "email": "a@x.dev", "planType": "pro"}, "requiresOpenaiAuth": true})
+	case codexapp.MethodAccountRateLimitsRead:
+		f.reply(m.ID, map[string]any{"accountId": "acct-1", "rateLimits": map[string]any{"limitId": "codex",
+			"primary":   map[string]any{"usedPercent": 37, "resetsAt": 1791651600, "windowDurationMins": 300},
+			"secondary": map[string]any{"usedPercent": 8, "windowDurationMins": 10080}}})
 	case codexapp.MethodTurnSteer:
 		var p codexapp.TurnSteerParams
 		_ = json.Unmarshal(m.Params, &p)
@@ -659,9 +726,13 @@ func (f *fakeCodex) finish(turn, text string) {
 	f.notify(codexapp.MethodItemAgentMessageDelta, map[string]any{"threadId": f.thread, "turnId": turn, "itemId": "msg_1", "delta": text})
 	f.notify(codexapp.MethodItemCompleted, map[string]any{"threadId": f.thread, "turnId": turn, "completedAtMs": 2,
 		"item": map[string]any{"type": "agentMessage", "id": "msg_1", "text": text, "brandNewField": 1}})
+	f.used += 15
 	f.notify(codexapp.MethodThreadTokenUsageUpdated, map[string]any{"threadId": f.thread, "turnId": turn, "tokenUsage": map[string]any{
-		"total": map[string]any{"totalTokens": 15, "inputTokens": 10, "cachedInputTokens": 0, "outputTokens": 5, "reasoningOutputTokens": 0},
-		"last":  map[string]any{"totalTokens": 15, "inputTokens": 10, "cachedInputTokens": 0, "outputTokens": 5, "reasoningOutputTokens": 0}}})
+		"total":              map[string]any{"totalTokens": f.used, "inputTokens": f.used * 2 / 3, "cachedInputTokens": 0, "outputTokens": f.used / 3, "reasoningOutputTokens": 0},
+		"last":               map[string]any{"totalTokens": 15, "inputTokens": 10, "cachedInputTokens": 0, "outputTokens": 5, "reasoningOutputTokens": 0},
+		"modelContextWindow": 272000}})
+	f.notify(codexapp.MethodAccountRateLimitsUpdated, map[string]any{"rateLimits": map[string]any{"limitId": "codex",
+		"primary": map[string]any{"usedPercent": 38}}})
 	f.active = ""
 	f.notify(codexapp.MethodTurnCompleted, map[string]any{"threadId": f.thread,
 		"turn": map[string]any{"id": turn, "items": []any{}, "status": "completed"}})

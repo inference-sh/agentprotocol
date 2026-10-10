@@ -3,6 +3,7 @@ package harness
 import (
 	"github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/transcript"
+	"github.com/inference-sh/agentprotocol/usage"
 )
 
 // HookFormat describes how a harness expects hook configuration.
@@ -193,6 +194,12 @@ type Harness struct {
 	// through transcript.Registered instead, so this package stays free of
 	// database drivers.
 	Sessions transcript.Codec
+
+	// Usage reads the account this agent is signed in as and its plan's
+	// rate limits, outside a session and without calling a model. Nil when
+	// the agent has no way to report them; its login is then CheckLogin's.
+	// During a session the driver reports the same as events.
+	Usage usage.Prober
 
 	// Pre-flight config files (auth, trust, provider config, permissions)
 	ConfigFiles    []ConfigFile

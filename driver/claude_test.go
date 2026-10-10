@@ -386,6 +386,67 @@ func TestClaudeResumePassesTheSessionID(t *testing.T) {
 	}
 }
 
+// The account from initialize, a pushed rate limit, the window's fill once
+// per call (not once per content block), and per-turn cost from a running
+// total.
+func TestClaudeReportsUsage(t *testing.T) {
+	b, _ := claudeRunning(t, "usage")
+	sess := openClaude(t, b, driver.SessionConfig{})
+	if err := sess.Prompt(context.Background(), driver.TextInput("hello")); err != nil {
+		t.Fatal(err)
+	}
+	first := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+	if err := sess.Prompt(context.Background(), driver.TextInput("again")); err != nil {
+		t.Fatal(err)
+	}
+	second := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+
+	acct, ok := findEvent(first, ap.AgentEventAccountUpdated)
+	if !ok {
+		t.Fatal("no account.updated")
+	}
+	if a, _ := ap.PayloadAs[ap.AccountUpdatedPayload](acct, ap.AgentEventAccountUpdated); a.Account.Status != ap.AccountAuthenticated {
+		t.Errorf("account = %+v", a.Account)
+	}
+
+	lim, ok := findEvent(first, ap.AgentEventLimitsUpdated)
+	if !ok {
+		t.Fatal("no limits.updated")
+	}
+	l, _ := ap.PayloadAs[ap.LimitsUpdatedPayload](lim, ap.AgentEventLimitsUpdated)
+	if len(l.Windows) != 1 || l.Windows[0].ID != "five_hour" || l.Windows[0].UsedPercent < 79.9 || l.Windows[0].UsedPercent > 80.1 {
+		t.Errorf("limits = %+v", l)
+	}
+
+	var contexts []ap.ContextUpdatedPayload
+	for _, ev := range first {
+		if c, ok := ap.PayloadAs[ap.ContextUpdatedPayload](ev, ap.AgentEventContextUpdated); ok {
+			contexts = append(contexts, c)
+		}
+	}
+	// One for the call (its two blocks repeat the usage), one once the
+	// result names the window.
+	if len(contexts) != 2 || contexts[0].UsedTokens != 9543 || contexts[0].MaxTokens != 0 || contexts[1].MaxTokens != 200000 {
+		t.Errorf("context updates = %+v", contexts)
+	}
+
+	usageOf := func(events []ap.AgentEvent) ap.UsageUpdatedPayload {
+		ev, ok := findEvent(events, ap.AgentEventUsageUpdated)
+		if !ok {
+			t.Fatal("no usage.updated")
+		}
+		u, _ := ap.PayloadAs[ap.UsageUpdatedPayload](ev, ap.AgentEventUsageUpdated)
+		return u
+	}
+	u1, u2 := usageOf(first), usageOf(second)
+	if u1.PromptTokens != 9503 || u1.CachedInputTokens != 9000 || u1.CacheCreationTokens != 500 || u1.CompletionTokens != 40 || u1.CostUSD != 0.05 || u1.Status != ap.TurnUsageComplete {
+		t.Errorf("first turn = %+v", u1)
+	}
+	if u2.CostUSD < 0.0299 || u2.CostUSD > 0.0301 {
+		t.Errorf("second turn's cost = %v, want its share of the running total", u2.CostUSD)
+	}
+}
+
 func TestClaudeUnknownMessagesAreTolerated(t *testing.T) {
 	var mu sync.Mutex
 	var diags []string
@@ -682,6 +743,25 @@ func runFakeClaude(script string) {
 				out.Flush()
 				send(map[string]any{"type": "control_request", "request_id": "future1",
 					"request": map[string]any{"subtype": "future_request"}})
+			case "usage":
+				// Shapes from sdk.d.ts 0.3.296: rate_limit_event with a
+				// fractional utilization and Unix-second reset; an assistant
+				// call's usage repeated on each of its content blocks; a
+				// result whose cost and modelUsage run for the session.
+				send(map[string]any{"type": "rate_limit_event", "session_id": sessionID, "rate_limit_info": map[string]any{
+					"status": "allowed_warning", "rateLimitType": "five_hour", "utilization": 0.8, "resetsAt": 1791651600}})
+				call := map[string]any{"input_tokens": 3, "cache_read_input_tokens": 9000, "cache_creation_input_tokens": 500, "output_tokens": 40}
+				for _, block := range []map[string]any{{"type": "thinking", "thinking": "hm"}, {"type": "text", "text": "done"}} {
+					send(map[string]any{"type": "assistant", "session_id": sessionID, "parent_tool_use_id": nil,
+						"message": map[string]any{"id": "m", "role": "assistant", "model": "claude-fake", "content": []any{block}, "usage": call}})
+				}
+				cost := 0.05
+				if text == "again" {
+					cost = 0.08
+				}
+				result(map[string]any{"total_cost_usd": cost,
+					"usage":      map[string]any{"input_tokens": 3, "cache_read_input_tokens": 9000, "cache_creation_input_tokens": 500, "output_tokens": 40},
+					"modelUsage": map[string]any{"claude-fake": map[string]any{"inputTokens": 3, "outputTokens": 40, "cacheReadInputTokens": 9000, "cacheCreationInputTokens": 500, "costUSD": cost, "contextWindow": 200000, "maxOutputTokens": 64000}}})
 			case "exit":
 				reply("partial")
 				os.Stderr.WriteString("claude: backend went away\n")

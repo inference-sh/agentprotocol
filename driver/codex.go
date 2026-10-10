@@ -10,10 +10,12 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
+	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/codexapp"
 	"github.com/inference-sh/agentprotocol/harness"
+	codexusage "github.com/inference-sh/agentprotocol/usage/codex"
 )
 
 // KindCodex names the native Codex backend.
@@ -223,6 +225,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 			return nil, s.stderr.quoteErr(fmt.Errorf("driver: start codex thread: %w", err))
 		}
 		thread, s.model = res.Thread, res.Model
+		s.usage.Fresh()
 	}
 
 	s.mu.Lock()
@@ -231,6 +234,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 
 	go s.pump.run()
 	s.emit(ap.NewEvent(ap.AgentEventRunStarted, s.runID, s.chatID, ap.RunStartedPayload{}))
+	go s.readAccount()
 	go s.sendLoop()
 	go s.watch()
 	return s, nil
@@ -295,6 +299,13 @@ type codexSession struct {
 	// Codex does not complete an item whose turn was interrupted, so these
 	// are closed as cancelled when the turn ends.
 	openTools map[string]string
+
+	// usage turns the thread's running token totals into per-turn figures.
+	usage codexusage.Turns
+	// pushed are the rate-limit windows codex has pushed this session. The
+	// limits read when the session opens can be answered after a push, and
+	// a push is the newer figure.
+	pushed map[string]bool
 }
 
 func (s *codexSession) ID() string {
@@ -792,6 +803,14 @@ func (s *codexSession) onNotification(method string, params json.RawMessage) {
 		s.mu.Unlock()
 		turnID := n.Turn.ID
 		s.withdraw(func(p *codexApproval) bool { return p.turnID == turnID }, "turn ended")
+		status := ap.TurnUsageComplete
+		if n.Turn.Status != codexapp.TurnStatusCompleted {
+			status = ap.TurnUsagePartial
+		}
+		s.mu.Lock()
+		turn := s.usage.End(status)
+		s.mu.Unlock()
+		s.emit(ap.NewEvent(ap.AgentEventUsageUpdated, s.runID, s.chatID, turn))
 		for id, name := range open {
 			s.emit(ap.NewEvent(ap.AgentEventToolCompleted, s.runID, s.chatID, ap.ToolCompletedPayload{
 				ToolInvocationID: id,
@@ -870,13 +889,29 @@ func (s *codexSession) onNotification(method string, params json.RawMessage) {
 		if json.Unmarshal(params, &n) != nil {
 			return
 		}
-		u := n.TokenUsage.Last
-		s.emit(ap.NewEvent(ap.AgentEventUsageUpdated, s.runID, s.chatID, ap.UsageUpdatedPayload{
-			PromptTokens:     int(u.InputTokens),
-			CompletionTokens: int(u.OutputTokens),
-			TotalTokens:      int(u.TotalTokens),
-			ReasoningTokens:  int(u.ReasoningOutputTokens),
-		}))
+		// The turn's usage goes out when it ends; each update moves the
+		// window's fill.
+		s.mu.Lock()
+		s.usage.Add(n.TokenUsage)
+		s.mu.Unlock()
+		s.emit(ap.NewEvent(ap.AgentEventContextUpdated, s.runID, s.chatID, codexusage.Context(n.TokenUsage)))
+
+	case codexapp.MethodAccountRateLimitsUpdated:
+		var n codexapp.AccountRateLimitsUpdatedNotification
+		if json.Unmarshal(params, &n) != nil {
+			return
+		}
+		if u, ok := codexusage.Update(n); ok {
+			s.mu.Lock()
+			if s.pushed == nil {
+				s.pushed = map[string]bool{}
+			}
+			for _, w := range u.Windows {
+				s.pushed[w.ID] = true
+			}
+			s.mu.Unlock()
+			s.emit(ap.NewEvent(ap.AgentEventLimitsUpdated, s.runID, s.chatID, u))
+		}
 
 	case codexapp.MethodThreadCompacted:
 		s.emit(ap.NewEvent(ap.AgentEventContextCompacted, s.runID, s.chatID, ap.ContextCompactedPayload{}))
@@ -921,6 +956,40 @@ func (s *codexSession) onNotification(method string, params json.RawMessage) {
 		}
 	}
 	// Anything else, known or not, carries nothing the lifecycle models.
+}
+
+// readAccount reports the account the server runs as and its plan's limits,
+// once, when the session opens. codex pushes changes to the limits after
+// that; failing to read them is not the session's failure.
+func (s *codexSession) readAccount() {
+	ctx, cancel := context.WithTimeout(context.Background(), codexusage.ProbeTimeout)
+	defer cancel()
+	var acct codexapp.GetAccountResponse
+	if err := s.proc.Call(ctx, codexapp.MethodAccountRead, codexapp.GetAccountParams{}, &acct); err != nil {
+		s.backend.diagnose("codex account/read: " + err.Error())
+		return
+	}
+	a := codexusage.Account(acct)
+	s.emit(ap.NewEvent(ap.AgentEventAccountUpdated, s.runID, s.chatID, ap.AccountUpdatedPayload{Account: a}))
+	if a.Type != ap.AccountSubscription {
+		return
+	}
+	var rl codexapp.GetAccountRateLimitsResponse
+	if err := s.proc.Call(ctx, codexapp.MethodAccountRateLimitsRead, nil, &rl); err != nil {
+		s.backend.diagnose("codex account/rateLimits/read: " + err.Error())
+		return
+	}
+	var fresh []ap.UsageWindow
+	s.mu.Lock()
+	for _, w := range codexusage.Limits(rl, time.Now()).Windows {
+		if !s.pushed[w.ID] {
+			fresh = append(fresh, w)
+		}
+	}
+	s.mu.Unlock()
+	if len(fresh) > 0 {
+		s.emit(ap.NewEvent(ap.AgentEventLimitsUpdated, s.runID, s.chatID, ap.LimitsUpdatedPayload{Windows: fresh}))
+	}
 }
 
 // toolStarted maps the items that are tool use. Messages, reasoning and the

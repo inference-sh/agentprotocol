@@ -13,6 +13,7 @@ import (
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/harness"
 	"github.com/inference-sh/agentprotocol/pirpc"
+	piusage "github.com/inference-sh/agentprotocol/usage/pi"
 )
 
 // KindPi names the native pi backend: the pi coding agent driven over its own
@@ -721,17 +722,14 @@ func (s *piSession) onSettledLocked() {
 			s.withdrawDialogLocked(id, "withdrawn: pi's run ended")
 		}
 	}
-	u := s.usage
-	prompt := u.Input + u.CacheRead + u.CacheWrite
-	if prompt+u.Output > 0 || u.Cost.Total > 0 {
-		s.emit(ap.NewEvent(ap.AgentEventUsageUpdated, s.runID, s.chatID, ap.UsageUpdatedPayload{
-			PromptTokens:     prompt,
-			CompletionTokens: u.Output,
-			TotalTokens:      prompt + u.Output,
-			ReasoningTokens:  u.Reasoning,
-			CostUSD:          u.Cost.Total,
-		}))
+	status := ap.TurnUsageComplete
+	if s.lastStop == pirpc.StopAborted || s.lastStop == pirpc.StopError || s.interrupting {
+		status = ap.TurnUsagePartial
 	}
+	if turn := piusage.Turn(s.usage, status); turn.TotalTokens > 0 || turn.CostUSD > 0 {
+		s.emit(ap.NewEvent(ap.AgentEventUsageUpdated, s.runID, s.chatID, turn))
+	}
+	go s.readContext()
 	switch {
 	case s.lastStop == pirpc.StopAborted || s.interrupting:
 		s.completeTurnLocked("interrupted")
@@ -743,6 +741,21 @@ func (s *piSession) onSettledLocked() {
 		s.failTurnLocked(msg, "agent_error")
 	default:
 		s.completeTurnLocked(s.lastStop)
+	}
+}
+
+// readContext reports the window's fill once a turn has settled. pi answers
+// get_session_stats from its own estimate, the one it compacts by; it knows
+// none right after a compaction, and an older pi does not know the command.
+func (s *piSession) readContext() {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	st, err := s.proc.GetSessionStats(ctx)
+	if err != nil {
+		return
+	}
+	if c, ok := piusage.Context(st); ok {
+		s.emit(ap.NewEvent(ap.AgentEventContextUpdated, s.runID, s.chatID, c))
 	}
 }
 

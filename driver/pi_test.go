@@ -83,6 +83,12 @@ func runFakePi() {
 				"sessionId": sessionID, "sessionFile": os.Getenv(fakePiFile), "isStreaming": streaming,
 				"model": map[string]any{"id": "fake-model", "provider": "fake"}, "messageCount": 0,
 			}})
+		case "get_session_stats":
+			// rpc-commands.md, get_session_stats (pi 1.1.0).
+			f.send(map[string]any{"id": id, "type": "response", "command": "get_session_stats", "success": true, "data": map[string]any{
+				"sessionId": sessionID, "tokens": map[string]any{"input": 10, "output": 5, "cacheRead": 2, "cacheWrite": 0, "total": 17},
+				"cost": 0.01, "contextUsage": map[string]any{"tokens": 4200, "contextWindow": 128000, "percent": 3.3},
+			}})
 		case "prompt":
 			msg, _ := cmd["message"].(string)
 			f.mu.Lock()
@@ -356,7 +362,7 @@ func TestPiTextTurn(t *testing.T) {
 	if !ok {
 		t.Fatal("no usage")
 	}
-	if p, _ := ap.PayloadAs[ap.UsageUpdatedPayload](u, ap.AgentEventUsageUpdated); p.PromptTokens != 12 || p.CompletionTokens != 5 || p.CostUSD != 0.01 {
+	if p, _ := ap.PayloadAs[ap.UsageUpdatedPayload](u, ap.AgentEventUsageUpdated); p.PromptTokens != 12 || p.CachedInputTokens != 2 || p.CompletionTokens != 5 || p.CostUSD != 0.01 || p.Status != ap.TurnUsageComplete {
 		t.Errorf("usage = %+v", p)
 	}
 	p, _ := ap.PayloadAs[ap.TurnCompletedPayload](evs[len(evs)-1], ap.AgentEventTurnCompleted)
@@ -365,6 +371,20 @@ func TestPiTextTurn(t *testing.T) {
 	}
 	if evs[len(evs)-1].RunID != "r" || evs[len(evs)-1].ChatID != "c" {
 		t.Errorf("event not stamped: %+v", evs[len(evs)-1])
+	}
+}
+
+// Once a turn settles the window's fill is read from get_session_stats.
+func TestPiReportsTheContextFill(t *testing.T) {
+	b, _ := piRunning(t)
+	sess := openPi(t, b, driver.SessionConfig{})
+	if err := sess.Prompt(context.Background(), driver.TextInput("hi")); err != nil {
+		t.Fatal(err)
+	}
+	evs := until(t, sess.Events(), ap.AgentEventContextUpdated)
+	c, _ := ap.PayloadAs[ap.ContextUpdatedPayload](evs[len(evs)-1], ap.AgentEventContextUpdated)
+	if c.UsedTokens != 4200 || c.MaxTokens != 128000 {
+		t.Errorf("context = %+v", c)
 	}
 }
 

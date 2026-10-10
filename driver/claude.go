@@ -14,6 +14,7 @@ import (
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/claudecode"
 	"github.com/inference-sh/agentprotocol/harness"
+	claudeusage "github.com/inference-sh/agentprotocol/usage/claude"
 )
 
 // KindClaude names the native Claude Code backend: the claude binary driven
@@ -177,7 +178,18 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 	go s.watch()
 
 	s.emit(ap.NewEvent(ap.AgentEventRunStarted, s.runID, s.chatID, ap.RunStartedPayload{}))
+	s.emit(ap.NewEvent(ap.AgentEventAccountUpdated, s.runID, s.chatID, ap.AccountUpdatedPayload{
+		Account: claudeusage.Account(init.Account),
+	}))
 	return s, nil
+}
+
+// emitContextLocked reports the window's fill. The window is known once a
+// result has named the model's; before that the fill goes out without it.
+func (s *claudeSession) emitContextLocked() {
+	s.emit(ap.NewEvent(ap.AgentEventContextUpdated, s.runID, s.chatID, ap.ContextUpdatedPayload{
+		UsedTokens: s.contextUsed, MaxTokens: s.contextMax,
+	}))
 }
 
 // claudePending is a can_use_tool request parked until Resolve answers it.
@@ -213,6 +225,14 @@ type claudeSession struct {
 	hasOutput    bool
 	streamedText bool
 	interrupting bool
+
+	// Usage. usage turns results into per-turn figures; lastModel is the
+	// main agent's model, whose window contextMax is; contextUsed is the
+	// window's fill after its latest call.
+	usage       claudeusage.Turns
+	lastModel   string
+	contextUsed int
+	contextMax  int
 }
 
 func (s *claudeSession) ID() string {
@@ -417,6 +437,13 @@ func (s *claudeSession) onMessage(m claudecode.Message) {
 		if m.Decode(&r) == nil {
 			s.onResult(r)
 		}
+	case claudecode.TypeRateLimitEvent:
+		var e claudecode.RateLimitEvent
+		if m.Decode(&e) == nil {
+			if u, ok := claudeusage.Update(e.RateLimitInfo); ok {
+				s.emit(ap.NewEvent(ap.AgentEventLimitsUpdated, s.runID, s.chatID, u))
+			}
+		}
 	}
 }
 
@@ -499,6 +526,17 @@ func (s *claudeSession) onAssistant(a claudecode.AssistantMessage) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.openTurnLocked()
+	if a.Message.Model != "" {
+		s.lastModel = a.Message.Model
+	}
+	// Every content block of one call repeats the call's usage, so the fill
+	// is reported when it changes.
+	if u := a.Message.Usage; u != nil {
+		if used := claudeusage.ContextUsed(*u); used != s.contextUsed {
+			s.contextUsed = used
+			s.emitContextLocked()
+		}
+	}
 	for _, block := range a.Message.Content {
 		switch block.Type {
 		case "text":
@@ -582,14 +620,17 @@ func (s *claudeSession) onResult(r claudecode.ResultMessage) {
 		}))
 	}
 
-	u := r.Usage
-	prompt := u.InputTokens + u.CacheCreationInputTokens + u.CacheReadInputTokens
-	s.emit(ap.NewEvent(ap.AgentEventUsageUpdated, s.runID, s.chatID, ap.UsageUpdatedPayload{
-		PromptTokens:     prompt,
-		CompletionTokens: u.OutputTokens,
-		TotalTokens:      prompt + u.OutputTokens,
-		CostUSD:          r.TotalCostUSD,
-	}))
+	turn := s.usage.Next(r)
+	if interrupted {
+		turn.Status = ap.TurnUsagePartial
+	}
+	s.emit(ap.NewEvent(ap.AgentEventUsageUpdated, s.runID, s.chatID, turn))
+	if w := claudeusage.ContextWindow(r, s.lastModel); w > 0 && w != s.contextMax {
+		s.contextMax = w
+		if s.contextUsed > 0 {
+			s.emitContextLocked()
+		}
+	}
 
 	if !interrupted && (r.IsError || r.Subtype != claudecode.ResultSuccess) {
 		s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{

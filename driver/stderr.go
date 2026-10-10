@@ -29,6 +29,29 @@ type tailBuffer struct {
 	mu  sync.Mutex
 	max int
 	buf []byte
+	// flush, once the agent is running, returns when everything it wrote
+	// to stderr so far has been written here. stderr and stdout are read
+	// independently, and a quote made because of something read on stdout
+	// would otherwise miss the error the agent wrote just before it.
+	flush func()
+}
+
+// flushWith has quote and quoteErr call f before they read the tail.
+func (t *tailBuffer) flushWith(f func()) {
+	t.mu.Lock()
+	t.flush = f
+	t.mu.Unlock()
+}
+
+// caughtUp is the tail once the agent's stderr has been copied up to now.
+func (t *tailBuffer) caughtUp() string {
+	t.mu.Lock()
+	f := t.flush
+	t.mu.Unlock()
+	if f != nil {
+		f()
+	}
+	return t.String()
 }
 
 func (t *tailBuffer) Write(b []byte) (int, error) {
@@ -52,7 +75,7 @@ func (t *tailBuffer) quote(msg string) string {
 	if t == nil {
 		return msg
 	}
-	if s := strings.TrimSpace(t.String()); s != "" {
+	if s := strings.TrimSpace(t.caughtUp()); s != "" {
 		return msg + "; agent stderr: " + s
 	}
 	return msg
@@ -63,7 +86,7 @@ func (t *tailBuffer) quoteErr(err error) error {
 	if t == nil || err == nil {
 		return err
 	}
-	if s := strings.TrimSpace(t.String()); s != "" {
+	if s := strings.TrimSpace(t.caughtUp()); s != "" {
 		return fmt.Errorf("%w; agent stderr: %s", err, s)
 	}
 	return err

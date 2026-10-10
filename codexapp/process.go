@@ -83,6 +83,12 @@ func Spawn(ctx context.Context, cfg ProcessConfig, info ClientInfo, h Handler) (
 // DefaultShutdownGrace. It is safe to call more than once.
 func (p *Process) Close() error { return p.proc.Close(DefaultShutdownGrace) }
 
+// FlushStderr returns once everything the agent wrote to stderr before the
+// call has reached the configured Stderr writer. stdout and stderr are read
+// independently, so call it before quoting stderr in response to something
+// read from stdout.
+func (p *Process) FlushStderr() { p.proc.FlushStderr() }
+
 // Kill stops the child and the processes it started at once, and reaps it.
 func (p *Process) Kill() error {
 	p.proc.CloseStdin()

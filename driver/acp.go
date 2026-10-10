@@ -213,6 +213,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		return nil, s.stderr.quoteErr(err)
 	}
 	s.proc = proc
+	s.stderr.flushWith(proc.FlushStderr)
 
 	servers := mcpServersFrom(cfg.Metadata)
 

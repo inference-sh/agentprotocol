@@ -19,6 +19,13 @@ import (
 // without a bound, reaping would wait for that process instead.
 const DrainTimeout = 2 * time.Second
 
+// closedChan is a channel that is always ready.
+var closedChan = func() <-chan time.Time {
+	c := make(chan time.Time)
+	close(c)
+	return c
+}()
+
 // Options describes the child.
 type Options struct {
 	Command string
@@ -39,6 +46,7 @@ type Process struct {
 	Stdout io.ReadCloser
 
 	cmd       *exec.Cmd
+	stderr    *stderrCopier // nil when stderr is discarded
 	stdinOnce sync.Once
 	exited    chan struct{}
 	waitErr   error
@@ -54,52 +62,97 @@ func Start(o Options) (*Process, error) {
 	cmd := exec.Command(o.Command, o.Args...)
 	cmd.Dir = o.Dir
 	cmd.Env = o.Env
-	// Nil goes to the null device. Any other writer that is not a file is
-	// fed by a copier that a grandchild holding stderr would keep Wait on.
-	cmd.Stderr = o.Stderr
+	// Nil goes to the null device. Any other writer is fed from a pipe this
+	// package reads, so FlushStderr can tell when it has caught up.
+	var stderrR, stderrW *os.File
+	if o.Stderr != nil {
+		var err error
+		if stderrR, stderrW, err = os.Pipe(); err != nil {
+			return nil, fmt.Errorf("stderr pipe: %w", err)
+		}
+		cmd.Stderr = stderrW
+	}
 	cmd.WaitDelay = DrainTimeout
 	setGroup(cmd)
 
+	closeStderr := func() {
+		if stderrR != nil {
+			stderrR.Close()
+			stderrW.Close()
+		}
+	}
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
+		closeStderr()
 		return nil, fmt.Errorf("stdin pipe: %w", err)
 	}
 	stdoutR, stdoutW, err := os.Pipe()
 	if err != nil {
+		closeStderr()
 		return nil, fmt.Errorf("stdout pipe: %w", err)
 	}
 	cmd.Stdout = stdoutW
 	if err := cmd.Start(); err != nil {
 		stdoutR.Close()
 		stdoutW.Close()
+		closeStderr()
 		return nil, fmt.Errorf("launch %s: %w", o.Command, err)
 	}
 	stdoutW.Close()
-	return &Process{Stdin: stdin, Stdout: stdoutR, cmd: cmd, exited: make(chan struct{})}, nil
+	p := &Process{Stdin: stdin, Stdout: stdoutR, cmd: cmd, exited: make(chan struct{})}
+	if stderrR != nil {
+		stderrW.Close()
+		p.stderr = newStderrCopier(stderrR, o.Stderr)
+	}
+	return p, nil
 }
 
 // Reap collects the child's exit in the background. readDone closes when the
 // caller's reader has finished with Stdout. Exited closes once the child has
-// been reaped and the reader has finished, or DrainTimeout after the child
-// exited, when Stdout is closed to end a reader a grandchild is holding.
+// been reaped and its stdout and stderr read, or DrainTimeout after the child
+// exited, when the pipes a grandchild is holding are closed.
 func (p *Process) Reap(readDone <-chan struct{}) {
 	go func() {
 		err := p.cmd.Wait()
-		// The child exited 0 and a process it started still held stderr
+		// The child exited 0 and a process it started still held a pipe
 		// when WaitDelay ran out. That is the grandchild's doing, not how
 		// the child ended.
 		if errors.Is(err, exec.ErrWaitDelay) {
 			err = nil
 		}
+		// One DrainTimeout covers both pipes; once it has run out, the
+		// other is closed without waiting either.
+		drained := time.After(DrainTimeout)
 		select {
 		case <-readDone:
-		case <-time.After(DrainTimeout):
+		case <-drained:
+			drained = closedChan
 			p.Stdout.Close()
 			<-readDone
+		}
+		if p.stderr != nil {
+			select {
+			case <-p.stderr.done:
+			case <-drained:
+				p.stderr.r.Close()
+				<-p.stderr.done
+			}
 		}
 		p.waitErr = err
 		close(p.exited)
 	}()
+}
+
+// FlushStderr returns once everything the child wrote to stderr before the
+// call has reached Options.Stderr. A caller that quotes the child's stderr
+// when an answer arrives on stdout flushes first: the two pipes are read
+// independently, so the answer can be read before the error the child wrote
+// ahead of it. It returns at once when stderr is discarded, has ended, or the
+// platform's pipes have no read deadlines.
+func (p *Process) FlushStderr() {
+	if p.stderr != nil {
+		p.stderr.flush()
+	}
 }
 
 // Exited closes when the child has been reaped and its output read.

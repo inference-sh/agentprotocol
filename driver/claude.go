@@ -156,6 +156,7 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 		return nil, s.stderr.quoteErr(fmt.Errorf("driver: launch claude: %w", err))
 	}
 	s.proc = proc
+	s.stderr.flushWith(proc.FlushStderr)
 
 	timeout := b.InitTimeout
 	if timeout == 0 {

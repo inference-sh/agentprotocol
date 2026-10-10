@@ -150,6 +150,12 @@ func (p *Process) Wait() error {
 	return p.proc.Close(exit)
 }
 
+// FlushStderr returns once everything the agent wrote to stderr before the
+// call has reached the configured Stderr writer. stdout and stderr are read
+// independently, so call it before quoting stderr in response to something
+// read from stdout.
+func (p *Process) FlushStderr() { p.proc.FlushStderr() }
+
 // Kill terminates the child and the processes it started without waiting
 // for it to shut down cleanly, and reaps it. Use it when the agent is
 // unresponsive, when a launch failed partway, or to reap an agent that has

@@ -104,6 +104,12 @@ func (p *Process) Close(grace time.Duration) error {
 	return p.proc.Close(grace)
 }
 
+// FlushStderr returns once everything the agent wrote to stderr before the
+// call has reached the configured Stderr writer. stdout and stderr are read
+// independently, so call it before quoting stderr in response to something
+// read from stdout.
+func (p *Process) FlushStderr() { p.proc.FlushStderr() }
+
 // Kill terminates pi and the processes it started at once (SIGKILL).
 func (p *Process) Kill() error { return p.proc.Kill() }
 

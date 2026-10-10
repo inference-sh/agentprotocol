@@ -171,6 +171,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 		return nil, s.stderr.quoteErr(err)
 	}
 	s.proc = proc
+	s.stderr.flushWith(proc.FlushStderr)
 
 	policy := codexapp.AskForApprovalUntrusted
 	if b.ApprovalPolicy != "" {

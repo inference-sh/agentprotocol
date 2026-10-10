@@ -151,6 +151,7 @@ func (b *PiBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error
 		return nil, s.stderr.quoteErr(fmt.Errorf("driver: launch pi: %w", err))
 	}
 	s.proc = proc
+	s.stderr.flushWith(proc.FlushStderr)
 
 	fail := func(format string, args ...any) (Session, error) {
 		_ = proc.Kill()

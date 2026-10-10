@@ -15,6 +15,7 @@ import (
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/codexapp"
 	"github.com/inference-sh/agentprotocol/harness"
+	subagentcodex "github.com/inference-sh/agentprotocol/subagent/codex"
 	codexusage "github.com/inference-sh/agentprotocol/usage/codex"
 )
 
@@ -49,6 +50,11 @@ type CodexBackend struct {
 	// them in its user agent.
 	ClientName    string
 	ClientVersion string
+
+	// SubagentOutput sends what a spawned agent says and does (its text and
+	// tool calls) as content and tool events with SubagentID set. Without
+	// it they are dropped and only the subagent.* events report it.
+	SubagentOutput bool
 
 	// ApprovalPolicy is sent on thread start and resume. Empty means
 	// "untrusted": codex asks before anything outside its known-safe set.
@@ -302,6 +308,9 @@ type codexSession struct {
 
 	// usage turns the thread's running token totals into per-turn figures.
 	usage codexusage.Turns
+	// children are the threads this thread spawned, with the last status
+	// reported for each; a final status is reported once.
+	children map[string]ap.SubagentStatus
 	// pushed are the rate-limit windows codex has pushed this session. The
 	// limits read when the session opens can be answered after a push, and
 	// a push is the newer figure.
@@ -711,6 +720,7 @@ func (s *codexSession) onRequest(ctx context.Context, id json.RawMessage, method
 		ToolName:         tool,
 		Arguments:        args,
 		Reason:           ap.InterruptReasonToolApproval,
+		SubagentID:       s.childOf(params),
 	}))
 
 	select {
@@ -771,6 +781,7 @@ func (s *codexSession) onNotification(method string, params json.RawMessage) {
 	}
 	_ = json.Unmarshal(params, &head)
 	if head.ThreadID != "" && thread != "" && head.ThreadID != thread {
+		s.onChildNotification(head.ThreadID, method, params)
 		return
 	}
 
@@ -871,6 +882,7 @@ func (s *codexSession) onNotification(method string, params json.RawMessage) {
 			s.mu.Unlock()
 			s.emit(ap.NewEvent(ap.AgentEventToolStarted, s.runID, s.chatID, p))
 		}
+		s.onCollab(n.Item)
 
 	case codexapp.MethodItemCompleted:
 		var n codexapp.ItemCompletedNotification
@@ -883,6 +895,7 @@ func (s *codexSession) onNotification(method string, params json.RawMessage) {
 			s.mu.Unlock()
 			s.emit(ap.NewEvent(ap.AgentEventToolCompleted, s.runID, s.chatID, p))
 		}
+		s.onCollab(n.Item)
 
 	case codexapp.MethodThreadTokenUsageUpdated:
 		var n codexapp.ThreadTokenUsageUpdatedNotification
@@ -956,6 +969,134 @@ func (s *codexSession) onNotification(method string, params json.RawMessage) {
 		}
 	}
 	// Anything else, known or not, carries nothing the lifecycle models.
+}
+
+// onCollab reports the subagents a collab call spawned and the states it
+// reports for them.
+func (s *codexSession) onCollab(item codexapp.ThreadItem) {
+	c, ok := item.AsCollabAgentToolCallThreadItem()
+	if !ok {
+		return
+	}
+	for _, p := range subagentcodex.Spawned(c) {
+		s.mu.Lock()
+		if s.children == nil {
+			s.children = map[string]ap.SubagentStatus{}
+		}
+		_, known := s.children[p.SubagentID]
+		if !known {
+			s.children[p.SubagentID] = ap.SubagentRunning
+		}
+		s.mu.Unlock()
+		if !known {
+			s.emit(ap.NewEvent(ap.AgentEventSubagentStarted, s.runID, s.chatID, p))
+		}
+	}
+	for id, st := range c.AgentsStates {
+		status := subagentcodex.Status(st.Status)
+		s.mu.Lock()
+		prev, known := s.children[id]
+		if !known || status == "" || prev == status || prev.Ended() {
+			s.mu.Unlock()
+			continue
+		}
+		s.children[id] = status
+		s.mu.Unlock()
+		msg := deref(st.Message, "")
+		if status.Ended() {
+			p := ap.SubagentCompletedPayload{SubagentID: id, Status: status, Summary: msg}
+			if status == ap.SubagentFailed {
+				p.Summary, p.Error = "", msg
+			}
+			s.emit(ap.NewEvent(ap.AgentEventSubagentCompleted, s.runID, s.chatID, p))
+			continue
+		}
+		s.emit(ap.NewEvent(ap.AgentEventSubagentUpdated, s.runID, s.chatID, ap.SubagentUpdatedPayload{SubagentID: id, Status: status, Summary: msg}))
+	}
+}
+
+// onChildNotification takes a notification from another thread: a spawned
+// agent's, reported as its subagent, or one this session did not spawn,
+// which is not ours.
+func (s *codexSession) onChildNotification(thread, method string, params json.RawMessage) {
+	s.mu.Lock()
+	_, ours := s.children[thread]
+	s.mu.Unlock()
+	if !ours {
+		return
+	}
+	switch method {
+	case codexapp.MethodThreadTokenUsageUpdated:
+		var n codexapp.ThreadTokenUsageUpdatedNotification
+		if json.Unmarshal(params, &n) == nil {
+			s.emit(ap.NewEvent(ap.AgentEventSubagentUpdated, s.runID, s.chatID, ap.SubagentUpdatedPayload{
+				SubagentID: thread, Usage: subagentcodex.Usage(n.TokenUsage),
+			}))
+		}
+	case codexapp.MethodTurnStarted:
+		s.setChildStatus(thread, ap.SubagentUpdatedPayload{SubagentID: thread, Status: ap.SubagentRunning})
+	case codexapp.MethodTurnCompleted:
+		var n codexapp.TurnCompletedNotification
+		if json.Unmarshal(params, &n) == nil {
+			s.setChildStatus(thread, subagentcodex.TurnDone(thread, n.Turn))
+		}
+	case codexapp.MethodItemAgentMessageDelta:
+		var n codexapp.AgentMessageDeltaNotification
+		if s.backend.SubagentOutput && json.Unmarshal(params, &n) == nil && n.Delta != "" {
+			s.emit(ap.NewEvent(ap.AgentEventContentDelta, s.runID, s.chatID, ap.ContentDeltaPayload{
+				Kind: ap.ContentDeltaText, Delta: n.Delta, SubagentID: thread,
+			}))
+		}
+	case codexapp.MethodItemStarted:
+		var n codexapp.ItemStartedNotification
+		if s.backend.SubagentOutput && json.Unmarshal(params, &n) == nil {
+			if p, ok := toolStarted(n.Item); ok {
+				p.SubagentID = thread
+				s.emit(ap.NewEvent(ap.AgentEventToolStarted, s.runID, s.chatID, p))
+			}
+		}
+	case codexapp.MethodItemCompleted:
+		var n codexapp.ItemCompletedNotification
+		if s.backend.SubagentOutput && json.Unmarshal(params, &n) == nil {
+			if p, ok := toolCompleted(n.Item); ok {
+				p.SubagentID = thread
+				s.emit(ap.NewEvent(ap.AgentEventToolCompleted, s.runID, s.chatID, p))
+			}
+		}
+	}
+}
+
+// setChildStatus reports a spawned agent's progress, unless it has ended.
+func (s *codexSession) setChildStatus(thread string, p ap.SubagentUpdatedPayload) {
+	s.mu.Lock()
+	prev := s.children[thread]
+	if prev.Ended() {
+		s.mu.Unlock()
+		return
+	}
+	s.children[thread] = p.Status
+	s.mu.Unlock()
+	s.emit(ap.NewEvent(ap.AgentEventSubagentUpdated, s.runID, s.chatID, p))
+}
+
+// childOf is the spawned agent a server request comes from, by the thread
+// it names; empty for this session's own thread.
+func (s *codexSession) childOf(params json.RawMessage) string {
+	var head struct {
+		ThreadID       string `json:"threadId"`
+		ConversationID string `json:"conversationId"`
+	}
+	_ = json.Unmarshal(params, &head)
+	id := head.ThreadID
+	if id == "" {
+		id = head.ConversationID
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if _, ok := s.children[id]; ok {
+		return id
+	}
+	return ""
 }
 
 // readAccount reports the account the server runs as and its plan's limits,
@@ -1036,6 +1177,22 @@ func toolStarted(item codexapp.ThreadItem) (ap.ToolStartedPayload, bool) {
 		}
 		p.ToolInvocationID, p.DisplayName = v.ID, v.Query
 		p.Arguments = ap.StringEncodedMap{"query": v.Query}
+	case codexapp.ThreadItemTypeCollabAgentToolCall:
+		// Spawning, messaging or waiting on another agent; a spawn starts a
+		// subagent (subagent.started names this call as its parent).
+		v, ok := item.AsCollabAgentToolCallThreadItem()
+		if !ok {
+			return p, false
+		}
+		p.ToolInvocationID, p.ToolName = v.ID, string(v.Tool)
+		p.Arguments = ap.StringEncodedMap{"agents": v.ReceiverThreadIDs}
+		if v.Prompt != nil {
+			p.DisplayName = *v.Prompt
+			p.Arguments["prompt"] = *v.Prompt
+		}
+		if v.Model != nil {
+			p.Arguments["model"] = *v.Model
+		}
 	default:
 		return p, false
 	}
@@ -1088,6 +1245,12 @@ func toolCompleted(item codexapp.ThreadItem) (ap.ToolCompletedPayload, bool) {
 			return p, false
 		}
 		p.ToolInvocationID, p.Status = v.ID, ap.ToolInvocationStatusCompleted
+	case codexapp.ThreadItemTypeCollabAgentToolCall:
+		v, ok := item.AsCollabAgentToolCallThreadItem()
+		if !ok {
+			return p, false
+		}
+		p.ToolInvocationID, p.ToolName, p.Status = v.ID, string(v.Tool), itemStatus(string(v.Status))
 	default:
 		return p, false
 	}

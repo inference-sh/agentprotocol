@@ -90,6 +90,8 @@ type TurnCompletedPayload struct {
 type ContentDeltaPayload struct {
 	Kind  ContentDeltaKind `json:"kind"`
 	Delta string           `json:"delta"`
+	// SubagentID is set on a subagent's own output (subagent_types.go).
+	SubagentID string `json:"subagent_id,omitempty"`
 }
 
 type ContentDeltaKind string
@@ -105,6 +107,8 @@ type ToolStartedPayload struct {
 	ToolType         ToolType         `json:"tool_type,omitempty"`
 	DisplayName      string           `json:"display_name,omitempty"`
 	Arguments        StringEncodedMap `json:"arguments,omitempty"`
+	// SubagentID is set on a subagent's own tool calls.
+	SubagentID string `json:"subagent_id,omitempty"`
 }
 
 type ToolCompletedPayload struct {
@@ -113,6 +117,8 @@ type ToolCompletedPayload struct {
 	Status           ToolInvocationStatus `json:"status"`
 	Result           string               `json:"result,omitempty"`
 	DurationMs       int64                `json:"duration_ms,omitempty"`
+	// SubagentID is set on a subagent's own tool calls.
+	SubagentID string `json:"subagent_id,omitempty"`
 }
 
 type ApprovalRequiredPayload struct {
@@ -120,6 +126,9 @@ type ApprovalRequiredPayload struct {
 	ToolName         string           `json:"tool_name"`
 	Arguments        StringEncodedMap `json:"arguments,omitempty"`
 	Reason           InterruptReason  `json:"reason"`
+	// SubagentID is set when a subagent asks: its tool call, not the
+	// agent's.
+	SubagentID string `json:"subagent_id,omitempty"`
 }
 
 type ApprovalResolvedPayload struct {

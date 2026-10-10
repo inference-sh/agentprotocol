@@ -75,6 +75,9 @@ func (f HookFormat) String() string {
 type ToolCall struct {
 	Name string
 	Args string
+	// Namespace is the namespace the agent declares the tool in, when it
+	// declares it in one (codex's multi_agent_v1 on the Responses API).
+	Namespace string
 }
 
 // ConfigFile is a file to write relative to $HOME before running the harness.
@@ -166,6 +169,12 @@ type Harness struct {
 	// agent does not declare is answered with "tool not found" and nothing
 	// runs.
 	ToolCallGated ToolCall
+
+	// ToolCallSubagent is a call to the agent's tool that starts a subagent
+	// (Claude Code's Agent, codex's spawn_agent), with arguments that make
+	// the subagent answer and end. Read off the wire with --probe tools
+	// like ToolCallGated. Empty for an agent with no such tool.
+	ToolCallSubagent ToolCall
 
 	// ACPAutoApproveArgs are the arguments that stop this agent asking its
 	// client for permission. They are kept apart from ACPArgs so the in-flight

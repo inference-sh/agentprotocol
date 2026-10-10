@@ -173,6 +173,82 @@ func TestCodexReportsUsage(t *testing.T) {
 	}
 }
 
+// A spawned agent is reported as a subagent of the call that spawned it; its
+// own output reaches the caller only when asked for, and its approval
+// always names it.
+func TestCodexReportsSubagents(t *testing.T) {
+	for _, output := range []bool{false, true} {
+		b, _ := codexBackend(t, "")
+		b.SubagentOutput = output
+		sess, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir()})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := sess.Prompt(context.Background(), driver.TextInput("spawn")); err != nil {
+			t.Fatal(err)
+		}
+		before := until(t, sess.Events(), ap.AgentEventApprovalRequired)
+		ask, _ := ap.PayloadAs[ap.ApprovalRequiredPayload](before[len(before)-1], ap.AgentEventApprovalRequired)
+		if ask.SubagentID != "thr_child" {
+			t.Errorf("output=%v: approval = %+v, want it to name thr_child", output, ask)
+		}
+		if err := sess.Resolve(context.Background(), ask.ToolInvocationID, driver.Resolution{Decision: ap.InterruptResolutionAllow}); err != nil {
+			t.Fatal(err)
+		}
+		events := append(before, until(t, sess.Events(), ap.AgentEventTurnCompleted)...)
+
+		ev, ok := findEvent(events, ap.AgentEventSubagentStarted)
+		if !ok {
+			t.Fatalf("output=%v: no subagent.started in %v", output, typesOf(events))
+		}
+		st, _ := ap.PayloadAs[ap.SubagentStartedPayload](ev, ap.AgentEventSubagentStarted)
+		if st.SubagentID != "thr_child" || st.ParentToolInvocationID != "collab_1" || st.Description != "look around" {
+			t.Errorf("started = %+v", st)
+		}
+		if countType(events, ap.AgentEventSubagentStarted) != 1 || countType(events, ap.AgentEventSubagentCompleted) != 1 {
+			t.Errorf("output=%v: events = %v", output, typesOf(events))
+		}
+		ev, _ = findEvent(events, ap.AgentEventSubagentCompleted)
+		if c, _ := ap.PayloadAs[ap.SubagentCompletedPayload](ev, ap.AgentEventSubagentCompleted); c.Status != ap.SubagentCompleted || c.Summary != "found it" {
+			t.Errorf("completed = %+v", c)
+		}
+		var usage *ap.SubagentUsage
+		var childText string
+		var childTools, parentTools int
+		for _, ev := range events {
+			if p, ok := ap.PayloadAs[ap.SubagentUpdatedPayload](ev, ap.AgentEventSubagentUpdated); ok && p.Usage != nil {
+				usage = p.Usage
+			}
+			if p, ok := ap.PayloadAs[ap.ContentDeltaPayload](ev, ap.AgentEventContentDelta); ok && p.SubagentID == "thr_child" {
+				childText += p.Delta
+			}
+			if p, ok := ap.PayloadAs[ap.ToolStartedPayload](ev, ap.AgentEventToolStarted); ok {
+				switch {
+				case p.SubagentID == "thr_child":
+					childTools++
+				case p.ToolInvocationID == "collab_1" && p.ToolName == "spawnAgent":
+					parentTools++
+				case p.ToolInvocationID == "c_call":
+					t.Errorf("output=%v: the child's tool call reached the caller as the agent's", output)
+				}
+			}
+		}
+		if usage == nil || usage.TotalTokens != 700 {
+			t.Errorf("output=%v: subagent usage = %+v", output, usage)
+		}
+		if parentTools != 1 {
+			t.Errorf("output=%v: the spawn call was reported %d times as a tool call", output, parentTools)
+		}
+		if output != (childText == "child speaking" && childTools == 1) {
+			t.Errorf("output=%v: child text %q, %d child tool call(s)", output, childText, childTools)
+		}
+		if got := deltas(events); got != "the child found it" && !output {
+			t.Errorf("the agent's text = %q", got)
+		}
+		sess.Close()
+	}
+}
+
 func TestCodexUnknownNotificationsAreTolerated(t *testing.T) {
 	// The fake sends an unknown notification and a known one carrying
 	// fields no schema mentions, before and during every turn.
@@ -671,6 +747,32 @@ func (f *fakeCodex) handle(m codexapp.Message) {
 				var r struct{ Decision json.RawMessage }
 				_ = json.Unmarshal(result, &r)
 				f.finish(turn, "decision="+string(r.Decision))
+			})
+			return
+		case text == "spawn":
+			// codex 0.156.1's schema: a collabAgentToolCall spawns a
+			// thread, whose own notifications carry its thread id.
+			collab := func(status string, states map[string]any) map[string]any {
+				return map[string]any{"type": "collabAgentToolCall", "id": "collab_1", "tool": "spawnAgent", "status": status,
+					"senderThreadId": f.thread, "receiverThreadIds": []string{"thr_child"}, "prompt": "look around\nin detail",
+					"agentsStates": states}
+			}
+			f.notify(codexapp.MethodItemStarted, map[string]any{"threadId": f.thread, "turnId": turn, "startedAtMs": 1, "item": collab("inProgress", map[string]any{})})
+			child := "thr_child"
+			f.notify(codexapp.MethodItemAgentMessageDelta, map[string]any{"threadId": child, "turnId": "t_child", "itemId": "c_msg", "delta": "child speaking"})
+			cmd := map[string]any{"type": "commandExecution", "id": "c_call", "command": "ls", "cwd": "/w", "commandActions": []any{}, "status": "inProgress"}
+			f.notify(codexapp.MethodItemStarted, map[string]any{"threadId": child, "turnId": "t_child", "startedAtMs": 1, "item": cmd})
+			f.notify(codexapp.MethodThreadTokenUsageUpdated, map[string]any{"threadId": child, "turnId": "t_child", "tokenUsage": map[string]any{
+				"total": map[string]any{"totalTokens": 700, "inputTokens": 600, "cachedInputTokens": 0, "outputTokens": 100, "reasoningOutputTokens": 0},
+				"last":  map[string]any{"totalTokens": 700, "inputTokens": 600, "cachedInputTokens": 0, "outputTokens": 100, "reasoningOutputTokens": 0}}})
+			f.request(codexapp.MethodItemCommandExecutionRequestApproval, map[string]any{
+				"threadId": child, "turnId": "t_child", "itemId": "c_call", "startedAtMs": 1, "command": "ls", "cwd": "/w",
+			}, func(json.RawMessage) {
+				cmd["status"] = "completed"
+				f.notify(codexapp.MethodItemCompleted, map[string]any{"threadId": child, "turnId": "t_child", "completedAtMs": 2, "item": cmd})
+				f.notify(codexapp.MethodItemCompleted, map[string]any{"threadId": f.thread, "turnId": turn, "completedAtMs": 3,
+					"item": collab("completed", map[string]any{child: map[string]any{"status": "completed", "message": "found it"}})})
+				f.finish(turn, "the child found it")
 			})
 			return
 		case text == "config?":

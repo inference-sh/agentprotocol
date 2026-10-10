@@ -447,6 +447,76 @@ func TestClaudeReportsUsage(t *testing.T) {
 	}
 }
 
+// A subagent is reported by its own events; what it says reaches the caller
+// only when asked for, and then names it. Its approval always names it.
+func TestClaudeReportsSubagents(t *testing.T) {
+	for _, output := range []bool{false, true} {
+		b, _ := claudeRunning(t, "subagent")
+		b.SubagentOutput = output
+		sess := openClaude(t, b, driver.SessionConfig{})
+		if err := sess.Prompt(context.Background(), driver.TextInput("go")); err != nil {
+			t.Fatal(err)
+		}
+		before := until(t, sess.Events(), ap.AgentEventApprovalRequired)
+		ask, _ := ap.PayloadAs[ap.ApprovalRequiredPayload](before[len(before)-1], ap.AgentEventApprovalRequired)
+		if ask.ToolInvocationID != "toolu_sub" || ask.SubagentID != "task1" {
+			t.Errorf("output=%v: approval = %+v, want the subagent's call naming task1", output, ask)
+		}
+		if err := sess.Resolve(context.Background(), "toolu_sub", driver.Resolution{Decision: ap.InterruptResolutionAllow}); err != nil {
+			t.Fatal(err)
+		}
+		events := append(before, until(t, sess.Events(), ap.AgentEventTurnCompleted)...)
+
+		started, ok := findEvent(events, ap.AgentEventSubagentStarted)
+		if !ok {
+			t.Fatalf("output=%v: no subagent.started in %v", output, typesOf(events))
+		}
+		st, _ := ap.PayloadAs[ap.SubagentStartedPayload](started, ap.AgentEventSubagentStarted)
+		if st.SubagentID != "task1" || st.ParentToolInvocationID != "toolu_agent" || st.Kind != "Explore" || st.Description != "look around" {
+			t.Errorf("started = %+v", st)
+		}
+		if countType(events, ap.AgentEventSubagentCompleted) != 1 {
+			t.Errorf("output=%v: %d subagent.completed, want 1", output, countType(events, ap.AgentEventSubagentCompleted))
+		}
+		done, _ := findEvent(events, ap.AgentEventSubagentCompleted)
+		c, _ := ap.PayloadAs[ap.SubagentCompletedPayload](done, ap.AgentEventSubagentCompleted)
+		if c.Status != ap.SubagentCompleted || c.Summary != "found it" || c.Usage == nil || c.Usage.TotalTokens != 1500 {
+			t.Errorf("completed = %+v", c)
+		}
+
+		// The reply is the agent's alone either way.
+		var main, sub []string
+		for _, ev := range events {
+			if p, ok := ap.PayloadAs[ap.ContentDeltaPayload](ev, ap.AgentEventContentDelta); ok {
+				if p.SubagentID == "" {
+					main = append(main, p.Delta)
+				} else if p.SubagentID == "task1" {
+					sub = append(sub, p.Delta)
+				}
+			}
+		}
+		if strings.Join(main, "") != "the subagent found it" {
+			t.Errorf("output=%v: the agent's text = %q", output, main)
+		}
+		var subTools int
+		for _, ev := range events {
+			if p, ok := ap.PayloadAs[ap.ToolStartedPayload](ev, ap.AgentEventToolStarted); ok && p.SubagentID == "task1" {
+				subTools++
+			}
+			if p, ok := ap.PayloadAs[ap.ToolStartedPayload](ev, ap.AgentEventToolStarted); ok && p.ToolInvocationID == "toolu_sub" && p.SubagentID == "" {
+				t.Errorf("output=%v: the subagent's tool call reached the caller as the agent's", output)
+			}
+		}
+		if output && (len(sub) != 1 || sub[0] != "subagent thinking aloud" || subTools != 1) {
+			t.Errorf("subagent output = %q, %d tool call(s)", sub, subTools)
+		}
+		if !output && (len(sub) != 0 || subTools != 0) {
+			t.Errorf("subagent output sent without being asked for: %q, %d tool call(s)", sub, subTools)
+		}
+		sess.Close()
+	}
+}
+
 func TestClaudeUnknownMessagesAreTolerated(t *testing.T) {
 	var mu sync.Mutex
 	var diags []string
@@ -714,6 +784,26 @@ func runFakeClaude(script string) {
 			}
 			result(nil)
 
+		case msg.Type == "control_response" && msg.Response.RequestID == "subperm":
+			// The subagent's tool ran; it reports and ends, and the Agent
+			// call returns its summary.
+			sub := "toolu_agent"
+			send(map[string]any{"type": "user", "session_id": sessionID, "parent_tool_use_id": sub,
+				"message": map[string]any{"role": "user", "content": []any{map[string]any{
+					"type": "tool_result", "tool_use_id": "toolu_sub", "content": "ok", "is_error": false}}}})
+			send(map[string]any{"type": "system", "subtype": "task_progress", "session_id": sessionID, "task_id": "task1",
+				"tool_use_id": sub, "description": "look around", "last_tool_name": "Bash",
+				"usage": map[string]any{"total_tokens": 1200, "tool_uses": 1, "duration_ms": 900}})
+			send(map[string]any{"type": "system", "subtype": "task_updated", "session_id": sessionID, "task_id": "task1",
+				"patch": map[string]any{"status": "completed"}})
+			send(map[string]any{"type": "system", "subtype": "task_notification", "session_id": sessionID, "task_id": "task1",
+				"tool_use_id": sub, "status": "completed", "summary": "found it", "output_file": "/tmp/x",
+				"usage": map[string]any{"total_tokens": 1500, "tool_uses": 1, "duration_ms": 1000}})
+			send(map[string]any{"type": "user", "session_id": sessionID, "parent_tool_use_id": nil,
+				"message": map[string]any{"role": "user", "content": []any{map[string]any{
+					"type": "tool_result", "tool_use_id": sub, "content": "found it", "is_error": false}}}})
+			reply("the subagent found it")
+			result(nil)
 		case msg.Type == "control_response" && msg.Response.RequestID == "future1":
 			initMsg()
 			reply("future_request=" + msg.Response.Subtype)
@@ -743,6 +833,21 @@ func runFakeClaude(script string) {
 				out.Flush()
 				send(map[string]any{"type": "control_request", "request_id": "future1",
 					"request": map[string]any{"subtype": "future_request"}})
+			case "subagent":
+				// sdk.d.ts 0.3.296: an Agent tool call, the task it
+				// starts, and the subagent's own messages carrying the
+				// call as parent_tool_use_id.
+				send(map[string]any{"type": "assistant", "session_id": sessionID, "parent_tool_use_id": nil,
+					"message": map[string]any{"id": "m-agent", "role": "assistant", "content": []any{map[string]any{
+						"type": "tool_use", "id": "toolu_agent", "name": "Agent", "input": map[string]any{"description": "look around", "prompt": "look"}}}}})
+				send(map[string]any{"type": "system", "subtype": "task_started", "session_id": sessionID, "task_id": "task1",
+					"tool_use_id": "toolu_agent", "description": "look around", "subagent_type": "Explore", "prompt": "look"})
+				send(map[string]any{"type": "assistant", "session_id": sessionID, "parent_tool_use_id": "toolu_agent",
+					"message": map[string]any{"id": "m-sub", "role": "assistant", "content": []any{
+						map[string]any{"type": "text", "text": "subagent thinking aloud"},
+						map[string]any{"type": "tool_use", "id": "toolu_sub", "name": "Bash", "input": map[string]any{"command": "ls"}}}}})
+				send(map[string]any{"type": "control_request", "request_id": "subperm", "request": map[string]any{
+					"subtype": "can_use_tool", "tool_name": "Bash", "input": map[string]any{"command": "ls"}, "tool_use_id": "toolu_sub", "agent_id": "a-sub"}})
 			case "usage":
 				// Shapes from sdk.d.ts 0.3.296: rate_limit_event with a
 				// fractional utilization and Unix-second reset; an assistant

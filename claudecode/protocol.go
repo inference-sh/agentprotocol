@@ -41,6 +41,12 @@ const (
 	SystemInit            = "init"
 	SystemStatus          = "status"
 	SystemCompactBoundary = "compact_boundary"
+
+	// A subagent's life (the Agent tool, background tasks).
+	SystemTaskStarted      = "task_started"
+	SystemTaskProgress     = "task_progress"
+	SystemTaskUpdated      = "task_updated"
+	SystemTaskNotification = "task_notification"
 )
 
 // Control request subtypes. The first group is sent by the host, the second
@@ -105,6 +111,56 @@ type SystemMessage struct {
 	Status         string          `json:"status,omitempty"`
 	CompactMeta    *CompactMeta    `json:"compact_metadata,omitempty"`
 	MCPServers     []MCPServerInfo `json:"mcp_servers,omitempty"`
+}
+
+// TaskStarted is task_started: a subagent or background task begins.
+// ToolUseID is the tool call that started it, when one did.
+type TaskStarted struct {
+	TaskID         string `json:"task_id"`
+	ToolUseID      string `json:"tool_use_id,omitempty"`
+	Description    string `json:"description"`
+	SubagentType   string `json:"subagent_type,omitempty"`
+	IsBackgrounded bool   `json:"is_backgrounded,omitempty"`
+	ParentTaskID   string `json:"parent_task_id,omitempty"`
+	TaskType       string `json:"task_type,omitempty"`
+	Prompt         string `json:"prompt,omitempty"`
+}
+
+// TaskUsage is a task's running totals.
+type TaskUsage struct {
+	TotalTokens int   `json:"total_tokens"`
+	ToolUses    int   `json:"tool_uses"`
+	DurationMS  int64 `json:"duration_ms"`
+}
+
+// TaskProgress is task_progress: a running task's totals so far.
+type TaskProgress struct {
+	TaskID       string     `json:"task_id"`
+	ToolUseID    string     `json:"tool_use_id,omitempty"`
+	Description  string     `json:"description"`
+	Usage        *TaskUsage `json:"usage,omitempty"`
+	LastToolName string     `json:"last_tool_name,omitempty"`
+	Summary      string     `json:"summary,omitempty"`
+}
+
+// TaskUpdated is task_updated: a patch to a task's state.
+type TaskUpdated struct {
+	TaskID string `json:"task_id"`
+	Patch  struct {
+		Status         string `json:"status,omitempty"` // pending, running, completed, failed, killed, paused
+		Description    string `json:"description,omitempty"`
+		Error          string `json:"error,omitempty"`
+		IsBackgrounded *bool  `json:"is_backgrounded,omitempty"`
+	} `json:"patch"`
+}
+
+// TaskNotification is task_notification: a task ended.
+type TaskNotification struct {
+	TaskID    string     `json:"task_id"`
+	ToolUseID string     `json:"tool_use_id,omitempty"`
+	Status    string     `json:"status"` // completed, failed, stopped
+	Summary   string     `json:"summary"`
+	Usage     *TaskUsage `json:"usage,omitempty"`
 }
 
 // CompactMeta describes a compaction.

@@ -14,6 +14,7 @@ import (
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/claudecode"
 	"github.com/inference-sh/agentprotocol/harness"
+	subagentclaude "github.com/inference-sh/agentprotocol/subagent/claude"
 	claudeusage "github.com/inference-sh/agentprotocol/usage/claude"
 )
 
@@ -61,6 +62,13 @@ type ClaudeBackend struct {
 
 	// InitTimeout bounds the initialize handshake. Zero means 60 seconds.
 	InitTimeout time.Duration
+
+	// SubagentOutput sends what a subagent says and does (its text and its
+	// tool calls) as content and tool events with SubagentID set. Without
+	// it they are dropped and only the subagent.* events report the
+	// subagent; a consumer that does not know SubagentID would otherwise
+	// take a subagent's words for the agent's.
+	SubagentOutput bool
 
 	// ShutdownGrace is how long Close lets the CLI finish writing its
 	// transcript after input ends before it is killed. Zero means
@@ -184,6 +192,84 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 	return s, nil
 }
 
+func (s *claudeSession) tasksLocked() map[string]string {
+	if s.tasks == nil {
+		s.tasks = map[string]string{}
+	}
+	return s.tasks
+}
+
+// subagentOf is the subagent a message with this parent_tool_use_id belongs
+// to: the task that tool call started, or, from a CLI that reports no
+// tasks, the tool call itself.
+func (s *claudeSession) subagentOfLocked(parent string) string {
+	if id := s.tasks[parent]; id != "" {
+		return id
+	}
+	return parent
+}
+
+// onSubagentAssistant takes a subagent's settled message. Its tool calls are
+// recorded so their approvals and results name the subagent; what it says is
+// sent only when the caller asked. Its usage is the subagent's, not the
+// session's context, and is reported by the task's own messages.
+func (s *claudeSession) onSubagentAssistant(parent string, a claudecode.AssistantMessage) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	sub := s.subagentOfLocked(parent)
+	for _, block := range a.Message.Content {
+		switch block.Type {
+		case "text":
+			if block.Text != "" && s.backend.SubagentOutput {
+				s.emit(ap.NewEvent(ap.AgentEventContentDelta, s.runID, s.chatID, ap.ContentDeltaPayload{
+					Kind: ap.ContentDeltaText, Delta: block.Text, SubagentID: sub,
+				}))
+			}
+		case "tool_use", "server_tool_use", "mcp_tool_use":
+			if s.subTools == nil {
+				s.subTools = map[string]string{}
+			}
+			s.subTools[block.ID] = sub
+			s.tools[block.ID] = block.Name
+			if s.backend.SubagentOutput {
+				s.emit(ap.NewEvent(ap.AgentEventToolStarted, s.runID, s.chatID, ap.ToolStartedPayload{
+					ToolInvocationID: block.ID, ToolName: block.Name, DisplayName: block.Name,
+					Arguments: claudeArguments(block.Input), SubagentID: sub,
+				}))
+			}
+		}
+	}
+}
+
+// onSubagentUser takes a subagent's tool results.
+func (s *claudeSession) onSubagentUser(u claudecode.UserMessage) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, block := range u.Message.Blocks() {
+		if block.Type != "tool_result" {
+			continue
+		}
+		sub, ok := s.subTools[block.ToolUseID]
+		if !ok {
+			continue
+		}
+		name := s.tools[block.ToolUseID]
+		delete(s.subTools, block.ToolUseID)
+		delete(s.tools, block.ToolUseID)
+		delete(s.denied, block.ToolUseID)
+		if !s.backend.SubagentOutput {
+			continue
+		}
+		status := ap.ToolInvocationStatusCompleted
+		if block.IsError {
+			status = ap.ToolInvocationStatusFailed
+		}
+		s.emit(ap.NewEvent(ap.AgentEventToolCompleted, s.runID, s.chatID, ap.ToolCompletedPayload{
+			ToolInvocationID: block.ToolUseID, ToolName: name, Status: status, Result: block.ResultText(), SubagentID: sub,
+		}))
+	}
+}
+
 // emitContextLocked reports the window's fill. The window is known once a
 // result has named the model's; before that the fill goes out without it.
 func (s *claudeSession) emitContextLocked() {
@@ -225,6 +311,14 @@ type claudeSession struct {
 	hasOutput    bool
 	streamedText bool
 	interrupting bool
+
+	// Subagents. tasks maps the tool call that started a subagent to its
+	// task; subTools maps a subagent's own tool calls to it, so its
+	// approvals and results are attributed; ended are the tasks reported
+	// finished.
+	tasks    map[string]string
+	subTools map[string]string
+	ended    map[string]bool
 
 	// Usage. usage turns results into per-turn figures; lastModel is the
 	// main agent's model, whose window contextMax is; contextUsed is the
@@ -471,6 +565,40 @@ func (s *claudeSession) onSystem(m claudecode.Message) {
 				s.backend.diagnose(fmt.Sprintf("MCP server %s is %s", srv.Name, srv.Status))
 			}
 		}
+	case claudecode.SystemTaskStarted:
+		var t claudecode.TaskStarted
+		if m.Decode(&t) == nil && t.TaskID != "" {
+			s.mu.Lock()
+			if t.ToolUseID != "" {
+				s.tasksLocked()[t.ToolUseID] = t.TaskID
+			}
+			s.mu.Unlock()
+			s.emit(ap.NewEvent(ap.AgentEventSubagentStarted, s.runID, s.chatID, subagentclaude.Started(t)))
+		}
+	case claudecode.SystemTaskProgress:
+		var t claudecode.TaskProgress
+		if m.Decode(&t) == nil && t.TaskID != "" {
+			s.emit(ap.NewEvent(ap.AgentEventSubagentUpdated, s.runID, s.chatID, subagentclaude.Progress(t)))
+		}
+	case claudecode.SystemTaskUpdated:
+		var t claudecode.TaskUpdated
+		if m.Decode(&t) == nil && t.TaskID != "" {
+			s.emit(ap.NewEvent(ap.AgentEventSubagentUpdated, s.runID, s.chatID, subagentclaude.Updated(t)))
+		}
+	case claudecode.SystemTaskNotification:
+		var t claudecode.TaskNotification
+		if m.Decode(&t) == nil && t.TaskID != "" {
+			s.mu.Lock()
+			done := s.ended[t.TaskID]
+			if s.ended == nil {
+				s.ended = map[string]bool{}
+			}
+			s.ended[t.TaskID] = true
+			s.mu.Unlock()
+			if !done {
+				s.emit(ap.NewEvent(ap.AgentEventSubagentCompleted, s.runID, s.chatID, subagentclaude.Completed(t)))
+			}
+		}
 	case claudecode.SystemCompactBoundary:
 		if sys.CompactMeta != nil {
 			s.emit(ap.NewEvent(ap.AgentEventContextCompacted, s.runID, s.chatID, ap.ContextCompactedPayload{
@@ -521,6 +649,7 @@ func (s *claudeSession) onAssistant(a claudecode.AssistantMessage) {
 		s.backend.diagnose(fmt.Sprintf("claude reported an assistant error: %s", a.Error))
 	}
 	if a.ParentToolUseID != nil {
+		s.onSubagentAssistant(*a.ParentToolUseID, a)
 		return
 	}
 	s.mu.Lock()
@@ -563,6 +692,7 @@ func (s *claudeSession) onAssistant(a claudecode.AssistantMessage) {
 
 func (s *claudeSession) onUser(u claudecode.UserMessage) {
 	if u.ParentToolUseID != nil {
+		s.onSubagentUser(u)
 		return
 	}
 	s.mu.Lock()
@@ -684,11 +814,15 @@ func (s *claudeSession) onPermission(ctx context.Context, requestID string, req 
 	s.pending[id] = p
 	s.mu.Unlock()
 
+	s.mu.Lock()
+	subagent := s.subTools[req.ToolUseID]
+	s.mu.Unlock()
 	s.emit(ap.NewEvent(ap.AgentEventApprovalRequired, s.runID, s.chatID, ap.ApprovalRequiredPayload{
 		ToolInvocationID: id,
 		ToolName:         req.ToolName,
 		Arguments:        claudeArguments(req.Input),
 		Reason:           ap.InterruptReasonToolApproval,
+		SubagentID:       subagent,
 	}))
 
 	select {

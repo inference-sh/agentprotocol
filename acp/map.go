@@ -18,6 +18,9 @@ const (
 	UpdateKindToolCallUpdate    = "tool_call_update"
 	UpdateKindPlan              = "plan"
 	UpdateKindUsage             = "usage"
+	// UpdateKindUsageUpdate reports the session's context window fill and
+	// cumulative cost (UsageUpdate).
+	UpdateKindUsageUpdate = "usage_update"
 )
 
 // Session update kinds that describe the session rather than the conversation.

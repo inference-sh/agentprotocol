@@ -21,12 +21,13 @@ import (
 
 // Command types this package sends (rpc-types.d.ts, RpcCommand).
 const (
-	CmdPrompt   = "prompt"
-	CmdSteer    = "steer"
-	CmdFollowUp = "follow_up"
-	CmdAbort    = "abort"
-	CmdGetState = "get_state"
-	CmdCompact  = "compact"
+	CmdPrompt          = "prompt"
+	CmdSteer           = "steer"
+	CmdFollowUp        = "follow_up"
+	CmdAbort           = "abort"
+	CmdGetState        = "get_state"
+	CmdCompact         = "compact"
+	CmdGetSessionStats = "get_session_stats"
 )
 
 // Streaming behaviours for a prompt sent while a run is active. pi rejects a
@@ -120,6 +121,29 @@ type Response struct {
 }
 
 // State is get_state's data (RpcSessionState).
+// SessionStats is get_session_stats's answer: the session's tokens and
+// cost so far, and the context window's fill (AgentSession.SessionStats).
+type SessionStats struct {
+	SessionID string `json:"sessionId"`
+	Tokens    struct {
+		Input      int `json:"input"`
+		Output     int `json:"output"`
+		CacheRead  int `json:"cacheRead"`
+		CacheWrite int `json:"cacheWrite"`
+		Total      int `json:"total"`
+	} `json:"tokens"`
+	Cost float64 `json:"cost"`
+	// ContextUsage is nil when no model or window is known. Its Tokens is
+	// nil right after a compaction, until the next answer reports usage.
+	ContextUsage *ContextUsage `json:"contextUsage,omitempty"`
+}
+
+// ContextUsage is how full the context window is.
+type ContextUsage struct {
+	Tokens        *int `json:"tokens"`
+	ContextWindow int  `json:"contextWindow"`
+}
+
 type State struct {
 	Model                 *Model `json:"model,omitempty"`
 	ThinkingLevel         string `json:"thinkingLevel"`

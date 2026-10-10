@@ -33,6 +33,7 @@ const (
 	TypeControlResponse = "control_response"
 	TypeControlCancel   = "control_cancel_request"
 	TypeKeepAlive       = "keep_alive"
+	TypeRateLimitEvent  = "rate_limit_event"
 )
 
 // System message subtypes this package names.
@@ -49,6 +50,7 @@ const (
 	SubtypeInterrupt         = "interrupt"
 	SubtypeSetPermissionMode = "set_permission_mode"
 	SubtypeSetModel          = "set_model"
+	SubtypeGetUsage          = "get_usage"
 
 	SubtypeCanUseTool   = "can_use_tool"
 	SubtypeHookCallback = "hook_callback"
@@ -179,6 +181,76 @@ type Usage struct {
 	CacheReadInputTokens     int `json:"cache_read_input_tokens,omitempty"`
 }
 
+// ModelUsage is one model's usage in a session, as a result reports it in
+// modelUsage. ThinkingTokens is part of OutputTokens.
+type ModelUsage struct {
+	InputTokens              int     `json:"inputTokens"`
+	OutputTokens             int     `json:"outputTokens"`
+	ThinkingTokens           int     `json:"thinkingTokens,omitempty"`
+	CacheReadInputTokens     int     `json:"cacheReadInputTokens"`
+	CacheCreationInputTokens int     `json:"cacheCreationInputTokens"`
+	CostUSD                  float64 `json:"costUSD"`
+	ContextWindow            int     `json:"contextWindow"`
+	MaxOutputTokens          int     `json:"maxOutputTokens"`
+}
+
+// RateLimitEvent is a rate_limit_event line: the CLI's report on a claude.ai
+// plan's rate limits after a request.
+type RateLimitEvent struct {
+	Type          string        `json:"type"`
+	RateLimitInfo RateLimitInfo `json:"rate_limit_info"`
+	SessionID     string        `json:"session_id,omitempty"`
+}
+
+// RateLimitInfo is one plan rate limit. Utilization is a fraction, 0 to 1,
+// and ResetsAt is in Unix seconds; get_usage reports the same limits as a
+// percentage and an ISO time.
+type RateLimitInfo struct {
+	Status         string   `json:"status"` // allowed, allowed_warning, rejected
+	ResetsAt       int64    `json:"resetsAt,omitempty"`
+	RateLimitType  string   `json:"rateLimitType,omitempty"` // five_hour, seven_day, seven_day_opus, ...
+	Utilization    *float64 `json:"utilization,omitempty"`
+	OverageStatus  string   `json:"overageStatus,omitempty"`
+	IsUsingOverage bool     `json:"isUsingOverage,omitempty"`
+}
+
+// GetUsageRequest asks for the plan's rate limits (get_usage, experimental).
+// SkipBehaviors leaves out a scan of the last week's transcripts that the
+// limits do not need.
+type GetUsageRequest struct {
+	Subtype       string `json:"subtype"`
+	SkipBehaviors bool   `json:"skip_behaviors,omitempty"`
+}
+
+// GetUsageResponse is get_usage's answer. RateLimits is nil when
+// RateLimitsAvailable is false (an API key, a cloud provider).
+type GetUsageResponse struct {
+	SubscriptionType    *string     `json:"subscription_type"`
+	RateLimitsAvailable bool        `json:"rate_limits_available"`
+	RateLimits          *RateLimits `json:"rate_limits"`
+}
+
+// RateLimits is the claude.ai plan's windows. Utilization is a percentage,
+// 0 to 100, and ResetsAt an ISO time; either is nil when unknown.
+type RateLimits struct {
+	FiveHour    *UsageWindow        `json:"five_hour,omitempty"`
+	SevenDay    *UsageWindow        `json:"seven_day,omitempty"`
+	ModelScoped []ScopedUsageWindow `json:"model_scoped,omitempty"`
+}
+
+// UsageWindow is one window in a get_usage answer.
+type UsageWindow struct {
+	Utilization *float64 `json:"utilization"`
+	ResetsAt    *string  `json:"resets_at"`
+}
+
+// ScopedUsageWindow is a weekly window that applies to some models.
+type ScopedUsageWindow struct {
+	DisplayName string   `json:"display_name"`
+	Utilization *float64 `json:"utilization"`
+	ResetsAt    *string  `json:"resets_at"`
+}
+
 // AssistantMessage is an assistant line. With --include-partial-messages the
 // same content has already streamed as stream_event lines; the assistant line
 // is the settled copy, usually one content block per line.
@@ -235,20 +307,23 @@ func NewUserMessage(text string) UserMessage {
 // subtypes; an interrupted turn ends with error_during_execution and a
 // TerminalReason of aborted_tools or aborted_streaming.
 type ResultMessage struct {
-	Type              string             `json:"type"`
-	Subtype           string             `json:"subtype"`
-	IsError           bool               `json:"is_error"`
-	Result            string             `json:"result,omitempty"`
-	StopReason        string             `json:"stop_reason,omitempty"`
-	TerminalReason    string             `json:"terminal_reason,omitempty"`
-	SessionID         string             `json:"session_id"`
-	NumTurns          int                `json:"num_turns"`
-	DurationMS        int64              `json:"duration_ms"`
-	TotalCostUSD      float64            `json:"total_cost_usd"`
-	Usage             Usage              `json:"usage"`
-	Errors            []string           `json:"errors,omitempty"`
-	PermissionDenials []PermissionDenial `json:"permission_denials,omitempty"`
-	QueuedTurnCount   int                `json:"queued_turn_count,omitempty"`
+	Type           string  `json:"type"`
+	Subtype        string  `json:"subtype"`
+	IsError        bool    `json:"is_error"`
+	Result         string  `json:"result,omitempty"`
+	StopReason     string  `json:"stop_reason,omitempty"`
+	TerminalReason string  `json:"terminal_reason,omitempty"`
+	SessionID      string  `json:"session_id"`
+	NumTurns       int     `json:"num_turns"`
+	DurationMS     int64   `json:"duration_ms"`
+	TotalCostUSD   float64 `json:"total_cost_usd"`
+	Usage          Usage   `json:"usage"`
+	// ModelUsage is the session's usage per model, keyed by the model
+	// string the CLI used, with each model's context window.
+	ModelUsage        map[string]ModelUsage `json:"modelUsage,omitempty"`
+	Errors            []string              `json:"errors,omitempty"`
+	PermissionDenials []PermissionDenial    `json:"permission_denials,omitempty"`
+	QueuedTurnCount   int                   `json:"queued_turn_count,omitempty"`
 }
 
 // Interrupted reports whether the turn ended because the host interrupted it.
@@ -364,9 +439,14 @@ type ModelInfo struct {
 
 // AccountInfo says how the CLI is authenticated, without the credential.
 type AccountInfo struct {
-	TokenSource  string `json:"tokenSource,omitempty"`
-	APIKeySource string `json:"apiKeySource,omitempty"`
-	APIProvider  string `json:"apiProvider,omitempty"`
+	Email            string `json:"email,omitempty"`
+	Organization     string `json:"organization,omitempty"`
+	SubscriptionType string `json:"subscriptionType,omitempty"`
+	TokenSource      string `json:"tokenSource,omitempty"`
+	APIKeySource     string `json:"apiKeySource,omitempty"`
+	// APIProvider is the backend: firstParty (an Anthropic login or key),
+	// bedrock, vertex, foundry, gateway and others, whose auth is external.
+	APIProvider string `json:"apiProvider,omitempty"`
 }
 
 // PermissionRequest is the can_use_tool body: the CLI asking whether a tool

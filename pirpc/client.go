@@ -129,6 +129,19 @@ func (c *Client) GetState(ctx context.Context) (State, error) {
 	return st, nil
 }
 
+// GetSessionStats asks for the session's token totals and context fill.
+func (c *Client) GetSessionStats(ctx context.Context) (SessionStats, error) {
+	var st SessionStats
+	res, err := c.Request(ctx, Command{Type: CmdGetSessionStats})
+	if err != nil {
+		return st, err
+	}
+	if err := json.Unmarshal(res.Data, &st); err != nil {
+		return st, fmt.Errorf("pirpc: decode get_session_stats: %w", err)
+	}
+	return st, nil
+}
+
 // Abort aborts the running operation. pi answers once the session is idle.
 func (c *Client) Abort(ctx context.Context) error {
 	_, err := c.Request(ctx, Command{Type: CmdAbort})

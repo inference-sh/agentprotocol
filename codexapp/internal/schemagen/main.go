@@ -59,6 +59,11 @@ var roots = []string{
 	"ServerRequestResolvedNotification",
 	"ContextCompactedNotification",
 	"WarningNotification", "ConfigWarningNotification",
+
+	// Account and plan rate limits (the usage/codex package).
+	"GetAccountParams", "GetAccountResponse",
+	"GetAccountRateLimitsResponse",
+	"AccountRateLimitsUpdatedNotification", "AccountUpdatedNotification",
 }
 
 func main() {

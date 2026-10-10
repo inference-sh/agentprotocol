@@ -220,6 +220,86 @@ type AcceptWithExecpolicyAmendmentCommandExecutionApprovalDecisionAcceptWithExec
 	ExecpolicyAmendment []string `json:"execpolicy_amendment"`
 }
 
+type Account struct {
+	Type string
+	Raw  json.RawMessage
+}
+
+func (u *Account) UnmarshalJSON(data []byte) error {
+	var head struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(data, &head); err != nil {
+		return err
+	}
+	u.Type = head.Type
+	u.Raw = append(u.Raw[:0], data...)
+	return nil
+}
+
+func (u Account) MarshalJSON() ([]byte, error) {
+	if len(u.Raw) == 0 {
+		return []byte("null"), nil
+	}
+	return u.Raw, nil
+}
+
+const (
+	AccountTypeApiKey        = "apiKey"
+	AccountTypeChatgpt       = "chatgpt"
+	AccountTypeAmazonBedrock = "amazonBedrock"
+)
+
+// AsApiKeyAccount decodes the variant when Type is "apiKey".
+func (u Account) AsApiKeyAccount() (ApiKeyAccount, bool) {
+	var v ApiKeyAccount
+	if u.Type != "apiKey" || json.Unmarshal(u.Raw, &v) != nil {
+		return v, false
+	}
+	return v, true
+}
+
+// AsChatgptAccount decodes the variant when Type is "chatgpt".
+func (u Account) AsChatgptAccount() (ChatgptAccount, bool) {
+	var v ChatgptAccount
+	if u.Type != "chatgpt" || json.Unmarshal(u.Raw, &v) != nil {
+		return v, false
+	}
+	return v, true
+}
+
+// AsAmazonBedrockAccount decodes the variant when Type is "amazonBedrock".
+func (u Account) AsAmazonBedrockAccount() (AmazonBedrockAccount, bool) {
+	var v AmazonBedrockAccount
+	if u.Type != "amazonBedrock" || json.Unmarshal(u.Raw, &v) != nil {
+		return v, false
+	}
+	return v, true
+}
+
+// NewAccount wraps a variant for sending.
+func NewAccount(v any) (Account, error) {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return Account{}, err
+	}
+	var u Account
+	err = u.UnmarshalJSON(data)
+	return u, err
+}
+
+// Sparse rolling rate-limit update.
+//
+// Clients should merge available values into the most recent `account/rateLimits/read` response or refetch that snapshot. Nullable account metadata may be unavailable in a rolling update and does not clear a previously observed value.
+type AccountRateLimitsUpdatedNotification struct {
+	RateLimits RateLimitSnapshot `json:"rateLimits"`
+}
+
+type AccountUpdatedNotification struct {
+	AuthMode *AuthMode `json:"authMode,omitempty"`
+	PlanType *PlanType `json:"planType,omitempty"`
+}
+
 type ActiveThreadStatus struct {
 	ActiveFlags []ThreadActiveFlag `json:"activeFlags"`
 	Type        string             `json:"type"`
@@ -280,6 +360,15 @@ type AgentMessageThreadItem struct {
 }
 
 type AgentPath = string
+
+type AmazonBedrockAccount struct {
+	Type                        string `json:"type"`
+	UsesCodexManagedCredentials *bool  `json:"usesCodexManagedCredentials,omitempty"`
+}
+
+type ApiKeyAccount struct {
+	Type string `json:"type"`
+}
 
 // User chose a persistent network policy rule (allow/deny) for this host.
 type ApplyNetworkPolicyAmendmentCommandExecutionApprovalDecision struct {
@@ -362,9 +451,39 @@ type AudioUserInput struct {
 	URL  string `json:"url"`
 }
 
+// Authentication mode for OpenAI-backed providers.
+type AuthMode string
+
+const (
+	// OpenAI API key provided by the caller and stored by Codex.
+	AuthModeApikey AuthMode = "apikey"
+	// ChatGPT OAuth managed by Codex (tokens persisted and refreshed by Codex).
+	AuthModeChatgpt AuthMode = "chatgpt"
+	// [UNSTABLE] FOR OPENAI INTERNAL USE ONLY - DO NOT USE.
+	//
+	// ChatGPT auth tokens are supplied by an external host app and are only stored in memory. Token refresh must be handled by the external host app.
+	AuthModeChatgptAuthTokens AuthMode = "chatgptAuthTokens"
+	// Backend auth supplied as request headers.
+	AuthModeHeaders AuthMode = "headers"
+	// Programmatic Codex auth backed by a registered Agent Identity.
+	AuthModeAgentIdentity AuthMode = "agentIdentity"
+	// Programmatic Codex auth backed by a personal access token.
+	AuthModePersonalAccessToken AuthMode = "personalAccessToken"
+	// Amazon Bedrock bearer token managed by Codex.
+	AuthModeBedrockApiKey AuthMode = "bedrockApiKey"
+	// Amazon Bedrock AWS access keys managed by Codex.
+	AuthModeBedrockAccessKeys AuthMode = "bedrockAccessKeys"
+)
+
 type ByteRange struct {
 	End   int64 `json:"end"`
 	Start int64 `json:"start"`
+}
+
+type ChatgptAccount struct {
+	Email    *string  `json:"email"`
+	PlanType PlanType `json:"planType"`
+	Type     string   `json:"type"`
 }
 
 type ClientInfo struct {
@@ -709,6 +828,12 @@ type ContextCompactedNotification struct {
 type ContextCompactionThreadItem struct {
 	ID   string `json:"id"`
 	Type string `json:"type"`
+}
+
+type CreditsSnapshot struct {
+	Balance    *string `json:"balance,omitempty"`
+	HasCredits bool    `json:"hasCredits"`
+	Unlimited  bool    `json:"unlimited"`
 }
 
 type CustomSessionSource struct {
@@ -1115,6 +1240,32 @@ type FunctionCallOutputThreadItem struct {
 	Namespace *string                `json:"namespace,omitempty"`
 	Output    FunctionCallOutputBody `json:"output"`
 	Type      string                 `json:"type"`
+}
+
+type GetAccountParams struct {
+	// When `true`, requests a proactive token refresh before returning.
+	//
+	// In managed auth mode this triggers the normal refresh-token flow. In external auth mode this flag is ignored. Clients should refresh tokens themselves and call `account/login/start` with `chatgptAuthTokens`.
+	RefreshToken *bool `json:"refreshToken,omitempty"`
+}
+
+type GetAccountRateLimitsResponse struct {
+	// Account associated with this usage snapshot, when supplied by the backend.
+	AccountID *string `json:"accountId,omitempty"`
+	// Backend permission for ordinary included usage, validated against the active account. Null means unavailable; clients must not infer recovery from percentages or reset times.
+	OrdinaryUsageAllowed  *bool                         `json:"ordinaryUsageAllowed,omitempty"`
+	RateLimitResetCredits *RateLimitResetCreditsSummary `json:"rateLimitResetCredits,omitempty"`
+	// Optional backend-owned banner from the same usage read. Its nested keys retain the backend's snake_case contract; an absent banner leaves the client's existing UI unchanged.
+	RateLimitUpsell json.RawMessage `json:"rateLimitUpsell,omitempty"`
+	// Backward-compatible single-bucket view; mirrors the historical payload.
+	RateLimits RateLimitSnapshot `json:"rateLimits"`
+	// Multi-bucket view keyed by metered `limit_id` (for example, `codex`).
+	RateLimitsByLimitID map[string]RateLimitSnapshot `json:"rateLimitsByLimitId,omitempty"`
+}
+
+type GetAccountResponse struct {
+	Account            *Account `json:"account,omitempty"`
+	RequiresOpenaiAuth bool     `json:"requiresOpenaiAuth"`
 }
 
 type GitInfo struct {
@@ -1725,6 +1876,98 @@ type PlanThreadItem struct {
 	Type string `json:"type"`
 }
 
+type PlanType string
+
+const (
+	PlanTypeFree                        PlanType = "free"
+	PlanTypeGo                          PlanType = "go"
+	PlanTypePlus                        PlanType = "plus"
+	PlanTypePro                         PlanType = "pro"
+	PlanTypeProlite                     PlanType = "prolite"
+	PlanTypeTeam                        PlanType = "team"
+	PlanTypeSelfServeBusinessProlite    PlanType = "self_serve_business_prolite"
+	PlanTypeSelfServeBusinessUsageBased PlanType = "self_serve_business_usage_based"
+	PlanTypeBusiness                    PlanType = "business"
+	PlanTypeEnt26                       PlanType = "ent26"
+	PlanTypeEnterpriseCbpAutomation     PlanType = "enterprise_cbp_automation"
+	PlanTypeEnterpriseCbpUsageBased     PlanType = "enterprise_cbp_usage_based"
+	PlanTypeEnterprise                  PlanType = "enterprise"
+	PlanTypeEdu                         PlanType = "edu"
+	PlanTypeEduPlus                     PlanType = "edu_plus"
+	PlanTypeEduPro                      PlanType = "edu_pro"
+	PlanTypeUnknown                     PlanType = "unknown"
+)
+
+type RateLimitReachedType string
+
+const (
+	RateLimitReachedTypeRateLimitReached                 RateLimitReachedType = "rate_limit_reached"
+	RateLimitReachedTypeWorkspaceOwnerCreditsDepleted    RateLimitReachedType = "workspace_owner_credits_depleted"
+	RateLimitReachedTypeWorkspaceMemberCreditsDepleted   RateLimitReachedType = "workspace_member_credits_depleted"
+	RateLimitReachedTypeWorkspaceOwnerUsageLimitReached  RateLimitReachedType = "workspace_owner_usage_limit_reached"
+	RateLimitReachedTypeWorkspaceMemberUsageLimitReached RateLimitReachedType = "workspace_member_usage_limit_reached"
+)
+
+type RateLimitResetCredit struct {
+	// Backend-provided display description for this credit, or `null` when unavailable.
+	Description *string `json:"description,omitempty"`
+	// Unix timestamp in seconds when the credit expires, or `null` if it does not expire.
+	ExpiresAt *int64 `json:"expiresAt,omitempty"`
+	// Unix timestamp in seconds when the credit was granted.
+	GrantedAt int64 `json:"grantedAt"`
+	// Opaque backend identifier for this reset credit.
+	ID        string                     `json:"id"`
+	ResetType RateLimitResetType         `json:"resetType"`
+	Status    RateLimitResetCreditStatus `json:"status"`
+	// Backend-provided display title for this credit, or `null` when unavailable.
+	Title *string `json:"title,omitempty"`
+}
+
+type RateLimitResetCreditStatus string
+
+const (
+	RateLimitResetCreditStatusAvailable RateLimitResetCreditStatus = "available"
+	RateLimitResetCreditStatusRedeeming RateLimitResetCreditStatus = "redeeming"
+	RateLimitResetCreditStatusRedeemed  RateLimitResetCreditStatus = "redeemed"
+	RateLimitResetCreditStatusUnknown   RateLimitResetCreditStatus = "unknown"
+)
+
+type RateLimitResetCreditsSummary struct {
+	AvailableCount int64 `json:"availableCount"`
+	// Detail rows for available reset credits, when the backend provides them.
+	//
+	// `null` means only `availableCount` is known, while an empty array means details were fetched and no available credits were returned. The backend may cap this list, so its length can be less than `availableCount`.
+	Credits []RateLimitResetCredit `json:"credits,omitempty"`
+}
+
+type RateLimitResetType string
+
+const (
+	RateLimitResetTypeCodexRateLimits RateLimitResetType = "codexRateLimits"
+	RateLimitResetTypeUnknown         RateLimitResetType = "unknown"
+)
+
+type RateLimitSnapshot struct {
+	Credits         *CreditsSnapshot           `json:"credits,omitempty"`
+	IndividualLimit *SpendControlLimitSnapshot `json:"individualLimit,omitempty"`
+	LimitID         *string                    `json:"limitId,omitempty"`
+	LimitName       *string                    `json:"limitName,omitempty"`
+	// Normal model whose display name and reasoning options describe this quota alias.
+	NormalModelSlug      *string               `json:"normalModelSlug,omitempty"`
+	PlanType             *PlanType             `json:"planType,omitempty"`
+	Primary              *RateLimitWindow      `json:"primary,omitempty"`
+	RateLimitReachedType *RateLimitReachedType `json:"rateLimitReachedType,omitempty"`
+	Secondary            *RateLimitWindow      `json:"secondary,omitempty"`
+	// Backend-reported spend-control state. `None` is unavailable, not a sparse-update recovery.
+	SpendControlReached *bool `json:"spendControlReached,omitempty"`
+}
+
+type RateLimitWindow struct {
+	ResetsAt           *int64 `json:"resetsAt,omitempty"`
+	UsedPercent        int64  `json:"usedPercent"`
+	WindowDurationMins *int64 `json:"windowDurationMins,omitempty"`
+}
+
 type ReadCommandAction struct {
 	Command string              `json:"command"`
 	Name    string              `json:"name"`
@@ -2047,6 +2290,13 @@ type SleepThreadItem struct {
 type SpecialFileSystemPath struct {
 	Type  string                `json:"type"`
 	Value FileSystemSpecialPath `json:"value"`
+}
+
+type SpendControlLimitSnapshot struct {
+	Limit            string `json:"limit"`
+	RemainingPercent int64  `json:"remainingPercent"`
+	ResetsAt         int64  `json:"resetsAt"`
+	Used             string `json:"used"`
 }
 
 type SubAgentActivityKind string

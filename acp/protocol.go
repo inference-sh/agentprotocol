@@ -255,6 +255,35 @@ type SessionUpdate struct {
 	Status     string          `json:"status,omitempty"`
 	Title      string          `json:"title,omitempty"`
 	RawInput   json.RawMessage `json:"rawInput,omitempty"`
+
+	// Used, Size and Cost are a usage_update's fields.
+	Used *int64 `json:"used,omitempty"`
+	Size *int64 `json:"size,omitempty"`
+	Cost *Cost  `json:"cost,omitempty"`
+}
+
+// UsageUpdate is a usage_update: the tokens in the session's context, the
+// context window's size, and the session's cumulative cost when the agent
+// knows it.
+type UsageUpdate struct {
+	Used int64
+	Size int64
+	Cost *Cost
+}
+
+// Cost is a session's cumulative cost.
+type Cost struct {
+	Amount   float64 `json:"amount"`
+	Currency string  `json:"currency"`
+}
+
+// Usage is the update as a usage_update; ok is false for any other kind or
+// one missing its required fields.
+func (u SessionUpdate) Usage() (UsageUpdate, bool) {
+	if u.Kind != UpdateKindUsageUpdate || u.Used == nil || u.Size == nil {
+		return UsageUpdate{}, false
+	}
+	return UsageUpdate{Used: *u.Used, Size: *u.Size, Cost: u.Cost}, true
 }
 
 // Text flattens the update's content blocks into a single string. Content

@@ -174,6 +174,20 @@ func (c *Client) SetModel(ctx context.Context, model string) error {
 	return err
 }
 
+// GetUsage asks for the claude.ai plan's rate limits (get_usage). The CLI
+// marks it experimental; a CLI that does not know it answers with an error.
+func (c *Client) GetUsage(ctx context.Context) (GetUsageResponse, error) {
+	raw, err := c.Request(ctx, GetUsageRequest{Subtype: SubtypeGetUsage, SkipBehaviors: true})
+	if err != nil {
+		return GetUsageResponse{}, err
+	}
+	var res GetUsageResponse
+	if err := json.Unmarshal(raw, &res); err != nil {
+		return GetUsageResponse{}, fmt.Errorf("claudecode: get_usage: %w", err)
+	}
+	return res, nil
+}
+
 func (c *Client) readLoop() {
 	defer c.shutdown()
 

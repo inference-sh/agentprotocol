@@ -1108,6 +1108,42 @@ no request after two assistant messages in a row or a trailing message; goose
 tool result; codex losing a retired answer that matched the summary; kilo,
 opencode and qwen losing retired tool calls. All are fixed in v0.13.0.
 
+### What agents report about usage (`--probe usage`)
+
+agentprotocol's `usage` package maps each agent's own reports onto one model:
+a turn's tokens (`usage.updated`, once per turn, the prompt counting cached
+input), the context window's fill (`context.updated`), a plan's rate limits
+(`limits.updated`) and the account (`account.updated`). A per-agent package
+holds each mapping (`usage/claude`, `usage/codex`, `usage/acp`, `usage/pi`)
+and the session drivers and the registry's probers share it. The probe runs
+one turn against the mock and reads those events, then runs the registry's
+prober outside a session and checks it made no model call.
+
+The mock signs every agent in with a key, so plan limits are never expected
+here (`usage.probe.limits = pass:unsupported`); they are covered by the
+mappings' unit tests against the vendors' own shapes. To report usage at all,
+the mock now streams it as the real APIs do: Anthropic's `message_start`
+carries the input tokens, and a Chat Completions stream ends with a usage
+chunk when the request sets `stream_options.include_usage`.
+
+Measured 2026-10-10 with agentprotocol v0.21.0:
+
+| | agents |
+|---|---|
+| turn usage, once per turn | claude, codex, pi |
+| context fill, with the window | claude, codex, pi, and over ACP copilot, goose, hermes, kimi, omp, qwen (`usage_update`) |
+| no context fill | cursor, droid, gemini, grok, kilo, kiro, opencode |
+| account in a session and from the prober, no model call | claude (api key), codex (signed in through the mock's provider) |
+
+ACP's per-turn token counts are not mapped: they are a draft (the
+PromptResponse `usage` field, RFD end-turn-token-usage) that has not settled
+whether they count the turn or the session, or include the cache. ACP has no
+account or rate-limit report.
+
+With usage in its streamed answers, qwen 0.25.0's `/compress` keeps the
+original wording on the next request (`compact.context = pass:original`,
+two runs out of two); without it, it sent a summary.
+
 ### Cursor saves a conversation only when the backend checkpoints it
 
 Under the mock, cursor wrote one line per session in every mode —
@@ -1337,7 +1373,7 @@ A red nightly: [docs/ci-playbook.md](docs/ci-playbook.md). `tests/triage.sh [run
 
 A check measured to vary between identical runs goes under the run's `nondeterministic`, with the outcomes seen and the reason; `"absent"` is an outcome for a check that is only sometimes asked. A timing dependency is fixed in the run instead where one can be: gemini's runs carry `resumeafter=65s`, because gemini 0.61 clobbers a session loaded in the UTC minute it was created, which made its resume and seed outcomes depend on the clock. `resumeafter` holds back every load of a session the agent wrote (the resume probe, both in-flight resumes, the compacted resume, the appended seed); with it, gemini's `inflight.resume-twice` is still refused 65 s after the first resume (`Invalid session identifier`), in every run: a property of gemini, not of the minute. gemini 0.63.0 resumes it the second time (nightlies of 2026-10-07 and 2026-10-08, every in-flight run).
 
-`hidden` was added to the default probe run on 2026-09-25, generated in Docker and compared clean on one further run per agent; no other check changed. The seedkinds regression shapes (`seedkinds=shapes`) were added to the default probe run on 2026-09-25 with agentprotocol v0.13.0 and transcript/sqlite v0.6.0, generated in Docker and compared clean on one further run per agent; no other check changed. The seedkinds checks for another agent's content (foreign tool calls, a compaction, a tool image) were added on 2026-09-25, generated in Docker and compared clean on one further run per agent; nothing else changed with agentprotocol v0.12.1. The expected files were generated in Docker on 2026-09-24 and compared clean on two further runs per agent (gemini: after the `resumeafter` change, one generating run and two clean comparisons). No check needed a `nondeterministic` entry. copilot, droid, goose, grok and pi run without `inflight=cancel`/`inflight=hold`: they run the gated tool without asking the client (`inflight.park = skip:not-gated`), so no answer is ever given and those runs repeat the first. On 2026-10-09, with agentprotocol v0.19.0 and transcript/sqlite v0.7.0, the claude, droid, gemini, kiro and omp files were regenerated in Docker and compared clean on one further run each, and copilot, goose and grok compared clean unchanged: omp and droid seed again (agentprotocol fixes), droid runs its prompt hook over ACP (0.236.0), gemini resumes a session twice (0.63.0), and kiro gates its shell tool and gained the `inflight=cancel`/`inflight=hold` runs.
+`hidden` was added to the default probe run on 2026-09-25, generated in Docker and compared clean on one further run per agent; no other check changed. The seedkinds regression shapes (`seedkinds=shapes`) were added to the default probe run on 2026-09-25 with agentprotocol v0.13.0 and transcript/sqlite v0.6.0, generated in Docker and compared clean on one further run per agent; no other check changed. The seedkinds checks for another agent's content (foreign tool calls, a compaction, a tool image) were added on 2026-09-25, generated in Docker and compared clean on one further run per agent; nothing else changed with agentprotocol v0.12.1. The expected files were generated in Docker on 2026-09-24 and compared clean on two further runs per agent (gemini: after the `resumeafter` change, one generating run and two clean comparisons). No check needed a `nondeterministic` entry. copilot, droid, goose, grok and pi run without `inflight=cancel`/`inflight=hold`: they run the gated tool without asking the client (`inflight.park = skip:not-gated`), so no answer is ever given and those runs repeat the first. On 2026-10-09, with agentprotocol v0.19.0 and transcript/sqlite v0.7.0, the claude, droid, gemini, kiro and omp files were regenerated in Docker and compared clean on one further run each, and copilot, goose and grok compared clean unchanged: omp and droid seed again (agentprotocol fixes), droid runs its prompt hook over ACP (0.236.0), gemini resumes a session twice (0.63.0), and kiro gates its shell tool and gained the `inflight=cancel`/`inflight=hold` runs. On 2026-10-10 `usage` joined the default probe run, and the mock began reporting streamed usage; every agent's file was regenerated in Docker and compared clean on one further run, and only qwen's `compact.context` changed beyond the new checks.
 
 Regenerate after a deliberate change (a new check, a fixed bug, a new agent release that answers differently):
 

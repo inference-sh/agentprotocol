@@ -4,7 +4,7 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden",
+      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage",
       "checks": {
         "acp/compact": "skip:no-command",
         "acp/cursor.exec.adopt_args": "pass",
@@ -135,6 +135,11 @@
         "acp/session.start": "pass",
         "acp/streaming": "pass",
         "acp/transcript": "pass",
+        "acp/usage.account": "finding:not-reported",
+        "acp/usage.context": "finding:not-reported",
+        "acp/usage.limits": "finding:not-reported",
+        "acp/usage.probe": "skip:none",
+        "acp/usage.turn": "finding:not-reported",
         "setup/binary": "pass",
         "setup/env.CURSOR_API_ENDPOINT": "pass",
         "setup/env.CURSOR_API_KEY": "pass",

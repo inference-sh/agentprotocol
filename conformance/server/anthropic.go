@@ -43,7 +43,7 @@ func (s *MockServer) anthropicToolCall(w http.ResponseWriter, model string, stre
 		streamSSEEvents(w, []sseEvent{
 			{"message_start", map[string]any{
 				"type":    "message_start",
-				"message": AnthropicMessage{ID: "mock-tc", Type: "message", Role: "assistant", Model: model},
+				"message": AnthropicMessage{ID: "mock-tc", Type: "message", Role: "assistant", Model: model, Usage: streamStartUsage()},
 			}},
 			{"content_block_start", map[string]any{
 				"type": "content_block_start", "index": 0,
@@ -78,7 +78,7 @@ func anthropicTextEvents(model, text string) []sseEvent {
 	return []sseEvent{
 		{"message_start", map[string]any{
 			"type":    "message_start",
-			"message": AnthropicMessage{ID: "mock-1", Type: "message", Role: "assistant", Model: model},
+			"message": AnthropicMessage{ID: "mock-1", Type: "message", Role: "assistant", Model: model, Usage: streamStartUsage()},
 		}},
 		{"content_block_start", map[string]any{
 			"type": "content_block_start", "index": 0,
@@ -99,3 +99,8 @@ func anthropicTextEvents(model, text string) []sseEvent {
 		{"message_stop", map[string]any{"type": "message_stop"}},
 	}
 }
+
+// streamStartUsage is message_start's usage as the Messages API streams it:
+// the input tokens, and the output so far (1), which message_delta replaces
+// with the final count. An agent reads its context fill from it.
+func streamStartUsage() *AntUsage { return &AntUsage{InputTokens: 10, OutputTokens: 1} }

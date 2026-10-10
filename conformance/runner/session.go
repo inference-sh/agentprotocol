@@ -62,6 +62,7 @@ type SessionDriver struct {
 	notes       []UpdateNote
 	permissions []PermissionObservation
 	load        LoadResult
+	usage       UsageObservation
 
 	// updates wakes a waiter; the text itself is appended as it arrives, so a
 	// dropped wakeup costs nothing. turnOver is signalled when a turn ends.
@@ -294,8 +295,48 @@ func (d *SessionDriver) onEvent(ev ap.AgentEvent, replay bool) {
 		d.endTurn()
 	case ap.AgentEventTurnCompleted:
 		d.endTurn()
+	case ap.AgentEventUsageUpdated, ap.AgentEventContextUpdated, ap.AgentEventLimitsUpdated, ap.AgentEventAccountUpdated:
+		d.recordUsage(ev)
 	}
 	d.wake(d.updates)
+}
+
+// UsageObservation is every usage event a session emitted, in order.
+type UsageObservation struct {
+	Turns    []ap.UsageUpdatedPayload
+	Context  []ap.ContextUpdatedPayload
+	Limits   []ap.LimitsUpdatedPayload
+	Accounts []ap.AgentAccount
+}
+
+func (d *SessionDriver) recordUsage(ev ap.AgentEvent) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	switch ev.Type {
+	case ap.AgentEventUsageUpdated:
+		if p, ok := ap.PayloadAs[ap.UsageUpdatedPayload](ev, ev.Type); ok {
+			d.usage.Turns = append(d.usage.Turns, p)
+		}
+	case ap.AgentEventContextUpdated:
+		if p, ok := ap.PayloadAs[ap.ContextUpdatedPayload](ev, ev.Type); ok {
+			d.usage.Context = append(d.usage.Context, p)
+		}
+	case ap.AgentEventLimitsUpdated:
+		if p, ok := ap.PayloadAs[ap.LimitsUpdatedPayload](ev, ev.Type); ok {
+			d.usage.Limits = append(d.usage.Limits, p)
+		}
+	case ap.AgentEventAccountUpdated:
+		if p, ok := ap.PayloadAs[ap.AccountUpdatedPayload](ev, ev.Type); ok {
+			d.usage.Accounts = append(d.usage.Accounts, p.Account)
+		}
+	}
+}
+
+// Usage is the usage events so far.
+func (d *SessionDriver) Usage() UsageObservation {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	return d.usage
 }
 
 func (d *SessionDriver) endTurn() {

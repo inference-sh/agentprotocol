@@ -292,6 +292,10 @@ func (r *TestRunner) Run() Result {
 		if r.probes.Deferred {
 			r.probeDeferredTools("acp")
 		}
+		if r.probes.Usage {
+			r.resetPhase(ModeACP)
+			r.probeUsage()
+		}
 		if r.probes.Seed {
 			r.resetPhase(ModeACP)
 			r.probeTranscriptSeed()

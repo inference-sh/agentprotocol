@@ -4,7 +4,7 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden",
+      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage",
       "note": "No inflight=cancel or inflight=hold runs: this agent runs the gated tool without asking its client (acp/inflight.park = skip:not-gated), so there is no approval for the answer to reach and those runs repeat this one. If inflight.park changes here, add them back.",
       "checks": {
         "acp/compact.run": "finding:as-prompt",
@@ -68,6 +68,11 @@
         "acp/session.start": "pass",
         "acp/streaming": "pass",
         "acp/transcript": "pass",
+        "acp/usage.account": "finding:not-reported",
+        "acp/usage.context": "finding:not-reported",
+        "acp/usage.limits": "finding:not-reported",
+        "acp/usage.probe": "skip:none",
+        "acp/usage.turn": "finding:not-reported",
         "setup/binary": "pass",
         "setup/env.FACTORY_API_BASE_URL": "pass",
         "setup/env.FACTORY_API_KEY": "pass",

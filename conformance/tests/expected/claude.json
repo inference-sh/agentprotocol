@@ -4,7 +4,7 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden",
+      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage",
       "checks": {
         "acp/compact.context": "pass:summary",
         "acp/compact.run": "pass:reported",
@@ -68,6 +68,13 @@
         "acp/session.start": "pass",
         "acp/streaming": "pass",
         "acp/transcript": "pass",
+        "acp/usage.account": "pass:api_key",
+        "acp/usage.context": "pass:with-window",
+        "acp/usage.limits": "finding:not-reported",
+        "acp/usage.probe.account": "pass:api_key",
+        "acp/usage.probe.limits": "pass:unsupported",
+        "acp/usage.probe.no-model-call": "pass",
+        "acp/usage.turn": "pass",
         "setup/binary": "pass",
         "setup/env.ANTHROPIC_API_KEY": "pass",
         "setup/env.ANTHROPIC_AUTH_TOKEN": "pass",

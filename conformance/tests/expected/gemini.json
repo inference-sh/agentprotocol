@@ -4,7 +4,7 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resumeafter=65s,resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden",
+      "probes": "resumeafter=65s,resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage",
       "note": "resumeafter=65s on every run: gemini 0.61 clobbers a session loaded in the UTC minute it was created (README, Resuming a session), so every load of a session gemini wrote is held back 65s; without it resume.load, inflight.resume and seed.appended depended on the clock.",
       "checks": {
         "acp/compact.run": "finding:as-prompt",
@@ -70,6 +70,11 @@
         "acp/session.start": "pass",
         "acp/streaming": "pass",
         "acp/transcript": "pass",
+        "acp/usage.account": "finding:not-reported",
+        "acp/usage.context": "finding:not-reported",
+        "acp/usage.limits": "finding:not-reported",
+        "acp/usage.probe": "skip:none",
+        "acp/usage.turn": "finding:not-reported",
         "setup/binary": "pass",
         "setup/env.GEMINI_API_KEY": "pass",
         "setup/env.GEMINI_CLI_TRUST_WORKSPACE": "pass",

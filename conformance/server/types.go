@@ -6,6 +6,17 @@ type llmRequest struct {
 	Stream    bool   `json:"stream"`
 	Tools     []any  `json:"tools,omitempty"`
 	Functions []any  `json:"functions,omitempty"`
+	// StreamOptions is Chat Completions' stream_options: include_usage asks
+	// for a final chunk carrying the usage.
+	StreamOptions *struct {
+		IncludeUsage bool `json:"include_usage"`
+	} `json:"stream_options,omitempty"`
+}
+
+// wantsStreamUsage reports whether a streamed Chat Completions request asked
+// for its usage.
+func (r llmRequest) wantsStreamUsage() bool {
+	return r.StreamOptions != nil && r.StreamOptions.IncludeUsage
 }
 
 func (r llmRequest) hasTools() bool { return len(r.Tools) > 0 || len(r.Functions) > 0 }

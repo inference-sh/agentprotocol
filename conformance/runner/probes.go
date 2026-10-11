@@ -90,12 +90,16 @@ type Probes struct {
 	// Subagents makes the agent start a subagent and checks it is reported
 	// (subagents.go).
 	Subagents bool
+
+	// Images attaches an image to a prompt and checks it reaches the model
+	// as an image when the backend says it does (images.go).
+	Images bool
 }
 
 // ParseProbes reads a comma-separated probe list:
 //
 //	resume, resume=kill, resumeafter=65s, inflight, inflight=cancel, inflight=hold, compact,
-//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents
+//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, images
 func ParseProbes(spec string) (Probes, error) {
 	var p Probes
 	for _, part := range strings.Split(spec, ",") {
@@ -161,6 +165,8 @@ func ParseProbes(spec string) (Probes, error) {
 			p.Usage = true
 		case "subagents":
 			p.Subagents = true
+		case "images":
+			p.Images = true
 		default:
 			return p, fmt.Errorf("unknown probe %q (want resume, resumeafter, inflight, compact, tools, deferred, transcript, seed, seedkinds, env, detect or hidden)", name)
 		}

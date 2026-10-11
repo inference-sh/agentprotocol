@@ -119,6 +119,7 @@ func (b *CodexBackend) Capabilities() Capabilities {
 		Interrupt: true,
 		Resume:    true,
 		Tools:     false,
+		Images:    true,
 	}
 }
 
@@ -401,12 +402,12 @@ func (s *codexSession) send(ctx context.Context, in Input) error {
 	return nil
 }
 
-// userInput converts our input to codex's. Images go as images; any other
-// attachment is named in the text, since codex reads files from the
-// workspace itself.
+// userInput converts our input to codex's. Images go as images, by URL or
+// local path, which codex reads itself; any other attachment is named in the
+// text, for codex to open with its own tools.
 func userInput(in Input) []codexapp.UserInput {
-	text := in.Text
 	var out []codexapp.UserInput
+	var named []ap.FileRef
 	for _, f := range in.Files {
 		if strings.HasPrefix(f.ContentType, "image/") {
 			if u, err := url.Parse(f.URI); err == nil && (u.Scheme == "http" || u.Scheme == "https" || u.Scheme == "data") {
@@ -421,23 +422,9 @@ func userInput(in Input) []codexapp.UserInput {
 				}
 			}
 		}
-		name := f.Filename
-		if name == "" {
-			name = f.URI
-		}
-		text += fmt.Sprintf("\n\nAttached file %s: %s", name, f.URI)
+		named = append(named, f)
 	}
-	return append([]codexapp.UserInput{codexapp.TextInput(text)}, out...)
-}
-
-func localPath(uri string) string {
-	if strings.HasPrefix(uri, "file://") {
-		return strings.TrimPrefix(uri, "file://")
-	}
-	if strings.HasPrefix(uri, "/") {
-		return uri
-	}
-	return ""
+	return append([]codexapp.UserInput{codexapp.TextInput(withFiles(in.Text, named))}, out...)
 }
 
 // Interrupt cancels the running turn with turn/interrupt. The turn then

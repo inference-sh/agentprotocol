@@ -108,6 +108,16 @@ type Command struct {
 	Message            string `json:"message,omitempty"`
 	StreamingBehavior  string `json:"streamingBehavior,omitempty"`
 	CustomInstructions string `json:"customInstructions,omitempty"`
+
+	// Images go with a prompt, steer or follow_up.
+	Images []Image `json:"images,omitempty"`
+}
+
+// Image is an image sent with a prompt: pi's ImageContent.
+type Image struct {
+	Type     string `json:"type"` // "image"
+	Data     string `json:"data"` // base64
+	MimeType string `json:"mimeType"`
 }
 
 // Response answers a command.

@@ -60,6 +60,12 @@ const gatedExecArgs = `{"cmd":"rm -rf /tmp/gated-probe-does-not-exist"}`
 
 // withGatedTool names the tool this agent is expected to ask permission for,
 // for harnesses built by a helper rather than written out as a literal.
+// withACPImages sets ACPImages, for an entry built from helpers.
+func withACPImages(h Harness) Harness {
+	h.ACPImages = true
+	return h
+}
+
 func withGatedTool(h Harness, name, args string) Harness {
 	h.ToolCallGated = ToolCall{Name: name, Args: args}
 	return h
@@ -247,6 +253,7 @@ var All = map[string]Harness{
 		InteractivePromptInArgs: true,
 		ExitCommand:             "/exit",
 		ACPCmd:                  []string{"copilot", "--acp"},
+		ACPImages:               true,
 	},
 	"grok": {
 		Sessions: grok.Codec,
@@ -379,6 +386,7 @@ var All = map[string]Harness{
 			{Pattern: "accept responsibility", SendDown: true, Required: true}, {Pattern: "Welcome"},
 		},
 		ACPCmd:             []string{"kiro-cli", "acp"},
+		ACPImages:          true,
 		ACPArgs:            []string{"--model", "{{.Model}}"},
 		ACPAutoApproveArgs: []string{"--trust-all-tools"},
 	},
@@ -406,6 +414,7 @@ var All = map[string]Harness{
 		InteractivePromptInArgs: true,
 		ExitCommand:             "/exit",
 		ACPCmd:                  []string{"omp", "acp"},
+		ACPImages:               true,
 		ACPArgs:                 []string{"--model", "{{.Model}}"},
 		SDKCmd:                  []string{"omp", "--mode", "json"},
 		SDKArgs:                 []string{"--model", "{{.Model}}", "--approval-mode", "yolo"},
@@ -441,6 +450,7 @@ var All = map[string]Harness{
 		InteractiveCmd:    []string{"hermes"},
 		ExitCommand:       "/exit",
 		ACPCmd:            []string{"hermes", "acp"},
+		ACPImages:         true,
 	},
 	"kilo": withGatedTool(withACPProvider(withTSPluginExport(
 		withDetectEnvVars(tsPluginHarness("kilo", "kilo", "@kilocode/cli", ".kilo/plugins"),
@@ -481,6 +491,7 @@ var All = map[string]Harness{
 		// "Trust this folder" is preselected; Enter confirms it.
 		OnboardingDismiss: []DismissAction{{Pattern: "Trust this folder?", Required: true}},
 		ACPCmd:            []string{"kimi", "acp"},
+		ACPImages:         true,
 	},
 	"goose": {
 		Name: "goose", Binary: "goose",
@@ -521,6 +532,7 @@ var All = map[string]Harness{
 		InteractiveCmd: []string{"goose"},
 		ExitCommand:    "/exit",
 		ACPCmd:         []string{"goose", "acp"},
+		ACPImages:      true,
 	},
 	"gemini": {
 		Sessions: gemini.Codec,
@@ -574,6 +586,7 @@ var All = map[string]Harness{
 		ExitCommand:             "/exit",
 		CompactCommand:          "/compress",
 		ACPCmd:                  []string{"gemini", "--acp"},
+		ACPImages:               true,
 	},
 	"qwen": {
 		Sessions: qwen.Codec,
@@ -610,12 +623,13 @@ var All = map[string]Harness{
 		ExitCommand:             "/exit",
 		CompactCommand:          "/compress",
 		ACPCmd:                  []string{"qwen", "--acp"},
+		ACPImages:               true,
 		ACPArgs:                 []string{"--auth-type", "openai", "--model", "{{.Model}}"},
 		ACPAutoApproveArgs:      []string{"--yolo"},
 	},
-	"opencode": withGatedTool(withACPProvider(tsPluginHarness("opencode", "opencode", "opencode-ai", ".config/opencode/plugins"),
+	"opencode": withACPImages(withGatedTool(withACPProvider(tsPluginHarness("opencode", "opencode", "opencode-ai", ".config/opencode/plugins"),
 		[]string{"opencode", "acp"}, []string{"--cwd", "{{.RepoDir}}"}),
-		"bash", gatedShellArgs),
+		"bash", gatedShellArgs)),
 	"droid": {
 		Sessions: droid.Codec,
 		Name:     "droid", Binary: "droid",
@@ -683,6 +697,7 @@ var All = map[string]Harness{
 		SDKCmd:             []string{"droid", "exec"},
 		SDKArgs:            []string{"--auto", "high", "-m", "{{.Model}}", "-o", "stream-jsonrpc"},
 		ACPCmd:             []string{"droid", "exec", "--output-format", "acp"},
+		ACPImages:          true,
 		ACPArgs:            []string{"-m", "{{.Model}}"},
 		ACPAutoApproveArgs: []string{"--auto", "high"},
 	},

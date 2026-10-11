@@ -204,6 +204,21 @@ type ContentBlock struct {
 	ToolUseID string          `json:"tool_use_id,omitempty"`
 	Content   json.RawMessage `json:"content,omitempty"`
 	IsError   bool            `json:"is_error,omitempty"`
+
+	// image
+	Source *ImageSource `json:"source,omitempty"`
+}
+
+// ImageSource is an image block's bytes: the Messages API's base64 source.
+type ImageSource struct {
+	Type      string `json:"type"` // "base64"
+	MediaType string `json:"media_type"`
+	Data      string `json:"data"`
+}
+
+// ImageBlock builds a user image block from base64 data.
+func ImageBlock(mediaType, data string) ContentBlock {
+	return ContentBlock{Type: "image", Source: &ImageSource{Type: "base64", MediaType: mediaType, Data: data}}
 }
 
 // ResultText flattens a tool_result's content, which is either a string or a
@@ -352,7 +367,13 @@ func (u UserContent) Blocks() []ContentBlock {
 // NewUserMessage builds the line that sends a text prompt, in the shape the
 // SDK writes it.
 func NewUserMessage(text string) UserMessage {
-	content, _ := json.Marshal([]ContentBlock{{Type: "text", Text: text}})
+	return NewUserBlocks([]ContentBlock{{Type: "text", Text: text}})
+}
+
+// NewUserBlocks builds the line that sends a prompt of several blocks: text
+// and images, as the SDK sends an attached image.
+func NewUserBlocks(blocks []ContentBlock) UserMessage {
+	content, _ := json.Marshal(blocks)
 	return UserMessage{
 		Type:    TypeUser,
 		Message: UserContent{Role: "user", Content: content},

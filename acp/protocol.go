@@ -138,7 +138,16 @@ type AgentInfo struct {
 // been reaped yet — so it has no power to predict the outcome of a call. It is
 // worth showing a person and worth recording; it is not worth branching on.
 type AgentCapabilities struct {
-	LoadSession bool `json:"loadSession"`
+	LoadSession bool               `json:"loadSession"`
+	Prompt      PromptCapabilities `json:"promptCapabilities"`
+}
+
+// PromptCapabilities are the content blocks a prompt may carry beyond text
+// and resource links, which every agent must take.
+type PromptCapabilities struct {
+	Image           bool `json:"image"`
+	Audio           bool `json:"audio"`
+	EmbeddedContext bool `json:"embeddedContext"`
 }
 
 // AuthMethod is one way an agent will accept being authenticated.
@@ -209,6 +218,10 @@ type ContentBlock struct {
 	Name     string `json:"name,omitempty"`
 	MimeType string `json:"mimeType,omitempty"`
 	Size     int64  `json:"size,omitempty"`
+
+	// Data is an image block's base64 bytes, with MimeType and optionally
+	// the URI it came from.
+	Data string `json:"data,omitempty"`
 }
 
 // TextBlock builds the common case: a block of plain text.
@@ -223,6 +236,12 @@ func ResourceLinkBlock(uri, name, mimeType string, size int64) ContentBlock {
 		name = uri
 	}
 	return ContentBlock{Type: "resource_link", URI: uri, Name: name, MimeType: mimeType, Size: size}
+}
+
+// ImageBlock is an image, base64-encoded. Only an agent whose
+// promptCapabilities include image takes one; uri says where it came from.
+func ImageBlock(data, mimeType, uri string) ContentBlock {
+	return ContentBlock{Type: "image", Data: data, MimeType: mimeType, URI: uri}
 }
 
 // --- session/update ---

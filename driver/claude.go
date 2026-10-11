@@ -101,6 +101,7 @@ func (b *ClaudeBackend) Capabilities() Capabilities {
 		Interrupt: true,
 		Resume:    true,
 		Tools:     true,
+		Images:    true,
 	}
 }
 
@@ -348,29 +349,32 @@ func (s *claudeSession) Prompt(ctx context.Context, in Input) error {
 		return claudecode.ErrClosed
 	default:
 	}
-	text := in.Text
-	if len(in.Files) > 0 {
-		var b strings.Builder
-		b.WriteString(text)
-		b.WriteString("\n\nAttached files:")
-		for _, f := range in.Files {
-			name := f.Filename
-			if name == "" {
-				name = f.URI
-			}
-			fmt.Fprintf(&b, "\n- %s (%s)", name, f.URI)
-		}
-		text = b.String()
-	}
+	blocks := claudeBlocks(in)
 
 	s.mu.Lock()
 	s.openTurnLocked()
 	s.mu.Unlock()
 
-	if err := s.proc.SendUser(text); err != nil {
+	if err := s.proc.SendUserBlocks(blocks); err != nil {
 		return fmt.Errorf("driver: send prompt to claude: %w", err)
 	}
 	return nil
+}
+
+// claudeBlocks converts our input to a user message's blocks: the text, with
+// every file that is not an image to inline named in it, then each image as
+// an image block, which is how the SDK sends an attached image.
+func claudeBlocks(in Input) []claudecode.ContentBlock {
+	var images []claudecode.ContentBlock
+	var named []ap.FileRef
+	for _, f := range in.Files {
+		if img, ok := imageOf(f); ok {
+			images = append(images, claudecode.ImageBlock(img.MimeType, img.Data))
+			continue
+		}
+		named = append(named, f)
+	}
+	return append([]claudecode.ContentBlock{{Type: "text", Text: withFiles(in.Text, named)}}, images...)
 }
 
 // openTurnLocked starts a turn if none is running. Caller holds s.mu.

@@ -4,13 +4,14 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents",
+      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents,images",
       "checks": {
         "acp/compact": "skip:no-command",
         "acp/deferred.armed": "pass:no-search-tool",
         "acp/hook-injection": "pass",
         "acp/hook.prompt": "pass",
         "acp/hook.stop": "pass",
+        "acp/images.sent": "pass",
         "acp/inflight.park": "pass",
         "acp/inflight.reraise": "finding:none",
         "acp/inflight.resume": "pass",

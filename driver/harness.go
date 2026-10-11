@@ -32,6 +32,7 @@ func ForHarness(h harness.Harness, env []string) (Backend, error) {
 			Command:         h.ACPCmd[0],
 			Args:            append([]string(nil), h.ACPCmd[1:]...),
 			AutoApproveArgs: append([]string(nil), h.ACPAutoApproveArgs...),
+			Images:          h.ACPImages,
 			Env:             env,
 		}, nil
 	case "":

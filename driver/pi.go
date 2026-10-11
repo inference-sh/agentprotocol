@@ -96,6 +96,7 @@ func (b *PiBackend) Capabilities() Capabilities {
 		Interrupt: true,
 		Resume:    b.has(harness.FeatureSessionID),
 		Tools:     false,
+		Images:    true,
 	}
 }
 
@@ -254,20 +255,7 @@ func (s *piSession) Prompt(ctx context.Context, in Input) error {
 		return pirpc.ErrClosed
 	default:
 	}
-	text := in.Text
-	if len(in.Files) > 0 {
-		var b strings.Builder
-		b.WriteString(text)
-		b.WriteString("\n\nAttached files:")
-		for _, f := range in.Files {
-			name := f.Filename
-			if name == "" {
-				name = f.URI
-			}
-			fmt.Fprintf(&b, "\n- %s (%s)", name, f.URI)
-		}
-		text = b.String()
-	}
+	text, images := piInput(in)
 
 	if instructions, ok := compactCommand(text); ok {
 		return s.compact(instructions)
@@ -279,7 +267,7 @@ func (s *piSession) Prompt(ctx context.Context, in Input) error {
 	turn := s.turnIndex
 	s.mu.Unlock()
 
-	cmd := pirpc.Command{ID: s.proc.NewID(), Type: pirpc.CmdPrompt, Message: text}
+	cmd := pirpc.Command{ID: s.proc.NewID(), Type: pirpc.CmdPrompt, Message: text, Images: images}
 	switch {
 	case !wasActive:
 	case runSeen:
@@ -302,6 +290,22 @@ func (s *piSession) Prompt(ctx context.Context, in Input) error {
 	}
 	go s.awaitPrompt(cmd.Type, turn, ch)
 	return nil
+}
+
+// piInput converts our input to a prompt's message and images: every file
+// that is not an image to inline is named in the message, and each image goes
+// in images, which prompt and steer both take.
+func piInput(in Input) (string, []pirpc.Image) {
+	var images []pirpc.Image
+	var named []ap.FileRef
+	for _, f := range in.Files {
+		if img, ok := imageOf(f); ok {
+			images = append(images, pirpc.Image{Type: "image", Data: img.Data, MimeType: img.MimeType})
+			continue
+		}
+		named = append(named, f)
+	}
+	return withFiles(in.Text, named), images
 }
 
 // awaitPrompt reads pi's answer to a prompt. pi answers once the prompt is

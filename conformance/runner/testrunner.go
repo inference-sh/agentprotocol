@@ -63,6 +63,9 @@ type TestRunner struct {
 	// subagentOutput asks the native drivers for a subagent's own output
 	// (probeSubagents).
 	subagentOutput bool
+	// acpImages turns ACPBackend.Images on whatever the registry says, so
+	// probeImages can see whether the agent takes images at all.
+	acpImages bool
 
 	harness          harness.Harness
 	server           *server.MockServer
@@ -303,6 +306,9 @@ func (r *TestRunner) Run() Result {
 		if r.probes.Subagents {
 			r.resetPhase(ModeACP)
 			r.probeSubagents()
+		}
+		if r.probes.Images {
+			r.probeImages()
 		}
 		if r.probes.Seed {
 			r.resetPhase(ModeACP)
@@ -1322,6 +1328,7 @@ func (r *TestRunner) sessionBackend(gated, emitReplay bool) BackendFactory {
 		return func(diagnose func(string)) driver.Backend {
 			return &driver.ACPBackend{Command: bin, Args: args, Env: env,
 				ClientName: "harness-test", ClientVersion: "1.0.0",
+				Images:     r.harness.ACPImages || r.acpImages,
 				EmitReplay: emitReplay, OnDiagnostic: diagnose}
 		}
 	}

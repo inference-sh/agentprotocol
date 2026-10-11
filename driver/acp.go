@@ -45,6 +45,13 @@ type ACPBackend struct {
 	// and such a session has the backend allow each request instead.
 	AutoApproveArgs []string
 
+	// Images sends an attached image as an image block, to an agent that
+	// also declares promptCapabilities.image; without it every file goes as
+	// a resource_link. It is Capabilities.Images, set from
+	// harness.Harness.ACPImages, which records that the image was measured
+	// reaching the model: the declaration alone has been wrong.
+	Images bool
+
 	// Env is the child environment, and is where an account profile is
 	// selected. Nil inherits the parent's.
 	Env []string
@@ -157,6 +164,7 @@ func (b *ACPBackend) Capabilities() Capabilities {
 		Interrupt: true,
 		Resume:    true,
 		Tools:     true,
+		Images:    b.Images,
 	}
 }
 
@@ -173,6 +181,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 
 	s := &acpSession{
 		autoAllow:  cfg.Approvals == ApprovalsSkip && len(b.AutoApproveArgs) == 0,
+		images:     b.Images,
 		runID:      cfg.RunID,
 		chatID:     cfg.ChatID,
 		pump:       newEventPump(),
@@ -265,6 +274,10 @@ type acpSession struct {
 	// skips approvals and the agent has no flag of its own for it.
 	autoAllow bool
 
+	// images is ACPBackend.Images: images go as image blocks to an agent
+	// that also declares promptCapabilities.image.
+	images bool
+
 	pump       *eventPump
 	closeOnce  sync.Once
 	emitReplay bool
@@ -308,7 +321,7 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 	settle := func() bool { return settled.CompareAndSwap(false, true) }
 
 	go func() {
-		res, err := s.proc.PromptBlocks(context.WithoutCancel(ctx), promptBlocks(in))
+		res, err := s.proc.PromptBlocks(context.WithoutCancel(ctx), promptBlocks(in, s.images && s.proc.AgentCapabilities().Prompt.Image))
 		silent := s.release(life)
 		if err != nil {
 			select {
@@ -345,11 +358,19 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 	return nil
 }
 
-// promptBlocks converts our input to ACP content: the text, then each file as
-// a resource_link, which every ACP agent accepts.
-func promptBlocks(in Input) []acp.ContentBlock {
+// promptBlocks converts our input to ACP content: the text, then each file.
+// An image with local bytes goes as an image block when images is set; every
+// other file goes as a resource_link, which every ACP agent accepts. images
+// takes both the agent's promptCapabilities.image and the registry's
+// measurement: kilo declares image and drops the block (kilo 7.8.8), and a
+// dropped image is worse than a link.
+func promptBlocks(in Input, images bool) []acp.ContentBlock {
 	blocks := []acp.ContentBlock{acp.TextBlock(in.Text)}
 	for _, f := range in.Files {
+		if img, ok := imageOf(f); ok && images {
+			blocks = append(blocks, acp.ImageBlock(img.Data, img.MimeType, f.URI))
+			continue
+		}
 		blocks = append(blocks, acp.ResourceLinkBlock(f.URI, f.Filename, f.ContentType, f.Size))
 	}
 	return blocks

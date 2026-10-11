@@ -1174,6 +1174,36 @@ Measured 2026-10-10 with agentprotocol v0.22.0:
 
 The other agents have no subagent tool in the registry and skip.
 
+### Attached images (`--probe images`)
+
+A prompt is `ap.TurnInput`: text and `FileRef`s, the same shape from the
+server through the host to the driver. A driver sends an image as an image
+when its bytes are local (a `file://` URI, a path or a `data:` URI) and the
+agent takes images (`Capabilities.Images`); every other file is named in the
+text by its local path, or sent as an ACP `resource_link`, for the agent to
+open itself. claude gets a base64 `image` block, pi an entry in the prompt's
+`images`, codex a `localImage` (or `image` by URL), an ACP agent an `image`
+block.
+
+An ACP agent's `promptCapabilities.image` is not enough to send one: kilo
+declares it and drops the block, so the model gets neither the image nor the
+path. The backend sends image blocks only when the registry's `ACPImages`
+also says so, which this probe measures.
+
+The probe attaches an 8x8 PNG from a directory outside the repository and
+reads the requests the model got. An image counts as arrived when a request
+carries one with the same pixels in any encoding and at any size, because
+agents re-encode: droid sends it as another PNG, omp scales it to 200x200. A
+claimed image that does not arrive fails; an unclaimed one must arrive as its
+path. An ACP agent without `ACPImages` is then sent an image block anyway, and
+taking it is a finding that the registry should be updated.
+
+Measured 2026-10-11:
+
+| as an image | as its path |
+|---|---|
+| claude, codex, pi; copilot, droid (re-encoded), gemini, goose, hermes, kimi, kiro, omp (scaled to 200x200), opencode, qwen | cursor, grok, kilo (each dropped an image block sent anyway) |
+
 ### Cursor saves a conversation only when the backend checkpoints it
 
 Under the mock, cursor wrote one line per session in every mode —

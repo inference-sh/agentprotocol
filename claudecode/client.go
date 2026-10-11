@@ -93,6 +93,11 @@ func (c *Client) Send(v any) error { return c.w.WriteJSON(v) }
 // SendUser writes a text prompt.
 func (c *Client) SendUser(text string) error { return c.Send(NewUserMessage(text)) }
 
+// SendUserBlocks sends a prompt of several blocks, such as text and images.
+func (c *Client) SendUserBlocks(blocks []ContentBlock) error {
+	return c.Send(NewUserBlocks(blocks))
+}
+
 // Request sends a control request and waits for its reply. If ctx ends first
 // the request is withdrawn with control_cancel_request, as the SDK does.
 func (c *Client) Request(ctx context.Context, body any) (json.RawMessage, error) {

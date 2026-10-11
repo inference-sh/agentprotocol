@@ -4,7 +4,7 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents",
+      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents,images",
       "note": "No inflight=cancel or inflight=hold runs: this agent runs the gated tool without asking its client (acp/inflight.park = skip:not-gated), so there is no approval for the answer to reach and those runs repeat this one. If inflight.park changes here, add them back.",
       "checks": {
         "acp/compact": "skip:no-command",
@@ -12,6 +12,7 @@
         "acp/hook-injection": "pass",
         "acp/hook.prompt": "pass",
         "acp/hook.stop": "pass",
+        "acp/images.sent": "pass",
         "acp/inflight.park": "skip:not-gated",
         "acp/instructions../.github/instructions/belt.instructions.md": "pass",
         "acp/instructions.~/.copilot/instructions/belt.instructions.md": "pass",

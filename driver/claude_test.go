@@ -636,7 +636,7 @@ func TestClaudeBackendDeclaresWhatItCanDo(t *testing.T) {
 	if b.Kind() != driver.KindClaude {
 		t.Errorf("kind = %q", b.Kind())
 	}
-	want := driver.Capabilities{Steer: true, Approvals: true, Interrupt: true, Resume: true, Tools: true}
+	want := driver.Capabilities{Steer: true, Approvals: true, Interrupt: true, Resume: true, Tools: true, Images: true}
 	if got := b.Capabilities(); got != want {
 		t.Errorf("capabilities = %+v, want %+v", got, want)
 	}

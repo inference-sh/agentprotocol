@@ -103,6 +103,11 @@ type Capabilities struct {
 	// Tools reports that the caller can supply tools for the agent to call,
 	// rather than the agent being limited to its own.
 	Tools bool
+
+	// Images reports that an image in Input.Files reaches the model as an
+	// image. When false, the agent gets the image named in the text like any
+	// other file, and sees it only if it opens it with a tool of its own.
+	Images bool
 }
 
 // SessionConfig describes the session to open. Backends ignore fields they
@@ -168,16 +173,15 @@ const (
 	ApprovalsSkip Approvals = "skip"
 )
 
-// Input is what a caller sends into a session.
-type Input struct {
-	// Text is the message. Most prompts are only this.
-	Text string
-
-	// Files are attachments. Every backend passes them on: in the agent's
-	// own form where its protocol has one (ACP resource links, codex
-	// images), otherwise named in the text.
-	Files []ap.FileRef
-}
+// Input is what a caller sends into a session: ap.TurnInput, the prompt's
+// shape from the server to the agent.
+//
+// Every backend passes every file on. An image whose bytes are local (a
+// file:// URI, a path, or a data: URI) reaches the model as an image where
+// the agent takes images (Capabilities.Images); codex also takes an image by
+// URL. Every other file is named in the text with its local path, or its URI
+// when it has none, for the agent to open with its own tools.
+type Input = ap.TurnInput
 
 // TextInput builds the common case.
 func TextInput(s string) Input { return Input{Text: s} }

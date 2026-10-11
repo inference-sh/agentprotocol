@@ -184,6 +184,12 @@ type Harness struct {
 	// silence as an agent trait.
 	ACPAutoApproveArgs []string
 
+	// ACPImages records that an image sent in an ACP prompt reaches this
+	// agent's model as an image, measured by the conformance images probe.
+	// It is what the ACP backend reports as Capabilities.Images; each session
+	// still follows the agent's own promptCapabilities.image.
+	ACPImages bool
+
 	// SessionDir is where this agent writes its session transcripts, as a
 	// template ({{.HomeDir}}, {{.RepoDir}}). SessionExt is the file extension
 	// whose base name is the session id. Only needed by an agent whose

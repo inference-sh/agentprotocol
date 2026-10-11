@@ -471,10 +471,7 @@ func (d *SessionDriver) diagnose(msg string) {
 // SendPrompt returns as soon as the prompt is handed to the backend: every
 // mode in this suite is send-then-wait.
 func (d *SessionDriver) SendPrompt(prompt string) error {
-	d.mu.Lock()
-	d.turnEnded = false
-	d.mu.Unlock()
-	return d.sess.Prompt(context.Background(), driver.TextInput(prompt))
+	return d.SendInput(driver.TextInput(prompt))
 }
 
 // SendCommand sends a slash command. No backend has a command channel, so it

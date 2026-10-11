@@ -2,6 +2,7 @@
 [commands]
 acp
 agents
+anonymize
 auth-broker
 auth-gateway
 bench

@@ -339,7 +339,29 @@ func (r *TestRunner) prepareToolCall(mode Mode) {
 	if r.harness.Events.PreToolUse == "" && r.harness.Events.PostToolUse == "" {
 		return
 	}
-	r.armToolCall(mode)
+	if r.armToolCall(mode) && r.checksPostTool(mode) {
+		r.server.HoldAnswerAfterTool(r.postToolFired)
+	}
+}
+
+// checksPostTool reports whether this mode expects the agent's post-tool hook
+// to fire.
+func (r *TestRunner) checksPostTool(mode Mode) bool {
+	if r.harness.Events.PostToolUse == "" {
+		return false
+	}
+	_, missing := r.harness.EventKnownMissing(string(mode), TagPostTool)
+	return !missing
+}
+
+// postToolFired reports whether the post-tool hook has written to its log,
+// read the way checkHookEvents reads it.
+func (r *TestRunner) postToolFired() bool {
+	if r.hookSource == HooksBelt {
+		return strings.Contains(r.hookLogText(), "["+string(harness.PostToolUse)+"]")
+	}
+	data, _ := os.ReadFile(hookLogPath)
+	return strings.Contains(string(data), TagPostTool)
 }
 
 // armToolCall points the mock at the tool this agent calls in this mode and

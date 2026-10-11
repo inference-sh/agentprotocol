@@ -192,6 +192,7 @@ Two ways a mock quietly changes what it is measuring, both found on gemini in 20
 
 - **Answering a request that cannot use the answer.** One turn is routed across models with different toolsets, so the prepared tool call is served only to a request that declares that tool. Served to gemini's small flash toolset it came back "Tool `write_file` not found", nothing ran, and both tool hooks were reported missing.
 - **Answering a routing question badly.** Agents ask the model to score a request and pick a tier. `synthFromSchema` answers `responseJsonSchema` requests, and numbers come back at the top of the range, because a low score routes the turn to a cheaper model and a smaller toolset.
+- **Answering faster than any model.** kimi runs `PostToolUse` fire-and-forget under the tool call's abort scope and aborts every tool scope when the turn ends (kimi-code 2.1.1). The mock answered the tool result at once, the turn ended about 30ms after the hook was spawned, and on a loaded CI runner the hook was sometimes killed before it wrote anything: `acp/hook.post-tool` failed in one nightly and passed on rerun. The answer after the prepared tool call now waits until the post-tool hook has written its log, up to 5s, in every mode where the hook is expected to fire (`HoldAnswerAfterTool`). A hook that never fires costs those 5s and still fails. The kill itself is kimi's behaviour: a post-tool hook that outlives the model's next answer is killed with the turn.
 
 ### Resuming a session: all 12, after a clean close and after a kill
 

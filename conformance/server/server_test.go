@@ -7,7 +7,9 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync/atomic"
 	"testing"
+	"time"
 )
 
 func startTestServer(t *testing.T, response string) string {
@@ -263,4 +265,51 @@ func TestDeclaredToolsReadsEachWireShape(t *testing.T) {
 			t.Errorf("DeclaredTools() = %v, want none", got)
 		}
 	})
+}
+
+// The answer after the tool call waits for the hold, and only that answer.
+func TestHoldAnswerAfterTool(t *testing.T) {
+	s := New()
+	s.SetResponse("done")
+	url, err := s.Start()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(s.Close)
+	post := func() string {
+		resp, err := http.Post(url+"/v1/chat/completions", "application/json",
+			strings.NewReader(`{"model":"test","messages":[{"role":"user","content":"hi"}],"tools":[{"type":"function","function":{"name":"Read"}}]}`))
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer resp.Body.Close()
+		data, _ := io.ReadAll(resp.Body)
+		return string(data)
+	}
+
+	var ready atomic.Bool
+	s.PrepareToolCall("Read", `{}`, "")
+	s.HoldAnswerAfterTool(ready.Load)
+	if body := post(); !strings.Contains(body, "tool_calls") {
+		t.Fatalf("first request was not served the tool call: %s", body)
+	}
+	answered := make(chan struct{})
+	go func() { post(); close(answered) }()
+	select {
+	case <-answered:
+		t.Fatal("the answer after the tool call did not wait for the hold")
+	case <-time.After(200 * time.Millisecond):
+	}
+	ready.Store(true)
+	select {
+	case <-answered:
+	case <-time.After(time.Second):
+		t.Fatal("the answer did not follow the hold")
+	}
+
+	start := time.Now()
+	post()
+	if time.Since(start) > 100*time.Millisecond {
+		t.Fatal("a later answer waited on a hold that was already used")
+	}
 }

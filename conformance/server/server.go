@@ -79,6 +79,10 @@ type MockServer struct {
 	response       string
 	toolCallMode   bool
 	toolCallServed bool
+	// holdAfterTool is armed with the next tool call; afterTool takes it when
+	// the call is served, and the next text answer waits on it.
+	holdAfterTool  func() bool
+	afterTool      func() bool
 	answers        int             // canned text answers served (see AnswersServed)
 	requestedHooks map[string]bool // runner tags the backend must request this phase (cursor)
 	toolName       string
@@ -284,6 +288,27 @@ func (s *MockServer) PrepareToolCallIn(namespace, name, args, path string) {
 	s.toolCallPath = path
 	s.toolCallMode = true
 	s.toolCallServed = false
+	s.holdAfterTool = nil
+	s.afterTool = nil
+}
+
+// answerHoldLimit bounds HoldAnswerAfterTool, so an agent whose hook never
+// fires costs this much and then fails the hook check rather than hanging.
+const answerHoldLimit = 5 * time.Second
+
+// HoldAnswerAfterTool makes the answer that follows the prepared tool call
+// wait until ready reports true, for at most answerHoldLimit. A real model
+// takes seconds to answer a tool result; the mock answers at once, and an
+// agent that ends the turn on that answer can kill work the tool started.
+// kimi runs PostToolUse fire-and-forget under the tool's abort scope and
+// aborts every tool scope when the turn ends, so its hook lived or died on
+// whether the shell started inside the ~30ms the mock left it (kimi-code
+// 2.1.1, ExternalHooks.notifyPostToolUse and the turn state's exit actions).
+// It is armed per tool call: PrepareToolCall clears it.
+func (s *MockServer) HoldAnswerAfterTool(ready func() bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.holdAfterTool = ready
 }
 
 func (s *MockServer) LogCount() int {
@@ -494,6 +519,16 @@ func (s *MockServer) Response() string {
 
 func (s *MockServer) getResponse() string {
 	s.mu.Lock()
+	ready := s.afterTool
+	s.afterTool = nil
+	s.mu.Unlock()
+	if ready != nil {
+		deadline := time.Now().Add(answerHoldLimit)
+		for !ready() && time.Now().Before(deadline) {
+			time.Sleep(20 * time.Millisecond)
+		}
+	}
+	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.answers++
 	return s.response
@@ -544,6 +579,7 @@ func (s *MockServer) shouldToolCall(hasTools bool, requestPath string) bool {
 		}
 		s.toolCallMode = false
 		s.toolCallServed = true
+		s.afterTool, s.holdAfterTool = s.holdAfterTool, nil
 		return true
 	}
 	return false

@@ -86,7 +86,13 @@ type LLMUsage struct {
 	StopReason       string  `json:"stop_reason"`
 	TimeToFirstToken float64 `json:"time_to_first_token"`
 	TokensPerSecond  float64 `json:"tokens_per_second"`
-	PromptTokens     int     `json:"prompt_tokens"`
+	// PromptTokens counts every input token, cached ones included
+	// (OpenAI, xAI and OpenRouter count them this way).
+	PromptTokens int `json:"prompt_tokens"`
+	// CachedTokens is how many of PromptTokens were read from the provider's
+	// prompt cache; CacheWriteTokens how many were written to it.
+	CachedTokens     int     `json:"cached_tokens"`
+	CacheWriteTokens int     `json:"cache_write_tokens"`
 	CompletionTokens int     `json:"completion_tokens"`
 	TotalTokens      int     `json:"total_tokens"`
 	ReasoningTokens  int     `json:"reasoning_tokens"`

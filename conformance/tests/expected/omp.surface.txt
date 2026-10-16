@@ -3,6 +3,7 @@
 acp
 agents
 anonymize
+auth
 auth-broker
 auth-gateway
 bench
@@ -35,6 +36,7 @@ read
 render
 say
 search
+session
 setup
 share
 shell
@@ -95,6 +97,7 @@ worktree
 --profile
 --project
 --provider
+--restore
 --resume
 --service-tier
 --session-dir

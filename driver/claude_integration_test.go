@@ -461,3 +461,103 @@ func tailMessages(body string, n int) string {
 	out, _ := json.Marshal(req.Messages)
 	return string(out)
 }
+
+// TestClaudeRealBinaryCallerTools runs SessionConfig.Tools through the real
+// claude: no built-in tools, our tool served over stdio as an SDK MCP server,
+// and the call run by CallTool with no approval. Same mock and variables as
+// TestClaudeRealBinary.
+func TestClaudeRealBinaryCallerTools(t *testing.T) {
+	mockURL := os.Getenv("AGENTPROTOCOL_CLAUDE_MOCK_URL")
+	control := os.Getenv("AGENTPROTOCOL_CLAUDE_MOCK_CONTROL")
+	if mockURL == "" || control == "" {
+		t.Skip("set AGENTPROTOCOL_CLAUDE_MOCK_URL and AGENTPROTOCOL_CLAUDE_MOCK_CONTROL to run against the real claude")
+	}
+	bin, err := exec.LookPath("claude")
+	if err != nil {
+		t.Skip("claude is not installed")
+	}
+	mock := &claudeMock{t: t, control: control}
+
+	env := []string{}
+	for _, kv := range os.Environ() {
+		if strings.HasPrefix(kv, "ANTHROPIC_") || strings.HasPrefix(kv, "CLAUDE") {
+			continue
+		}
+		env = append(env, kv)
+	}
+	env = append(env,
+		"CLAUDE_CONFIG_DIR="+t.TempDir(),
+		"ANTHROPIC_BASE_URL="+mockURL,
+		"ANTHROPIC_API_KEY=sk-ant-mock-not-a-key",
+		"DISABLE_AUTOUPDATER=1",
+	)
+	var stderr bytes.Buffer
+	b := &driver.ClaudeBackend{
+		Command: bin, Env: env, Stderr: &stderr,
+		ExtraArgs:    []string{"--tools", "", "--strict-mcp-config", "--setting-sources", ""},
+		OnDiagnostic: func(m string) { t.Log("diagnostic:", m) },
+	}
+	defer func() {
+		if t.Failed() && stderr.Len() > 0 {
+			t.Logf("claude stderr:\n%s", stderr.String())
+		}
+	}()
+
+	var got []driver.ToolCall
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		RunID: "run-tools", ChatID: "chat-tools", WorkDir: t.TempDir(),
+		Model: "claude-haiku-4-5-20251001",
+		Tools: []ap.Tool{{Type: "function", Function: ap.ToolFunction{
+			Name: "lookup", Description: "Look a word up.",
+			Parameters: ap.ToolParameters{Type: "object", Properties: ap.ToolParameterProperties{
+				"word": {Type: "string"},
+			}},
+		}}},
+		CallTool: func(_ context.Context, call driver.ToolCall) (driver.ToolOutput, error) {
+			got = append(got, call)
+			return driver.ToolOutput{Text: "LOOKUP-RESULT-4412"}, nil
+		},
+	})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+	until(t, sess.Events(), ap.AgentEventRunStarted)
+
+	mock.clear()
+	mock.tool("mcp__tools__lookup", `{"word":"orb"}`)
+	mock.text("TOOLS-DONE")
+	if err := sess.Prompt(context.Background(), driver.TextInput("look up orb")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	evs := untilLong(t, sess.Events(), ap.AgentEventTurnCompleted)
+
+	if _, asked := findEvent(evs, ap.AgentEventApprovalRequired); asked {
+		t.Error("a caller tool raised an approval")
+	}
+	e, ok := findEvent(evs, ap.AgentEventToolCompleted)
+	if !ok {
+		t.Fatalf("no tool.completed in %v", typesOf(evs))
+	}
+	p, _ := ap.PayloadAs[ap.ToolCompletedPayload](e, ap.AgentEventToolCompleted)
+	if p.ToolName != "lookup" || p.Status != ap.ToolInvocationStatusCompleted || !strings.Contains(p.Result, "LOOKUP-RESULT-4412") {
+		t.Errorf("tool = %+v", p)
+	}
+	if len(got) != 1 || got[0].Name != "lookup" || !strings.Contains(string(got[0].Arguments), "orb") || got[0].ToolInvocationID == "" {
+		t.Errorf("calls = %+v", got)
+	}
+	if text := textOf(evs); text != "TOOLS-DONE" {
+		t.Errorf("text = %q", text)
+	}
+
+	// The model was offered our tool and none of Claude Code's own.
+	req := mock.lastRequest()
+	if !strings.Contains(req, "mcp__tools__lookup") {
+		t.Error("the model was not offered the caller tool")
+	}
+	for _, builtin := range []string{`"name":"Bash"`, `"name":"Read"`, `"name":"Edit"`} {
+		if strings.Contains(req, builtin) {
+			t.Errorf("the model was offered %s", builtin)
+		}
+	}
+}

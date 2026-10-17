@@ -60,6 +60,7 @@ const (
 
 	SubtypeCanUseTool   = "can_use_tool"
 	SubtypeHookCallback = "hook_callback"
+	SubtypeMCPMessage   = "mcp_message"
 )
 
 // Control response subtypes.
@@ -493,6 +494,39 @@ type InitializeRequest struct {
 	Hooks              map[string]any `json:"hooks,omitempty"`
 	SystemPrompt       []string       `json:"systemPrompt,omitempty"`
 	AppendSystemPrompt string         `json:"appendSystemPrompt,omitempty"`
+
+	// SDKMCPServers names MCP servers the host serves itself, over this same
+	// stream: the CLI sends each one's JSON-RPC as an mcp_message control
+	// request (Handler.OnMCPMessage) instead of dialling anything. Their tools
+	// reach the model as mcp__<name>__<tool>.
+	SDKMCPServers []string `json:"sdkMcpServers,omitempty"`
+
+	// SDKMCPServerConfigs holds per-server settings for the servers named in
+	// SDKMCPServers. The CLI reads it as a separate field so one that
+	// predates it ignores it.
+	SDKMCPServerConfigs map[string]SDKMCPServerConfig `json:"sdkMcpServerConfigs,omitempty"`
+}
+
+// SDKMCPServerConfig is one host-served MCP server's settings.
+type SDKMCPServerConfig struct {
+	// TimeoutMs is the wall-clock limit on one tool call, overriding
+	// MCP_TOOL_TIMEOUT for this server. The CLI ignores values under 1000.
+	TimeoutMs int `json:"timeout,omitempty"`
+}
+
+// MCPMessageRequest is mcp_message: one JSON-RPC message the CLI sends to a
+// host-served MCP server. A request (with an id) expects the server's
+// response in the reply; a notification is acknowledged with an empty
+// result.
+type MCPMessageRequest struct {
+	Subtype    string          `json:"subtype"`
+	ServerName string          `json:"server_name"`
+	Message    json.RawMessage `json:"message"`
+}
+
+// MCPMessageResponse is the reply body to mcp_message.
+type MCPMessageResponse struct {
+	MCPResponse json.RawMessage `json:"mcp_response"`
 }
 
 // InitializeResponse is the part of the initialize reply this package reads.

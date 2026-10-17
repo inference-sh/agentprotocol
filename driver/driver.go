@@ -14,6 +14,7 @@ package driver
 
 import (
 	"context"
+	"encoding/json"
 
 	ap "github.com/inference-sh/agentprotocol"
 )
@@ -130,8 +131,16 @@ type SessionConfig struct {
 	Model string
 
 	// Tools the agent may call, for backends that accept externally supplied
-	// tools.
+	// tools. The caller runs them: CallTool is required with Tools.
 	Tools []ap.Tool
+
+	// CallTool runs one of Tools when the agent calls it, and returns what
+	// the agent sees. It may block for as long as the tool takes, within
+	// the backend's tool timeout. ctx ends when the agent withdraws the
+	// call (the turn was interrupted) or the session closes. The caller
+	// decides whether a call may run: these calls raise no
+	// approval-required event, since the caller is the one running them.
+	CallTool ToolCaller
 
 	// Metadata is passed through to the backend for transport-specific
 	// settings that do not deserve a field here.
@@ -153,6 +162,29 @@ type SessionConfig struct {
 	// approval-required event. ApprovalsSkip is the caller's choice to let
 	// the agent run every tool without asking; this package never picks it.
 	Approvals Approvals
+}
+
+// ToolCaller runs a caller-supplied tool. An error fails the call; the agent
+// sees its message as an error result.
+type ToolCaller func(ctx context.Context, call ToolCall) (ToolOutput, error)
+
+// ToolCall is one call of a caller-supplied tool.
+type ToolCall struct {
+	// ToolInvocationID matches the tool.started and tool.completed events
+	// for this call. Empty when the agent did not say which call it is.
+	ToolInvocationID string
+
+	// Name is the tool's name as the caller supplied it in Tools.
+	Name string
+
+	// Arguments is the JSON object the agent passed.
+	Arguments json.RawMessage
+}
+
+// ToolOutput is what a caller-supplied tool returns to the agent.
+type ToolOutput struct {
+	Text    string
+	IsError bool
 }
 
 // Approvals is how a session's permission requests are decided.

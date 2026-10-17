@@ -74,6 +74,30 @@ type ClaudeBackend struct {
 	// transcript after input ends before it is killed. Zero means
 	// claudecode.DefaultShutdownGrace.
 	ShutdownGrace time.Duration
+
+	// ToolServerName names the MCP server SessionConfig.Tools are offered
+	// through. The model sees each tool as mcp__<name>__<tool>; events and
+	// CallTool use the bare name. Empty means DefaultClaudeToolServer.
+	ToolServerName string
+
+	// ToolTimeout bounds one call of a SessionConfig.Tools tool. Zero means
+	// DefaultClaudeToolTimeout.
+	ToolTimeout time.Duration
+}
+
+// DefaultClaudeToolServer is the MCP server name SessionConfig.Tools are
+// offered under.
+const DefaultClaudeToolServer = "tools"
+
+// DefaultClaudeToolTimeout bounds one caller-supplied tool call. It is long
+// because a tool can be a whole app run.
+const DefaultClaudeToolTimeout = 30 * time.Minute
+
+func (b *ClaudeBackend) toolServerName() string {
+	if b.ToolServerName != "" {
+		return b.ToolServerName
+	}
+	return DefaultClaudeToolServer
 }
 
 // Kind implements Backend.
@@ -91,9 +115,12 @@ func (b *ClaudeBackend) Kind() string { return KindClaude }
 //   - Resume: --resume with the session ID after the process has exited
 //     brings the conversation back; the next request carries the earlier
 //     turns.
-//   - Tools: an HTTP MCP server named in Metadata (mcp_url, mcp_name,
-//     mcp_token) is passed with --mcp-config and its tools are offered to the
-//     model, behind the same approvals.
+//   - Tools: SessionConfig.Tools are served over the same stdio as an
+//     SDK MCP server (mcp_message control requests) and run by
+//     SessionConfig.CallTool, with no approval round trip. An HTTP MCP server
+//     named in Metadata (mcp_url, mcp_name, mcp_token) is passed with
+//     --mcp-config and its tools are offered to the model, behind the same
+//     approvals.
 func (b *ClaudeBackend) Capabilities() Capabilities {
 	return Capabilities{
 		Steer:     true,
@@ -119,6 +146,9 @@ func (b *ClaudeBackend) diagnose(msg string) {
 // Either way the ID is replaced by whatever system/init later reports, should
 // the two ever differ.
 func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error) {
+	if len(cfg.Tools) > 0 && cfg.CallTool == nil {
+		return nil, errors.New("driver: SessionConfig.Tools needs CallTool to run them")
+	}
 	s := &claudeSession{
 		backend: b,
 		runID:   cfg.RunID,
@@ -152,9 +182,35 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 
 	opts.Stderr, s.stderr = agentStderr(b.Stderr)
 
+	init := claudecode.InitializeRequest{AppendSystemPrompt: cfg.Instructions}
+	var onMCP func(context.Context, string, json.RawMessage) (json.RawMessage, error)
+	if len(cfg.Tools) > 0 {
+		server, err := claudeToolServer(cfg.Tools, cfg.CallTool)
+		if err != nil {
+			return nil, err
+		}
+		name := b.toolServerName()
+		s.toolPrefix = "mcp__" + name + "__"
+		timeout := b.ToolTimeout
+		if timeout == 0 {
+			timeout = DefaultClaudeToolTimeout
+		}
+		init.SDKMCPServers = []string{name}
+		init.SDKMCPServerConfigs = map[string]claudecode.SDKMCPServerConfig{
+			name: {TimeoutMs: int(timeout / time.Millisecond)},
+		}
+		onMCP = func(ctx context.Context, srv string, msg json.RawMessage) (json.RawMessage, error) {
+			if srv != name {
+				return nil, fmt.Errorf("SDK MCP server not found: %s", srv)
+			}
+			return server.Handle(ctx, srv, msg)
+		}
+	}
+
 	proc, err := claudecode.Spawn(opts, claudecode.Handler{
 		OnMessage:    s.onMessage,
 		OnPermission: s.onPermission,
+		OnMCPMessage: onMCP,
 		OnUnhandled: func(subtype string, _ json.RawMessage) {
 			b.diagnose("claude sent a control request this client does not implement: " + subtype)
 		},
@@ -173,7 +229,7 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 		timeout = 60 * time.Second
 	}
 	ictx, cancel := context.WithTimeout(ctx, timeout)
-	init, err := proc.Initialize(ictx, claudecode.InitializeRequest{AppendSystemPrompt: cfg.Instructions})
+	ready, err := proc.Initialize(ictx, init)
 	cancel()
 	if err != nil {
 		_ = proc.Kill()
@@ -181,14 +237,14 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 		return nil, errors.New(s.stderr.quote(fmt.Sprintf("driver: initialize claude: %v", err)))
 	}
 	b.diagnose(fmt.Sprintf("claude session %s ready (pid %d, permission mode %s, auth token=%s api key=%s)",
-		s.id, init.PID, init.CurrentPermissionMode, orNone(init.Account.TokenSource), orNone(init.Account.APIKeySource)))
+		s.id, ready.PID, ready.CurrentPermissionMode, orNone(ready.Account.TokenSource), orNone(ready.Account.APIKeySource)))
 
 	go s.pump.run()
 	go s.watch()
 
 	s.emit(ap.NewEvent(ap.AgentEventRunStarted, s.runID, s.chatID, ap.RunStartedPayload{}))
 	s.emit(ap.NewEvent(ap.AgentEventAccountUpdated, s.runID, s.chatID, ap.AccountUpdatedPayload{
-		Account: claudeusage.Account(init.Account),
+		Account: claudeusage.Account(ready.Account),
 	}))
 	return s, nil
 }
@@ -231,10 +287,11 @@ func (s *claudeSession) onSubagentAssistant(parent string, a claudecode.Assistan
 				s.subTools = map[string]string{}
 			}
 			s.subTools[block.ID] = sub
-			s.tools[block.ID] = block.Name
+			name := s.toolName(block.Name)
+			s.tools[block.ID] = name
 			if s.backend.SubagentOutput {
 				s.emit(ap.NewEvent(ap.AgentEventToolStarted, s.runID, s.chatID, ap.ToolStartedPayload{
-					ToolInvocationID: block.ID, ToolName: block.Name, DisplayName: block.Name,
+					ToolInvocationID: block.ID, ToolName: name, DisplayName: name,
 					Arguments: claudeArguments(block.Input), SubagentID: sub,
 				}))
 			}
@@ -302,6 +359,11 @@ type claudeSession struct {
 	pending map[string]*claudePending
 	tools   map[string]string // tool_use id -> tool name, for results
 	denied  map[string]bool   // tool_use ids a person refused
+
+	// toolPrefix is how the model names a SessionConfig.Tools tool
+	// (mcp__<server>__); empty when the session has none. Events carry the
+	// name without it, as the caller supplied it.
+	toolPrefix string
 
 	// Turn state. A turn opens on Prompt, or on output arriving while none is
 	// open (a prompt the CLI queued rather than folded in), and closes on the
@@ -683,11 +745,12 @@ func (s *claudeSession) onAssistant(a claudecode.AssistantMessage) {
 			}
 		case "tool_use", "server_tool_use", "mcp_tool_use":
 			s.toolCount++
-			s.tools[block.ID] = block.Name
+			name := s.toolName(block.Name)
+			s.tools[block.ID] = name
 			s.emit(ap.NewEvent(ap.AgentEventToolStarted, s.runID, s.chatID, ap.ToolStartedPayload{
 				ToolInvocationID: block.ID,
-				ToolName:         block.Name,
-				DisplayName:      block.Name,
+				ToolName:         name,
+				DisplayName:      name,
 				Arguments:        claudeArguments(block.Input),
 			}))
 		}
@@ -806,6 +869,11 @@ func resultError(r claudecode.ResultMessage) string {
 // onPermission raises can_use_tool as an approval-required event and parks
 // until Resolve answers it or Claude withdraws the request.
 func (s *claudeSession) onPermission(ctx context.Context, requestID string, req claudecode.PermissionRequest) (claudecode.PermissionResult, error) {
+	if s.isCallerTool(req.ToolName) {
+		// The caller runs its own tools and decides in CallTool; asking it
+		// first as well would be the same question twice.
+		return claudecode.AllowResult(req.Input), nil
+	}
 	id := req.ToolUseID
 	p := &claudePending{req: req, answer: make(chan claudecode.PermissionResult, 1)}
 
@@ -853,6 +921,78 @@ func (s *claudeSession) onPermission(ctx context.Context, requestID string, req 
 }
 
 func (s *claudeSession) emit(ev ap.AgentEvent) { s.pump.push(ev) }
+
+// isCallerTool reports whether the model's tool name is one of
+// SessionConfig.Tools.
+func (s *claudeSession) isCallerTool(name string) bool {
+	return s.toolPrefix != "" && strings.HasPrefix(name, s.toolPrefix)
+}
+
+// toolName is the name events carry: a SessionConfig.Tools tool without the
+// MCP prefix the model sees, anything else unchanged.
+func (s *claudeSession) toolName(name string) string {
+	if s.isCallerTool(name) {
+		return strings.TrimPrefix(name, s.toolPrefix)
+	}
+	return name
+}
+
+// claudeToolServer serves SessionConfig.Tools as an SDK MCP server whose calls
+// go to the caller.
+func claudeToolServer(tools []ap.Tool, call ToolCaller) (*claudecode.ToolServer, error) {
+	server := &claudecode.ToolServer{Name: "agentprotocol", Version: "1"}
+	seen := map[string]bool{}
+	for _, t := range tools {
+		name := t.Function.Name
+		if name == "" {
+			return nil, errors.New("driver: a tool in SessionConfig.Tools has no name")
+		}
+		if seen[name] {
+			return nil, fmt.Errorf("driver: tool %q appears twice in SessionConfig.Tools", name)
+		}
+		seen[name] = true
+		schema, err := toolInputSchema(t)
+		if err != nil {
+			return nil, fmt.Errorf("driver: tool %q: %w", name, err)
+		}
+		server.Tools = append(server.Tools, claudecode.MCPTool{
+			Name: name, Description: t.Function.Description, InputSchema: schema,
+		})
+	}
+	server.Call = func(ctx context.Context, c claudecode.MCPToolCall) (claudecode.MCPToolResult, error) {
+		out, err := call(ctx, ToolCall{ToolInvocationID: c.ToolUseID, Name: c.Name, Arguments: c.Arguments})
+		if err != nil {
+			return claudecode.MCPToolResult{}, err
+		}
+		return claudecode.MCPToolResult{Text: out.Text, IsError: out.IsError}, nil
+	}
+	return server, nil
+}
+
+// toolInputSchema is a tool's parameters as the JSON Schema object MCP's
+// inputSchema requires: type object always, no empty title, and the
+// function-level required list when the parameters carry none.
+func toolInputSchema(t ap.Tool) (json.RawMessage, error) {
+	raw, err := json.Marshal(t.Function.Parameters)
+	if err != nil {
+		return nil, err
+	}
+	var schema map[string]any
+	if err := json.Unmarshal(raw, &schema); err != nil {
+		return nil, err
+	}
+	if title, _ := schema["title"].(string); title == "" {
+		delete(schema, "title")
+	}
+	schema["type"] = "object"
+	if _, ok := schema["properties"]; !ok {
+		schema["properties"] = map[string]any{}
+	}
+	if _, ok := schema["required"]; !ok && t.Function.Required != nil {
+		schema["required"] = *t.Function.Required
+	}
+	return json.Marshal(schema)
+}
 
 // permissionUpdates turns a scope into the rules sent back with an allow.
 func permissionUpdates(req claudecode.PermissionRequest, scope Scope) []claudecode.PermissionUpdate {

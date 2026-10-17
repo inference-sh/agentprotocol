@@ -256,6 +256,119 @@ func TestClaudeApprovalAllowForSessionRunsTheTool(t *testing.T) {
 	}
 }
 
+func TestClaudeCallerToolsRunOverStdio(t *testing.T) {
+	b, record := claudeRunning(t, "hosttools")
+	b.ToolTimeout = 90 * time.Second
+
+	var calls []driver.ToolCall
+	var mu sync.Mutex
+	required := []string{"text"}
+	sess := openClaude(t, b, driver.SessionConfig{
+		RunID: "r", ChatID: "c",
+		Tools: []ap.Tool{{Type: "function", Function: ap.ToolFunction{
+			Name: "echo", Description: "Echo the text back.",
+			Parameters: ap.ToolParameters{Type: "object", Properties: ap.ToolParameterProperties{
+				"text": {Type: "string", Description: "what to echo"},
+			}, Required: &required},
+		}}},
+		CallTool: func(ctx context.Context, call driver.ToolCall) (driver.ToolOutput, error) {
+			mu.Lock()
+			calls = append(calls, call)
+			mu.Unlock()
+			var args struct{ Text string }
+			_ = json.Unmarshal(call.Arguments, &args)
+			return driver.ToolOutput{Text: "echo: " + args.Text}, nil
+		},
+	})
+
+	rec := readRecord(t, record)
+	var init claudecode.InitializeRequest
+	if err := json.Unmarshal(rec.Initialize, &init); err != nil {
+		t.Fatalf("initialize: %v", err)
+	}
+	if !slices.Equal(init.SDKMCPServers, []string{"tools"}) || init.SDKMCPServerConfigs["tools"].TimeoutMs != 90000 {
+		t.Errorf("initialize declared %v %+v", init.SDKMCPServers, init.SDKMCPServerConfigs)
+	}
+
+	if err := sess.Prompt(context.Background(), driver.TextInput("go")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	events := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+
+	if _, asked := findEvent(events, ap.AgentEventApprovalRequired); asked {
+		t.Error("a caller tool raised an approval")
+	}
+	started, ok := findEvent(events, ap.AgentEventToolStarted)
+	if !ok {
+		t.Fatalf("no tool.started; got %v", typesOf(events))
+	}
+	sp, _ := ap.PayloadAs[ap.ToolStartedPayload](started, ap.AgentEventToolStarted)
+	if sp.ToolName != "echo" || sp.ToolInvocationID != "toolu_h" {
+		t.Errorf("tool started = %+v", sp)
+	}
+	done, _ := findEvent(events, ap.AgentEventToolCompleted)
+	dp, _ := ap.PayloadAs[ap.ToolCompletedPayload](done, ap.AgentEventToolCompleted)
+	if dp.ToolName != "echo" || dp.Status != ap.ToolInvocationStatusCompleted || dp.Result != "echo: PING" {
+		t.Errorf("tool completed = %+v", dp)
+	}
+	if got := textOf(events); got != "host tool said echo: PING" {
+		t.Errorf("text = %q", got)
+	}
+
+	mu.Lock()
+	defer mu.Unlock()
+	if len(calls) != 1 || calls[0].Name != "echo" || calls[0].ToolInvocationID != "toolu_h" {
+		t.Errorf("calls = %+v", calls)
+	}
+
+	data, err := os.ReadFile(record + ".mcp")
+	if err != nil {
+		t.Fatalf("fake left no mcp record: %v", err)
+	}
+	var seen map[string]json.RawMessage
+	_ = json.Unmarshal(data, &seen)
+	if string(seen["note"]) != `{"mcp_response":{"jsonrpc":"2.0","result":{},"id":0}}` {
+		t.Errorf("notification answered %s", seen["note"])
+	}
+	var list struct {
+		MCPResponse struct {
+			Result struct {
+				Tools []struct {
+					Name        string
+					InputSchema map[string]any `json:"inputSchema"`
+				} `json:"tools"`
+			} `json:"result"`
+		} `json:"mcp_response"`
+	}
+	_ = json.Unmarshal(seen["list"], &list)
+	tools := list.MCPResponse.Result.Tools
+	if len(tools) != 1 || tools[0].Name != "echo" || tools[0].InputSchema["type"] != "object" {
+		t.Fatalf("tools/list = %s", seen["list"])
+	}
+	if _, titled := tools[0].InputSchema["title"]; titled {
+		t.Errorf("schema kept an empty title: %v", tools[0].InputSchema)
+	}
+	if req, _ := tools[0].InputSchema["required"].([]any); len(req) != 1 || req[0] != "text" {
+		t.Errorf("schema required = %v", tools[0].InputSchema["required"])
+	}
+	var perm claudecode.PermissionResult
+	_ = json.Unmarshal(seen["perm"], &perm)
+	if perm.Behavior != "allow" {
+		t.Errorf("caller tool permission = %+v", perm)
+	}
+}
+
+func TestClaudeCallerToolsNeedCallTool(t *testing.T) {
+	b, _ := claudeRunning(t, "")
+	_, err := b.Open(context.Background(), driver.SessionConfig{
+		WorkDir: t.TempDir(),
+		Tools:   []ap.Tool{{Type: "function", Function: ap.ToolFunction{Name: "echo"}}},
+	})
+	if err == nil || !strings.Contains(err.Error(), "CallTool") {
+		t.Errorf("open without CallTool = %v", err)
+	}
+}
+
 func TestClaudeApprovalAllowOnceSendsNoRules(t *testing.T) {
 	b, _ := claudeRunning(t, "permission")
 	sess := openClaude(t, b, driver.SessionConfig{})
@@ -712,6 +825,8 @@ func runFakeClaude(script string) {
 				"type": "tool_result", "tool_use_id": "toolu_1", "content": content, "is_error": isError}}}})
 	}
 
+	hostMCP := map[string]json.RawMessage{}
+
 	in := bufio.NewScanner(os.Stdin)
 	in.Buffer(make([]byte, 0, 64<<10), 4<<20)
 	for in.Scan() {
@@ -804,6 +919,57 @@ func runFakeClaude(script string) {
 					"type": "tool_result", "tool_use_id": sub, "content": "found it", "is_error": false}}}})
 			reply("the subagent found it")
 			result(nil)
+		case msg.Type == "control_response" && msg.Response.RequestID == "mcp-init":
+			// The CLI's side of a host-served MCP server, as 2.1.302 runs
+			// it: initialize, the initialized notification, tools/list, a
+			// tool_use, its permission check, then tools/call.
+			send(map[string]any{"type": "control_request", "request_id": "mcp-note", "request": map[string]any{
+				"subtype": "mcp_message", "server_name": "tools",
+				"message": map[string]any{"jsonrpc": "2.0", "method": "notifications/initialized"}}})
+		case msg.Type == "control_response" && msg.Response.RequestID == "mcp-note":
+			hostMCP["note"] = msg.Response.Response
+			send(map[string]any{"type": "control_request", "request_id": "mcp-list", "request": map[string]any{
+				"subtype": "mcp_message", "server_name": "tools",
+				"message": map[string]any{"jsonrpc": "2.0", "id": 2, "method": "tools/list"}}})
+		case msg.Type == "control_response" && msg.Response.RequestID == "mcp-list":
+			hostMCP["list"] = msg.Response.Response
+			send(map[string]any{"type": "assistant", "session_id": sessionID, "parent_tool_use_id": nil,
+				"message": map[string]any{"id": "m-host", "role": "assistant", "content": []any{map[string]any{
+					"type": "tool_use", "id": "toolu_h", "name": "mcp__tools__echo", "input": map[string]any{"text": "PING"}}}}})
+			send(map[string]any{"type": "control_request", "request_id": "hperm", "request": map[string]any{
+				"subtype": "can_use_tool", "tool_name": "mcp__tools__echo", "input": map[string]any{"text": "PING"}, "tool_use_id": "toolu_h"}})
+		case msg.Type == "control_response" && msg.Response.RequestID == "hperm":
+			hostMCP["perm"] = msg.Response.Response
+			send(map[string]any{"type": "control_request", "request_id": "mcp-call", "request": map[string]any{
+				"subtype": "mcp_message", "server_name": "tools",
+				"message": map[string]any{"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": map[string]any{
+					"name": "echo", "arguments": map[string]any{"text": "PING"},
+					"_meta": map[string]any{"claudecode/toolUseId": "toolu_h"}}}}})
+		case msg.Type == "control_response" && msg.Response.RequestID == "mcp-call":
+			hostMCP["call"] = msg.Response.Response
+			var call struct {
+				MCPResponse struct {
+					Result struct {
+						Content []struct{ Text string } `json:"content"`
+						IsError bool                    `json:"isError"`
+					} `json:"result"`
+				} `json:"mcp_response"`
+			}
+			_ = json.Unmarshal(msg.Response.Response, &call)
+			text := ""
+			if len(call.MCPResponse.Result.Content) > 0 {
+				text = call.MCPResponse.Result.Content[0].Text
+			}
+			send(map[string]any{"type": "user", "session_id": sessionID, "parent_tool_use_id": nil,
+				"message": map[string]any{"role": "user", "content": []any{map[string]any{
+					"type": "tool_result", "tool_use_id": "toolu_h", "content": text, "is_error": call.MCPResponse.Result.IsError}}}})
+			if path := os.Getenv(fakeClaudeRecord); path != "" {
+				data, _ := json.Marshal(hostMCP)
+				_ = os.WriteFile(path+".mcp", data, 0o600)
+			}
+			reply("host tool said " + text)
+			result(nil)
+
 		case msg.Type == "control_response" && msg.Response.RequestID == "future1":
 			initMsg()
 			reply("future_request=" + msg.Response.Subtype)
@@ -818,6 +984,11 @@ func runFakeClaude(script string) {
 			switch script {
 			case "permission":
 				toolUse()
+			case "hosttools":
+				send(map[string]any{"type": "control_request", "request_id": "mcp-init", "request": map[string]any{
+					"subtype": "mcp_message", "server_name": "tools",
+					"message": map[string]any{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": map[string]any{
+						"protocolVersion": "2025-11-25", "capabilities": map[string]any{}, "clientInfo": map[string]any{"name": "claude-code"}}}}})
 			case "interrupt":
 				if text == "again" {
 					reply("you said again")

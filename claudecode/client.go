@@ -32,6 +32,15 @@ type Handler struct {
 	// "no opinion".
 	OnHookCallback func(ctx context.Context, req HookCallbackRequest) (json.RawMessage, error)
 
+	// OnMCPMessage answers mcp_message for the servers named in
+	// InitializeRequest.SDKMCPServers. It gets one JSON-RPC message and
+	// returns the JSON-RPC response; for a notification its result is
+	// ignored. It runs on its own goroutine and may block for as long as a
+	// tool call takes; ctx ends when the CLI withdraws the request. Nil
+	// answers every message with an error, as the SDK does for a server it
+	// does not know.
+	OnMCPMessage func(ctx context.Context, server string, message json.RawMessage) (json.RawMessage, error)
+
 	// OnCancel is told when the CLI withdraws one of its own requests, after
 	// the context passed to OnPermission has been cancelled.
 	OnCancel func(requestID string)
@@ -296,6 +305,28 @@ func (c *Client) answer(ctx context.Context, req ControlRequest) (json.RawMessag
 			return json.RawMessage(`{}`), nil
 		}
 		return c.h.OnHookCallback(ctx, h)
+
+	case SubtypeMCPMessage:
+		var m MCPMessageRequest
+		if err := json.Unmarshal(req.Request, &m); err != nil {
+			return nil, fmt.Errorf("decode mcp_message: %w", err)
+		}
+		if c.h.OnMCPMessage == nil {
+			return nil, fmt.Errorf("SDK MCP server not found: %s", m.ServerName)
+		}
+		var head jsonrpc.Message
+		if err := json.Unmarshal(m.Message, &head); err != nil {
+			return nil, fmt.Errorf("decode mcp_message body: %w", err)
+		}
+		res, err := c.h.OnMCPMessage(ctx, m.ServerName, m.Message)
+		if !head.HasID() {
+			// A notification has no response; the SDK acknowledges it with
+			// an empty result, and so do we.
+			res = json.RawMessage(`{"jsonrpc":"2.0","result":{},"id":0}`)
+		} else if err != nil {
+			return nil, err
+		}
+		return json.Marshal(MCPMessageResponse{MCPResponse: res})
 
 	default:
 		if c.h.OnUnhandled != nil {

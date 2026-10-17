@@ -930,6 +930,20 @@ func NewDynamicToolCallOutputContentItem(v any) (DynamicToolCallOutputContentIte
 	return u, err
 }
 
+type DynamicToolCallParams struct {
+	Arguments json.RawMessage `json:"arguments"`
+	CallID    string          `json:"callId"`
+	Namespace *string         `json:"namespace,omitempty"`
+	ThreadID  string          `json:"threadId"`
+	Tool      string          `json:"tool"`
+	TurnID    string          `json:"turnId"`
+}
+
+type DynamicToolCallResponse struct {
+	ContentItems []DynamicToolCallOutputContentItem `json:"contentItems"`
+	Success      bool                               `json:"success"`
+}
+
 type DynamicToolCallStatus string
 
 const (
@@ -949,6 +963,112 @@ type DynamicToolCallThreadItem struct {
 	Success    *bool                 `json:"success,omitempty"`
 	Tool       string                `json:"tool"`
 	Type       string                `json:"type"`
+}
+
+type DynamicToolNamespaceTool struct {
+	Type string
+	Raw  json.RawMessage
+}
+
+func (u *DynamicToolNamespaceTool) UnmarshalJSON(data []byte) error {
+	var head struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(data, &head); err != nil {
+		return err
+	}
+	u.Type = head.Type
+	u.Raw = append(u.Raw[:0], data...)
+	return nil
+}
+
+func (u DynamicToolNamespaceTool) MarshalJSON() ([]byte, error) {
+	if len(u.Raw) == 0 {
+		return []byte("null"), nil
+	}
+	return u.Raw, nil
+}
+
+const (
+	DynamicToolNamespaceToolTypeFunction = "function"
+)
+
+// AsFunctionDynamicToolNamespaceTool decodes the variant when Type is "function".
+func (u DynamicToolNamespaceTool) AsFunctionDynamicToolNamespaceTool() (FunctionDynamicToolNamespaceTool, bool) {
+	var v FunctionDynamicToolNamespaceTool
+	if u.Type != "function" || json.Unmarshal(u.Raw, &v) != nil {
+		return v, false
+	}
+	return v, true
+}
+
+// NewDynamicToolNamespaceTool wraps a variant for sending.
+func NewDynamicToolNamespaceTool(v any) (DynamicToolNamespaceTool, error) {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return DynamicToolNamespaceTool{}, err
+	}
+	var u DynamicToolNamespaceTool
+	err = u.UnmarshalJSON(data)
+	return u, err
+}
+
+type DynamicToolSpec struct {
+	Type string
+	Raw  json.RawMessage
+}
+
+func (u *DynamicToolSpec) UnmarshalJSON(data []byte) error {
+	var head struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(data, &head); err != nil {
+		return err
+	}
+	u.Type = head.Type
+	u.Raw = append(u.Raw[:0], data...)
+	return nil
+}
+
+func (u DynamicToolSpec) MarshalJSON() ([]byte, error) {
+	if len(u.Raw) == 0 {
+		return []byte("null"), nil
+	}
+	return u.Raw, nil
+}
+
+const (
+	DynamicToolSpecTypeFunction  = "function"
+	DynamicToolSpecTypeNamespace = "namespace"
+)
+
+// AsFunctionDynamicToolSpec decodes the variant when Type is "function".
+func (u DynamicToolSpec) AsFunctionDynamicToolSpec() (FunctionDynamicToolSpec, bool) {
+	var v FunctionDynamicToolSpec
+	if u.Type != "function" || json.Unmarshal(u.Raw, &v) != nil {
+		return v, false
+	}
+	return v, true
+}
+
+// AsNamespaceDynamicToolSpec decodes the variant when Type is "namespace".
+func (u DynamicToolSpec) AsNamespaceDynamicToolSpec() (NamespaceDynamicToolSpec, bool) {
+	var v NamespaceDynamicToolSpec
+	if u.Type != "namespace" || json.Unmarshal(u.Raw, &v) != nil {
+		return v, false
+	}
+	return v, true
+}
+
+// NewDynamicToolSpec wraps a variant for sending.
+func NewDynamicToolSpec(v any) (DynamicToolSpec, error) {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return DynamicToolSpec{}, err
+	}
+	var u DynamicToolSpec
+	err = u.UnmarshalJSON(data)
+	return u, err
 }
 
 type EnteredReviewModeThreadItem struct {
@@ -1240,6 +1360,22 @@ type FunctionCallOutputThreadItem struct {
 	Namespace *string                `json:"namespace,omitempty"`
 	Output    FunctionCallOutputBody `json:"output"`
 	Type      string                 `json:"type"`
+}
+
+type FunctionDynamicToolNamespaceTool struct {
+	DeferLoading *bool           `json:"deferLoading,omitempty"`
+	Description  string          `json:"description"`
+	InputSchema  json.RawMessage `json:"inputSchema"`
+	Name         string          `json:"name"`
+	Type         string          `json:"type"`
+}
+
+type FunctionDynamicToolSpec struct {
+	DeferLoading *bool           `json:"deferLoading,omitempty"`
+	Description  string          `json:"description"`
+	InputSchema  json.RawMessage `json:"inputSchema"`
+	Name         string          `json:"name"`
+	Type         string          `json:"type"`
 }
 
 type GetAccountParams struct {
@@ -1607,6 +1743,13 @@ const (
 	ModeKindPlan    ModeKind = "plan"
 	ModeKindDefault ModeKind = "default"
 )
+
+type NamespaceDynamicToolSpec struct {
+	Description string                     `json:"description"`
+	Name        string                     `json:"name"`
+	Tools       []DynamicToolNamespaceTool `json:"tools"`
+	Type        string                     `json:"type"`
+}
 
 type NetworkAccess string
 
@@ -2775,6 +2918,7 @@ type ThreadStartParams struct {
 	Config                map[string]json.RawMessage `json:"config,omitempty"`
 	Cwd                   *string                    `json:"cwd,omitempty"`
 	DeveloperInstructions *string                    `json:"developerInstructions,omitempty"`
+	DynamicTools          []DynamicToolSpec          `json:"dynamicTools,omitempty"`
 	Ephemeral             *bool                      `json:"ephemeral,omitempty"`
 	Model                 *string                    `json:"model,omitempty"`
 	ModelProvider         *string                    `json:"modelProvider,omitempty"`

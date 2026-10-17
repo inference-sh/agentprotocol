@@ -1,11 +1,16 @@
 // Command schemagen derives Go types for the Codex app-server protocol from
 // the JSON Schema the codex binary publishes about itself.
 //
-// It runs `codex app-server generate-json-schema` (stable surface only, no
-// --experimental), reads the bundled schema, and writes Go declarations for a
-// fixed set of root types plus everything they reference. It also writes a
-// constant for every method named in the ClientRequest, ServerRequest,
-// ServerNotification and ClientNotification unions.
+// It runs `codex app-server generate-json-schema`, reads the bundled schema,
+// and writes Go declarations for a fixed set of root types plus everything
+// they reference. It also writes a constant for every method named in the
+// ClientRequest, ServerRequest, ServerNotification and ClientNotification
+// unions.
+//
+// The types are the stable surface. The few experimental fields this client
+// uses (experimentalFields) are taken from a second, --experimental schema
+// and added to the stable types; a client sending them opts in with
+// capabilities.experimentalApi during initialize.
 //
 // Regenerate from the codexapp directory with:
 //
@@ -46,6 +51,7 @@ var roots = []string{
 	"PermissionsRequestApprovalParams", "PermissionsRequestApprovalResponse",
 	"ExecCommandApprovalParams", "ExecCommandApprovalResponse",
 	"ApplyPatchApprovalParams", "ApplyPatchApprovalResponse",
+	"DynamicToolCallParams", "DynamicToolCallResponse",
 
 	// Notifications the driver maps.
 	"ErrorNotification",
@@ -66,9 +72,17 @@ var roots = []string{
 	"AccountRateLimitsUpdatedNotification", "AccountUpdatedNotification",
 }
 
+// experimentalFields are the experimental fields this client uses, by type.
+// Nothing else from the experimental surface is generated.
+var experimentalFields = map[string][]string{
+	// Caller tools: SessionConfig.Tools on the codex driver.
+	"ThreadStartParams": {"dynamicTools"},
+}
+
 func main() {
 	codex := flag.String("codex", "codex", "codex binary to ask for its schema")
 	schemaDir := flag.String("schema", "", "use this generate-json-schema output directory instead of running codex")
+	expDir := flag.String("experimental-schema", "", "with -schema: the generate-json-schema --experimental output directory")
 	out := flag.String("out", "protocol_gen.go", "output file")
 	pkg := flag.String("pkg", "codexapp", "package name")
 	flag.Parse()
@@ -92,18 +106,21 @@ func main() {
 			fail("generate-json-schema: %v", err)
 		}
 		dir = tmp
+		*expDir = filepath.Join(tmp, "experimental")
+		cmd = exec.Command(*codex, "app-server", "generate-json-schema", "--experimental", "--out", *expDir)
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			fail("generate-json-schema --experimental: %v", err)
+		}
 	} else if b, err := os.ReadFile(filepath.Join(dir, "VERSION")); err == nil {
 		version = strings.TrimSpace(string(b))
 	}
 
-	raw, err := os.ReadFile(filepath.Join(dir, "codex_app_server_protocol.schemas.json"))
-	if err != nil {
-		fail("read schema bundle: %v", err)
+	bundle := readBundle(dir)
+	if *expDir == "" {
+		fail("-schema needs -experimental-schema for the experimental fields %v", experimentalFields)
 	}
-	var bundle map[string]any
-	if err := json.Unmarshal(raw, &bundle); err != nil {
-		fail("parse schema bundle: %v", err)
-	}
+	addExperimental(bundle, readBundle(*expDir))
 
 	g := newGen(bundle)
 	for _, r := range roots {
@@ -137,6 +154,49 @@ func main() {
 	}
 	if err := os.WriteFile(*out, src, 0o644); err != nil {
 		fail("write: %v", err)
+	}
+}
+
+func readBundle(dir string) map[string]any {
+	raw, err := os.ReadFile(filepath.Join(dir, "codex_app_server_protocol.schemas.json"))
+	if err != nil {
+		fail("read schema bundle: %v", err)
+	}
+	var bundle map[string]any
+	if err := json.Unmarshal(raw, &bundle); err != nil {
+		fail("parse schema bundle: %v", err)
+	}
+	return bundle
+}
+
+// addExperimental copies experimentalFields from the experimental bundle into
+// the stable one's definitions. Types those fields reference must already be
+// in the stable bundle.
+func addExperimental(stable, exp map[string]any) {
+	def := func(b map[string]any, name string) node {
+		defs, _ := b["definitions"].(map[string]any)
+		if v2, ok := defs["v2"].(map[string]any); ok {
+			if n, ok := v2[name].(map[string]any); ok {
+				return n
+			}
+		}
+		n, _ := defs[name].(map[string]any)
+		return n
+	}
+	for typ, fields := range experimentalFields {
+		to, from := def(stable, typ), def(exp, typ)
+		if to == nil || from == nil {
+			fail("experimental field owner %s is not in both schemas", typ)
+		}
+		toProps, _ := to["properties"].(map[string]any)
+		fromProps, _ := from["properties"].(map[string]any)
+		for _, f := range fields {
+			p, ok := fromProps[f]
+			if !ok {
+				fail("experimental field %s.%s is not in the schema", typ, f)
+			}
+			toProps[f] = p
+		}
 	}
 }
 

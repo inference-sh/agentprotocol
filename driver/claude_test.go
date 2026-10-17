@@ -358,6 +358,28 @@ func TestClaudeCallerToolsRunOverStdio(t *testing.T) {
 	}
 }
 
+func TestClaudeOnlyCallerToolsTurnsClaudesOwnOff(t *testing.T) {
+	b, record := claudeRunning(t, "plain")
+	b.ExtraArgs = []string{"--verbose-extra"}
+	openClaude(t, b, driver.SessionConfig{
+		Metadata:        map[string]string{"mcp_url": "http://127.0.0.1:1/mcp", "mcp_name": "other"},
+		OnlyCallerTools: true,
+		Tools:           []ap.Tool{{Type: "function", Function: ap.ToolFunction{Name: "echo"}}},
+		CallTool: func(context.Context, driver.ToolCall) (driver.ToolOutput, error) {
+			return driver.ToolOutput{}, nil
+		},
+	})
+	args := strings.Join(readRecord(t, record).Args, " ")
+	for _, want := range []string{"--verbose-extra", "--tools  --strict-mcp-config --setting-sources  --disable-slash-commands"} {
+		if !strings.Contains(args, want) {
+			t.Errorf("args lack %q: %s", want, args)
+		}
+	}
+	if strings.Contains(args, "--mcp-config") {
+		t.Errorf("an outside MCP server was kept: %s", args)
+	}
+}
+
 func TestClaudeCallerToolsNeedCallTool(t *testing.T) {
 	b, _ := claudeRunning(t, "")
 	_, err := b.Open(context.Background(), driver.SessionConfig{
@@ -749,7 +771,7 @@ func TestClaudeBackendDeclaresWhatItCanDo(t *testing.T) {
 	if b.Kind() != driver.KindClaude {
 		t.Errorf("kind = %q", b.Kind())
 	}
-	want := driver.Capabilities{Steer: true, Approvals: true, Interrupt: true, Resume: true, Tools: true, Images: true}
+	want := driver.Capabilities{Steer: true, Approvals: true, Interrupt: true, Resume: true, Tools: true, Images: true, OnlyCallerTools: true}
 	if got := b.Capabilities(); got != want {
 		t.Errorf("capabilities = %+v, want %+v", got, want)
 	}

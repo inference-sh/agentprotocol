@@ -494,7 +494,6 @@ func TestClaudeRealBinaryCallerTools(t *testing.T) {
 	var stderr bytes.Buffer
 	b := &driver.ClaudeBackend{
 		Command: bin, Env: env, Stderr: &stderr,
-		ExtraArgs:    []string{"--tools", "", "--strict-mcp-config", "--setting-sources", ""},
 		OnDiagnostic: func(m string) { t.Log("diagnostic:", m) },
 	}
 	defer func() {
@@ -506,7 +505,7 @@ func TestClaudeRealBinaryCallerTools(t *testing.T) {
 	var got []driver.ToolCall
 	sess, err := b.Open(context.Background(), driver.SessionConfig{
 		RunID: "run-tools", ChatID: "chat-tools", WorkDir: t.TempDir(),
-		Model: "claude-haiku-4-5-20251001",
+		Model: "claude-haiku-4-5-20251001", OnlyCallerTools: true,
 		Tools: []ap.Tool{{Type: "function", Function: ap.ToolFunction{
 			Name: "lookup", Description: "Look a word up.",
 			Parameters: ap.ToolParameters{Type: "object", Properties: ap.ToolParameterProperties{

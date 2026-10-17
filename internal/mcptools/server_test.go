@@ -1,29 +1,31 @@
-package claudecode
+package mcptools
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
+	"net/http"
 	"strings"
 	"testing"
 )
 
-func echoServer() *ToolServer {
-	return &ToolServer{
+func echoServer() *Server {
+	return &Server{
 		Name: "t", Version: "1",
-		Tools: []MCPTool{{Name: "echo", InputSchema: json.RawMessage(`{"type":"object"}`)}},
-		Call: func(_ context.Context, c MCPToolCall) (MCPToolResult, error) {
+		Tools: []Tool{{Name: "echo", InputSchema: json.RawMessage(`{"type":"object"}`)}},
+		Run: func(_ context.Context, c Call) (Result, error) {
 			if strings.Contains(string(c.Arguments), "boom") {
-				return MCPToolResult{}, errors.New("it broke")
+				return Result{}, errors.New("it broke")
 			}
-			return MCPToolResult{Text: "echo " + string(c.Arguments) + " " + c.ToolUseID}, nil
+			return Result{Text: "echo " + string(c.Arguments) + " " + c.ToolUseID}, nil
 		},
 	}
 }
 
-func handle(t *testing.T, s *ToolServer, msg string) map[string]any {
+func handle(t *testing.T, s *Server, msg string) map[string]any {
 	t.Helper()
-	raw, err := s.Handle(context.Background(), "t", json.RawMessage(msg))
+	raw, err := s.Handle(context.Background(), json.RawMessage(msg))
 	if err != nil {
 		t.Fatalf("handle %s: %v", msg, err)
 	}
@@ -37,7 +39,7 @@ func handle(t *testing.T, s *ToolServer, msg string) map[string]any {
 	return m
 }
 
-func TestToolServerAnswersTheToolMethods(t *testing.T) {
+func TestServerAnswersTheToolMethods(t *testing.T) {
 	s := echoServer()
 
 	init := handle(t, s, `{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}`)
@@ -66,7 +68,7 @@ func TestToolServerAnswersTheToolMethods(t *testing.T) {
 	}
 }
 
-func TestToolServerReportsFailures(t *testing.T) {
+func TestServerReportsFailures(t *testing.T) {
 	s := echoServer()
 
 	broke := handle(t, s, `{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"echo","arguments":{"x":"boom"}}}`)
@@ -91,32 +93,46 @@ func TestToolServerReportsFailures(t *testing.T) {
 	}
 }
 
-func TestMCPMessageWithoutAHandlerIsAnError(t *testing.T) {
-	_, p := connect(t, Handler{})
-	p.send(`{"type":"control_request","request_id":"m1","request":{"subtype":"mcp_message","server_name":"x","message":{"jsonrpc":"2.0","id":1,"method":"tools/list"}}}`)
-	res := p.next()["response"].(map[string]any)
-	if res["subtype"] != "error" || !strings.Contains(res["error"].(string), "SDK MCP server not found: x") {
-		t.Errorf("reply = %v", res)
-	}
-}
 
-func TestMCPMessageRepliesWrapTheResponse(t *testing.T) {
-	s := echoServer()
-	_, p := connect(t, Handler{OnMCPMessage: s.Handle})
-
-	p.send(`{"type":"control_request","request_id":"m1","request":{"subtype":"mcp_message","server_name":"t","message":{"jsonrpc":"2.0","id":7,"method":"ping"}}}`)
-	res := p.next()["response"].(map[string]any)
-	if res["subtype"] != "success" || res["request_id"] != "m1" {
-		t.Fatalf("reply = %v", res)
+func TestLoopbackNeedsTheTokenAndAnswersOverHTTP(t *testing.T) {
+	l, err := Listen(echoServer())
+	if err != nil {
+		t.Fatalf("listen: %v", err)
 	}
-	mcp := res["response"].(map[string]any)["mcp_response"].(map[string]any)
-	if mcp["id"] != float64(7) || mcp["result"] == nil {
-		t.Errorf("mcp_response = %v", mcp)
+	defer l.Close()
+	if !strings.HasPrefix(l.URL, "http://127.0.0.1:") {
+		t.Errorf("url = %s", l.URL)
 	}
 
-	p.send(`{"type":"control_request","request_id":"m2","request":{"subtype":"mcp_message","server_name":"t","message":{"jsonrpc":"2.0","method":"notifications/cancelled"}}}`)
-	ack := p.next()["response"].(map[string]any)["response"].(map[string]any)["mcp_response"].(map[string]any)
-	if ack["id"] != float64(0) {
-		t.Errorf("notification ack = %v", ack)
+	post := func(auth, body string) (int, string) {
+		req, _ := http.NewRequest(http.MethodPost, l.URL, strings.NewReader(body))
+		req.Header.Set("Content-Type", "application/json")
+		if auth != "" {
+			req.Header.Set("Authorization", auth)
+		}
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatalf("post: %v", err)
+		}
+		defer res.Body.Close()
+		b, _ := io.ReadAll(res.Body)
+		return res.StatusCode, string(b)
+	}
+
+	if code, _ := post("", `{"jsonrpc":"2.0","id":1,"method":"ping"}`); code != http.StatusUnauthorized {
+		t.Errorf("no token: %d", code)
+	}
+	if code, _ := post("Bearer wrong", `{"jsonrpc":"2.0","id":1,"method":"ping"}`); code != http.StatusUnauthorized {
+		t.Errorf("wrong token: %d", code)
+	}
+	code, body := post(l.Header(), `{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"echo","arguments":{"a":2}}}`)
+	if code != http.StatusOK || !strings.Contains(body, `echo {\"a\":2}`) {
+		t.Errorf("call: %d %s", code, body)
+	}
+	if code, _ := post(l.Header(), `{"jsonrpc":"2.0","method":"notifications/initialized"}`); code != http.StatusAccepted {
+		t.Errorf("notification: %d", code)
+	}
+	if code, _ := post(l.Header(), `[{"jsonrpc":"2.0","id":1,"method":"ping"}]`); code != http.StatusBadRequest {
+		t.Errorf("batch: %d", code)
 	}
 }

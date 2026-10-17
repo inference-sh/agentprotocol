@@ -129,6 +129,8 @@ func (b *ClaudeBackend) Capabilities() Capabilities {
 		Resume:    true,
 		Tools:     true,
 		Images:    true,
+
+		OnlyCallerTools: true,
 	}
 }
 
@@ -146,8 +148,8 @@ func (b *ClaudeBackend) diagnose(msg string) {
 // Either way the ID is replaced by whatever system/init later reports, should
 // the two ever differ.
 func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error) {
-	if len(cfg.Tools) > 0 && cfg.CallTool == nil {
-		return nil, errors.New("driver: SessionConfig.Tools needs CallTool to run them")
+	if err := checkCallerTools(cfg, b.Capabilities()); err != nil {
+		return nil, err
 	}
 	s := &claudeSession{
 		backend: b,
@@ -169,6 +171,14 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 		ExtraArgs:      b.ExtraArgs,
 		MCPConfig:      claudeMCPConfig(cfg.Metadata),
 	}
+	if cfg.OnlyCallerTools {
+		// No built-in tool, no MCP server but ours (the SDK server is
+		// declared at initialize, which --strict-mcp-config does not filter),
+		// and no settings, hooks or skills from the machine.
+		opts.ExtraArgs = append(append([]string(nil), b.ExtraArgs...),
+			"--tools", "", "--strict-mcp-config", "--setting-sources", "", "--disable-slash-commands")
+		opts.MCPConfig = ""
+	}
 	if cfg.Approvals == ApprovalsSkip {
 		opts.PermissionMode = claudecode.PermissionModeBypassPermissions
 	}
@@ -185,7 +195,7 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 	init := claudecode.InitializeRequest{AppendSystemPrompt: cfg.Instructions}
 	var onMCP func(context.Context, string, json.RawMessage) (json.RawMessage, error)
 	if len(cfg.Tools) > 0 {
-		server, err := claudeToolServer(cfg.Tools, cfg.CallTool)
+		server, err := callerToolServer(cfg.Tools, cfg.CallTool)
 		if err != nil {
 			return nil, err
 		}
@@ -203,7 +213,7 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 			if srv != name {
 				return nil, fmt.Errorf("SDK MCP server not found: %s", srv)
 			}
-			return server.Handle(ctx, srv, msg)
+			return server.Handle(ctx, msg)
 		}
 	}
 
@@ -937,62 +947,6 @@ func (s *claudeSession) toolName(name string) string {
 	return name
 }
 
-// claudeToolServer serves SessionConfig.Tools as an SDK MCP server whose calls
-// go to the caller.
-func claudeToolServer(tools []ap.Tool, call ToolCaller) (*claudecode.ToolServer, error) {
-	server := &claudecode.ToolServer{Name: "agentprotocol", Version: "1"}
-	seen := map[string]bool{}
-	for _, t := range tools {
-		name := t.Function.Name
-		if name == "" {
-			return nil, errors.New("driver: a tool in SessionConfig.Tools has no name")
-		}
-		if seen[name] {
-			return nil, fmt.Errorf("driver: tool %q appears twice in SessionConfig.Tools", name)
-		}
-		seen[name] = true
-		schema, err := toolInputSchema(t)
-		if err != nil {
-			return nil, fmt.Errorf("driver: tool %q: %w", name, err)
-		}
-		server.Tools = append(server.Tools, claudecode.MCPTool{
-			Name: name, Description: t.Function.Description, InputSchema: schema,
-		})
-	}
-	server.Call = func(ctx context.Context, c claudecode.MCPToolCall) (claudecode.MCPToolResult, error) {
-		out, err := call(ctx, ToolCall{ToolInvocationID: c.ToolUseID, Name: c.Name, Arguments: c.Arguments})
-		if err != nil {
-			return claudecode.MCPToolResult{}, err
-		}
-		return claudecode.MCPToolResult{Text: out.Text, IsError: out.IsError}, nil
-	}
-	return server, nil
-}
-
-// toolInputSchema is a tool's parameters as the JSON Schema object MCP's
-// inputSchema requires: type object always, no empty title, and the
-// function-level required list when the parameters carry none.
-func toolInputSchema(t ap.Tool) (json.RawMessage, error) {
-	raw, err := json.Marshal(t.Function.Parameters)
-	if err != nil {
-		return nil, err
-	}
-	var schema map[string]any
-	if err := json.Unmarshal(raw, &schema); err != nil {
-		return nil, err
-	}
-	if title, _ := schema["title"].(string); title == "" {
-		delete(schema, "title")
-	}
-	schema["type"] = "object"
-	if _, ok := schema["properties"]; !ok {
-		schema["properties"] = map[string]any{}
-	}
-	if _, ok := schema["required"]; !ok && t.Function.Required != nil {
-		schema["required"] = *t.Function.Required
-	}
-	return json.Marshal(schema)
-}
 
 // permissionUpdates turns a scope into the rules sent back with an allow.
 func permissionUpdates(req claudecode.PermissionRequest, scope Scope) []claudecode.PermissionUpdate {

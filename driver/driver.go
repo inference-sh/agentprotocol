@@ -101,9 +101,13 @@ type Capabilities struct {
 	// connection behind it has gone away.
 	Resume bool
 
-	// Tools reports that the caller can supply tools for the agent to call,
-	// rather than the agent being limited to its own.
+	// Tools reports that the agent can call SessionConfig.Tools, run by
+	// SessionConfig.CallTool.
 	Tools bool
+
+	// OnlyCallerTools reports that the backend can turn the agent's own
+	// tools off (SessionConfig.OnlyCallerTools).
+	OnlyCallerTools bool
 
 	// Images reports that an image in Input.Files reaches the model as an
 	// image. When false, the agent gets the image named in the text like any
@@ -141,6 +145,12 @@ type SessionConfig struct {
 	// decides whether a call may run: these calls raise no
 	// approval-required event, since the caller is the one running them.
 	CallTool ToolCaller
+
+	// OnlyCallerTools turns the agent's own tools off (shell, file edits,
+	// web fetch and the rest), leaving it Tools and nothing else. Open fails
+	// on a backend whose Capabilities.OnlyCallerTools is false rather than
+	// run the agent with its tools still on.
+	OnlyCallerTools bool
 
 	// Metadata is passed through to the backend for transport-specific
 	// settings that do not deserve a field here.

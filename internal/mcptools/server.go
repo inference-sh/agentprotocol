@@ -1,4 +1,4 @@
-package claudecode
+package mcptools
 
 import (
 	"context"
@@ -8,45 +8,47 @@ import (
 	"github.com/inference-sh/agentprotocol/internal/jsonrpc"
 )
 
-// ToolServer is the smallest MCP server that offers tools to the CLI: the
-// part of the protocol a host-served server (InitializeRequest.SDKMCPServers)
-// needs, which is initialize, tools/list, tools/call and ping. Plug Handle
-// into Handler.OnMCPMessage.
+// Package mcptools is the smallest MCP server that offers a caller's tools to
+// an agent: initialize, tools/list, tools/call and ping. The drivers put it
+// behind whatever transport the agent takes: Claude Code's control channel
+// (mcp_message), or a loopback HTTP endpoint (Loopback) for agents that dial
+// MCP servers themselves.
 //
 // It is not a general MCP implementation. Resources, prompts, tasks and
 // elicitation are absent, and a method it does not know is answered with
 // method-not-found, which the CLI reads as "not supported".
-type ToolServer struct {
+type Server struct {
 	// Name and Version identify the server in the initialize reply.
 	Name    string
 	Version string
 
 	// Tools is what tools/list returns.
-	Tools []MCPTool
+	Tools []Tool
 
-	// Call runs a tool. ToolUseID is the model's tool_use id, which the CLI
-	// sends with each call; it is empty from a CLI that does not. An error
-	// is a failure of the call itself and reaches the model as an error
-	// result, the same as IsError.
-	Call func(ctx context.Context, call MCPToolCall) (MCPToolResult, error)
+	// Run runs a tool. An error is a failure of the call itself and reaches
+	// the model as an error result, the same as IsError.
+	Run func(ctx context.Context, call Call) (Result, error)
 }
 
-// MCPTool is one tool as tools/list describes it.
-type MCPTool struct {
+// Tool is one tool as tools/list describes it.
+type Tool struct {
 	Name        string          `json:"name"`
 	Description string          `json:"description,omitempty"`
 	InputSchema json.RawMessage `json:"inputSchema"`
 }
 
-// MCPToolCall is one tools/call.
-type MCPToolCall struct {
+// Call is one tools/call.
+type Call struct {
 	Name      string
 	Arguments json.RawMessage
+
+	// ToolUseID is the model's id for this call, where the agent sends one
+	// (Claude Code puts it in _meta). Empty otherwise.
 	ToolUseID string
 }
 
-// MCPToolResult is a tool's answer. Text is sent as one text block.
-type MCPToolResult struct {
+// Result is a tool's answer. Text is sent as one text block.
+type Result struct {
 	Text    string
 	IsError bool
 }
@@ -59,10 +61,10 @@ const toolUseIDMeta = "claudecode/toolUseId"
 const mcpProtocolVersion = "2025-06-18"
 
 // Handle answers one JSON-RPC message. A notification returns nil.
-func (s *ToolServer) Handle(ctx context.Context, server string, raw json.RawMessage) (json.RawMessage, error) {
+func (s *Server) Handle(ctx context.Context, raw json.RawMessage) (json.RawMessage, error) {
 	var msg jsonrpc.Message
 	if err := json.Unmarshal(raw, &msg); err != nil {
-		return nil, fmt.Errorf("claudecode: decode mcp message for %s: %w", server, err)
+		return nil, fmt.Errorf("mcptools: decode message: %w", err)
 	}
 	if !msg.HasID() {
 		return nil, nil
@@ -81,7 +83,7 @@ func (s *ToolServer) Handle(ctx context.Context, server string, raw json.RawMess
 	return json.Marshal(out)
 }
 
-func (s *ToolServer) dispatch(ctx context.Context, msg jsonrpc.Message) (any, *jsonrpc.Error) {
+func (s *Server) dispatch(ctx context.Context, msg jsonrpc.Message) (any, *jsonrpc.Error) {
 	switch msg.Method {
 	case "initialize":
 		var p struct {
@@ -104,7 +106,7 @@ func (s *ToolServer) dispatch(ctx context.Context, msg jsonrpc.Message) (any, *j
 	case "tools/list":
 		tools := s.Tools
 		if tools == nil {
-			tools = []MCPTool{}
+			tools = []Tool{}
 		}
 		return map[string]any{"tools": tools}, nil
 
@@ -120,18 +122,18 @@ func (s *ToolServer) dispatch(ctx context.Context, msg jsonrpc.Message) (any, *j
 		if !s.has(p.Name) {
 			return nil, &jsonrpc.Error{Code: jsonrpc.CodeInvalidParams, Message: "unknown tool: " + p.Name}
 		}
-		call := MCPToolCall{Name: p.Name, Arguments: p.Arguments}
+		call := Call{Name: p.Name, Arguments: p.Arguments}
 		if id, ok := p.Meta[toolUseIDMeta].(string); ok {
 			call.ToolUseID = id
 		}
 		if len(call.Arguments) == 0 || string(call.Arguments) == "null" {
 			call.Arguments = json.RawMessage(`{}`)
 		}
-		var res MCPToolResult
-		if s.Call == nil {
-			res = MCPToolResult{Text: "no tool handler is attached", IsError: true}
-		} else if r, err := s.Call(ctx, call); err != nil {
-			res = MCPToolResult{Text: err.Error(), IsError: true}
+		var res Result
+		if s.Run == nil {
+			res = Result{Text: "no tool handler is attached", IsError: true}
+		} else if r, err := s.Run(ctx, call); err != nil {
+			res = Result{Text: err.Error(), IsError: true}
 		} else {
 			res = r
 		}
@@ -145,7 +147,7 @@ func (s *ToolServer) dispatch(ctx context.Context, msg jsonrpc.Message) (any, *j
 	}
 }
 
-func (s *ToolServer) has(name string) bool {
+func (s *Server) has(name string) bool {
 	for _, t := range s.Tools {
 		if t.Name == name {
 			return true

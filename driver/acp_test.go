@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"slices"
@@ -638,6 +640,10 @@ func runFakeAgent(script string) {
 	// answer, so the turn only completes after the human decides.
 	pendingPrompt := 0
 
+	// tools is the caller tool server session/new declared, for
+	// "caller-tools".
+	var tools fakeToolServer
+
 	for in.Scan() {
 		var msg acp.Message
 		if json.Unmarshal(in.Bytes(), &msg) != nil {
@@ -651,9 +657,29 @@ func runFakeAgent(script string) {
 				os.Stderr.WriteString("fatal: config.yaml: unknown provider\n")
 				os.Exit(2)
 			}
+			if script == "caller-tools" {
+				reply(*msg.ID, map[string]any{"protocolVersion": acp.ProtocolVersion,
+					"agentCapabilities": map[string]any{"mcpCapabilities": map[string]any{"http": true}}})
+				continue
+			}
 			reply(*msg.ID, map[string]any{"protocolVersion": acp.ProtocolVersion})
 
 		case msg.Method == acp.MethodSessionNew:
+			if script == "caller-tools" {
+				// Keep the raw declaration, to check its wire form, and the
+				// server to call.
+				var p struct {
+					MCPServers []json.RawMessage `json:"mcpServers"`
+				}
+				_ = json.Unmarshal(msg.Params, &p)
+				for _, raw := range p.MCPServers {
+					var srv acp.MCPServer
+					_ = json.Unmarshal(raw, &srv)
+					if srv.Name == "tools" {
+						tools = fakeToolServer{raw: string(raw), srv: srv}
+					}
+				}
+			}
 			reply(*msg.ID, acp.NewSessionResult{SessionID: "sess_fake"})
 
 		case msg.Method == acp.MethodSessionLoad:
@@ -777,6 +803,32 @@ func runFakeAgent(script string) {
 				continue
 			}
 
+			if script == "caller-tools" {
+				// What an agent does with an MCP tool: list it, announce the
+				// call under its own prefixed name, ask permission, and call
+				// it once allowed (on the answer to 9002, below).
+				pendingPrompt = *msg.ID
+				tools.list = tools.post(`{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"fake","version":"1"}}}`) +
+					" " + tools.post(`{"jsonrpc":"2.0","id":2,"method":"tools/list"}`)
+				tools.unauth = tools.status(false)
+				update(acp.SessionUpdate{
+					Kind: acp.UpdateKindToolCall, ToolCallID: "call_ours", Title: "mcp__tools__echo",
+					Status: "pending", RawInput: json.RawMessage(`{"text":"hi"}`),
+				})
+				send(map[string]any{
+					"jsonrpc": "2.0", "id": 9002, "method": acp.MethodRequestPermission,
+					"params": acp.PermissionRequest{
+						SessionID: "sess_fake",
+						ToolCall:  &acp.PermissionToolRef{ToolCallID: "call_ours", Title: "mcp__tools__echo", RawInput: json.RawMessage(`{"text":"hi"}`)},
+						Options: []acp.PermissionOption{
+							{OptionID: "o_allow", Kind: acp.OptionKindAllowOnce},
+							{OptionID: "o_reject", Kind: acp.OptionKindRejectOnce},
+						},
+					},
+				})
+				continue
+			}
+
 			if script == "permission" && slices.Contains(os.Args, fakeAutoApproveFlag) {
 				// Launched with its own skip flag: runs the tool unasked.
 				update(acp.SessionUpdate{
@@ -814,6 +866,43 @@ func runFakeAgent(script string) {
 				Content: json.RawMessage(`{"type":"text","text":"you said ` + text + `"}`),
 			})
 			reply(*msg.ID, map[string]any{"stopReason": "end_turn"})
+
+		case msg.IsResponse() && msg.ID != nil && *msg.ID == 9002:
+			// Our tool was allowed: call it, report it done under a bare
+			// update, then ask about the agent's own tool that happens to
+			// share its bare name (9003).
+			var res acp.PermissionResponse
+			_ = json.Unmarshal(msg.Result, &res)
+			out := tools.post(`{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"echo","arguments":{"text":"hi"}}}`)
+			update(acp.SessionUpdate{
+				Kind: acp.UpdateKindToolCallUpdate, ToolCallID: "call_ours", Status: "completed",
+				Content: json.RawMessage(`[{"type":"text","text":"tool ran"}]`),
+			})
+			report, _ := json.Marshal(map[string]string{
+				"decl": tools.raw, "url": tools.srv.URL, "auth": tools.srv.Headers["Authorization"],
+				"list": tools.list, "unauth": tools.unauth, "call": out, "option": res.Outcome.OptionID,
+			})
+			text, _ := json.Marshal(string(report))
+			update(acp.SessionUpdate{
+				Kind:    acp.UpdateKindAgentMessageChunk,
+				Content: json.RawMessage(`{"type":"text","text":` + string(text) + `}`),
+			})
+			update(acp.SessionUpdate{Kind: acp.UpdateKindToolCall, ToolCallID: "call_builtin", Title: "echo", Status: "pending"})
+			send(map[string]any{
+				"jsonrpc": "2.0", "id": 9003, "method": acp.MethodRequestPermission,
+				"params": acp.PermissionRequest{
+					SessionID: "sess_fake",
+					ToolCall:  &acp.PermissionToolRef{ToolCallID: "call_builtin", Title: "echo"},
+					Options: []acp.PermissionOption{
+						{OptionID: "o_allow", Kind: acp.OptionKindAllowOnce},
+						{OptionID: "o_reject", Kind: acp.OptionKindRejectOnce},
+					},
+				},
+			})
+
+		case msg.IsResponse() && msg.ID != nil && *msg.ID == 9003:
+			update(acp.SessionUpdate{Kind: acp.UpdateKindToolCallUpdate, ToolCallID: "call_builtin", Status: "failed"})
+			reply(pendingPrompt, map[string]any{"stopReason": "end_turn"})
 
 		case msg.IsResponse() && msg.ID != nil && *msg.ID == 9001:
 			// The permission answer came back; finish the turn, naming the
@@ -857,6 +946,51 @@ func runFakeAgent(script string) {
 }
 
 var _ = exec.Command // kept for clarity about what the backend does
+
+// fakeToolServer is the fake agent's MCP client for the caller tool server.
+type fakeToolServer struct {
+	raw          string
+	srv          acp.MCPServer
+	list, unauth string
+}
+
+// post sends one JSON-RPC message with the declared headers and returns the
+// body, or the error.
+func (f fakeToolServer) post(body string) string {
+	req, err := http.NewRequest("POST", f.srv.URL, strings.NewReader(body))
+	if err != nil {
+		return "error: " + err.Error()
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json, text/event-stream")
+	for k, v := range f.srv.Headers {
+		req.Header.Set(k, v)
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "error: " + err.Error()
+	}
+	defer res.Body.Close()
+	data, _ := io.ReadAll(res.Body)
+	return string(data)
+}
+
+// status is the HTTP status of a tools/list sent with or without the
+// declared headers.
+func (f fakeToolServer) status(withHeaders bool) string {
+	req, _ := http.NewRequest("POST", f.srv.URL, strings.NewReader(`{"jsonrpc":"2.0","id":9,"method":"tools/list"}`))
+	if withHeaders {
+		for k, v := range f.srv.Headers {
+			req.Header.Set(k, v)
+		}
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "error: " + err.Error()
+	}
+	res.Body.Close()
+	return res.Status
+}
 
 func TestDiagnosticsReachTheCallerInsteadOfVanishing(t *testing.T) {
 	// The client stopped discarding unattributable errors in v0.2.1, but the

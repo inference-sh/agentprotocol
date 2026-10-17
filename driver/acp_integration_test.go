@@ -190,6 +190,7 @@ func TestACPRealCallerTools(t *testing.T) {
 			if _, asked := findEvent(evs, ap.AgentEventApprovalRequired); asked {
 				t.Error("a caller tool raised an approval")
 			}
+			t.Logf("CallTool got %+v", got)
 			if len(got) != 1 || got[0].Name != "lookup" || !strings.Contains(string(got[0].Arguments), "orb") {
 				t.Errorf("calls = %+v", got)
 			}

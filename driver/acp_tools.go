@@ -48,14 +48,17 @@ func (t *acpCallerTools) close() {
 // name in SessionConfig.Tools and <prefix> is one of the server-qualified
 // forms agents use for an MCP tool:
 //
-//	mcp__<server>__   claude-agent-acp (and Claude Code)
-//	mcp_<server>_     gemini's FQN form
-//	<server>__        gemini when tool names collide
-//	<server>_         opencode (<server>_<tool>, measured on opencode 1.17.16)
-//	<server>/  <server>.  <server>:
+//	<server>_         opencode (measured, opencode 1.17.16)
+//	mcp__<server>__   Claude Code's form (claude-agent-acp; not measured here)
+//	mcp_<server>_  <server>__  <server>/  <server>.  <server>:
+//	                  other agents' forms (not measured)
 //
-// A bare title equal to a tool name is not matched: an agent's own tool of
-// that name (bash, read) would be taken for ours, and auto-allowed.
+// A permission request or later update whose toolCallId a matching tool_call
+// announced is ours too (see observe). A bare title equal to a tool name is
+// not matched: an agent's own tool of that name (bash, read) would be taken
+// for ours, and auto-allowed. An agent whose title is a description rather
+// than the tool's name is not recognised, and its permission requests for
+// our tools reach the caller as approvals.
 func (t *acpCallerTools) match(title string) (string, bool) {
 	if t == nil {
 		return "", false

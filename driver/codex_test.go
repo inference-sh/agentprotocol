@@ -580,7 +580,7 @@ func TestCodexBackendCapabilities(t *testing.T) {
 	}
 }
 
-func echoTool() []ap.Tool {
+func codexEchoTool() []ap.Tool {
 	required := []string{"text"}
 	return []ap.Tool{{Type: "function", Function: ap.ToolFunction{
 		Name: "echo", Description: "Echo the text back.",
@@ -611,7 +611,7 @@ func TestCodexCallerToolRoundTrip(t *testing.T) {
 			var mu sync.Mutex
 			var calls []driver.ToolCall
 			sess := openCodex(t, "", driver.SessionConfig{
-				Tools: echoTool(),
+				Tools: codexEchoTool(),
 				CallTool: func(_ context.Context, call driver.ToolCall) (driver.ToolOutput, error) {
 					mu.Lock()
 					calls = append(calls, call)
@@ -664,7 +664,7 @@ func TestCodexCallerToolRoundTrip(t *testing.T) {
 
 func TestCodexCallerToolsDeclaredWithExperimentalAPI(t *testing.T) {
 	sess := openCodex(t, "", driver.SessionConfig{
-		Tools:    echoTool(),
+		Tools:    codexEchoTool(),
 		CallTool: func(context.Context, driver.ToolCall) (driver.ToolOutput, error) { return driver.ToolOutput{}, nil },
 	})
 	_ = sess.Prompt(context.Background(), driver.TextInput("init?"))
@@ -686,7 +686,7 @@ func TestCodexCallerToolsDeclaredWithExperimentalAPI(t *testing.T) {
 
 func TestCodexCallerToolsNeedCallTool(t *testing.T) {
 	b, _ := codexBackend(t, "")
-	_, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir(), Tools: echoTool()})
+	_, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir(), Tools: codexEchoTool()})
 	if err == nil || !strings.Contains(err.Error(), "CallTool") {
 		t.Errorf("open without CallTool = %v", err)
 	}
@@ -697,7 +697,7 @@ func TestCodexInterruptCancelsACallerTool(t *testing.T) {
 	running := make(chan struct{})
 	ended := make(chan error, 1)
 	sess := openCodex(t, "", driver.SessionConfig{
-		Tools: echoTool(),
+		Tools: codexEchoTool(),
 		CallTool: func(ctx context.Context, _ driver.ToolCall) (driver.ToolOutput, error) {
 			close(running)
 			<-ctx.Done()
@@ -737,7 +737,7 @@ func TestCodexOnlyCallerToolsTurnsCodexsOwnOff(t *testing.T) {
 	b.Args = []string{"-c", `model="x"`}
 	b.Config = map[string]any{"model_reasoning_effort": "low"}
 	sess, err := b.Open(context.Background(), driver.SessionConfig{
-		WorkDir: t.TempDir(), OnlyCallerTools: true, Tools: echoTool(),
+		WorkDir: t.TempDir(), OnlyCallerTools: true, Tools: codexEchoTool(),
 		CallTool: func(context.Context, driver.ToolCall) (driver.ToolOutput, error) { return driver.ToolOutput{}, nil },
 	})
 	if err != nil {

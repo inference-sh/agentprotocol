@@ -197,6 +197,7 @@ type directValues struct {
 	WorkDir          string
 	MCPURL           string
 	MCPToken         string
+	SessionID        string
 	Server           string
 	Tool             string
 }
@@ -364,6 +365,11 @@ func (h *Harness) start(ctx context.Context, req Request, onDelta func(Delta)) (
 		seed, send = req.Messages, []transcript.Entry{userText(prompt)}
 	}
 	if len(seed) > 0 {
+		if d.SessionHome != "" {
+			if home, err = expand(d.SessionHome, vals); err != nil {
+				return fail(fmt.Errorf("llm: %s direct session home: %w", h.Harness.Name, err))
+			}
+		}
 		id, err := h.writeSession(ctx, home, dir, req.Model, c.named(seed))
 		if err != nil {
 			return fail(err)
@@ -393,11 +399,41 @@ func (h *Harness) start(ctx context.Context, req Request, onDelta func(Delta)) (
 	c.sess = sess
 	c.done = make(chan struct{})
 	go c.pump()
+	if err := h.request(ctx, sess, vals); err != nil {
+		return fail(err)
+	}
 	if err := sess.Prompt(ctx, driver.Input{Text: promptText(send)}); err != nil {
 		return fail(fmt.Errorf("llm: %s: %w", h.Harness.Name, err))
 	}
 	c.sig = signature(req)
 	return c, nil
+}
+
+// request sends the row's Requests to the open session.
+func (h *Harness) request(ctx context.Context, sess driver.Session, vals directValues) error {
+	reqs := h.Harness.Direct.Requests
+	if len(reqs) == 0 {
+		return nil
+	}
+	caller, ok := sess.(driver.Caller)
+	if !ok {
+		return fmt.Errorf("llm: %s: a %T takes no direct requests", h.Harness.Name, sess)
+	}
+	vals.SessionID = sess.ID()
+	for _, r := range reqs {
+		params := make(map[string]string, len(r.Params))
+		for k, v := range r.Params {
+			x, err := expand(v, vals)
+			if err != nil {
+				return fmt.Errorf("llm: %s direct request %s: %w", h.Harness.Name, r.Method, err)
+			}
+			params[k] = x
+		}
+		if _, err := caller.Call(ctx, r.Method, params); err != nil {
+			return fmt.Errorf("llm: %s: %w", h.Harness.Name, err)
+		}
+	}
+	return nil
 }
 
 // writeSession writes entries as the harness's own session for dir.

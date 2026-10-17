@@ -314,6 +314,35 @@ var All = map[string]Harness{
 		ExitCommand:             "/exit",
 		ACPCmd:                  []string{"copilot", "--acp"},
 		ACPImages:               true,
+		// Measured by the direct probe: copilot --acp is served by the Rust
+		// runtime, whose boot options carry no systemMessage (the SDK's
+		// mode "replace" is not reachable), --agent is ignored and
+		// extensions are not loaded. The system prompt goes in as a custom
+		// agent selected with session/set_config_option "agent", which
+		// copilot appends inside <agent_instructions> to its own prompt
+		// (direct.system: added, ~18k chars). The agent's tools list keeps
+		// the model to our server's tools, except sql (session-local
+		// SQLite), which no agent setting removes; --available-tools or
+		// --excluded-tools would drop it but copilot then writes "Info:
+		// Disabled tools: ..." into the answer as agent text. The repo
+		// settings file turns off user and repo hooks; COPILOT_ALLOW_ALL
+		// trusts the working dir so it and the agent are read. The user
+		// message still gets <current_datetime>. Result and restart pass.
+		Direct: &Direct{
+			Args: []string{"--no-custom-instructions", "--disable-builtin-mcps", "--no-ask-user"},
+			Env:  map[string]string{"COPILOT_ALLOW_ALL": "true"},
+			Files: map[string]string{
+				"{{.WorkDir}}/.github/agents/direct.agent.md": "---\nname: direct\ndescription: Direct mode.\ntools: [\"tools/*\"]\n---\n{{.SystemPrompt}}\n",
+				"{{.WorkDir}}/.github/copilot/settings.json":  `{"disableAllHooks": true}`,
+			},
+			Requests: []DirectRequest{{
+				Method: "session/set_config_option",
+				Params: map[string]string{"sessionId": "{{.SessionID}}", "configId": "agent", "value": "direct"},
+			}},
+			ToolName: "{{.Server}}-{{.Tool}}",
+			Measured: "1.0.98 2026-10-17",
+			Partial:  "copilot's own ~18k-character system prompt stays; the caller's is nested in it as subordinate agent instructions",
+		},
 	},
 	"grok": {
 		Sessions: grok.Codec,
@@ -358,6 +387,7 @@ var All = map[string]Harness{
 		ExitCommand:    "/exit",
 		CompactCommand: "/compact",
 		ACPCmd:         []string{"grok", "agent", "stdio"},
+		// No Direct row: grok never declares an MCP tool to the model, only its search_tool/use_tool dispatchers, so the caller's tools cannot be the model's (measured 2026-10-17, grok 1.0.62; GROK_AGENT with promptMode: full does replace the system prompt).
 	},
 	"pi": {
 		Sessions: pi.Codec,
@@ -485,6 +515,32 @@ export default function (pi: any) {
 			{Pattern: "Switch to V3 today", SendDown: true},
 			{Pattern: "accept responsibility", SendDown: true, Required: true}, {Pattern: "Welcome"},
 		},
+		// Measured with the mock's request bodies. KIRO_HOME moves kiro's
+		// own home (agents, settings, steering, skills, mcp.json, sessions)
+		// to the conversation's dir; login stays in the data dir. The agent
+		// there overrides kiro_default, the agent the written session names
+		// and session/load runs regardless of --agent. Its tools are the
+		// session MCP server alone; chat.disableInheritingDefaultResources
+		// drops the AGENTS.md, README.md, steering and skills an agent
+		// otherwise inherits (resources: [] does not). Not pure: kiro's wire
+		// has no system field, so the prompt is the first history turn,
+		// "Follow this instruction: <prompt>\nThe current model is <model>.\n",
+		// answered by a canned assistant acknowledgement, and the backend adds
+		// its own system prompt server-side; each user message is wrapped in
+		// a "Current time" context entry and USER MESSAGE BEGIN/END markers;
+		// tool descriptions get "(MCP tool from tools) " and schemas a
+		// __tool_use_purpose property. A written session's trailing tool
+		// result is recorded cancelled and not sent.
+		Direct: &Direct{
+			Args: []string{"--agent", "kiro_default"},
+			Env:  map[string]string{"KIRO_HOME": "{{.Dir}}/.kiro"},
+			Files: map[string]string{
+				".kiro/agents/kiro_default.json": `{"name":"kiro_default","description":"direct","prompt":"file://{{.SystemPromptFile}}","tools":["@tools"],"allowedTools":["@tools"],"includeMcpJson":false,"resources":[],"hooks":{}}`,
+				".kiro/settings/cli.json":        `{"chat.disableInheritingDefaultResources":true}`,
+			},
+			SessionHome: "{{.Dir}}",
+			Measured:    "2.32.0 2026-10-17",
+		},
 		ACPCmd:             []string{"kiro-cli", "acp"},
 		ACPImages:          true,
 		ACPArgs:            []string{"--model", "{{.Model}}"},
@@ -543,7 +599,7 @@ export default function (pi: any) {
 		Name: "hermes", Binary: "hermes",
 		DetectEnvVars:  []string{"HERMES_SESSION_ID", "HERMES_INTERACTIVE"},
 		ToolCallGated:  ToolCall{Name: "terminal", Args: gatedShellArgs},
-		InstallCmd:     []string{"pip", "install", "--break-system-packages", "hermes-agent[acp]"},
+		InstallCmd:     []string{"pip", "install", "--break-system-packages", "hermes-agent[acp,mcp]"},
 		InstallBinDirs: []string{".local/bin"},
 		APIFormat:      OpenAI,
 		ToolCallName:   "read_file",
@@ -571,13 +627,148 @@ export default function (pi: any) {
 		ExitCommand:       "/exit",
 		ACPCmd:            []string{"hermes", "acp"},
 		ACPImages:         true,
+		// Measured by the direct probe. Hermes ACP builds its agent with
+		// toolset hermes-acp and its own system prompt (SOUL.md, memory,
+		// AGENTS.md, skills), with no flag or config to change either:
+		// --ignore-rules/--ignore-user-config are chat-only. Session MCP
+		// servers are honoured (registered before session/new returns) but
+		// only with the mcp extra installed; without it they are dropped
+		// silently. Our plugin, the only bundled one (HERMES_BUNDLED_PLUGINS;
+		// kind backend loads without plugins.enabled), empties hermes-acp,
+		// replaces the system prompt and keeps only mcp__tools__* in each
+		// request (llm_request middleware, the only middleware left), turns
+		// off every hook (the user's shell hooks and plugins' observers),
+		// titles, compression, memory and skill reviews, and raises the MCP
+		// call timeout from 300s. Not pure: user plugins enabled in
+		// $HERMES_HOME/config.yaml still load and may register tools (not
+		// offered) or a memory provider.
+		Direct: &Direct{
+			Env: map[string]string{"HERMES_BUNDLED_PLUGINS": "{{.Dir}}/plugins"},
+			Files: map[string]string{
+				"plugins/direct/plugin.yaml": "name: direct\nkind: backend\nversion: 1.0.0\n",
+				"plugins/direct/__init__.py": `import tools.mcp_tool as _mcp
+
+_mcp._DEFAULT_TOOL_TIMEOUT = 86400
+_PREFIX = "mcp__tools__"
+
+
+def _system():
+    with open("{{.SystemPromptFile}}", encoding="utf-8") as f:
+        return f.read()
+
+
+def _name(tool):
+    return (tool.get("function") or {}).get("name") or tool.get("name") or ""
+
+
+def _only_ours():
+    import hermes_cli.plugins as plugins
+
+    plugins.get_plugin_manager()._middleware = {"llm_request": [_request]}
+
+
+def _request(request=None, **_):
+    if not isinstance(request, dict):
+        return None
+    _only_ours()
+    system = _system()
+    messages = request.get("messages")
+    if isinstance(messages, list):
+        rest = [m for m in messages if not (isinstance(m, dict) and m.get("role") in ("system", "developer"))]
+        request["messages"] = [{"role": "system", "content": system}] + rest
+    if "system" in request:
+        request["system"] = system
+    if "instructions" in request:
+        request["instructions"] = system
+    if isinstance(request.get("tools"), list):
+        tools = [t for t in request["tools"] if _name(t).startswith(_PREFIX)]
+        if tools:
+            request["tools"] = tools
+        else:
+            request.pop("tools", None)
+            request.pop("tool_choice", None)
+    return {"request": request}
+
+
+def _no_hooks(*_, **__):
+    return []
+
+
+def register(ctx):
+    import agent.agent_init as agent_init
+    import agent.shell_hooks as shell_hooks
+    import agent.title_generator as title_generator
+    import hermes_cli.plugins as plugins
+    import toolsets
+
+    # No built-in tool: the ACP agent's toolset is hermes-acp (plus one per
+    # MCP server), so with it empty only the session's MCP tools are left.
+    toolsets.TOOLSETS["hermes-acp"]["tools"] = []
+    # No hooks run: the user's shell hooks and plugins' observers alike.
+    shell_hooks.register_from_config = _no_hooks
+    plugins.PluginManager.invoke_hook = lambda self, name, **kw: []
+    plugins.PluginManager.has_hook = lambda self, name: False
+    # No model requests of its own: titles, compression, memory and skill
+    # reviews; no context files or memory read.
+    title_generator.maybe_auto_title = _no_hooks
+    init_agent = agent_init.init_agent
+
+    def _init_agent(agent, *args, **kwargs):
+        kwargs["skip_context_files"] = True
+        kwargs["skip_memory"] = True
+        init_agent(agent, *args, **kwargs)
+        agent.compression_enabled = False
+        agent._memory_nudge_interval = 0
+        agent._skill_nudge_interval = 0
+
+    agent_init.init_agent = _init_agent
+    ctx.register_middleware("llm_request", _request)
+`,
+			},
+			ToolName: "mcp__{{.Server}}__{{.Tool}}",
+			Measured: "0.19.0 2026-10-17",
+		},
 	},
-	"kilo": withGatedTool(withACPProvider(withTSPluginExport(
+	"kilo": func(h Harness) Harness {
+		// The opencode row with kilo's KILO_ variable names. Kilo also
+		// appends a synthetic <environment_details> part (time, working
+		// directory) to every user message after
+		// experimental.chat.messages.transform, unless the message already
+		// has one; the plugin adds an ignored one, which the request
+		// conversion drops (text parts with ignored set are not sent).
+		h.Direct = &Direct{
+			Env: map[string]string{
+				"KILO_CONFIG_CONTENT":          `{"agent":{"direct":{"mode":"primary","prompt":"{file:{{.SystemPromptFile}}}","permission":{"*":"deny","tools_*":"allow"}},"title":{"disable":true}},"default_agent":"direct","instructions":[],"plugin":["file://{{.Dir}}/direct.js"]}`,
+				"KILO_DISABLE_PROJECT_CONFIG":  "1",
+				"KILO_DISABLE_DEFAULT_PLUGINS": "1",
+				"KILO_DISABLE_EXTERNAL_SKILLS": "1",
+				"KILO_DISABLE_CLAUDE_CODE":     "1",
+			},
+			Files: map[string]string{"direct.js": `import { readFileSync } from "node:fs";
+const system = readFileSync("{{.SystemPromptFile}}", "utf8");
+export const Direct = async () => ({
+  "experimental.chat.system.transform": async (_input, output) => {
+    output.system.splice(0, output.system.length, system);
+  },
+  "experimental.chat.messages.transform": async (_input, output) => {
+    for (const m of output.messages) {
+      if (m.info.role !== "user") continue;
+      m.parts.push({ id: "prt_direct_" + m.info.id, sessionID: m.info.sessionID, messageID: m.info.id,
+        type: "text", text: "<environment_details>", synthetic: true, ignored: true });
+    }
+  },
+});
+`},
+			ToolName: "tools_{{.Tool}}",
+			Measured: "7.8.12 2026-10-17",
+		}
+		return h
+	}(withGatedTool(withACPProvider(withTSPluginExport(
 		withDetectEnvVars(tsPluginHarness("kilo", "kilo", "@kilocode/cli", ".kilo/plugins"),
 			"KILO_TREE_SITTER_WASM_DIR"),
 		`export default { id: "belt", server: BeltPlugin };`),
 		[]string{"kilo", "acp"}, []string{"--cwd", "{{.RepoDir}}"}),
-		"bash", gatedShellArgs),
+		"bash", gatedShellArgs)),
 	"kimi": {
 		Sessions: kimi.Codec,
 		Name:     "kimi", Binary: "kimi",
@@ -612,6 +803,25 @@ export default function (pi: any) {
 		OnboardingDismiss: []DismissAction{{Pattern: "Trust this folder?", Required: true}},
 		ACPCmd:            []string{"kimi", "acp"},
 		ACPImages:         true,
+		// `kimi acp` takes no --agent-file/--skills-dir; it discovers agent
+		// profiles from <project root>/.kimi-code/agents. A project profile
+		// named "agent" with override replaces the built-in default: its
+		// body is the whole system prompt (AGENTS.md, skills and plugin
+		// sections only enter through the default template's variables),
+		// and tools "mcp__tools__*" is the only tool it offers. The tool
+		// server comes from ACP session/new (http). Stays impure: config.toml
+		// hooks run (no switch; config is one file under KIMI_CODE_HOME,
+		// which also holds the user's provider and login), and a date
+		// <system-reminder> is added on the first turn (dateChange feature,
+		// unconditional). ${name} in the prompt is substituted for the
+		// template's own variables (cwd, os, ...).
+		Direct: &Direct{
+			Files: map[string]string{
+				"{{.WorkDir}}/.kimi-code/agents/agent.md": "---\nname: agent\ndescription: Direct mode\noverride: true\ntools: [\"mcp__tools__*\"]\n---\n{{.SystemPrompt}}\n",
+			},
+			ToolName: "mcp__{{.Server}}__{{.Tool}}",
+			Measured: "2.2.0 2026-10-17",
+		},
 	},
 	"goose": {
 		Name: "goose", Binary: "goose",
@@ -653,6 +863,41 @@ export default function (pi: any) {
 		ExitCommand:    "/exit",
 		ACPCmd:         []string{"goose", "acp"},
 		ACPImages:      true,
+		Direct: &Direct{
+			// Measured with the mock's request bodies: the system prompt is
+			// set per session with goose's ACP extension
+			// _goose/unstable/session/system-prompt/set (mode set replaces
+			// system.md; the text is rendered as a minijinja template, hence
+			// raw, and trimmed). EXTENSIONS (env beats config.yaml's map)
+			// turns off every configured extension and the default developer
+			// built-in; CONTEXT_FILE_NAMES=[] loads no .goosehints/AGENTS.md;
+			// GOOSE_CONTEXT_LIMIT below 32000 drops the <turn-context> block
+			// goose appends to each user message (agents/moim.rs), and
+			// GOOSE_AUTO_COMPACT_THRESHOLD=0 keeps goose from compacting the
+			// caller's conversation at that limit. Not pure: load_skill and a
+			// "# Skills" list of the compiled-in skills (goose-doc-guide,
+			// web-search) plus any in ~/.agents/skills, ~/.claude/skills and
+			// plugins come with every request (SkillOperation is always
+			// registered, state_machine_builder.rs), and any extension adds an
+			// "# Extensions ... ## tools" section (ops_toolcalling.rs
+			// prompt_parts), both under "# Additional Instructions:"; the
+			// user's ~/.agents/plugins still load (hooks run, plugin MCP
+			// servers join), with no switch short of moving GOOSE_PATH_ROOT,
+			// which also moves the provider config and the session store.
+			// MCP tools are offered as tools__probe_echo.
+			Env: map[string]string{
+				"EXTENSIONS":                   `{"developer":{"type":"platform","name":"developer","description":"","enabled":false}}`,
+				"CONTEXT_FILE_NAMES":           "[]",
+				"GOOSE_CONTEXT_LIMIT":          "31999",
+				"GOOSE_AUTO_COMPACT_THRESHOLD": "0",
+			},
+			Requests: []DirectRequest{{
+				Method: "_goose/unstable/session/system-prompt/set",
+				Params: map[string]string{"sessionId": "{{.SessionID}}", "mode": "set", "text": "{% raw %}{{.SystemPrompt}}{% endraw %}"},
+			}},
+			ToolName: "{{.Server}}__{{.Tool}}",
+			Measured: "1.55.0 2026-10-17",
+		},
 	},
 	"gemini": {
 		Sessions: gemini.Codec,
@@ -911,6 +1156,33 @@ export const Direct = async () => ({
 		ACPImages:          true,
 		ACPArgs:            []string{"-m", "{{.Model}}"},
 		ACPAutoApproveArgs: []string{"--auto", "high"},
+		// Measured with the mock's request bodies (droid 0.244.0 source).
+		// The system prompt is appended only: buildSystemMessageBlocks always
+		// opens with "You are Droid, an AI software engineering agent built
+		// by Factory." and the Droid prompt; the session's systemPrompt that
+		// replaces it is set only by stream-jsonrpc initialize_session, and
+		// ACP session/new passes none. Built-in tools stay: --only-tools and
+		// the session's restrictToolIds are not applied in ACP (exec computes
+		// the selection, then runAcpDaemon ignores it), and
+		// --disable-builtin-skills is refused there. MCP tools are deferred
+		// behind ToolSearch unless the server's name contains "github" or
+		// "agentbrowser" (createMcpTool), so the row declares the server
+		// itself, as agentbrowser, in the project's .factory/mcp.json. The
+		// conversation still carries the tool catalog, skills, subagents,
+		// system info, ~/.factory/AGENTS.md and workspace reminders, and
+		// every new session asks the model for a title. hooksDisabled keeps
+		// the user's hooks out; blockOnMcpLoad holds the first turn for MCP.
+		Direct: &Direct{
+			Args: []string{"--append-system-prompt-file", "{{.SystemPromptFile}}", "--settings", "{{.Dir}}/settings.json"},
+			Files: map[string]string{
+				"settings.json":                  `{"hooks":{"hooksDisabled":true},"blockOnMcpLoad":true}`,
+				"{{.WorkDir}}/.factory/mcp.json": `{"mcpServers":{"agentbrowser":{"type":"http","url":"{{.MCPURL}}","headers":{"Authorization":"Bearer {{.MCPToken}}"}}}}`,
+			},
+			MCPInArgs: true,
+			ToolName:  "agentbrowser___{{.Tool}}",
+			Measured:  "0.244.0 2026-10-17",
+			Partial:   "ACP keeps droid's own system prompt and its 15 built-in tools; only stream-jsonrpc sessions can replace them",
+		},
 	},
 
 	// IDE-only agents: detection and hook install only, no test support.
@@ -980,6 +1252,7 @@ export const Direct = async () => ({
 		// It keeps running after its stdin closes; acp.Process.Wait kills it
 		// after ExitGrace.
 		ACPCmd: []string{"cursor-agent", "acp"},
+		// No Direct row: Cursor's backend owns the system prompt and the ~21 built-in tools; the client sends only MCP tools (mcp_tools, our server reaches it as tools-probe_echo) and rules, and the ACP run request drops the hidden --system-prompt/--exclude-workspace-context/--exclude-tools (fields 8, 12 unset) (measured 2026-10-17, 2026.10.16-e3cb207).
 	},
 	// Windsurf: ~/.codeium/windsurf/hooks.json, {"hooks":{event:[{command}]}} with
 	// snake_case events (docs 2026-09). Exit code is the only feedback channel;

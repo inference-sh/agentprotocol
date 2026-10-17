@@ -245,7 +245,9 @@ func (r *TestRunner) directOffered(tool string) bool {
 
 // systemTextIn is the system prompt a request carries, in any of the wire
 // formats: Anthropic system, OpenAI system and developer messages,
-// Responses instructions, Gemini systemInstruction.
+// Responses instructions, Gemini systemInstruction, and kiro's, which has
+// no system field: the agent prompt and context are the first history turn,
+// answered by a canned assistant acknowledgement.
 func systemTextIn(body []byte) string {
 	var doc map[string]any
 	if json.Unmarshal(body, &doc) != nil {
@@ -273,6 +275,17 @@ func systemTextIn(body []byte) string {
 	text(doc["instructions"])
 	text(doc["systemInstruction"])
 	text(doc["system_instruction"])
+	if cs, ok := doc["conversationState"].(map[string]any); ok {
+		if h, _ := cs["history"].([]any); len(h) >= 2 {
+			h0, _ := h[0].(map[string]any)
+			h1, _ := h[1].(map[string]any)
+			u, _ := h0["userInputMessage"].(map[string]any)
+			a, _ := h1["assistantResponseMessage"].(map[string]any)
+			if ack, _ := a["content"].(string); u != nil && strings.HasPrefix(ack, "I will fully incorporate this information") {
+				text(u["content"])
+			}
+		}
+	}
 	for _, key := range []string{"messages", "input"} {
 		list, _ := doc[key].([]any)
 		for _, m := range list {

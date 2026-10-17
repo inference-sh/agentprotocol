@@ -370,6 +370,11 @@ type acpSession struct {
 
 func (s *acpSession) ID() string { return s.id }
 
+// Call sends a request of the agent's own, such as an extension method.
+func (s *acpSession) Call(ctx context.Context, method string, params any) (json.RawMessage, error) {
+	return s.proc.Call(ctx, method, params)
+}
+
 func (s *acpSession) Events() <-chan ap.AgentEvent { return s.pump.out }
 
 func (s *acpSession) Prompt(ctx context.Context, in Input) error {

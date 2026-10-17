@@ -127,6 +127,40 @@
         "setup/instructions.written.~/.grok/AGENTS.md": "pass",
         "setup/skills": "pass"
       }
+    },
+    {
+      "name": "direct",
+      "mode": "acp",
+      "probes": "direct",
+      "checks": {
+        "acp/direct.none": "skip",
+        "acp/hook-injection": "skip:no-channel",
+        "acp/hook.post-tool": "pass",
+        "acp/hook.pre-tool": "pass",
+        "acp/hook.prompt": "pass",
+        "acp/hook.stop": "pass",
+        "acp/instructions../AGENTS.md": "pass",
+        "acp/instructions.~/.grok/AGENTS.md": "pass",
+        "acp/model": "pass",
+        "acp/requests": "pass",
+        "acp/session.answer": "pass",
+        "acp/session.completed": "pass",
+        "acp/session.start": "pass",
+        "acp/streaming": "pass",
+        "setup/binary": "pass",
+        "setup/env.GROK_CLI_CHAT_PROXY_BASE_URL": "pass",
+        "setup/env.GROK_CONVERSATIONS_BASE_URL": "pass",
+        "setup/env.GROK_FEEDBACK_BASE_URL": "pass",
+        "setup/env.GROK_MANAGED_CONFIG_URL": "pass",
+        "setup/env.GROK_MODELS_BASE_URL": "pass",
+        "setup/env.GROK_TRACE_UPLOAD_URL": "pass",
+        "setup/env.GROK_XAI_API_BASE_URL": "pass",
+        "setup/env.XAI_API_KEY": "pass",
+        "setup/hooks.install": "pass",
+        "setup/instructions.written../AGENTS.md": "pass",
+        "setup/instructions.written.~/.grok/AGENTS.md": "pass",
+        "setup/skills": "pass"
+      }
     }
   ]
 }

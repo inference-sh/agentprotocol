@@ -1254,29 +1254,51 @@ A harness is driven by its registry `Direct` row (`harness/direct.go`);
 `HARNESS_TEST_DIRECT=<file>` tries a candidate row, as JSON, without a
 rebuild. Claude Code is driven natively (`llm.Claude`) and has no row.
 
-Measured 2026-10-17:
+Measured 2026-10-17. A row is pure when the model gets the caller's system
+prompt and tools in place of the agent's own; belt offers direct mode only
+for pure rows (`Direct.Pure`). Every row below passes `direct.call`,
+`direct.result` and `direct.restart`.
 
 | agent | system | tools | conversation | what is the agent's own |
 |---|---|---|---|---|
 | claude 2.1.302 | added | only | exact | billing header, "You are a Claude agent, built on Anthropic's Claude Agent SDK.", `# Environment`; one side request |
 | codex 0.163.0 | exact | more | added | `list_mcp_resources`, `list_mcp_resource_templates`, `read_mcp_resource` with any MCP server; global `AGENTS.md` as a user message; "Wall time: … Output:" before each result |
 | gemini 0.64.0 | added | only | added | the user's global `~/.gemini/GEMINI.md`; a `<session_context>` block in the first turn |
+| goose 1.55.0 | added | more | exact | a `# Skills` list and its `load_skill` tool; an `# Extensions` section; the user's plugins load |
+| hermes 0.19.0 | exact | only | exact | plugins the user enabled still load; needs the `mcp` extra |
+| kilo 7.8.12 | exact | only | exact | the user's global plugins still load |
+| kimi 2.2.0 | exact | only | added | the user's hooks and a date reminder |
+| kiro 2.32.0 | added | only | exact | the prompt goes as a user turn with kiro's framing; the backend adds its own; a trailing tool result in a written session is not sent |
 | omp 18.11.3 | exact | only | added | a `<system-reminder>` with the date and working directory |
 | opencode 1.19.3 | exact | only | exact | the user's global plugins still load |
 | pi 1.3.0 | exact | only | exact | MCP servers in the user's `~/.pi/agent/mcp.json` connect, their tools not offered |
 | qwen 0.25.2 | exact | only | exact | an empty `.qwen/output-language.md` written in the working directory; its built-ins are disabled by name |
 
+Partial rows, measured and not offered:
+
+| agent | why |
+|---|---|
+| copilot 1.0.98 | its own ~18k-character system prompt stays, with the caller's nested in it as subordinate agent instructions; its `sql` tool stays |
+| droid 0.244.0 | ACP keeps droid's own system prompt and its 15 built-in tools; only stream-jsonrpc sessions can replace them |
+
+No row:
+
+| agent | why |
+|---|---|
+| cursor | the backend owns the system prompt and the built-in tools; the hidden `--system-prompt` and exclude flags are not read in ACP |
+| grok 1.0.62 | MCP tools are only reachable through its `search_tool`/`use_tool` dispatchers, never declared to the model (an agent file does replace the prompt) |
+
 How the rows get there: omp and pi replace the system prompt from an
-extension of the row's own (`before_agent_start`), opencode from a plugin
-(`experimental.chat.system.transform`), codex with `model_instructions_file`,
-qwen with `--system-prompt`, gemini with `GEMINI_SYSTEM_MD`. gemini reads a
-system settings file only if root owns it, so its settings go in the
-project's `.gemini/settings.json`. qwen and omp, behind a proxy, must not send
-the loopback tool server through it (`NO_PROXY`). grok's `agent stdio` takes
-no options, so it has no row. copilot, droid, hermes, goose, kimi, kiro and
-kilo have no row yet: none was tried, and their `--help` shows no flag that
-replaces the system prompt (kilo likely takes opencode's row once its
-variables are checked). cursor's backend owns the prompt and the tools.
+extension of the row's own (`before_agent_start`), opencode and kilo from a
+plugin (`experimental.chat.system.transform`), hermes from a plugin's
+`llm_request` middleware, codex with `model_instructions_file`, qwen with
+`--system-prompt`, gemini with `GEMINI_SYSTEM_MD`, kimi with a project agent
+profile (`override: true`), kiro with an agent config under a private
+`KIRO_HOME`, goose with its `_goose/unstable/session/system-prompt/set`
+request (`Direct.Requests`). Harnesses connect MCP in the background (qwen
+needs `QWEN_CODE_LEGACY_MCP_BLOCKING`), route loopback through a proxy unless
+told not to (`NO_PROXY`, set by llm), defer MCP tools behind a search tool
+unless told not to, and run the user's hooks unless the row turns them off.
 
 ### Cursor saves a conversation only when the backend checkpoints it
 

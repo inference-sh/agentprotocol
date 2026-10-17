@@ -46,6 +46,35 @@ type Direct struct {
 	// prompt. Empty is "Continue.".
 	ContinuePrompt string
 
+	// SessionHome is the home directory a restart writes the agent's
+	// session under, with the same placeholders, for a row whose Env moves
+	// the agent's own home (kiro's KIRO_HOME). Empty is the user's home.
+	SessionHome string
+
+	// Requests are sent to the session once it is open, new or resumed,
+	// before its first prompt: for an agent that takes a system prompt or
+	// setting only as a request of its own protocol (goose's ACP extension
+	// _goose/unstable/session/system-prompt/set). Param values use the same
+	// placeholders and {{.SessionID}}, the agent's ID for the session.
+	Requests []DirectRequest
+
 	// Measured is the version and date the direct probe passed on.
 	Measured string
+
+	// Partial says why the harness runs as a model but not as a pure one:
+	// its own system prompt or built-in tools stay with the caller's.
+	// Empty is pure. A caller offering direct mode offers only pure rows;
+	// a partial row is kept as the measurement.
+	Partial string
+}
+
+// Pure reports whether the row runs the harness as a model with the
+// caller's system prompt and tools in place of its own.
+func (d *Direct) Pure() bool { return d != nil && d.Partial == "" }
+
+// DirectRequest is one request of Direct.Requests: a method and its params,
+// sent as a JSON object of strings.
+type DirectRequest struct {
+	Method string
+	Params map[string]string
 }

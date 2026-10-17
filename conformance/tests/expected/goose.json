@@ -118,6 +118,42 @@
         "setup/instructions.written.~/.config/goose/.goosehints": "pass",
         "setup/skills": "pass"
       }
+    },
+    {
+      "name": "direct",
+      "mode": "acp",
+      "probes": "direct",
+      "checks": {
+        "acp/direct.call": "pass",
+        "acp/direct.messages": "pass:exact",
+        "acp/direct.restart": "pass",
+        "acp/direct.result": "pass",
+        "acp/direct.system": "finding:added",
+        "acp/direct.tools": "finding:more",
+        "acp/hook-injection": "skip:no-channel",
+        "acp/hook.post-tool": "pass",
+        "acp/hook.prompt": "pass",
+        "acp/hook.session-start": "pass",
+        "acp/hook.stop": "pass",
+        "acp/instructions../.goosehints": "pass",
+        "acp/instructions.~/.config/goose/.goosehints": "pass",
+        "acp/model": "pass",
+        "acp/requests": "pass",
+        "acp/session.answer": "pass",
+        "acp/session.completed": "pass",
+        "acp/session.start": "pass",
+        "acp/streaming": "pass",
+        "setup/binary": "pass",
+        "setup/env.GOOSE_DISABLE_SESSION_NAMING": "pass",
+        "setup/env.GOOSE_MODE": "pass",
+        "setup/env.GOOSE_MODEL": "pass",
+        "setup/env.GOOSE_PROVIDER": "pass",
+        "setup/env.OPENAI_API_KEY": "pass",
+        "setup/hooks.install": "pass",
+        "setup/instructions.written../.goosehints": "pass",
+        "setup/instructions.written.~/.config/goose/.goosehints": "pass",
+        "setup/skills": "pass"
+      }
     }
   ]
 }

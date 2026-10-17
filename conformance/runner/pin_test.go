@@ -13,7 +13,7 @@ func TestPinnedInstallCmd(t *testing.T) {
 	}{
 		{"claude", "2.1.281", "npm install -g @anthropic-ai/claude-code@2.1.281"},
 		{"pi", "0.87.1", "npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.87.1"},
-		{"hermes", "0.14.0", "pip install --break-system-packages hermes-agent[acp]==0.14.0"},
+		{"hermes", "0.14.0", "pip install --break-system-packages hermes-agent[acp,mcp]==0.14.0"},
 		{"grok", "1.0.34", "bash -s 1.0.34"},
 		{"kiro", "2.23.1", "stable/2.23.1/kirocli-"},
 		{"goose", "1.51.0", "/releases/download/v1.51.0/goose-"},

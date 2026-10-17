@@ -173,6 +173,38 @@
         "setup/instructions.written.~/.kimi-code/AGENTS.md": "pass",
         "setup/skills": "pass"
       }
+    },
+    {
+      "name": "direct",
+      "mode": "acp",
+      "probes": "direct",
+      "checks": {
+        "acp/direct.call": "pass",
+        "acp/direct.messages": "finding:added",
+        "acp/direct.restart": "pass",
+        "acp/direct.result": "pass",
+        "acp/direct.system": "pass:exact",
+        "acp/direct.tools": "pass:only",
+        "acp/hook-injection": "pass",
+        "acp/hook.post-tool": "pass",
+        "acp/hook.prompt": "pass",
+        "acp/hook.session-start": "pass",
+        "acp/hook.stop": "pass",
+        "acp/instructions../AGENTS.md": "pass",
+        "acp/instructions.~/.kimi-code/AGENTS.md": "pass",
+        "acp/model": "pass",
+        "acp/requests": "pass",
+        "acp/session.answer": "pass",
+        "acp/session.completed": "pass",
+        "acp/session.start": "pass",
+        "acp/streaming": "pass",
+        "setup/binary": "pass",
+        "setup/env.KIMI_CODE_BASE_URL": "pass",
+        "setup/hooks.install": "pass",
+        "setup/instructions.written../AGENTS.md": "pass",
+        "setup/instructions.written.~/.kimi-code/AGENTS.md": "pass",
+        "setup/skills": "pass"
+      }
     }
   ]
 }

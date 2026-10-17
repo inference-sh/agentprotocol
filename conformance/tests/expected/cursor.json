@@ -348,6 +348,34 @@
         "setup/instructions.written../.cursor/rules/belt.mdc": "pass",
         "setup/skills": "pass"
       }
+    },
+    {
+      "name": "direct",
+      "mode": "acp",
+      "probes": "direct",
+      "checks": {
+        "acp/direct.none": "skip",
+        "acp/hook-injection": "pass",
+        "acp/hook.post-tool": "pass",
+        "acp/hook.pre-compact": "pass",
+        "acp/hook.pre-tool": "pass",
+        "acp/hook.prompt": "pass",
+        "acp/hook.session-start": "skip:known-missing",
+        "acp/hook.stop": "pass",
+        "acp/instructions../.cursor/rules/belt.mdc": "pass",
+        "acp/model": "pass",
+        "acp/requests": "pass",
+        "acp/session.answer": "pass",
+        "acp/session.completed": "pass",
+        "acp/session.start": "pass",
+        "acp/streaming": "pass",
+        "setup/binary": "pass",
+        "setup/env.CURSOR_API_ENDPOINT": "pass",
+        "setup/env.CURSOR_API_KEY": "pass",
+        "setup/hooks.install": "pass",
+        "setup/instructions.written../.cursor/rules/belt.mdc": "pass",
+        "setup/skills": "pass"
+      }
     }
   ]
 }

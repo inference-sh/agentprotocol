@@ -81,6 +81,13 @@ type Session interface {
 // after dying mid-work, and for a caller that must stop a wedged agent.
 type Killer interface{ Kill() error }
 
+// Caller is implemented by sessions whose agent takes requests of its own
+// protocol beside prompts, such as an ACP agent's extension methods. Call
+// sends one and returns its result.
+type Caller interface {
+	Call(ctx context.Context, method string, params any) (json.RawMessage, error)
+}
+
 // Capabilities describes what a backend can do. A caller checks these instead
 // of special-casing by Kind, so a new backend does not require changes
 // upstream.

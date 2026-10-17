@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"errors"
 	"os"
 	"strings"
 	"sync"
@@ -568,9 +569,212 @@ func TestCodexBackendCapabilities(t *testing.T) {
 	if b.Kind() != driver.KindCodex {
 		t.Errorf("kind = %q", b.Kind())
 	}
-	c := b.Capabilities()
-	if !c.Steer || !c.Approvals || !c.Interrupt || !c.Resume || c.Tools {
-		t.Errorf("capabilities = %+v", c)
+	want := driver.Capabilities{Steer: true, Approvals: true, Interrupt: true, Resume: true, Tools: true, OnlyCallerTools: true, Images: true}
+	if c := b.Capabilities(); c != want {
+		t.Errorf("capabilities = %+v, want %+v", c, want)
+	}
+	// codex before 0.146.0 always offers update_plan.
+	b.Version = "codex-cli 0.137.0"
+	if c := b.Capabilities(); !c.Tools || c.OnlyCallerTools {
+		t.Errorf("capabilities on 0.137.0 = %+v", c)
+	}
+}
+
+func echoTool() []ap.Tool {
+	required := []string{"text"}
+	return []ap.Tool{{Type: "function", Function: ap.ToolFunction{
+		Name: "echo", Description: "Echo the text back.",
+		Parameters: ap.ToolParameters{Type: "object", Properties: ap.ToolParameterProperties{
+			"text": {Type: "string", Description: "what to echo"},
+		}, Required: &required},
+	}}}
+}
+
+// A caller tool is a codex dynamic tool: declared on thread/start with the
+// experimental API on, called with item/tool/call, run by CallTool with no
+// approval, and reported once under its own name and codex's call id.
+func TestCodexCallerToolRoundTrip(t *testing.T) {
+	cases := []struct {
+		name    string
+		out     driver.ToolOutput
+		err     error
+		success bool
+		text    string
+		status  ap.ToolInvocationStatus
+	}{
+		{name: "ok", out: driver.ToolOutput{Text: "echo: PING"}, success: true, text: "echo: PING", status: ap.ToolInvocationStatusCompleted},
+		{name: "is error", out: driver.ToolOutput{Text: "no such word", IsError: true}, text: "no such word", status: ap.ToolInvocationStatusFailed},
+		{name: "error", err: errors.New("lookup service down"), text: "lookup service down", status: ap.ToolInvocationStatusFailed},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			var mu sync.Mutex
+			var calls []driver.ToolCall
+			sess := openCodex(t, "", driver.SessionConfig{
+				Tools: echoTool(),
+				CallTool: func(_ context.Context, call driver.ToolCall) (driver.ToolOutput, error) {
+					mu.Lock()
+					calls = append(calls, call)
+					mu.Unlock()
+					return c.out, c.err
+				},
+			})
+			if err := sess.Prompt(context.Background(), driver.TextInput(`tool {"text":"PING"}`)); err != nil {
+				t.Fatal(err)
+			}
+			events := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+
+			if _, asked := findEvent(events, ap.AgentEventApprovalRequired); asked {
+				t.Error("a caller tool raised an approval")
+			}
+			mu.Lock()
+			if len(calls) != 1 || calls[0].Name != "echo" || calls[0].ToolInvocationID != "call_dyn" || string(calls[0].Arguments) != `{"text":"PING"}` {
+				t.Errorf("calls = %+v", calls)
+			}
+			mu.Unlock()
+
+			if n, m := countType(events, ap.AgentEventToolStarted), countType(events, ap.AgentEventToolCompleted); n != 1 || m != 1 {
+				t.Errorf("%d tool.started and %d tool.completed, want one each", n, m)
+			}
+			started, _ := findEvent(events, ap.AgentEventToolStarted)
+			sp, _ := ap.PayloadAs[ap.ToolStartedPayload](started, ap.AgentEventToolStarted)
+			if sp.ToolName != "echo" || sp.ToolInvocationID != "call_dyn" || sp.Arguments["text"] != "PING" {
+				t.Errorf("tool started = %+v", sp)
+			}
+			done, _ := findEvent(events, ap.AgentEventToolCompleted)
+			dp, _ := ap.PayloadAs[ap.ToolCompletedPayload](done, ap.AgentEventToolCompleted)
+			if dp.ToolName != "echo" || dp.ToolInvocationID != "call_dyn" || dp.Status != c.status || dp.Result != c.text || dp.DurationMs != 7 {
+				t.Errorf("tool completed = %+v", dp)
+			}
+
+			// The fake replies with the response codex got.
+			var res codexapp.DynamicToolCallResponse
+			if err := json.Unmarshal([]byte(strings.TrimPrefix(deltas(events), "response=")), &res); err != nil {
+				t.Fatalf("response %q: %v", deltas(events), err)
+			}
+			if res.Success != c.success || len(res.ContentItems) != 1 {
+				t.Fatalf("response = %+v", res)
+			}
+			if item, ok := res.ContentItems[0].AsInputTextDynamicToolCallOutputContentItem(); !ok || item.Text != c.text {
+				t.Errorf("content = %s", res.ContentItems[0].Raw)
+			}
+		})
+	}
+}
+
+func TestCodexCallerToolsDeclaredWithExperimentalAPI(t *testing.T) {
+	sess := openCodex(t, "", driver.SessionConfig{
+		Tools:    echoTool(),
+		CallTool: func(context.Context, driver.ToolCall) (driver.ToolOutput, error) { return driver.ToolOutput{}, nil },
+	})
+	_ = sess.Prompt(context.Background(), driver.TextInput("init?"))
+	got := deltas(until(t, sess.Events(), ap.AgentEventTurnCompleted))
+	want := `capabilities={"experimentalApi":true} tools=[{"description":"Echo the text back.",` +
+		`"inputSchema":{"properties":{"text":{"description":"what to echo","title":"","type":"string"}},"required":["text"],"type":"object"},` +
+		`"name":"echo","type":"function"}]`
+	if got != want {
+		t.Errorf("got  %s\nwant %s", got, want)
+	}
+
+	// Without tools nothing experimental is asked for.
+	plain := openCodex(t, "", driver.SessionConfig{})
+	_ = plain.Prompt(context.Background(), driver.TextInput("init?"))
+	if got := deltas(until(t, plain.Events(), ap.AgentEventTurnCompleted)); got != "capabilities= tools=" {
+		t.Errorf("without tools: %s", got)
+	}
+}
+
+func TestCodexCallerToolsNeedCallTool(t *testing.T) {
+	b, _ := codexBackend(t, "")
+	_, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir(), Tools: echoTool()})
+	if err == nil || !strings.Contains(err.Error(), "CallTool") {
+		t.Errorf("open without CallTool = %v", err)
+	}
+}
+
+// Interrupting the turn ends the context of a caller tool still running.
+func TestCodexInterruptCancelsACallerTool(t *testing.T) {
+	running := make(chan struct{})
+	ended := make(chan error, 1)
+	sess := openCodex(t, "", driver.SessionConfig{
+		Tools: echoTool(),
+		CallTool: func(ctx context.Context, _ driver.ToolCall) (driver.ToolOutput, error) {
+			close(running)
+			<-ctx.Done()
+			ended <- ctx.Err()
+			return driver.ToolOutput{}, ctx.Err()
+		},
+	})
+	_ = sess.Prompt(context.Background(), driver.TextInput(`tool {"text":"slow"}`))
+	select {
+	case <-running:
+	case <-time.After(10 * time.Second):
+		t.Fatal("the caller tool never ran")
+	}
+	if err := sess.Interrupt(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case err := <-ended:
+		if !errors.Is(err, context.Canceled) {
+			t.Errorf("ctx ended with %v", err)
+		}
+	case <-time.After(10 * time.Second):
+		t.Fatal("the interrupted call's context never ended")
+	}
+	events := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+	if done, ok := findEvent(events, ap.AgentEventToolCompleted); !ok {
+		t.Error("the interrupted call was left open")
+	} else if p, _ := ap.PayloadAs[ap.ToolCompletedPayload](done, ap.AgentEventToolCompleted); p.Status != ap.ToolInvocationStatusCancelled {
+		t.Errorf("interrupted call = %+v", p)
+	}
+}
+
+// OnlyCallerTools turns codex's own tools off at launch, starts the thread
+// and every turn with no environment, and disables the user's MCP servers.
+func TestCodexOnlyCallerToolsTurnsCodexsOwnOff(t *testing.T) {
+	b, _ := codexBackend(t, "")
+	b.Args = []string{"-c", `model="x"`}
+	b.Config = map[string]any{"model_reasoning_effort": "low"}
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		WorkDir: t.TempDir(), OnlyCallerTools: true, Tools: echoTool(),
+		CallTool: func(context.Context, driver.ToolCall) (driver.ToolOutput, error) { return driver.ToolOutput{}, nil },
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer sess.Close()
+	_ = sess.Prompt(context.Background(), driver.TextInput("envs?"))
+	got := deltas(until(t, sess.Events(), ap.AgentEventTurnCompleted))
+	for _, want := range []string{"thread=[] turn=[] ", `-c model="x" -c features.shell_tool=false`, "-c tools.update_plan.enabled=false", "-c orchestrator.skills.enabled=false"} {
+		if !strings.Contains(got, want) {
+			t.Errorf("%q lacks %q", got, want)
+		}
+	}
+	_ = sess.Prompt(context.Background(), driver.TextInput("config?"))
+	if got := deltas(until(t, sess.Events(), ap.AgentEventTurnCompleted)); got != `config={"mcp_servers.outside.enabled":false,"model_reasoning_effort":"low"}` {
+		t.Errorf("thread %s", got)
+	}
+
+	// Without it the environment is codex's default.
+	plain := openCodex(t, "", driver.SessionConfig{})
+	_ = plain.Prompt(context.Background(), driver.TextInput("envs?"))
+	if got := deltas(until(t, plain.Events(), ap.AgentEventTurnCompleted)); !strings.HasPrefix(got, "thread= turn= args=app-server") || strings.Contains(got, "shell_tool") {
+		t.Errorf("default: %s", got)
+	}
+}
+
+// An older codex keeps update_plan, so OnlyCallerTools is refused on it even
+// when Version did not say which codex this is.
+func TestCodexOnlyCallerToolsRefusedOnOldCodex(t *testing.T) {
+	b, _ := codexBackend(t, "old")
+	_, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir(), OnlyCallerTools: true})
+	if err == nil || !strings.Contains(err.Error(), "0.146.0") || !strings.Contains(err.Error(), "0.137.0") {
+		t.Errorf("open on 0.137.0 = %v", err)
+	}
+	b.Version = "codex-cli 0.137.0"
+	if _, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: t.TempDir(), OnlyCallerTools: true}); err == nil {
+		t.Error("open with Version 0.137.0 succeeded")
 	}
 }
 
@@ -585,6 +789,12 @@ type fakeCodex struct {
 	review string
 	config json.RawMessage
 	turns  int
+	// What initialize, thread/start and the last turn/start carried, for
+	// the tests to read back.
+	initCaps     json.RawMessage
+	dynamicTools json.RawMessage
+	threadEnvs   json.RawMessage
+	turnEnvs     json.RawMessage
 	// used is the thread's running token total, as codex reports it.
 	used int
 
@@ -658,7 +868,20 @@ func (f *fakeCodex) threadJSON(id string, turns int) map[string]any {
 func (f *fakeCodex) handle(m codexapp.Message) {
 	switch m.Method {
 	case codexapp.MethodInitialize:
-		f.reply(m.ID, map[string]any{"userAgent": "fake", "codexHome": "/tmp/fake", "platformFamily": "unix", "platformOs": "linux"})
+		var p struct {
+			Capabilities json.RawMessage `json:"capabilities"`
+		}
+		_ = json.Unmarshal(m.Params, &p)
+		f.initCaps = p.Capabilities
+		ua := "agentprotocol/0.156.1 (fake)"
+		if f.mode == "old" {
+			ua = "agentprotocol/0.137.0 (fake)"
+		}
+		f.reply(m.ID, map[string]any{"userAgent": ua, "codexHome": "/tmp/fake", "platformFamily": "unix", "platformOs": "linux"})
+	case codexapp.MethodConfigRead:
+		f.reply(m.ID, map[string]any{"origins": map[string]any{}, "config": map[string]any{
+			"model": "x", "mcp_servers": map[string]any{"outside": map[string]any{"url": "http://127.0.0.1:1/mcp", "enabled": true}},
+		}})
 	case codexapp.MethodInitialized:
 		f.notify("remoteControl/status/changed", map[string]any{"status": "disabled"})
 	case codexapp.MethodThreadStart, codexapp.MethodThreadResume:
@@ -667,9 +890,12 @@ func (f *fakeCodex) handle(m codexapp.Message) {
 			ApprovalPolicy    json.RawMessage `json:"approvalPolicy"`
 			ApprovalsReviewer string          `json:"approvalsReviewer"`
 			Config            json.RawMessage `json:"config"`
+			DynamicTools      json.RawMessage `json:"dynamicTools"`
+			Environments      json.RawMessage `json:"environments"`
 		}
 		_ = json.Unmarshal(m.Params, &p)
 		f.policy, f.review, f.config = p.ApprovalPolicy, p.ApprovalsReviewer, p.Config
+		f.dynamicTools, f.threadEnvs = p.DynamicTools, p.Environments
 		f.thread, f.turns = "thr_fake", 0
 		if m.Method == codexapp.MethodThreadResume {
 			if p.ThreadID != "thr_old" {
@@ -687,6 +913,11 @@ func (f *fakeCodex) handle(m codexapp.Message) {
 	case codexapp.MethodTurnStart:
 		var p codexapp.TurnStartParams
 		_ = json.Unmarshal(m.Params, &p)
+		var envs struct {
+			Environments json.RawMessage `json:"environments"`
+		}
+		_ = json.Unmarshal(m.Params, &envs)
+		f.turnEnvs = envs.Environments
 		text := inputText(p.Input)
 		turn := "turn_" + text
 		f.reply(m.ID, map[string]any{"turn": map[string]any{"id": turn, "items": []any{}, "status": "inProgress"}})
@@ -777,6 +1008,40 @@ func (f *fakeCodex) handle(m codexapp.Message) {
 			return
 		case text == "config?":
 			f.finish(turn, "config="+string(f.config))
+		case text == "init?":
+			f.finish(turn, "capabilities="+string(f.initCaps)+" tools="+string(f.dynamicTools))
+		case text == "envs?":
+			f.finish(turn, "thread="+string(f.threadEnvs)+" turn="+string(f.turnEnvs)+" args="+strings.Join(os.Args[1:], " "))
+		case strings.HasPrefix(text, "tool "):
+			// codex 0.156.1: a dynamicToolCall item around the
+			// item/tool/call request, its id the call id.
+			args := strings.TrimPrefix(text, "tool ")
+			item := func(status string, extra map[string]any) map[string]any {
+				it := map[string]any{"type": "dynamicToolCall", "id": "call_dyn", "tool": "echo",
+					"arguments": json.RawMessage(args), "status": status}
+				for k, v := range extra {
+					it[k] = v
+				}
+				return it
+			}
+			f.notify(codexapp.MethodItemStarted, map[string]any{"threadId": f.thread, "turnId": turn, "startedAtMs": 1, "item": item("inProgress", nil)})
+			f.request(codexapp.MethodItemToolCall, map[string]any{
+				"threadId": f.thread, "turnId": turn, "callId": "call_dyn", "tool": "echo", "arguments": json.RawMessage(args),
+			}, func(result json.RawMessage) {
+				if f.active != turn {
+					return // interrupted meanwhile
+				}
+				var r codexapp.DynamicToolCallResponse
+				_ = json.Unmarshal(result, &r)
+				status := "completed"
+				if !r.Success {
+					status = "failed"
+				}
+				f.notify(codexapp.MethodItemCompleted, map[string]any{"threadId": f.thread, "turnId": turn, "completedAtMs": 2,
+					"item": item(status, map[string]any{"contentItems": r.ContentItems, "success": r.Success, "durationMs": 7})})
+				f.finish(turn, "response="+string(result))
+			})
+			return
 		case text == "policy?":
 			f.finish(turn, "policy="+string(f.policy)+" reviewer="+f.review)
 		default:

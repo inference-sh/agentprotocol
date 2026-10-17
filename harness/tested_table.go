@@ -96,11 +96,22 @@ var features = map[string]map[string]VersionRange{
 		// turn with: in app-server-protocol common.rs at rust-v0.99.0, absent
 		// at rust-v0.98.0.
 		FeatureTurnSteer: {From: "0.99.0"},
+		// Every built-in tool off, which the codex driver's OnlyCallerTools
+		// needs: up to rust-v0.145.0 core/src/tools/spec_plan.rs registers
+		// update_plan unconditionally; from rust-v0.146.0
+		// tools.update_plan.enabled turns it off. Measured against the
+		// mock: 0.137.0 still offers update_plan, 0.148.0 and 0.156.1 offer
+		// only the caller's tools.
+		FeatureOnlyCallerTools: {From: "0.146.0"},
 	},
 }
 
 // FeatureTurnSteer is codex app-server's turn/steer request.
 const FeatureTurnSteer = "turn-steer"
+
+// FeatureOnlyCallerTools is an agent that can run with none of its own
+// tools, only the caller's.
+const FeatureOnlyCallerTools = "only-caller-tools"
 
 // FeatureSessionID is an agent's --session-id flag.
 const FeatureSessionID = "session-id"

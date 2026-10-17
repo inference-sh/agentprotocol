@@ -27,10 +27,16 @@ func checkCallerTools(cfg SessionConfig, caps Capabilities) error {
 	return nil
 }
 
-// callerToolServer serves SessionConfig.Tools as an MCP server whose calls go
-// to the caller. Each backend puts it behind the transport its agent takes.
-func callerToolServer(tools []ap.Tool, call ToolCaller) (*mcptools.Server, error) {
-	server := &mcptools.Server{Name: "agentprotocol", Version: "1"}
+// callerTool is one of SessionConfig.Tools as an agent declares it.
+type callerTool struct {
+	Name, Description string
+	InputSchema       json.RawMessage
+}
+
+// callerTools checks SessionConfig.Tools (named, no name twice) and gives
+// each its input schema.
+func callerTools(tools []ap.Tool) ([]callerTool, error) {
+	out := make([]callerTool, 0, len(tools))
 	seen := map[string]bool{}
 	for _, t := range tools {
 		name := t.Function.Name
@@ -45,8 +51,22 @@ func callerToolServer(tools []ap.Tool, call ToolCaller) (*mcptools.Server, error
 		if err != nil {
 			return nil, fmt.Errorf("driver: tool %q: %w", name, err)
 		}
+		out = append(out, callerTool{Name: name, Description: t.Function.Description, InputSchema: schema})
+	}
+	return out, nil
+}
+
+// callerToolServer serves SessionConfig.Tools as an MCP server whose calls go
+// to the caller. Each backend puts it behind the transport its agent takes.
+func callerToolServer(tools []ap.Tool, call ToolCaller) (*mcptools.Server, error) {
+	list, err := callerTools(tools)
+	if err != nil {
+		return nil, err
+	}
+	server := &mcptools.Server{Name: "agentprotocol", Version: "1"}
+	for _, t := range list {
 		server.Tools = append(server.Tools, mcptools.Tool{
-			Name: name, Description: t.Function.Description, InputSchema: schema,
+			Name: t.Name, Description: t.Description, InputSchema: t.InputSchema,
 		})
 	}
 	server.Run = func(ctx context.Context, c mcptools.Call) (mcptools.Result, error) {

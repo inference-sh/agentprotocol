@@ -8,12 +8,15 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/driver"
+	"github.com/inference-sh/agentprotocol/harness"
 )
 
 // The real-binary test drives the installed codex against harness-test's mock
@@ -322,4 +325,191 @@ func TestCodexRealTurnApprovalInterruptSteerResume(t *testing.T) {
 			t.Errorf("the thread resumed after a kill lost the earlier turns")
 		}
 	})
+}
+
+// offeredTools lists the tools a Responses request offers the model: a
+// function by its name, a namespace as namespace/name for each of its
+// tools, and a hosted tool (web_search, image_generation...) by its type.
+func offeredTools(t *testing.T, body string) []string {
+	t.Helper()
+	var req struct {
+		Tools []struct {
+			Type  string `json:"type"`
+			Name  string `json:"name"`
+			Tools []struct {
+				Name string `json:"name"`
+			} `json:"tools"`
+		} `json:"tools"`
+	}
+	if err := json.Unmarshal([]byte(body), &req); err != nil {
+		t.Fatalf("model request: %v", err)
+	}
+	var out []string
+	for _, tool := range req.Tools {
+		switch {
+		case tool.Type == "namespace":
+			for _, sub := range tool.Tools {
+				out = append(out, tool.Name+"/"+sub.Name)
+			}
+		case tool.Name != "":
+			out = append(out, tool.Name)
+		default:
+			out = append(out, tool.Type)
+		}
+	}
+	return out
+}
+
+// TestCodexRealCallerTools runs SessionConfig.Tools through the real codex
+// as dynamic tools: the model is offered the tool under its own name, the
+// call reaches CallTool with no approval, and with OnlyCallerTools it is the
+// only tool offered, an MCP server in the user's config included. A codex
+// older than harness.FeatureOnlyCallerTools must refuse OnlyCallerTools.
+// Run it against another codex by putting that one first on PATH.
+func TestCodexRealCallerTools(t *testing.T) {
+	for _, only := range []bool{false, true} {
+		t.Run(map[bool]string{false: "with codex's tools", true: "only caller tools"}[only], func(t *testing.T) {
+			mock, b, home := realCodex(t)
+			mockCtl(t, mock, "POST", "/ctl/delay", map[string]any{"Ms": 0})
+			out, err := exec.Command(b.Command, "--version").Output()
+			if err != nil {
+				t.Fatalf("codex --version: %v", err)
+			}
+			installed := strings.TrimSpace(string(out))
+			t.Logf("%s", installed)
+			// An MCP server of the user's own, which OnlyCallerTools must
+			// keep from the model as well.
+			mcp := "[mcp_servers.outside]\nurl = \"" + mock + "/mcp\"\n"
+			if err := os.WriteFile(filepath.Join(home, "config.toml"), []byte(mcp), 0o600); err != nil {
+				t.Fatal(err)
+			}
+
+			var mu sync.Mutex
+			var calls []driver.ToolCall
+			required := []string{"word"}
+			cfg := driver.SessionConfig{
+				RunID: "run_tools", ChatID: "chat_tools", WorkDir: t.TempDir(), OnlyCallerTools: only,
+				// A model codex has metadata for, which gives it apply_patch.
+				Model: "gpt-5.4",
+				Tools: []ap.Tool{{Type: "function", Function: ap.ToolFunction{
+					Name: "lookup", Description: "Look a word up.",
+					Parameters: ap.ToolParameters{Type: "object", Properties: ap.ToolParameterProperties{
+						"word": {Type: "string"},
+					}, Required: &required},
+				}}},
+				CallTool: func(_ context.Context, call driver.ToolCall) (driver.ToolOutput, error) {
+					mu.Lock()
+					calls = append(calls, call)
+					mu.Unlock()
+					return driver.ToolOutput{Text: "LOOKUP-RESULT-4412"}, nil
+				},
+			}
+			sess, err := b.Open(context.Background(), cfg)
+			if only && !harness.All["codex"].HasFeature(harness.FeatureOnlyCallerTools, installed) {
+				// An older codex keeps a tool of its own (update_plan), so
+				// Open refuses rather than run with it.
+				if err == nil || !strings.Contains(err.Error(), "OnlyCallerTools needs codex") {
+					t.Fatalf("open on %s = %v, want a refusal", installed, err)
+				}
+				t.Logf("refused on %s: %v", installed, err)
+				return
+			}
+			if err != nil {
+				t.Fatalf("open: %v", err)
+			}
+			ev := sess.Events()
+			untilWithin(t, ev, ap.AgentEventRunStarted, 10*time.Second)
+
+			mockCtl(t, mock, "DELETE", "/log", nil)
+			mockCtl(t, mock, "POST", "/ctl/toolcall", map[string]any{"Name": "lookup", "Args": `{"word":"orb"}`})
+			mockCtl(t, mock, "POST", "/text", map[string]any{"Text": "TOOLS-DONE"})
+			// The canned text outlives the test; put back the mock's own.
+			defer mockCtl(t, mock, "POST", "/text", map[string]any{"Text": "Hello from mock server."})
+			_ = sess.Prompt(context.Background(), driver.TextInput("look up orb"))
+			events := untilWithin(t, ev, ap.AgentEventTurnCompleted, 60*time.Second)
+			t.Logf("events: %v", typesOf(events))
+
+			if _, asked := findEvent(events, ap.AgentEventApprovalRequired); asked {
+				t.Error("a caller tool raised an approval")
+			}
+			mu.Lock()
+			got := append([]driver.ToolCall(nil), calls...)
+			mu.Unlock()
+			if len(got) != 1 || got[0].Name != "lookup" || string(got[0].Arguments) != `{"word":"orb"}` || got[0].ToolInvocationID != "call_mock_1" {
+				t.Fatalf("calls = %+v", got)
+			}
+			if n := countType(events, ap.AgentEventToolStarted); n != 1 {
+				t.Errorf("%d tool.started events, want 1", n)
+			}
+			if n := countType(events, ap.AgentEventToolCompleted); n != 1 {
+				t.Errorf("%d tool.completed events, want 1", n)
+			}
+			started, _ := findEvent(events, ap.AgentEventToolStarted)
+			sp, _ := ap.PayloadAs[ap.ToolStartedPayload](started, ap.AgentEventToolStarted)
+			if sp.ToolName != "lookup" || sp.ToolInvocationID != got[0].ToolInvocationID || sp.Arguments["word"] != "orb" {
+				t.Errorf("tool started = %+v", sp)
+			}
+			done, _ := findEvent(events, ap.AgentEventToolCompleted)
+			dp, _ := ap.PayloadAs[ap.ToolCompletedPayload](done, ap.AgentEventToolCompleted)
+			if dp.ToolName != "lookup" || dp.ToolInvocationID != got[0].ToolInvocationID || dp.Status != ap.ToolInvocationStatusCompleted || dp.Result != "LOOKUP-RESULT-4412" {
+				t.Errorf("tool completed = %+v", dp)
+			}
+			if text := deltas(events); !strings.Contains(text, "TOOLS-DONE") {
+				t.Errorf("text = %q", text)
+			}
+
+			reqs := mockRequests(t, mock)
+			if len(reqs) < 2 {
+				t.Fatalf("%d model request(s), want the call and the answer", len(reqs))
+			}
+			if !strings.Contains(reqs[len(reqs)-1], "LOOKUP-RESULT-4412") {
+				t.Error("the tool's result did not reach the model")
+			}
+			for i, req := range reqs {
+				tools := offeredTools(t, req)
+				t.Logf("request %d offers %v", i, tools)
+				if !slices.Contains(tools, "lookup") {
+					t.Errorf("request %d does not offer lookup: %v", i, tools)
+				}
+				if only && len(tools) != 1 {
+					t.Errorf("request %d offers codex's own tools with OnlyCallerTools: %v", i, tools)
+				}
+				// Without OnlyCallerTools codex keeps its own, so the check
+				// above is not passing for want of them.
+				if !only && (!slices.Contains(tools, "exec_command") || !slices.Contains(tools, "apply_patch")) {
+					t.Errorf("request %d lacks codex's shell or apply_patch without OnlyCallerTools: %v", i, tools)
+				}
+			}
+
+			// The thread keeps its tools when resumed in a new process, and
+			// codex's own stay off: thread/resume restores the environment,
+			// which each turn turns off again.
+			threadID := sess.ID()
+			_ = sess.Close()
+			cfg.ResumeSessionID = threadID
+			again, err := b.Open(context.Background(), cfg)
+			if err != nil {
+				t.Fatalf("resume: %v", err)
+			}
+			defer again.Close()
+			untilWithin(t, again.Events(), ap.AgentEventRunStarted, 10*time.Second)
+			mockCtl(t, mock, "DELETE", "/log", nil)
+			mockCtl(t, mock, "POST", "/ctl/toolcall", map[string]any{"Name": "lookup", "Args": `{"word":"again"}`})
+			_ = again.Prompt(context.Background(), driver.TextInput("look it up again"))
+			untilWithin(t, again.Events(), ap.AgentEventTurnCompleted, 60*time.Second)
+			mu.Lock()
+			n := len(calls)
+			mu.Unlock()
+			if n != 2 {
+				t.Errorf("the resumed thread made %d caller tool call(s) in all, want 2", n)
+			}
+			for i, req := range mockRequests(t, mock) {
+				tools := offeredTools(t, req)
+				t.Logf("resumed request %d offers %v", i, tools)
+				if !slices.Contains(tools, "lookup") || (only && len(tools) != 1) {
+					t.Errorf("resumed request %d offers %v", i, tools)
+				}
+			}
+		})
+	}
 }

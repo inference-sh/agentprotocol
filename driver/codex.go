@@ -110,17 +110,51 @@ func (b *CodexBackend) Kind() string { return KindCodex }
 // Resume: thread/resume by thread id in a fresh process restores the
 // conversation; the next model request carries the earlier turns.
 //
-// Tools is false: codex can take MCP servers through its config, but this
-// backend does not wire SessionConfig.Tools or MCP metadata into it yet.
+// Tools: SessionConfig.Tools are codex dynamic tools, declared on
+// thread/start (experimental API) with no namespace, so the model sees the
+// bare name. Codex calls one with an item/tool/call request, answered from
+// CallTool with no approval; tool.started and tool.completed come once each
+// from its dynamicToolCall item, ToolInvocationID the model's call id. A
+// thread keeps its tools: on resume codex offers the ones it started with
+// (thread/resume takes none), and CallTool runs them. Measured on codex-cli
+// 0.137.0, 0.148.0 and 0.156.1.
+//
+// OnlyCallerTools: launch overrides (codexOwnToolsOff), no environment on
+// the thread and on every turn, and every MCP server in the user's config
+// disabled for the thread. The model is then offered the caller's tools and
+// nothing else on 0.148.0 and 0.156.1. Before 0.146.0 codex always offers
+// update_plan, so it is false for an older Version, and Open checks the
+// version codex reports either way.
 func (b *CodexBackend) Capabilities() Capabilities {
 	return Capabilities{
-		Steer:     b.has(harness.FeatureTurnSteer),
-		Approvals: true,
-		Interrupt: true,
-		Resume:    true,
-		Tools:     false,
-		Images:    true,
+		Steer:           b.has(harness.FeatureTurnSteer),
+		Approvals:       true,
+		Interrupt:       true,
+		Resume:          true,
+		Tools:           true,
+		OnlyCallerTools: b.has(harness.FeatureOnlyCallerTools),
+		Images:          true,
 	}
+}
+
+// codexOwnToolsOff are the `-c` overrides that turn codex's own tools off
+// for SessionConfig.OnlyCallerTools, with a thread started with no
+// environment (no shell, apply_patch or view_image). They go on the
+// app-server command line: codex 0.156.1 ignores orchestrator.skills.enabled
+// in thread/start's config. Keys a version does not know are ignored by it.
+var codexOwnToolsOff = []string{
+	"features.shell_tool=false",
+	"features.goals=false",
+	"features.multi_agent=false",
+	"features.image_generation=false",
+	"features.tool_suggest=false",
+	"features.apps=false",
+	"features.plugins=false",
+	`web_search="disabled"`,
+	"tools.experimental_request_user_input.enabled=false",
+	"tools.update_plan.enabled=false",
+	"orchestrator.skills.enabled=false",
+	"orchestrator.mcp.enabled=false",
 }
 
 // has reports whether the installed codex has a version-ranged feature,
@@ -137,22 +171,39 @@ func (b *CodexBackend) diagnose(msg string) {
 
 // Open implements Backend.
 func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error) {
+	if err := checkCallerTools(cfg, b.Capabilities()); err != nil {
+		return nil, err
+	}
+	dynamicTools, err := codexDynamicTools(cfg.Tools)
+	if err != nil {
+		return nil, err
+	}
+	args := b.Args
+	if cfg.OnlyCallerTools {
+		args = append([]string(nil), b.Args...)
+		for _, kv := range codexOwnToolsOff {
+			args = append(args, "-c", kv)
+		}
+	}
 	threadConfig, err := encodeConfig(b.Config)
 	if err != nil {
 		return nil, err
 	}
 
 	s := &codexSession{
-		backend:   b,
-		runID:     cfg.RunID,
-		chatID:    cfg.ChatID,
-		pump:      newEventPump(),
-		pending:   map[string]*codexApproval{},
-		byRPC:     map[string]string{},
-		openTools: map[string]string{},
-		prompts:   make(chan Input, 64),
-		stop:      make(chan struct{}),
-		watched:   make(chan struct{}),
+		backend:         b,
+		runID:           cfg.RunID,
+		chatID:          cfg.ChatID,
+		pump:            newEventPump(),
+		pending:         map[string]*codexApproval{},
+		byRPC:           map[string]string{},
+		openTools:       map[string]string{},
+		callTool:        cfg.CallTool,
+		onlyCallerTools: cfg.OnlyCallerTools,
+		calls:           map[string]*codexToolCall{},
+		prompts:         make(chan Input, 64),
+		stop:            make(chan struct{}),
+		watched:         make(chan struct{}),
 	}
 
 	name := b.ClientName
@@ -166,12 +217,20 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 
 	var stderr io.Writer
 	stderr, s.stderr = agentStderr(b.Stderr)
+	var caps *codexapp.InitializeCapabilities
+	if len(dynamicTools) > 0 || cfg.OnlyCallerTools {
+		// dynamicTools and environments are experimental fields of
+		// thread/start.
+		experimental := true
+		caps = &codexapp.InitializeCapabilities{ExperimentalApi: &experimental}
+	}
 	proc, err := codexapp.Spawn(ctx, codexapp.ProcessConfig{
-		Command: b.Command,
-		Args:    b.Args,
-		Dir:     cfg.WorkDir,
-		Env:     b.Env,
-		Stderr:  stderr,
+		Command:      b.Command,
+		Args:         args,
+		Dir:          cfg.WorkDir,
+		Env:          b.Env,
+		Stderr:       stderr,
+		Capabilities: caps,
 	}, codexapp.ClientInfo{Name: name, Version: version}, codexapp.Handler{
 		OnNotification: s.onNotification,
 		OnRequest:      s.onRequest,
@@ -181,6 +240,28 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 	}
 	s.proc = proc
 	s.stderr.flushWith(proc.FlushStderr)
+
+	if cfg.OnlyCallerTools {
+		// The version that answered, which Version (when set at all) only
+		// claims: an older codex would keep a tool of its own.
+		running := codexUserAgentVersion(proc.Init.UserAgent)
+		if !harness.All["codex"].HasFeature(harness.FeatureOnlyCallerTools, running) {
+			_ = proc.Kill()
+			return nil, fmt.Errorf("driver: OnlyCallerTools needs codex %s or later, which can turn all its own tools off; this is %q",
+				harness.All["codex"].Features[harness.FeatureOnlyCallerTools].From, proc.Init.UserAgent)
+		}
+		off, err := codexMCPServersOff(ctx, proc, cfg.WorkDir)
+		if err != nil {
+			_ = proc.Kill()
+			return nil, s.stderr.quoteErr(err)
+		}
+		if threadConfig == nil {
+			threadConfig = map[string]json.RawMessage{}
+		}
+		for k, v := range off {
+			threadConfig[k] = v
+		}
+	}
 
 	policy := codexapp.AskForApprovalUntrusted
 	if b.ApprovalPolicy != "" {
@@ -218,7 +299,7 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 		thread, s.model = res.Thread, res.Model
 		b.diagnose(fmt.Sprintf("resumed codex thread %s with %d turn(s) of history", thread.ID, len(thread.Turns)))
 	} else {
-		res, err := proc.ThreadStart(ctx, codexapp.ThreadStartParams{
+		start := codexThreadStart{ThreadStartParams: codexapp.ThreadStartParams{
 			Cwd:                   optional(cfg.WorkDir),
 			Model:                 optional(cfg.Model),
 			DeveloperInstructions: optional(cfg.Instructions),
@@ -226,8 +307,13 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 			ApprovalsReviewer:     &reviewer,
 			Sandbox:               sandbox,
 			Config:                threadConfig,
-		})
-		if err != nil {
+			DynamicTools:          dynamicTools,
+		}}
+		if cfg.OnlyCallerTools {
+			start.Environments = &[]json.RawMessage{}
+		}
+		var res codexapp.ThreadStartResponse
+		if err := proc.Call(ctx, codexapp.MethodThreadStart, start, &res); err != nil {
 			_ = proc.Kill()
 			return nil, s.stderr.quoteErr(fmt.Errorf("driver: start codex thread: %w", err))
 		}
@@ -247,6 +333,86 @@ func (b *CodexBackend) Open(ctx context.Context, cfg SessionConfig) (Session, er
 	return s, nil
 }
 
+// codexMCPServersOff is the thread config that disables every MCP server
+// the user's codex config (as seen from workDir) declares, whose tools would
+// otherwise reach the model beside the caller's.
+func codexMCPServersOff(ctx context.Context, proc *codexapp.Process, workDir string) (map[string]json.RawMessage, error) {
+	var res struct {
+		Config struct {
+			MCPServers map[string]json.RawMessage `json:"mcp_servers"`
+		} `json:"config"`
+	}
+	params := map[string]any{}
+	if workDir != "" {
+		params["cwd"] = workDir
+	}
+	if err := proc.Call(ctx, codexapp.MethodConfigRead, params, &res); err != nil {
+		return nil, fmt.Errorf("driver: read codex config for OnlyCallerTools: %w", err)
+	}
+	off := map[string]json.RawMessage{}
+	for name := range res.Config.MCPServers {
+		if strings.ContainsAny(name, ".\"' ") {
+			return nil, fmt.Errorf("driver: OnlyCallerTools cannot turn off codex MCP server %q: the name does not fit a config path", name)
+		}
+		off["mcp_servers."+name+".enabled"] = json.RawMessage("false")
+	}
+	return off, nil
+}
+
+// codexUserAgentVersion reads the codex version from initialize's user
+// agent, "<client>/<codex version> (<os>) ...".
+func codexUserAgentVersion(ua string) string {
+	_, rest, ok := strings.Cut(ua, "/")
+	if !ok {
+		return ""
+	}
+	v, _, _ := strings.Cut(rest, " ")
+	return harness.ParseVersion(v)
+}
+
+// codexThreadStart and codexTurnStart are thread/start and turn/start with
+// the experimental environments field. An empty list runs with no
+// environment, which has no shell, apply_patch or view_image
+// (OnlyCallerTools). The thread's list covers a new thread; thread/resume
+// has no such field and restores the environment, so every turn/start sends
+// it too. The generated params cannot send it, since omitempty drops an
+// empty slice.
+type codexThreadStart struct {
+	codexapp.ThreadStartParams
+	Environments *[]json.RawMessage `json:"environments,omitempty"`
+}
+
+type codexTurnStart struct {
+	codexapp.TurnStartParams
+	Environments *[]json.RawMessage `json:"environments,omitempty"`
+}
+
+// codexDynamicTools declares SessionConfig.Tools as codex dynamic tools,
+// with no namespace, so the model, the events and CallTool all see the name
+// the caller gave. Codex 0.148 and later take the tagged form
+// ({"type":"function",...}); 0.137 takes the same object untagged and
+// ignores the type.
+func codexDynamicTools(tools []ap.Tool) ([]codexapp.DynamicToolSpec, error) {
+	list, err := callerTools(tools)
+	if err != nil {
+		return nil, err
+	}
+	var out []codexapp.DynamicToolSpec
+	for _, t := range list {
+		spec, err := codexapp.NewDynamicToolSpec(codexapp.FunctionDynamicToolSpec{
+			Type:        codexapp.DynamicToolSpecTypeFunction,
+			Name:        t.Name,
+			Description: t.Description,
+			InputSchema: t.InputSchema,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("driver: tool %q: %w", t.Name, err)
+		}
+		out = append(out, spec)
+	}
+	return out, nil
+}
+
 // encodeConfig turns CodexBackend.Config into the thread params' shape.
 func encodeConfig(cfg map[string]any) (map[string]json.RawMessage, error) {
 	if len(cfg) == 0 {
@@ -261,6 +427,12 @@ func encodeConfig(cfg map[string]any) (map[string]json.RawMessage, error) {
 		out[k] = raw
 	}
 	return out, nil
+}
+
+// codexToolCall is a caller tool running for codex.
+type codexToolCall struct {
+	turnID string
+	cancel context.CancelFunc
 }
 
 // codexApproval is one server request waiting on a human.
@@ -306,6 +478,13 @@ type codexSession struct {
 	// Codex does not complete an item whose turn was interrupted, so these
 	// are closed as cancelled when the turn ends.
 	openTools map[string]string
+
+	// callTool runs SessionConfig.Tools; calls are those running, by the
+	// JSON-RPC id of codex's item/tool/call request.
+	callTool ToolCaller
+	calls    map[string]*codexToolCall
+	// onlyCallerTools turns each turn's environment off.
+	onlyCallerTools bool
 
 	// usage turns the thread's running token totals into per-turn figures.
 	usage codexusage.Turns
@@ -390,8 +569,13 @@ func (s *codexSession) send(ctx context.Context, in Input) error {
 		s.backend.diagnose("turn/steer refused, starting a new turn instead: " + rpcErr.Error())
 	}
 
-	res, err := s.proc.TurnStart(ctx, codexapp.TurnStartParams{ThreadID: thread, Input: input})
-	if err != nil {
+	start := codexTurnStart{TurnStartParams: codexapp.TurnStartParams{ThreadID: thread, Input: input}}
+	if s.onlyCallerTools {
+		// A resumed thread gets its environment back; each turn turns it off.
+		start.Environments = &[]json.RawMessage{}
+	}
+	var res codexapp.TurnStartResponse
+	if err := s.proc.Call(ctx, codexapp.MethodTurnStart, start, &res); err != nil {
 		return fmt.Errorf("start codex turn: %w", err)
 	}
 	s.mu.Lock()
@@ -555,6 +739,7 @@ func (s *codexSession) shutdown() error {
 		s.pending = map[string]*codexApproval{}
 		s.byRPC = map[string]string{}
 		s.mu.Unlock()
+		s.cancelCalls(func(*codexToolCall) bool { return true })
 		close(s.stop)
 		for _, p := range pending {
 			p.settle(cancelAnswer(p))
@@ -595,6 +780,7 @@ func (s *codexSession) watch() {
 	for _, p := range pending {
 		p.settle(cancelAnswer(p))
 	}
+	s.cancelCalls(func(*codexToolCall) bool { return true })
 	if !closing {
 		msg := "codex app-server exited"
 		if err := s.proc.Err(); err != nil {
@@ -613,6 +799,9 @@ func (s *codexSession) emit(ev ap.AgentEvent) { s.pump.push(ev) }
 // --- server requests ---
 
 func (s *codexSession) onRequest(ctx context.Context, id json.RawMessage, method string, params json.RawMessage) (any, *codexapp.Error) {
+	if method == codexapp.MethodItemToolCall {
+		return s.runCallerTool(ctx, id, params)
+	}
 	var (
 		key, turnID, tool string
 		args              ap.StringEncodedMap
@@ -719,6 +908,64 @@ func (s *codexSession) onRequest(ctx context.Context, id json.RawMessage, method
 	}
 }
 
+// runCallerTool answers item/tool/call, codex calling one of
+// SessionConfig.Tools. The caller runs it in CallTool, so it raises no
+// approval; tool.started and tool.completed come from codex's dynamicToolCall
+// item. ctx ends when codex withdraws the request, the turn ends or the
+// session closes.
+func (s *codexSession) runCallerTool(ctx context.Context, id json.RawMessage, params json.RawMessage) (any, *codexapp.Error) {
+	var p codexapp.DynamicToolCallParams
+	if err := json.Unmarshal(params, &p); err != nil {
+		return nil, &codexapp.Error{Code: -32602, Message: err.Error()}
+	}
+	if s.callTool == nil {
+		return codexToolResult("this session has no caller tools", true), nil
+	}
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	rpc := string(id)
+	s.mu.Lock()
+	if s.closing {
+		s.mu.Unlock()
+		return codexToolResult("the session closed", true), nil
+	}
+	s.calls[rpc] = &codexToolCall{turnID: p.TurnID, cancel: cancel}
+	s.mu.Unlock()
+	defer func() {
+		s.mu.Lock()
+		delete(s.calls, rpc)
+		s.mu.Unlock()
+	}()
+
+	args := p.Arguments
+	if len(args) == 0 || string(args) == "null" {
+		args = json.RawMessage("{}")
+	}
+	out, err := s.callTool(ctx, ToolCall{ToolInvocationID: p.CallID, Name: p.Tool, Arguments: args})
+	if err != nil {
+		return codexToolResult(err.Error(), true), nil
+	}
+	return codexToolResult(out.Text, out.IsError), nil
+}
+
+func codexToolResult(text string, isError bool) codexapp.DynamicToolCallResponse {
+	item, _ := codexapp.NewDynamicToolCallOutputContentItem(codexapp.InputTextDynamicToolCallOutputContentItem{
+		Type: codexapp.DynamicToolCallOutputContentItemTypeInputText, Text: text,
+	})
+	return codexapp.DynamicToolCallResponse{ContentItems: []codexapp.DynamicToolCallOutputContentItem{item}, Success: !isError}
+}
+
+// cancelCalls ends the context of the caller tools that match.
+func (s *codexSession) cancelCalls(match func(*codexToolCall) bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, c := range s.calls {
+		if match(c) {
+			c.cancel()
+		}
+	}
+}
+
 func (s *codexSession) drop(key string) {
 	s.mu.Lock()
 	if p, ok := s.pending[key]; ok {
@@ -801,6 +1048,7 @@ func (s *codexSession) onNotification(method string, params json.RawMessage) {
 		s.mu.Unlock()
 		turnID := n.Turn.ID
 		s.withdraw(func(p *codexApproval) bool { return p.turnID == turnID }, "turn ended")
+		s.cancelCalls(func(c *codexToolCall) bool { return c.turnID == turnID })
 		status := ap.TurnUsageComplete
 		if n.Turn.Status != codexapp.TurnStatusCompleted {
 			status = ap.TurnUsagePartial
@@ -924,6 +1172,9 @@ func (s *codexSession) onNotification(method string, params json.RawMessage) {
 		rpc := string(n.RequestID)
 		s.mu.Lock()
 		_, stillPending := s.byRPC[rpc]
+		if c, running := s.calls[rpc]; running {
+			c.cancel()
+		}
 		s.mu.Unlock()
 		if stillPending {
 			s.withdraw(func(p *codexApproval) bool { return p.rpcID == rpc }, "codex withdrew the request")
@@ -1226,6 +1477,16 @@ func toolCompleted(item codexapp.ThreadItem) (ap.ToolCompletedPayload, bool) {
 			return p, false
 		}
 		p.ToolInvocationID, p.ToolName, p.Status = v.ID, v.Tool, itemStatus(string(v.Status))
+		var text []string
+		for _, c := range v.ContentItems {
+			if t, ok := c.AsInputTextDynamicToolCallOutputContentItem(); ok {
+				text = append(text, t.Text)
+			}
+		}
+		p.Result = strings.Join(text, "\n")
+		if v.DurationMs != nil {
+			p.DurationMs = *v.DurationMs
+		}
 	case codexapp.ThreadItemTypeWebSearch:
 		v, ok := item.AsWebSearchThreadItem()
 		if !ok {

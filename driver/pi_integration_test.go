@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -313,4 +314,210 @@ func TestPiRealTurnToolInterruptSteerResumeCompact(t *testing.T) {
 		}
 		t.Logf("error: %v", err)
 	})
+}
+
+// piOfferedTools is the tool names a chat completion request offered.
+func piOfferedTools(t *testing.T, body string) []string {
+	t.Helper()
+	var req struct {
+		Tools []struct {
+			Function struct {
+				Name string `json:"name"`
+			} `json:"function"`
+		} `json:"tools"`
+	}
+	if err := json.Unmarshal([]byte(body), &req); err != nil {
+		t.Fatalf("decode request: %v", err)
+	}
+	var names []string
+	for _, tool := range req.Tools {
+		names = append(names, tool.Function.Name)
+	}
+	return names
+}
+
+func TestPiRealCallerTools(t *testing.T) {
+	mock, b := realPi(t)
+	mockCtl(t, mock, "POST", "/ctl/delay", map[string]any{"Ms": 0})
+	// The canned reply is sticky; the other tests expect the mock's own.
+	defer mockCtl(t, mock, "POST", "/text", map[string]any{"Text": "Hello from mock server."})
+	lookup := ap.Tool{Type: "function", Function: ap.ToolFunction{
+		Name: "lookup", Description: "Look a word up.",
+		Parameters: ap.ToolParameters{Type: "object", Properties: ap.ToolParameterProperties{
+			"word": {Type: "string"},
+		}},
+	}}
+
+	type call struct {
+		driver.ToolCall
+		canceled bool
+	}
+	calls := make(chan call, 4)
+	release := make(chan struct{})
+	callTool := func(ctx context.Context, c driver.ToolCall) (driver.ToolOutput, error) {
+		var args struct{ Word string }
+		_ = json.Unmarshal(c.Arguments, &args)
+		switch args.Word {
+		case "wait":
+			select {
+			case <-ctx.Done():
+				calls <- call{c, true}
+				return driver.ToolOutput{}, ctx.Err()
+			case <-release:
+			}
+		case "bad":
+			calls <- call{c, false}
+			return driver.ToolOutput{Text: "NO-SUCH-WORD", IsError: true}, nil
+		}
+		calls <- call{c, false}
+		return driver.ToolOutput{Text: "LOOKUP-RESULT-4412"}, nil
+	}
+
+	for _, only := range []bool{false, true} {
+		name := "with pi's tools"
+		if only {
+			name = "only caller tools"
+		}
+		t.Run(name, func(t *testing.T) {
+			b := *b
+			work := t.TempDir()
+			{
+				// A user's extension that adds a tool and turns pi's own
+				// back on: OnlyCallerTools must hold against it.
+				sneaky := filepath.Join(t.TempDir(), "sneaky.js")
+				src := `export default function (pi) {
+	pi.registerTool({ name: "sneaky", label: "sneaky", description: "x",
+		parameters: { type: "object", properties: {} },
+		async execute() { return { content: [{ type: "text", text: "x" }], details: {} }; } });
+	pi.on("session_start", () => pi.setActiveTools(["bash", "read", "sneaky", "lookup"]));
+}
+`
+				if err := os.WriteFile(sneaky, []byte(src), 0o644); err != nil {
+					t.Fatal(err)
+				}
+				b.Args = append(append([]string(nil), b.Args...), "--extension", sneaky)
+			}
+			sess, err := b.Open(context.Background(), driver.SessionConfig{
+				RunID: "run_tools", WorkDir: work, Model: "gpt-4o-mini",
+				Tools: []ap.Tool{lookup}, CallTool: callTool, OnlyCallerTools: only,
+			})
+			if err != nil {
+				t.Fatalf("open: %v", err)
+			}
+			defer sess.Close()
+			ev := sess.Events()
+			untilWithin(t, ev, ap.AgentEventRunStarted, 10*time.Second)
+
+			mockCtl(t, mock, "DELETE", "/log", nil)
+			mockCtl(t, mock, "POST", "/ctl/toolcall", map[string]any{"Name": "lookup", "Args": `{"word":"orb"}`})
+			mockCtl(t, mock, "POST", "/text", map[string]any{"Text": "TOOLS-DONE"})
+			_ = sess.Prompt(context.Background(), driver.TextInput("look up orb"))
+			events := untilWithin(t, ev, ap.AgentEventTurnCompleted, 60*time.Second)
+
+			if n := countType(events, ap.AgentEventApprovalRequired); n != 0 {
+				t.Errorf("%d approval request(s) for a caller tool", n)
+			}
+			var got call
+			select {
+			case got = <-calls:
+			default:
+				t.Fatalf("CallTool never ran: %v", typesOf(events))
+			}
+			if got.Name != "lookup" || !strings.Contains(string(got.Arguments), `"orb"`) || got.ToolInvocationID == "" {
+				t.Errorf("call = %+v", got.ToolCall)
+			}
+			start, _ := findEvent(events, ap.AgentEventToolStarted)
+			sp, _ := ap.PayloadAs[ap.ToolStartedPayload](start, ap.AgentEventToolStarted)
+			done, _ := findEvent(events, ap.AgentEventToolCompleted)
+			dp, _ := ap.PayloadAs[ap.ToolCompletedPayload](done, ap.AgentEventToolCompleted)
+			if sp.ToolName != "lookup" || sp.ToolInvocationID != got.ToolInvocationID {
+				t.Errorf("tool.started = %+v, call id %q", sp, got.ToolInvocationID)
+			}
+			if dp.ToolName != "lookup" || dp.ToolInvocationID != got.ToolInvocationID ||
+				dp.Status != ap.ToolInvocationStatusCompleted || dp.Result != "LOOKUP-RESULT-4412" {
+				t.Errorf("tool.completed = %+v", dp)
+			}
+			if text := deltas(events); !strings.Contains(text, "TOOLS-DONE") {
+				t.Errorf("text = %q", text)
+			}
+			reqs := piMockRequests(t, mock)
+			if len(reqs) < 2 {
+				t.Fatalf("%d model request(s), want the call and the one after it", len(reqs))
+			}
+			after := reqs[len(reqs)-1]
+			if !strings.Contains(after, "LOOKUP-RESULT-4412") || !strings.Contains(after, got.ToolInvocationID) {
+				t.Errorf("the tool result did not reach the model: %.600s", after)
+			}
+			offered := piOfferedTools(t, reqs[0])
+			t.Logf("offered: %q", offered)
+			if !slices.Contains(offered, "lookup") {
+				t.Errorf("lookup not offered: %q", offered)
+			}
+			if only && !slices.Equal(offered, []string{"lookup"}) {
+				t.Errorf("OnlyCallerTools offered %q, want only lookup", offered)
+			}
+			if !only && (!slices.Contains(offered, "bash") || !slices.Contains(offered, "sneaky")) {
+				t.Errorf("pi's own and the extension's tools are gone without OnlyCallerTools: %q", offered)
+			}
+			if only {
+				return
+			}
+
+			t.Run("an error result is a failed call", func(t *testing.T) {
+				mockCtl(t, mock, "DELETE", "/log", nil)
+				mockCtl(t, mock, "POST", "/ctl/toolcall", map[string]any{"Name": "lookup", "Args": `{"word":"bad"}`})
+				mockCtl(t, mock, "POST", "/text", map[string]any{"Text": "TOOLS-DONE"})
+				_ = sess.Prompt(context.Background(), driver.TextInput("look up bad"))
+				events := untilWithin(t, ev, ap.AgentEventTurnCompleted, 60*time.Second)
+				<-calls
+				done, _ := findEvent(events, ap.AgentEventToolCompleted)
+				dp, _ := ap.PayloadAs[ap.ToolCompletedPayload](done, ap.AgentEventToolCompleted)
+				if dp.Status != ap.ToolInvocationStatusFailed || !strings.Contains(dp.Result, "NO-SUCH-WORD") {
+					t.Errorf("tool.completed = %+v", dp)
+				}
+				reqs := piMockRequests(t, mock)
+				if last := reqs[len(reqs)-1]; !strings.Contains(last, "NO-SUCH-WORD") {
+					t.Errorf("the error did not reach the model: %.600s", last)
+				}
+			})
+
+			t.Run("pi's commands do not inherit the endpoint", func(t *testing.T) {
+				mockCtl(t, mock, "POST", "/ctl/toolcall", map[string]any{"Name": "bash", "Args": `{"command":"env > env.txt"}`})
+				_ = sess.Prompt(context.Background(), driver.TextInput("dump env"))
+				untilWithin(t, ev, ap.AgentEventTurnCompleted, 60*time.Second)
+				env, err := os.ReadFile(filepath.Join(work, "env.txt"))
+				if err != nil {
+					t.Fatalf("bash did not run: %v", err)
+				}
+				if strings.Contains(string(env), "AGENTPROTOCOL_PI_TOOLS") {
+					t.Error("the endpoint's URL or token reached a command pi ran")
+				}
+			})
+
+			t.Run("interrupt withdraws a running call", func(t *testing.T) {
+				mockCtl(t, mock, "POST", "/ctl/toolcall", map[string]any{"Name": "lookup", "Args": `{"word":"wait"}`})
+				_ = sess.Prompt(context.Background(), driver.TextInput("look up wait"))
+				untilWithin(t, ev, ap.AgentEventToolStarted, 60*time.Second)
+				time.Sleep(300 * time.Millisecond)
+				if err := sess.Interrupt(context.Background()); err != nil {
+					t.Fatalf("interrupt: %v", err)
+				}
+				select {
+				case c := <-calls:
+					if !c.canceled {
+						t.Errorf("the call finished instead of being withdrawn")
+					}
+				case <-time.After(10 * time.Second):
+					close(release)
+					t.Fatal("CallTool's context did not end on interrupt")
+				}
+				events := untilWithin(t, ev, ap.AgentEventTurnCompleted, 30*time.Second)
+				done, ok := findEvent(events, ap.AgentEventToolCompleted)
+				dp, _ := ap.PayloadAs[ap.ToolCompletedPayload](done, ap.AgentEventToolCompleted)
+				if !ok || dp.Status != ap.ToolInvocationStatusCancelled {
+					t.Errorf("tool.completed = %+v (found %v)", dp, ok)
+				}
+			})
+		})
+	}
 }

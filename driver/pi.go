@@ -36,7 +36,9 @@ type PiBackend struct {
 	// field for, such as --provider.
 	Args []string
 
-	// Env is the child environment. Nil inherits the parent's.
+	// Env is the child environment. Nil inherits the parent's. With
+	// SessionConfig.Tools the driver adds the caller-tools endpoint to it
+	// (AGENTPROTOCOL_PI_TOOLS_URL and AGENTPROTOCOL_PI_TOOLS_TOKEN).
 	Env []string
 
 	// Version is the installed pi version (what pi --version printed), when
@@ -87,16 +89,24 @@ func (b *PiBackend) Kind() string { return KindPi }
 //   - Resume: pi files sessions per working directory; --session-id with
 //     the id reopens one in a new process, and the next request carries the
 //     earlier turns.
-//   - Tools: false. pi takes no tools from its client; tools come from its
-//     built-ins and the user's extensions, and it has no MCP.
+//   - Tools: pi has no MCP and no RPC command that adds a tool, so the
+//     driver loads an extension of its own (-e, piext/tools.js) that
+//     registers SessionConfig.Tools with pi.registerTool and sends each call
+//     to a loopback MCP endpoint served for the session. The model and the
+//     events see the bare name, ToolInvocationID is pi's toolCallId, and no
+//     approval is raised.
+//   - OnlyCallerTools: --no-builtin-tools and --tools with the caller's
+//     names. pi drops every tool not on the --tools list from its registry,
+//     a user's extension tools included; with no Tools it is --no-tools.
 func (b *PiBackend) Capabilities() Capabilities {
 	return Capabilities{
-		Steer:     true,
-		Approvals: false,
-		Interrupt: true,
-		Resume:    b.has(harness.FeatureSessionID),
-		Tools:     false,
-		Images:    true,
+		Steer:           true,
+		Approvals:       false,
+		Interrupt:       true,
+		Resume:          b.has(harness.FeatureSessionID),
+		Tools:           true,
+		OnlyCallerTools: true,
+		Images:          true,
 	}
 }
 
@@ -123,6 +133,9 @@ func (b *PiBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error
 		return nil, fmt.Errorf("driver: pi %s has no --session-id (added in %s), so session %s cannot be resumed",
 			b.Version, harness.All["pi"].Features[harness.FeatureSessionID].From, cfg.ResumeSessionID)
 	}
+	if err := checkCallerTools(cfg, b.Capabilities()); err != nil {
+		return nil, err
+	}
 	s := &piSession{
 		backend: b,
 		runID:   cfg.RunID,
@@ -142,6 +155,20 @@ func (b *PiBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error
 		ExtraArgs:          b.Args,
 	}
 	opts.Stderr, s.stderr = agentStderr(b.Stderr)
+	switch {
+	case len(cfg.Tools) > 0:
+		tools, err := startPiCallerTools(cfg)
+		if err != nil {
+			return nil, err
+		}
+		s.callerTools = tools
+		// After b.Args, so that with OnlyCallerTools a --tools there does
+		// not win.
+		opts.ExtraArgs = append(append([]string(nil), b.Args...), tools.args(cfg)...)
+		opts.Env = tools.env(b.Env)
+	case cfg.OnlyCallerTools:
+		opts.ExtraArgs = append(append([]string(nil), b.Args...), "--no-tools")
+	}
 
 	proc, err := pirpc.Spawn(opts, pirpc.Handler{
 		OnRecord: s.onRecord,
@@ -150,6 +177,7 @@ func (b *PiBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error
 		},
 	})
 	if err != nil {
+		_ = s.callerTools.close()
 		return nil, s.stderr.quoteErr(fmt.Errorf("driver: launch pi: %w", err))
 	}
 	s.proc = proc
@@ -158,6 +186,7 @@ func (b *PiBackend) Open(ctx context.Context, cfg SessionConfig) (Session, error
 	fail := func(format string, args ...any) (Session, error) {
 		_ = proc.Kill()
 		_ = proc.ExitErr()
+		_ = s.callerTools.close()
 		return nil, errors.New(s.stderr.quote(fmt.Sprintf(format, args...)))
 	}
 
@@ -211,6 +240,9 @@ type piSession struct {
 	id      string
 	pump    *eventPump
 	stderr  *tailBuffer
+
+	// callerTools serves SessionConfig.Tools; nil without them.
+	callerTools *piCallerTools
 
 	closeOnce sync.Once
 	closeErr  error
@@ -508,6 +540,9 @@ func contains(list []string, v string) bool {
 func (s *piSession) Close() error {
 	s.closeOnce.Do(func() {
 		s.closeErr = s.proc.Close(s.backend.ShutdownGrace)
+		if err := s.callerTools.close(); err != nil && s.closeErr == nil {
+			s.closeErr = fmt.Errorf("driver: pi caller tools: %w", err)
+		}
 		s.pump.stopNow()
 	})
 	return s.closeErr
@@ -531,6 +566,8 @@ var _ Killer = (*piSession)(nil)
 func (s *piSession) watch() {
 	<-s.proc.Exited()
 	exitErr := s.proc.ExitErr()
+	// Nothing calls the tools once pi is gone.
+	_ = s.callerTools.close()
 
 	s.mu.Lock()
 	for id, d := range s.dialogs {

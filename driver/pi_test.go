@@ -2,8 +2,10 @@ package driver_test
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"encoding/json"
+	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
@@ -52,7 +54,14 @@ func runFakePi() {
 	f := &fakePi{out: bufio.NewWriter(os.Stdout), dialogs: map[string]chan map[string]any{}}
 	if path := os.Getenv(fakePiRecord); path != "" {
 		f.record, _ = os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
-		args, _ := json.Marshal(map[string]any{"args": os.Args[1:]})
+		launch := map[string]any{"args": os.Args[1:]}
+		if url := os.Getenv("AGENTPROTOCOL_PI_TOOLS_URL"); url != "" {
+			// What the extension does at load.
+			launch["url"] = url
+			launch["token"] = os.Getenv("AGENTPROTOCOL_PI_TOOLS_TOKEN")
+			launch["tools/list"] = fakePiMCP(map[string]any{"jsonrpc": "2.0", "id": 1, "method": "tools/list"})
+		}
+		args, _ := json.Marshal(launch)
 		f.record.Write(append(args, '\n'))
 	}
 	sessionID := "fake-session"
@@ -155,6 +164,23 @@ func runFakePi() {
 	}
 }
 
+// fakePiMCP sends one JSON-RPC request to the caller-tools endpoint the
+// driver gave pi, as the extension does, and returns the answer.
+func fakePiMCP(req map[string]any) map[string]any {
+	body, _ := json.Marshal(req)
+	r, _ := http.NewRequest("POST", os.Getenv("AGENTPROTOCOL_PI_TOOLS_URL"), bytes.NewReader(body))
+	r.Header.Set("Authorization", "Bearer "+os.Getenv("AGENTPROTOCOL_PI_TOOLS_TOKEN"))
+	r.Header.Set("Content-Type", "application/json")
+	res, err := http.DefaultClient.Do(r)
+	if err != nil {
+		return map[string]any{"transport_error": err.Error()}
+	}
+	defer res.Body.Close()
+	var out map[string]any
+	_ = json.NewDecoder(res.Body).Decode(&out)
+	return out
+}
+
 func (f *fakePi) send(v any) {
 	data, _ := json.Marshal(v)
 	f.wmu.Lock()
@@ -213,6 +239,18 @@ func (f *fakePi) prompt(id, msg string) {
 		os.Exit(3)
 	case "hang":
 		return
+	case "caller_tool":
+		// What the extension's execute does: tools/call with pi's call id.
+		args := map[string]any{"word": "orb"}
+		f.send(map[string]any{"type": "tool_execution_start", "toolCallId": "call_7", "toolName": "lookup", "args": args})
+		res := fakePiMCP(map[string]any{"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": map[string]any{
+			"name": "lookup", "arguments": args, "_meta": map[string]any{"agentprotocol/toolCallId": "call_7"},
+		}})
+		result, _ := res["result"].(map[string]any)
+		f.send(map[string]any{"type": "tool_execution_end", "toolCallId": "call_7", "toolName": "lookup",
+			"result": map[string]any{"content": result["content"]}, "isError": result["isError"] == true})
+		f.assistant("looked up", "stop", "")
+		f.settle()
 	case "fail":
 		f.assistant("", "error", "429 rate limited")
 		f.settle()
@@ -689,4 +727,189 @@ func writeScript(t *testing.T, body string) string {
 		t.Fatal(err)
 	}
 	return path
+}
+
+// --- caller tools ---
+
+var piLookup = ap.Tool{Type: "function", Function: ap.ToolFunction{
+	Name: "lookup", Description: "Look a word up.",
+	Parameters: ap.ToolParameters{Type: "object", Properties: ap.ToolParameterProperties{
+		"word": {Type: "string"},
+	}},
+}}
+
+// piLaunch is the first line the fake recorded: its arguments and what the
+// caller-tools endpoint gave it.
+func piLaunch(t *testing.T, path string) (launch struct {
+	Args      []string       `json:"args"`
+	URL       string         `json:"url"`
+	Token     string         `json:"token"`
+	ToolsList map[string]any `json:"tools/list"`
+}) {
+	t.Helper()
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("read record: %v", err)
+	}
+	first, _, _ := strings.Cut(string(data), "\n")
+	if err := json.Unmarshal([]byte(first), &launch); err != nil {
+		t.Fatalf("decode launch: %v", err)
+	}
+	return launch
+}
+
+// argAfter is the value following flag in args.
+func argAfter(args []string, flag string) string {
+	if i := slices.Index(args, flag); i >= 0 && i+1 < len(args) {
+		return args[i+1]
+	}
+	return ""
+}
+
+func TestPiCallerTools(t *testing.T) {
+	b, record := piRunning(t)
+	var mu sync.Mutex
+	var calls []driver.ToolCall
+	sess := openPi(t, b, driver.SessionConfig{
+		Tools: []ap.Tool{piLookup},
+		CallTool: func(_ context.Context, c driver.ToolCall) (driver.ToolOutput, error) {
+			mu.Lock()
+			calls = append(calls, c)
+			mu.Unlock()
+			return driver.ToolOutput{Text: "LOOKUP-RESULT"}, nil
+		},
+	})
+
+	launch := piLaunch(t, record)
+	ext := argAfter(launch.Args, "--extension")
+	if ext == "" || !slices.Equal(launch.Args[:len(launch.Args)-2], []string{"--mode", "rpc", "--provider", "fake"}) {
+		t.Fatalf("args = %q, want the extension after the backend's args", launch.Args)
+	}
+	if slices.Contains(launch.Args, "--tools") || slices.Contains(launch.Args, "--no-builtin-tools") {
+		t.Errorf("pi's own tools restricted without OnlyCallerTools: %q", launch.Args)
+	}
+	src, err := os.ReadFile(ext)
+	if err != nil || !strings.Contains(string(src), "pi.registerTool") {
+		t.Errorf("extension %s: %v", ext, err)
+	}
+	if !strings.HasPrefix(launch.URL, "http://127.0.0.1:") || len(launch.Token) < 32 {
+		t.Errorf("endpoint = %q, token %q", launch.URL, launch.Token)
+	}
+	for _, a := range launch.Args {
+		if strings.Contains(a, launch.Token) {
+			t.Errorf("the token is on the command line: %q", a)
+		}
+	}
+	tools, _ := launch.ToolsList["result"].(map[string]any)["tools"].([]any)
+	if len(tools) != 1 {
+		t.Fatalf("tools/list = %v", launch.ToolsList)
+	}
+	tool := tools[0].(map[string]any)
+	schema, _ := tool["inputSchema"].(map[string]any)
+	word, _ := schema["properties"].(map[string]any)["word"].(map[string]any)
+	if tool["name"] != "lookup" || tool["description"] != "Look a word up." || schema["type"] != "object" || word["type"] != "string" {
+		t.Errorf("tool = %v", tool)
+	}
+
+	if err := sess.Prompt(context.Background(), driver.TextInput("caller_tool")); err != nil {
+		t.Fatal(err)
+	}
+	evs := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+	mu.Lock()
+	got := calls
+	mu.Unlock()
+	if len(got) != 1 || got[0].ToolInvocationID != "call_7" || got[0].Name != "lookup" || string(got[0].Arguments) != `{"word":"orb"}` {
+		t.Errorf("calls = %+v", got)
+	}
+	if n := countType(evs, ap.AgentEventApprovalRequired); n != 0 {
+		t.Errorf("%d approval(s) for a caller tool", n)
+	}
+	start, _ := findEvent(evs, ap.AgentEventToolStarted)
+	sp, _ := ap.PayloadAs[ap.ToolStartedPayload](start, ap.AgentEventToolStarted)
+	done, _ := findEvent(evs, ap.AgentEventToolCompleted)
+	dp, _ := ap.PayloadAs[ap.ToolCompletedPayload](done, ap.AgentEventToolCompleted)
+	if sp.ToolName != "lookup" || sp.ToolInvocationID != "call_7" {
+		t.Errorf("tool.started = %+v", sp)
+	}
+	if dp.ToolName != "lookup" || dp.ToolInvocationID != "call_7" || dp.Status != ap.ToolInvocationStatusCompleted || dp.Result != "LOOKUP-RESULT" {
+		t.Errorf("tool.completed = %+v", dp)
+	}
+
+	if err := sess.Close(); err != nil {
+		t.Fatalf("close: %v", err)
+	}
+	if _, err := os.Stat(filepath.Dir(ext)); !os.IsNotExist(err) {
+		t.Errorf("extension dir still there after Close: %v", err)
+	}
+	if _, err := http.Post(launch.URL, "application/json", strings.NewReader(`{}`)); err == nil {
+		t.Error("the endpoint still answers after Close")
+	}
+}
+
+func TestPiOnlyCallerToolsAllowlistsThem(t *testing.T) {
+	b, record := piRunning(t)
+	other := piLookup
+	other.Function.Name = "define"
+	call := func(context.Context, driver.ToolCall) (driver.ToolOutput, error) { return driver.ToolOutput{}, nil }
+	openPi(t, b, driver.SessionConfig{Tools: []ap.Tool{piLookup, other}, CallTool: call, OnlyCallerTools: true})
+	args := piLaunch(t, record).Args
+	tail := args[len(args)-3:]
+	if !slices.Equal(tail, []string{"--no-builtin-tools", "--tools", "lookup,define"}) || argAfter(args, "--extension") == "" {
+		t.Errorf("args = %q", args)
+	}
+
+	b, record = piRunning(t)
+	openPi(t, b, driver.SessionConfig{OnlyCallerTools: true})
+	if args := piLaunch(t, record).Args; args[len(args)-1] != "--no-tools" || slices.Contains(args, "--extension") {
+		t.Errorf("args with no tools = %q", args)
+	}
+}
+
+func TestPiCallerToolsRefusedBeforeLaunch(t *testing.T) {
+	b, record := piRunning(t)
+	for _, cfg := range []driver.SessionConfig{
+		{Tools: []ap.Tool{piLookup}},
+		{Tools: []ap.Tool{{Type: "function", Function: ap.ToolFunction{Name: "a,b"}}}, OnlyCallerTools: true,
+			CallTool: func(context.Context, driver.ToolCall) (driver.ToolOutput, error) { return driver.ToolOutput{}, nil }},
+	} {
+		cfg.WorkDir = t.TempDir()
+		if s, err := b.Open(context.Background(), cfg); err == nil {
+			s.Close()
+			t.Errorf("opened %+v", cfg)
+		} else {
+			t.Log(err)
+		}
+	}
+	if _, err := os.Stat(record); !os.IsNotExist(err) {
+		t.Error("pi was launched")
+	}
+}
+
+func TestPiCallerToolsCleanedUpWhenOpenFails(t *testing.T) {
+	dir := t.TempDir()
+	argsFile := filepath.Join(dir, "args")
+	b := &driver.PiBackend{
+		Command:     writeScript(t, "#!/bin/sh\nprintf '%s\\n' \"$@\" > "+argsFile+"\necho 'Failed to load extension' >&2\nexit 1\n"),
+		InitTimeout: 5 * time.Second,
+	}
+	call := func(context.Context, driver.ToolCall) (driver.ToolOutput, error) { return driver.ToolOutput{}, nil }
+	_, err := b.Open(context.Background(), driver.SessionConfig{WorkDir: dir, Tools: []ap.Tool{piLookup}, CallTool: call})
+	if err == nil || !strings.Contains(err.Error(), "Failed to load extension") {
+		t.Fatalf("err = %v", err)
+	}
+	data, _ := os.ReadFile(argsFile)
+	ext := argAfter(strings.Split(strings.TrimSpace(string(data)), "\n"), "--extension")
+	if ext == "" {
+		t.Fatalf("no --extension in %q", data)
+	}
+	if _, err := os.Stat(filepath.Dir(ext)); !os.IsNotExist(err) {
+		t.Errorf("extension dir left behind: %v", err)
+	}
+}
+
+func TestPiBackendDeclaresWhatItCanDo(t *testing.T) {
+	want := driver.Capabilities{Steer: true, Interrupt: true, Resume: true, Tools: true, OnlyCallerTools: true, Images: true}
+	if got := (&driver.PiBackend{}).Capabilities(); got != want {
+		t.Errorf("capabilities = %+v, want %+v", got, want)
+	}
 }

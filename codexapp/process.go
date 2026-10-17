@@ -41,6 +41,9 @@ type ProcessConfig struct {
 
 	// Stderr receives codex's logs. Nil discards them.
 	Stderr io.Writer
+
+	// Capabilities are declared during initialize. Nil declares none.
+	Capabilities *InitializeCapabilities
 }
 
 // DefaultShutdownGrace is how long Close waits for the server to exit after
@@ -69,7 +72,7 @@ func Spawn(ctx context.Context, cfg ProcessConfig, info ClientInfo, h Handler) (
 	p.Start()
 	proc.Reap(p.Done())
 
-	init, err := p.Initialize(ctx, info)
+	init, err := p.InitializeWith(ctx, InitializeParams{ClientInfo: info, Capabilities: cfg.Capabilities})
 	if err != nil {
 		_ = p.Kill()
 		return nil, fmt.Errorf("codex app-server: initialize: %w", err)

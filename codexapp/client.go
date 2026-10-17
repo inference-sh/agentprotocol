@@ -128,8 +128,14 @@ func (c *Client) Notify(method string, params any) error {
 // Initialize performs the handshake: the initialize request, then the
 // initialized notification the server waits for before serving anything else.
 func (c *Client) Initialize(ctx context.Context, info ClientInfo) (InitializeResponse, error) {
+	return c.InitializeWith(ctx, InitializeParams{ClientInfo: info})
+}
+
+// InitializeWith is Initialize with the client's capabilities, such as the
+// experimentalApi opt-in that experimental fields need.
+func (c *Client) InitializeWith(ctx context.Context, p InitializeParams) (InitializeResponse, error) {
 	var res InitializeResponse
-	if err := c.Call(ctx, MethodInitialize, InitializeParams{ClientInfo: info}, &res); err != nil {
+	if err := c.Call(ctx, MethodInitialize, p, &res); err != nil {
 		return res, err
 	}
 	return res, c.Notify(MethodInitialized, nil)

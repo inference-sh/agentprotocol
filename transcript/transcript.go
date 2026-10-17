@@ -97,6 +97,12 @@ type Block struct {
 	MediaType string `json:"media_type,omitempty"`
 	// Data is an image's or file's bytes, when the agent stores them inline.
 	Data []byte `json:"data,omitempty"`
+	// Signature is the model vendor's proof over a reasoning block
+	// (Anthropic's thinking signature), which its API checks before taking
+	// the block back. Only a writer for the agent whose model issued it
+	// writes it; every other writer leaves the reasoning out, as it would
+	// unsigned reasoning.
+	Signature string `json:"signature,omitempty"`
 	// URI is where an image or file is, when the agent stores a reference
 	// instead of the bytes: a path, a file: or https: URL, or the model
 	// provider's id for an upload (Codex keeps file ids).

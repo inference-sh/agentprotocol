@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"slices"
 	"sort"
 )
 
@@ -139,4 +140,20 @@ func schemaIn(decl map[string]any) map[string]any {
 		}
 	}
 	return nil
+}
+
+// ToolDeclarationsIn names the tools one request body declares. A Responses
+// namespace is not one; the tools inside it are.
+func (s *MockServer) ToolDeclarationsIn(body []byte) []string {
+	var names []string
+	containers := responsesNamespaces(body)
+	for _, d := range toolDeclsIn(body) {
+		if _, ns := containers[d.Name]; ns {
+			continue
+		}
+		if !slices.Contains(names, d.Name) {
+			names = append(names, d.Name)
+		}
+	}
+	return names
 }

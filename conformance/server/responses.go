@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 )
@@ -35,7 +36,11 @@ func (s *MockServer) handleResponses(w http.ResponseWriter, r *http.Request) {
 
 	if s.shouldToolCall(req.hasTools() && s.bodyOffersTool(body), r.URL.Path) {
 		name, args := s.getToolCall()
-		s.responsesFunctionCallIn(w, s.toolCallNamespace(), name, args)
+		ns := s.toolCallNamespace()
+		if ns == "" {
+			ns = responsesNamespaceOf(body, name)
+		}
+		s.responsesFunctionCallIn(w, ns, name, args)
 		return
 	}
 
@@ -120,4 +125,46 @@ func (s *MockServer) responsesFunctionCallIn(w http.ResponseWriter, namespace, n
 		}),
 	}
 	streamSSEEvents(w, events)
+}
+
+// responsesNamespaces maps each Responses namespace a request declares to
+// the tools inside it. A namespace is a container the model calls into
+// ({"namespace":ns,"name":tool}), not a tool of its own.
+func responsesNamespaces(body []byte) map[string][]string {
+	var req struct {
+		Tools []struct {
+			Type  string `json:"type"`
+			Name  string `json:"name"`
+			Tools []struct {
+				Name string `json:"name"`
+			} `json:"tools"`
+		} `json:"tools"`
+	}
+	if json.Unmarshal(body, &req) != nil {
+		return nil
+	}
+	out := map[string][]string{}
+	for _, t := range req.Tools {
+		if t.Type != "namespace" {
+			continue
+		}
+		for _, inner := range t.Tools {
+			out[t.Name] = append(out[t.Name], inner.Name)
+		}
+	}
+	return out
+}
+
+// responsesNamespaceOf is the namespace a request declares the tool in, or
+// "" when it declares it flat (or not at all): the model calls a tool in a
+// namespace with that namespace, as codex declares MCP tools.
+func responsesNamespaceOf(body []byte, tool string) string {
+	for ns, tools := range responsesNamespaces(body) {
+		for _, t := range tools {
+			if t == tool {
+				return ns
+			}
+		}
+	}
+	return ""
 }

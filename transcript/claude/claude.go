@@ -287,7 +287,7 @@ func blocks(raw json.RawMessage) ([]transcript.Block, error) {
 		case "text":
 			out = append(out, transcript.Block{Kind: transcript.BlockText, Text: b.Text})
 		case "thinking":
-			out = append(out, transcript.Block{Kind: transcript.BlockReasoning, Text: b.Thinking})
+			out = append(out, transcript.Block{Kind: transcript.BlockReasoning, Text: b.Thinking, Signature: b.Signature})
 		case "tool_use":
 			out = append(out, transcript.Block{Kind: transcript.BlockToolUse, ToolID: b.ID, Name: b.Name, Input: b.Input})
 		case "image", "document":
@@ -406,8 +406,11 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			content = append(content, block{Type: "text", Text: b.Text})
 		case transcript.BlockReasoning:
 			// A thinking block carries a signature Claude will not accept
-			// from anyone else, so foreign reasoning is left out rather than
-			// forged.
+			// from anyone else, so reasoning without one is left out rather
+			// than forged. Reasoning Claude signed goes back as it came.
+			if b.Signature != "" {
+				content = append(content, block{Type: "thinking", Thinking: b.Text, Signature: b.Signature})
+			}
 		case transcript.BlockToolUse:
 			in := b.Input
 			if len(in) == 0 {

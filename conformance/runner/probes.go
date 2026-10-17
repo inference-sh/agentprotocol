@@ -94,12 +94,17 @@ type Probes struct {
 	// Images attaches an image to a prompt and checks it reaches the model
 	// as an image when the backend says it does (images.go).
 	Images bool
+
+	// Direct runs the agent in direct mode, as a model with the probe's
+	// system prompt and tools only, and checks what the model was sent
+	// (direct.go).
+	Direct bool
 }
 
 // ParseProbes reads a comma-separated probe list:
 //
 //	resume, resume=kill, resumeafter=65s, inflight, inflight=cancel, inflight=hold, compact,
-//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, images
+//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, images, direct
 func ParseProbes(spec string) (Probes, error) {
 	var p Probes
 	for _, part := range strings.Split(spec, ",") {
@@ -167,6 +172,8 @@ func ParseProbes(spec string) (Probes, error) {
 			p.Subagents = true
 		case "images":
 			p.Images = true
+		case "direct":
+			p.Direct = true
 		default:
 			return p, fmt.Errorf("unknown probe %q (want resume, resumeafter, inflight, compact, tools, deferred, transcript, seed, seedkinds, env, detect or hidden)", name)
 		}

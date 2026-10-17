@@ -4,11 +4,17 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents,images",
+      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents,images,direct",
       "note": "No inflight=cancel or inflight=hold runs: this agent runs the gated tool without asking its client (acp/inflight.park = skip:not-gated), so there is no approval for the answer to reach and those runs repeat this one. If inflight.park changes here, add them back.",
       "checks": {
         "acp/compact.run": "skip:nothing-sent",
         "acp/deferred.armed": "pass:no-search-tool",
+        "acp/direct.call": "pass",
+        "acp/direct.messages": "pass:exact",
+        "acp/direct.restart": "pass",
+        "acp/direct.result": "pass",
+        "acp/direct.system": "pass:exact",
+        "acp/direct.tools": "pass:only",
         "acp/hook-injection": "pass",
         "acp/hook.prompt": "pass",
         "acp/hook.stop": "pass",

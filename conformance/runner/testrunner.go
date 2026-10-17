@@ -310,6 +310,10 @@ func (r *TestRunner) Run() Result {
 		if r.probes.Images {
 			r.probeImages()
 		}
+		if r.probes.Direct {
+			r.resetPhase(ModeACP)
+			r.probeDirect()
+		}
 		if r.probes.Seed {
 			r.resetPhase(ModeACP)
 			r.probeTranscriptSeed()

@@ -195,6 +195,9 @@ type ContentBlock struct {
 
 	Text     string `json:"text,omitempty"`
 	Thinking string `json:"thinking,omitempty"`
+	// Signature is a thinking block's signature, which the API requires to
+	// accept the block back in a later request.
+	Signature string `json:"signature,omitempty"`
 
 	// tool_use
 	ID    string          `json:"id,omitempty"`
@@ -434,6 +437,10 @@ type StreamAPI struct {
 	Index        int           `json:"index,omitempty"`
 	Delta        StreamDelta   `json:"delta,omitempty"`
 	ContentBlock *ContentBlock `json:"content_block,omitempty"`
+	// Message is message_start's message: its id, model and input usage.
+	Message *APIMessage `json:"message,omitempty"`
+	// Usage is message_delta's usage: the output tokens so far.
+	Usage *Usage `json:"usage,omitempty"`
 }
 
 // StreamDelta is the delta of a content_block_delta or message_delta.
@@ -442,6 +449,7 @@ type StreamDelta struct {
 	Text        string `json:"text,omitempty"`
 	Thinking    string `json:"thinking,omitempty"`
 	PartialJSON string `json:"partial_json,omitempty"`
+	Signature   string `json:"signature,omitempty"`
 	StopReason  string `json:"stop_reason,omitempty"`
 }
 

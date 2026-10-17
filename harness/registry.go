@@ -197,6 +197,49 @@ var All = map[string]Harness{
 			{"sh", "-c", "codex plugin marketplace add https://github.com/belt-sh/skills.git 2>/dev/null || true"},
 			{"sh", "-c", "codex plugin add belt@belt-sh-skills 2>/dev/null || true"},
 		},
+		Direct: &Direct{
+			// Measured with the mock's request bodies: instructions are the
+			// prompt file alone (sent as the one developer message); no
+			// permissions, apps, collaboration, environment, skills, hook or
+			// plugin context; shell, apply_patch, view_image, web search,
+			// goals, request_user_input and sub-agents off (agents.enabled,
+			// unlike features.multi_agent, also holds on resume). Not pure:
+			// list_mcp_resources, list_mcp_resource_templates and
+			// read_mcp_resource come with any MCP server
+			// (core/src/tools/spec_plan.rs add_mcp_resource_tools); the global
+			// $CODEX_HOME/AGENTS.md is a user message with no config to stop
+			// it (codex-home/src/instructions); every MCP result is prefixed
+			// "Wall time: N seconds\nOutput:" (core/src/tools/context.rs).
+			// MCP tools are offered as probe_echo in namespace mcp__tools.
+			Args: []string{
+				"-c", `model_instructions_file="{{.SystemPromptFile}}"`,
+				"-c", "project_doc_max_bytes=0",
+				"-c", "include_permissions_instructions=false",
+				"-c", "include_apps_instructions=false",
+				"-c", "include_collaboration_mode_instructions=false",
+				"-c", "include_environment_context=false",
+				"-c", "skills.include_instructions=false",
+				"-c", `mcp_servers.tools.url="{{.MCPURL}}"`,
+				"-c", `mcp_servers.tools.bearer_token_env_var="AGENTPROTOCOL_DIRECT_MCP_TOKEN"`,
+				"-c", "mcp_servers.tools.tool_timeout_sec=86400",
+				"-c", `mcp_servers.tools.default_tools_approval_mode="approve"`,
+				"-c", `web_search="disabled"`,
+				"-c", "features.shell_tool=false",
+				"-c", "features.unified_exec=false",
+				"-c", "features.view_image=false",
+				"-c", "features.apply_patch_freeform=false",
+				"-c", "agents.enabled=false",
+				"-c", "features.goals=false",
+				"-c", "features.memories=false",
+				"-c", "features.apps=false",
+				"-c", "tools.experimental_request_user_input.enabled=false",
+				"-c", "features.hooks=false",
+				"-c", "features.plugins=false",
+			},
+			Env:       map[string]string{"AGENTPROTOCOL_DIRECT_MCP_TOKEN": "{{.MCPToken}}"},
+			MCPInArgs: true,
+			Measured:  "codex-cli 0.163.0 2026-10-17",
+		},
 		APIFormat:        Responses,
 		EnvVars:          map[string]string{},
 		APIKeyEnvVar:     "OPENAI_API_KEY",
@@ -341,6 +384,37 @@ var All = map[string]Harness{
 		Driver:         DriverPi,
 		CompactCommand: "/compact",
 		ToolCallGated:  ToolCall{Name: "bash", Args: gatedShellArgs},
+		// pi 1.x has MCP built in (builtin:mcp) but reads servers only from
+		// mcp.json; the extension registers ours with direct exposure, so
+		// it is declared to the model. --system-prompt still appends a
+		// <cwd> section; before_agent_start's systemPrompt replaces the
+		// whole prompt. --no-extensions drops the user's extensions and the
+		// built-ins, -e loads back builtin:mcp. --tools mcp__tools__* keeps
+		// no tool but ours (user mcp.json servers still connect, their
+		// tools are not declared). no_proxy keeps a user's HTTP(S)_PROXY,
+		// which pi's fetch honours, off the loopback server.
+		Direct: &Direct{
+			Args: []string{
+				"--system-prompt", "{{.SystemPrompt}}",
+				"--no-builtin-tools", "--tools", "mcp__tools__*",
+				"--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes",
+				"--no-extensions", "-e", "builtin:mcp", "-e", "{{.Dir}}/direct.ts",
+			},
+			Files: map[string]string{
+				"direct.ts": `import { readFileSync } from "node:fs";
+export default function (pi: any) {
+  const np = process.env.no_proxy ?? process.env.NO_PROXY;
+  process.env.no_proxy = np ? np + ",127.0.0.1" : "127.0.0.1";
+  pi.registerMcpServer("tools", { url: "{{.MCPURL}}", headers: { Authorization: "Bearer {{.MCPToken}}" }, exposure: "direct" });
+  const system = readFileSync("{{.SystemPromptFile}}", "utf8");
+  pi.on("before_agent_start", () => ({ systemPrompt: system }));
+}
+`,
+			},
+			MCPInArgs: true,
+			ToolName:  "mcp__{{.Server}}__{{.Tool}}",
+			Measured:  "1.3.0 2026-10-17",
+		},
 	},
 	"kiro": {
 		Name: "kiro", Binary: "kiro-cli",
@@ -440,10 +514,30 @@ var All = map[string]Harness{
 		InteractivePromptInArgs: true,
 		ExitCommand:             "/exit",
 		ACPCmd:                  []string{"omp", "acp"},
-		ACPImages:               true,
-		ACPArgs:                 []string{"--model", "{{.Model}}"},
-		SDKCmd:                  []string{"omp", "--mode", "json"},
-		SDKArgs:                 []string{"--model", "{{.Model}}", "--approval-mode", "yolo"},
+		// Measured by the direct probe. --system-prompt only sets block 0:
+		// omp always appends a <project-context> block (workstation, context
+		// files such as AGENTS.md, a <critical> list), so our own extension,
+		// the only one loaded (--no-extensions keeps -e paths), replaces the
+		// whole system prompt on before_agent_start, which also covers
+		// continuations and a resumed session. NO_PROXY: Bun's fetch sends
+		// the loopback MCP request through HTTP(S)_PROXY when one is set.
+		// ACP session MCP servers are namespaced mcp__<server>_<tool>.
+		Direct: &Direct{
+			Args: []string{"--system-prompt", "{{.SystemPrompt}}", "--tools", "", "--no-rules", "--no-skills", "--no-extensions", "-e", "{{.Dir}}/direct.ts", "--no-lsp", "--no-title"},
+			Env:  map[string]string{"NO_PROXY": "127.0.0.1,localhost", "no_proxy": "127.0.0.1,localhost"},
+			Files: map[string]string{"direct.ts": `import { readFileSync } from "node:fs";
+export default function (pi: any) {
+  const system = readFileSync("{{.SystemPromptFile}}", "utf8");
+  pi.on("before_agent_start", async () => ({ systemPrompt: [system] }));
+}
+`},
+			ToolName: "mcp__{{.Server}}_{{.Tool}}",
+			Measured: "18.11.3 2026-10-17",
+		},
+		ACPImages: true,
+		ACPArgs:   []string{"--model", "{{.Model}}"},
+		SDKCmd:    []string{"omp", "--mode", "json"},
+		SDKArgs:   []string{"--model", "{{.Model}}", "--approval-mode", "yolo"},
 	},
 	"hermes": {
 		Name: "hermes", Binary: "hermes",
@@ -612,7 +706,35 @@ var All = map[string]Harness{
 		ExitCommand:             "/exit",
 		CompactCommand:          "/compress",
 		ACPCmd:                  []string{"gemini", "--acp"},
-		ACPImages:               true,
+		// Measured by the direct probe. GEMINI_SYSTEM_MD replaces the core
+		// prompt with the file's. System settings
+		// (GEMINI_CLI_SYSTEM_SETTINGS_PATH) are skipped unless the file and
+		// every ancestor directory are root-owned and not group/other
+		// writable, so the settings go in the working directory's
+		// .gemini/settings.json, which outranks the user's and is read when
+		// the workspace is trusted: no core tool, no hooks, no skills, only
+		// our MCP server. --policy replaces ~/.gemini/policies: deny every
+		// tool but MCP ones (gemini checks an MCP call as "tools_probe_echo",
+		// which an mcp_tools_* rule does not match, so the allow is
+		// mcpName "*"). Not pure: ~/.gemini/GEMINI.md still loads
+		// (context.fileName only adds names to GEMINI.md, and global memory
+		// is always read from the home dir), appended to the system prompt
+		// as "# Contextual Instructions" when it is non-empty.
+		Direct: &Direct{
+			Args: []string{"--policy", "{{.Dir}}/policy.toml"},
+			Env: map[string]string{
+				"GEMINI_SYSTEM_MD":           "{{.SystemPromptFile}}",
+				"GEMINI_CLI_TRUST_WORKSPACE": "true",
+			},
+			Files: map[string]string{
+				"policy.toml": "[[rule]]\nmcpName = \"*\"\ntoolName = \"*\"\ndecision = \"allow\"\npriority = 999\n\n" +
+					"[[rule]]\ntoolName = \"*\"\ndecision = \"deny\"\npriority = 998\n",
+				"{{.WorkDir}}/.gemini/settings.json": `{"context":{"fileName":"__direct_none__.md"},"tools":{"core":["__direct_none__"]},"hooksConfig":{"enabled":false},"skills":{"enabled":false},"mcp":{"allowed":["tools"]}}`,
+			},
+			ToolName: "mcp_{{.Server}}_{{.Tool}}",
+			Measured: "0.64.0 2026-10-17",
+		},
+		ACPImages: true,
 	},
 	"qwen": {
 		Sessions: qwen.Codec,
@@ -649,13 +771,76 @@ var All = map[string]Harness{
 		ExitCommand:             "/exit",
 		CompactCommand:          "/compress",
 		ACPCmd:                  []string{"qwen", "--acp"},
-		ACPImages:               true,
-		ACPArgs:                 []string{"--auth-type", "openai", "--model", "{{.Model}}"},
-		ACPAutoApproveArgs:      []string{"--yolo"},
+		// Measured: --bare keeps the prompt exact but ignores --core-tools
+		// (and tools.disabled), so it is not used. --core-tools mcp__tools
+		// allows only our server; the tools it does not govern are listed
+		// in tools.disabled. alwaysLoadTools keeps our tools out of
+		// tool_search's deferred set. ACP sessions discover MCP in the
+		// background and the first turn goes out without it;
+		// QWEN_CODE_LEGACY_MCP_BLOCKING=1 makes discovery finish first.
+		// context.fileName names no file, so no QWEN.md/AGENTS.md is read.
+		// qwen always writes ~/.qwen/output-language.md and adds it to the
+		// prompt, unless <project>/.qwen/output-language.md exists, which
+		// it reads instead and drops when empty.
+		Direct: &Direct{
+			Args: []string{
+				"--system-prompt", "{{.SystemPrompt}}",
+				"--core-tools", "mcp__tools",
+			},
+			Env: map[string]string{
+				"QWEN_CODE_SYSTEM_SETTINGS_PATH": "{{.Dir}}/settings.json",
+				"QWEN_CODE_LEGACY_MCP_BLOCKING":  "1",
+			},
+			Files: map[string]string{
+				"settings.json": `{"mcpServers":{"tools":{"httpUrl":"{{.MCPURL}}","headers":{"Authorization":"Bearer {{.MCPToken}}"},"trust":true,"alwaysLoadTools":true}},` +
+					`"tools":{"toolSearch":{"enabled":false},"disabled":["ask_user_question","enter_plan_mode","exit_plan_mode","skill","tool_call","tool_search",` +
+					`"agent","enter_worktree","exit_worktree","get_goal","list_agents","record_artifact","report_findings","send_message","task_stop","update_goal"]},` +
+					`"context":{"fileName":["__direct_none__.md"]},` +
+					`"memory":{"enableManagedAutoMemory":false,"enableManagedAutoDream":false,"enableAutoSkill":false},` +
+					`"model":{"skipStartupContext":true},"disableAllHooks":true}`,
+				"{{.WorkDir}}/.qwen/output-language.md": "",
+			},
+			MCPInArgs: true,
+			ToolName:  "mcp__{{.Server}}__{{.Tool}}",
+			Measured:  "0.25.2 2026-10-17",
+		},
+		ACPImages:          true,
+		ACPArgs:            []string{"--auth-type", "openai", "--model", "{{.Model}}"},
+		ACPAutoApproveArgs: []string{"--yolo"},
 	},
-	"opencode": withACPImages(withGatedTool(withACPProvider(tsPluginHarness("opencode", "opencode", "opencode-ai", ".config/opencode/plugins"),
+	"opencode": func(h Harness) Harness {
+		// OPENCODE_CONFIG_CONTENT is merged last, over the user's config:
+		// a default agent whose permissions deny every tool but the
+		// caller's (MCP tools are <server>_<tool>), no instructions, no
+		// title agent (it would be a model request of its own). The agent
+		// prompt alone still gets the <env> block and AGENTS.md appended
+		// (session system = agent prompt + environment + instructions), so
+		// a plugin's experimental.chat.system.transform replaces the whole
+		// system with the caller's. OPENCODE_PURE would drop that plugin
+		// too, so the user's global plugins still load.
+		h.Direct = &Direct{
+			Env: map[string]string{
+				"OPENCODE_CONFIG_CONTENT":          `{"agent":{"direct":{"mode":"primary","prompt":"{file:{{.SystemPromptFile}}}","permission":{"*":"deny","tools_*":"allow"}},"title":{"disable":true}},"default_agent":"direct","instructions":[],"plugin":["file://{{.Dir}}/direct.js"]}`,
+				"OPENCODE_DISABLE_PROJECT_CONFIG":  "1",
+				"OPENCODE_DISABLE_DEFAULT_PLUGINS": "1",
+				"OPENCODE_DISABLE_EXTERNAL_SKILLS": "1",
+				"OPENCODE_DISABLE_CLAUDE_CODE":     "1",
+			},
+			Files: map[string]string{"direct.js": `import { readFileSync } from "node:fs";
+const system = readFileSync("{{.SystemPromptFile}}", "utf8");
+export const Direct = async () => ({
+  "experimental.chat.system.transform": async (_input, output) => {
+    output.system.splice(0, output.system.length, system);
+  },
+});
+`},
+			ToolName: "tools_{{.Tool}}",
+			Measured: "1.19.3 2026-10-17",
+		}
+		return h
+	}(withACPImages(withGatedTool(withACPProvider(tsPluginHarness("opencode", "opencode", "opencode-ai", ".config/opencode/plugins"),
 		[]string{"opencode", "acp"}, []string{"--cwd", "{{.RepoDir}}"}),
-		"bash", gatedShellArgs)),
+		"bash", gatedShellArgs))),
 	"droid": {
 		Sessions: droid.Codec,
 		Name:     "droid", Binary: "droid",

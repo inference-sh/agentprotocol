@@ -132,8 +132,11 @@ func (s *MockServer) geminiToolCall(w http.ResponseWriter, model string) {
 			Candidates:   []geminiCandidate{{Content: geminiContent{Role: "model", Parts: []geminiPart{fc}}}},
 			ModelVersion: model,
 		},
+		// The final chunk carries no part of its own: the API streams each
+		// part once, and gemini takes a repeated functionCall for a second
+		// call, which a direct-mode caller then has to answer too.
 		geminiResponse{
-			Candidates:    []geminiCandidate{{Content: geminiContent{Role: "model", Parts: []geminiPart{fc}}, FinishReason: "STOP"}},
+			Candidates:    []geminiCandidate{{Content: geminiContent{Role: "model", Parts: []geminiPart{{Text: ""}}}, FinishReason: "STOP"}},
 			UsageMetadata: &geminiUsage{PromptTokenCount: 10, CandidatesTokenCount: 12, TotalTokenCount: 22},
 			ModelVersion:  model,
 		},

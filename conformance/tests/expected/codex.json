@@ -4,10 +4,16 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents,images",
+      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents,images,direct",
       "checks": {
         "acp/compact.run": "finding:as-prompt",
         "acp/deferred.armed": "pass:no-search-tool",
+        "acp/direct.call": "pass",
+        "acp/direct.messages": "finding:added",
+        "acp/direct.restart": "pass",
+        "acp/direct.result": "pass",
+        "acp/direct.system": "pass:exact",
+        "acp/direct.tools": "finding:more",
         "acp/hook-injection": "pass",
         "acp/hook.post-tool": "pass",
         "acp/hook.pre-compact": "skip:known-missing",

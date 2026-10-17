@@ -259,6 +259,11 @@ type Harness struct {
 	// Empty means InstallCmd upgrades too. Use UpgradeCommand.
 	UpgradeCmd []string
 
+	// Direct is how the harness is launched to serve as a model, the
+	// caller's tools and system prompt in place of its own. Nil means it has
+	// no direct mode. See Direct.
+	Direct *Direct
+
 	// Features are flags, subcommands and protocol fields that exist only on
 	// some versions of the agent, by name, with the versions that have them.
 	// Drivers consult them through HasFeature with the installed version. A

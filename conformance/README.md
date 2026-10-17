@@ -1230,6 +1230,54 @@ Measured 2026-10-11:
 |---|---|
 | claude, codex, pi; copilot, droid (re-encoded), gemini, goose, hermes, kimi, kiro, omp (scaled to 200x200), opencode, qwen | cursor, grok, kilo (each dropped an image block sent anyway) |
 
+### Direct mode (`--probe direct`)
+
+Direct mode (package `llm`) runs the agent as a model: the probe's system
+prompt in place of the agent's, the probe's one tool (`probe_echo`) in place
+of the agent's own, served by an MCP server that holds each call. The probe
+reads what the model was sent:
+
+- `direct.system`: the system prompt is the probe's alone (`exact`), or what
+  the agent added (`added`);
+- `direct.tools`: only the probe's tool is offered (`only`), under the name
+  the row's `ToolName` gives it, or which of the agent's own come with it;
+- `direct.messages`: the conversation holds the probe's prompt and nothing
+  the agent wrote into it (context files, session blocks, reminders);
+- `direct.call`, `direct.result`: the model's call comes back held, and the
+  next call's result reaches the model on the same process;
+- `direct.restart`: a conversation the agent never had is written as its
+  session, resumed, and offered the tool;
+- `direct.side-requests`: model requests of the agent's own (titles,
+  routers).
+
+A harness is driven by its registry `Direct` row (`harness/direct.go`);
+`HARNESS_TEST_DIRECT=<file>` tries a candidate row, as JSON, without a
+rebuild. Claude Code is driven natively (`llm.Claude`) and has no row.
+
+Measured 2026-10-17:
+
+| agent | system | tools | conversation | what is the agent's own |
+|---|---|---|---|---|
+| claude 2.1.302 | added | only | exact | billing header, "You are a Claude agent, built on Anthropic's Claude Agent SDK.", `# Environment`; one side request |
+| codex 0.163.0 | exact | more | added | `list_mcp_resources`, `list_mcp_resource_templates`, `read_mcp_resource` with any MCP server; global `AGENTS.md` as a user message; "Wall time: … Output:" before each result |
+| gemini 0.64.0 | added | only | added | the user's global `~/.gemini/GEMINI.md`; a `<session_context>` block in the first turn |
+| omp 18.11.3 | exact | only | added | a `<system-reminder>` with the date and working directory |
+| opencode 1.19.3 | exact | only | exact | the user's global plugins still load |
+| pi 1.3.0 | exact | only | exact | MCP servers in the user's `~/.pi/agent/mcp.json` connect, their tools not offered |
+| qwen 0.25.2 | exact | only | exact | an empty `.qwen/output-language.md` written in the working directory; its built-ins are disabled by name |
+
+How the rows get there: omp and pi replace the system prompt from an
+extension of the row's own (`before_agent_start`), opencode from a plugin
+(`experimental.chat.system.transform`), codex with `model_instructions_file`,
+qwen with `--system-prompt`, gemini with `GEMINI_SYSTEM_MD`. gemini reads a
+system settings file only if root owns it, so its settings go in the
+project's `.gemini/settings.json`. qwen and omp, behind a proxy, must not send
+the loopback tool server through it (`NO_PROXY`). grok's `agent stdio` takes
+no options, so it has no row. copilot, droid, hermes, goose, kimi, kiro and
+kilo have no row yet: none was tried, and their `--help` shows no flag that
+replaces the system prompt (kilo likely takes opencode's row once its
+variables are checked). cursor's backend owns the prompt and the tools.
+
 ### Cursor saves a conversation only when the backend checkpoints it
 
 Under the mock, cursor wrote one line per session in every mode —

@@ -90,6 +90,7 @@ agentprotocol
 ├── model/           the model above, standard library only
 ├── driver/          one interface for running an agent over any transport
 ├── harness/         the registry of coding-agent CLIs: which exist, how to find them, how to drive them
+├── llm/             an agent CLI as a language model: our prompt and tools in, one response out
 ├── transcript/      read and write each agent's session history (sqlite/ is its own module)
 ├── a2a/             Agent2Agent wire types and mappings
 ├── protocol/        one client per vendor wire protocol
@@ -232,6 +233,27 @@ err = sess.Prompt(ctx, driver.TextInput("what changed in this repo today?"))
 **Agent stderr.** `ACPBackend`, `ClaudeBackend`, `CodexBackend` and `PiBackend` each have `Stderr io.Writer`, with one meaning: it receives the agent's stderr as it is written, and nil keeps only a tail. The last 4 KiB are kept either way and quoted (`; agent stderr: ...`) in the error when `Open` fails and in the `process_exited` error when the agent dies; `ACPBackend` also quotes them in a `no_response` error.
 
 **No turn waits forever on a silent ACP agent.** `initialize` and `session/new` are bounded by `acp.DefaultCallTimeout` (60s) and a resume by `ACPBackend.LoadTimeout`. A prompt is bounded only up to the agent's first sign of work (a message, thought, tool call or plan update, a permission request, or the prompt's response) by `ACPBackend.FirstEventTimeout`, default `DefaultFirstEventTimeout` (2 minutes), negative to disable. Past it the turn fails with an error event of code `no_response` and `session/cancel` is sent; the session stays open for the caller to close or kill. Session bookkeeping updates (available commands, mode, usage) and echoes of the user's prompt do not count as work. After the first sign the turn runs until the agent answers, with no total bound by default (`acp.DefaultPromptTimeout` is none; set `acp.Client.PromptTimeout` or pass a context deadline for one): a 10-minute cap used to cut off coding turns that were still working, and an agent that dies mid-turn already fails the prompt when its stream ends. Against harness-test's mock the 13 ACP agents sent their first sign 0.01s to 2.07s after `session/prompt` and answered `session/new` within 2.53s (2026-09-25, two runs), and a real model adds its time to first token. A turn that ends with no message, thought, tool call or plan at all is reported through `OnDiagnostic` with the stderr tail: hermes before 0.18.0 ends a turn whose model call failed that way, the provider's error on stderr only.
+
+### llm
+
+A harness run as a model: `Model.Generate(ctx, Request)` takes the whole
+conversation, a system prompt and tool definitions, and returns one response
+(text, reasoning, tool calls, usage), the way a call to the model's own API
+does. The harness never runs a tool. The caller's tools are an MCP server the
+package serves itself (over Claude Code's control channel, else loopback HTTP
+with a bearer token); a tool call holds at that server, the response is
+returned, and the next call's tool results answer the held calls on the same
+process, so the model sees each result as the tool's own. A call that does
+not continue the live process (another history, settings, an idle timeout)
+writes the conversation as the harness's own session (package transcript) and
+resumes it.
+
+`llm.Claude` drives Claude Code natively. `llm.Harness` drives any harness
+whose registry row has a `Direct` entry: the flags, environment and files that
+replace its system prompt, turn its own tools, context files, skills and hooks
+off, and give it the tool server. Each row is measured by harness-test's
+direct probe; see [conformance/README.md](conformance/README.md#direct-mode---probe-direct)
+for what each harness still adds of its own.
 
 ## Notes on the design
 

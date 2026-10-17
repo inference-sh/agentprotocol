@@ -17,6 +17,7 @@ package acp
 
 import (
 	"encoding/json"
+	"sort"
 
 	"github.com/inference-sh/agentprotocol/internal/jsonrpc"
 )
@@ -140,6 +141,14 @@ type AgentInfo struct {
 type AgentCapabilities struct {
 	LoadSession bool               `json:"loadSession"`
 	Prompt      PromptCapabilities `json:"promptCapabilities"`
+	MCP         MCPCapabilities    `json:"mcpCapabilities"`
+}
+
+// MCPCapabilities are the MCP transports the agent connects to beyond stdio,
+// which every agent must take.
+type MCPCapabilities struct {
+	HTTP bool `json:"http"`
+	SSE  bool `json:"sse"`
 }
 
 // PromptCapabilities are the content blocks a prompt may carry beyond text
@@ -183,13 +192,115 @@ type NewSessionParams struct {
 
 // MCPServer is an MCP server the agent should connect to for this session.
 // This is how a caller injects its own tools into somebody else's agent.
+//
+// A server with a Command is stdio: the agent launches it. One with a URL is
+// http, or sse when Type says so; an http server needs the agent's
+// mcpCapabilities.http. On the wire Env and Headers are lists of name/value
+// pairs, as the ACP schema has them; MarshalJSON writes that form and
+// UnmarshalJSON reads it and the object form alike.
 type MCPServer struct {
-	Name    string            `json:"name"`
-	URL     string            `json:"url,omitempty"`
-	Command string            `json:"command,omitempty"`
-	Args    []string          `json:"args,omitempty"`
-	Env     map[string]string `json:"env,omitempty"`
-	Headers map[string]string `json:"headers,omitempty"`
+	// Type is "http" or "sse" for a URL server; empty means http. A stdio
+	// server has none on the wire.
+	Type    string
+	Name    string
+	URL     string
+	Command string
+	Args    []string
+	Env     map[string]string
+	Headers map[string]string
+}
+
+// NameValue is an ACP HttpHeader or EnvVariable.
+type NameValue struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+func pairs(m map[string]string) []NameValue {
+	out := make([]NameValue, 0, len(m))
+	for k, v := range m {
+		out = append(out, NameValue{Name: k, Value: v})
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
+	return out
+}
+
+// MarshalJSON writes the ACP schema's McpServer: stdio when Command is set,
+// otherwise http or sse. The schema requires args and env on stdio and
+// headers on http and sse, so they are written even when empty.
+func (m MCPServer) MarshalJSON() ([]byte, error) {
+	if m.Command != "" {
+		args := m.Args
+		if args == nil {
+			args = []string{}
+		}
+		return json.Marshal(struct {
+			Name    string      `json:"name"`
+			Command string      `json:"command"`
+			Args    []string    `json:"args"`
+			Env     []NameValue `json:"env"`
+		}{m.Name, m.Command, args, pairs(m.Env)})
+	}
+	typ := m.Type
+	if typ == "" {
+		typ = "http"
+	}
+	return json.Marshal(struct {
+		Type    string      `json:"type"`
+		Name    string      `json:"name"`
+		URL     string      `json:"url"`
+		Headers []NameValue `json:"headers"`
+	}{typ, m.Name, m.URL, pairs(m.Headers)})
+}
+
+// UnmarshalJSON reads either wire form, with env and headers as name/value
+// lists or as objects.
+func (m *MCPServer) UnmarshalJSON(data []byte) error {
+	var w struct {
+		Type    string          `json:"type"`
+		Name    string          `json:"name"`
+		URL     string          `json:"url"`
+		Command string          `json:"command"`
+		Args    []string        `json:"args"`
+		Env     json.RawMessage `json:"env"`
+		Headers json.RawMessage `json:"headers"`
+	}
+	if err := json.Unmarshal(data, &w); err != nil {
+		return err
+	}
+	env, err := readPairs(w.Env)
+	if err != nil {
+		return err
+	}
+	headers, err := readPairs(w.Headers)
+	if err != nil {
+		return err
+	}
+	*m = MCPServer{Type: w.Type, Name: w.Name, URL: w.URL, Command: w.Command, Args: w.Args, Env: env, Headers: headers}
+	return nil
+}
+
+func readPairs(raw json.RawMessage) (map[string]string, error) {
+	if len(raw) == 0 || string(raw) == "null" {
+		return nil, nil
+	}
+	if raw[0] == '{' {
+		var m map[string]string
+		err := json.Unmarshal(raw, &m)
+		return m, err
+	}
+	var list []NameValue
+	if err := json.Unmarshal(raw, &list); err != nil {
+		return nil, err
+	}
+	if len(list) == 0 {
+		return nil, nil
+	}
+	m := make(map[string]string, len(list))
+	for _, p := range list {
+		m[p.Name] = p.Value
+	}
+	return m, nil
 }
 
 // NewSessionResult carries the session identifier every later call repeats.

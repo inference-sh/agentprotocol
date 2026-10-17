@@ -13,6 +13,7 @@ import (
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/acp"
 	"github.com/inference-sh/agentprotocol/harness"
+	"github.com/inference-sh/agentprotocol/internal/mcptools"
 	acpusage "github.com/inference-sh/agentprotocol/usage/acp"
 )
 
@@ -118,6 +119,23 @@ type ACPBackend struct {
 	// initialize and session/new are bounded separately, by acp's
 	// DefaultCallTimeout, and a resume by LoadTimeout.
 	FirstEventTimeout time.Duration
+
+	// ToolServerName names the MCP server SessionConfig.Tools are offered
+	// through. Agents prefix each tool with it in their own way
+	// (mcp__<name>__<tool>, <name>_<tool>); events and CallTool use the
+	// bare name. Empty means DefaultACPToolServer.
+	ToolServerName string
+}
+
+// DefaultACPToolServer is the MCP server name SessionConfig.Tools are offered
+// under.
+const DefaultACPToolServer = "tools"
+
+func (b *ACPBackend) toolServerName() string {
+	if b.ToolServerName != "" {
+		return b.ToolServerName
+	}
+	return DefaultACPToolServer
 }
 
 // DefaultFirstEventTimeout is ACPBackend.FirstEventTimeout's default.
@@ -155,8 +173,16 @@ func (b *ACPBackend) diagnose(msg string) {
 // on how the previous process ended and whether it had been reaped, and a
 // load that succeeds may still have restored nothing — the diagnostic says
 // which. Offer resuming; do not assume the context survived.
-// Tools is true because ACP carries MCP server declarations, which is how a
-// caller injects its own.
+//
+// Tools: SessionConfig.Tools are served on a loopback HTTP MCP server
+// (127.0.0.1, a bearer token per session) declared in session/new or
+// session/load, and run by SessionConfig.CallTool with no approval-required
+// event. Open fails for an agent whose initialize does not declare
+// mcpCapabilities.http. An MCP server named in Metadata (mcp_url, mcp_name,
+// mcp_token) is declared alongside it, behind the agent's usual approvals.
+//
+// OnlyCallerTools is false: ACP has no request that turns an agent's own
+// tools off.
 func (b *ACPBackend) Capabilities() Capabilities {
 	return Capabilities{
 		Steer:     false,
@@ -173,7 +199,29 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 	if b.Command == "" {
 		return nil, errors.New("driver: ACPBackend has no command")
 	}
+	if err := checkCallerTools(cfg, b.Capabilities()); err != nil {
+		return nil, err
+	}
+	var tools *acpCallerTools
+	if len(cfg.Tools) > 0 {
+		server, err := callerToolServer(cfg.Tools, cfg.CallTool)
+		if err != nil {
+			return nil, err
+		}
+		lb, err := mcptools.Listen(server)
+		if err != nil {
+			return nil, fmt.Errorf("driver: serve caller tools: %w", err)
+		}
+		tools = newACPCallerTools(b.toolServerName(), lb, cfg.Tools)
+	}
+	sess, err := b.open(ctx, cfg, tools)
+	if err != nil && tools != nil {
+		_ = tools.loopback.Close()
+	}
+	return sess, err
+}
 
+func (b *ACPBackend) open(ctx context.Context, cfg SessionConfig, tools *acpCallerTools) (Session, error) {
 	args := b.Args
 	if cfg.Approvals == ApprovalsSkip {
 		args = append(append([]string(nil), b.Args...), b.AutoApproveArgs...)
@@ -190,6 +238,7 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 		firstEvent: b.FirstEventTimeout,
 		diagnose:   b.diagnose,
 		waiting:    make(map[chan struct{}]struct{}),
+		tools:      tools,
 	}
 	if s.firstEvent == 0 {
 		s.firstEvent = DefaultFirstEventTimeout
@@ -226,6 +275,24 @@ func (b *ACPBackend) Open(ctx context.Context, cfg SessionConfig) (Session, erro
 	s.stderr.flushWith(proc.FlushStderr)
 
 	servers := mcpServersFrom(cfg.Metadata)
+	if tools != nil {
+		if !proc.AgentCapabilities().MCP.HTTP {
+			_ = proc.Kill()
+			return nil, fmt.Errorf("driver: SessionConfig.Tools are served over HTTP MCP and this agent's initialize does not declare mcpCapabilities.http")
+		}
+		for _, srv := range servers {
+			if srv.Name == tools.server {
+				_ = proc.Kill()
+				return nil, fmt.Errorf("driver: the metadata MCP server and the caller tool server are both named %q; set ACPBackend.ToolServerName", srv.Name)
+			}
+		}
+		servers = append(servers, acp.MCPServer{
+			Type:    "http",
+			Name:    tools.server,
+			URL:     tools.loopback.URL,
+			Headers: map[string]string{"Authorization": tools.loopback.Header()},
+		})
+	}
 
 	if cfg.ResumeSessionID != "" {
 		proc.ReplayIdleGap = b.ReplayIdleGap
@@ -277,6 +344,9 @@ type acpSession struct {
 	// images is ACPBackend.Images: images go as image blocks to an agent
 	// that also declares promptCapabilities.image.
 	images bool
+
+	// tools serves SessionConfig.Tools; nil when the session has none.
+	tools *acpCallerTools
 
 	pump       *eventPump
 	closeOnce  sync.Once
@@ -497,6 +567,7 @@ func (s *acpSession) Close() error {
 	s.closeOnce.Do(func() {
 		s.failPending()
 		err = s.proc.Wait()
+		s.tools.close()
 	})
 	s.pump.stopNow()
 	return err
@@ -511,6 +582,7 @@ func (s *acpSession) Kill() error {
 	s.closeOnce.Do(func() {
 		s.failPending()
 		err = s.proc.Kill()
+		s.tools.close()
 		s.reportExit()
 		s.pump.end()
 	})
@@ -525,6 +597,7 @@ func (s *acpSession) watch() {
 	s.closeOnce.Do(func() {
 		s.failPending()
 		_ = s.proc.Kill() // reaps it; ExitState is then its own exit
+		s.tools.close()
 		s.reportExit()
 		s.pump.end()
 	})
@@ -581,7 +654,13 @@ func (s *acpSession) onUpdate(n acp.UpdateNotification) {
 	if !n.Replay && isWork(n.Update) {
 		s.alive()
 	}
-	if ev, ok := acp.EventForUpdate(n.Update, s.runID, s.chatID); ok {
+	u := n.Update
+	if u.Kind == acp.UpdateKindToolCall || u.Kind == acp.UpdateKindToolCallUpdate {
+		if bare, ok := s.tools.observe(u); ok {
+			u.Title = bare
+		}
+	}
+	if ev, ok := acp.EventForUpdate(u, s.runID, s.chatID); ok {
 		s.emit(ev)
 	}
 }
@@ -614,7 +693,8 @@ func (s *acpSession) onPermission(ctx context.Context, req acp.PermissionRequest
 	if !req.DuringLoad {
 		s.alive()
 	}
-	if s.autoAllow {
+	if s.autoAllow || s.tools.owns(req) {
+		// A caller tool raises no approval: the caller decides in CallTool.
 		return acp.ResponseForResolution(req, ap.InterruptResolutionAllow), nil
 	}
 	payload := acp.ApprovalForPermission(req)

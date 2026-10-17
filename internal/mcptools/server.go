@@ -43,7 +43,8 @@ type Call struct {
 	Arguments json.RawMessage
 
 	// ToolUseID is the model's id for this call, where the agent sends one
-	// (Claude Code puts it in _meta). Empty otherwise.
+	// in _meta: Claude Code under claudecode/toolUseId, our own pi extension
+	// under agentprotocol/toolCallId. Empty otherwise.
 	ToolUseID string
 }
 
@@ -56,6 +57,10 @@ type Result struct {
 // toolUseIDMeta is the _meta key the CLI puts the model's tool_use id under on
 // a tools/call.
 const toolUseIDMeta = "claudecode/toolUseId"
+
+// ToolCallIDMeta is the agent-neutral _meta key for the model's call id, for
+// clients this module writes itself (the pi driver's extension).
+const ToolCallIDMeta = "agentprotocol/toolCallId"
 
 // mcpProtocolVersion is answered to a client that names no version.
 const mcpProtocolVersion = "2025-06-18"
@@ -123,7 +128,9 @@ func (s *Server) dispatch(ctx context.Context, msg jsonrpc.Message) (any, *jsonr
 			return nil, &jsonrpc.Error{Code: jsonrpc.CodeInvalidParams, Message: "unknown tool: " + p.Name}
 		}
 		call := Call{Name: p.Name, Arguments: p.Arguments}
-		if id, ok := p.Meta[toolUseIDMeta].(string); ok {
+		if id, ok := p.Meta[ToolCallIDMeta].(string); ok {
+			call.ToolUseID = id
+		} else if id, ok := p.Meta[toolUseIDMeta].(string); ok {
 			call.ToolUseID = id
 		}
 		if len(call.Arguments) == 0 || string(call.Arguments) == "null" {

@@ -66,6 +66,11 @@ func TestServerAnswersTheToolMethods(t *testing.T) {
 	if content["text"] != `echo {"a":1} tu1` || call["result"].(map[string]any)["isError"] != false {
 		t.Errorf("tools/call = %v", call)
 	}
+
+	neutral := handle(t, s, `{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"echo","arguments":{},"_meta":{"agentprotocol/toolCallId":"call_9"}}}`)
+	if text := neutral["result"].(map[string]any)["content"].([]any)[0].(map[string]any)["text"]; text != `echo {} call_9` {
+		t.Errorf("tools/call with agentprotocol/toolCallId = %v", neutral)
+	}
 }
 
 func TestServerReportsFailures(t *testing.T) {

@@ -947,7 +947,6 @@ func (s *claudeSession) toolName(name string) string {
 	return name
 }
 
-
 // permissionUpdates turns a scope into the rules sent back with an allow.
 func permissionUpdates(req claudecode.PermissionRequest, scope Scope) []claudecode.PermissionUpdate {
 	if scope != ScopeSession && scope != ScopeAlways {

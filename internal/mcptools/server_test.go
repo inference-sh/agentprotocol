@@ -93,7 +93,6 @@ func TestServerReportsFailures(t *testing.T) {
 	}
 }
 
-
 func TestLoopbackNeedsTheTokenAndAnswersOverHTTP(t *testing.T) {
 	l, err := Listen(echoServer())
 	if err != nil {

@@ -29,6 +29,7 @@ wrap
 --agent
 --agents
 --allow
+--allowed-tools
 --allowedTools
 --always-approve
 --continue

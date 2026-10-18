@@ -1180,8 +1180,9 @@ A prompt is `ap.TurnInput`: text and `FileRef`s, the same shape from the
 server through the host to the driver. A driver sends an image as an image
 when its bytes are local (a `file://` URI, a path or a `data:` URI) and the
 agent takes images (`Capabilities.Images`); every other file is named in the
-text by its local path, or sent as an ACP `resource_link`, for the agent to
-open itself. claude gets a base64 `image` block, pi an entry in the prompt's
+text by its local path, for the agent to open itself. An ACP agent is not
+sent a `resource_link`: grok 1.0.62 accepts one and leaves it out of the
+model's request. claude gets a base64 `image` block, pi an entry in the prompt's
 `images`, codex a `localImage` (or `image` by URL), an ACP agent an `image`
 block.
 

@@ -86,18 +86,19 @@ func TestPiSendsLocalImagesWithThePrompt(t *testing.T) {
 }
 
 func TestACPSendsImageBlocksOnlyWhenTheAgentTakesThem(t *testing.T) {
-	in, data, _ := attachments(t)
+	in, data, dir := attachments(t)
 	blocks := promptBlocks(in, true)
-	if len(blocks) != 4 || blocks[1].Type != "image" || blocks[1].Data != data || blocks[1].MimeType != "image/png" || blocks[1].URI != in.Files[0].URI {
+	if len(blocks) != 2 || blocks[0].Type != "text" || blocks[1].Type != "image" || blocks[1].Data != data || blocks[1].MimeType != "image/png" || blocks[1].URI != in.Files[0].URI {
 		t.Fatalf("with images: %+v", blocks)
 	}
-	if blocks[2].Type != "resource_link" || blocks[3].Type != "resource_link" {
-		t.Errorf("the URL image and the PDF are not resource links: %+v", blocks[2:])
+	wantNamed(t, blocks[0].Text, dir)
+
+	blocks = promptBlocks(in, false)
+	if len(blocks) != 1 || blocks[0].Type != "text" {
+		t.Fatalf("without images: %+v", blocks)
 	}
-	for _, b := range promptBlocks(in, false)[1:] {
-		if b.Type != "resource_link" {
-			t.Errorf("without images: %+v", b)
-		}
+	if want := "shot.png (" + filepath.Join(dir, "shot.png") + ")"; !strings.Contains(blocks[0].Text, want) {
+		t.Errorf("text %q does not name the image the agent was not sent, %q", blocks[0].Text, want)
 	}
 }
 

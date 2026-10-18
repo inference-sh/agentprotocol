@@ -164,7 +164,7 @@ func TestPromptStreamsContentAndCompletesTheTurn(t *testing.T) {
 	}
 }
 
-func TestPromptSendsFilesAsResourceLinks(t *testing.T) {
+func TestPromptNamesFilesInTheText(t *testing.T) {
 	b := backendRunning(t, "attachments")
 	sess, err := b.Open(context.Background(), driver.SessionConfig{RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir()})
 	if err != nil {
@@ -184,7 +184,7 @@ func TestPromptSendsFilesAsResourceLinks(t *testing.T) {
 		t.Fatal("no reply")
 	}
 	payload, _ := ap.PayloadAs[ap.ContentDeltaPayload](delta, ap.AgentEventContentDelta)
-	want := "resource_link file:///tmp/a.png a.png image/png; resource_link https://example.com/b.txt https://example.com/b.txt "
+	want := "look\n\nAttached files:\n- a.png (/tmp/a.png)\n- https://example.com/b.txt"
 	if payload.Delta != want {
 		t.Errorf("agent saw %q, want %q", payload.Delta, want)
 	}
@@ -789,12 +789,17 @@ func runFakeAgent(script string) {
 			}
 
 			if script == "attachments" {
-				// Echo the resource links the prompt carried.
-				var links []string
-				for _, blk := range p.Prompt[1:] {
-					links = append(links, blk.Type+" "+blk.URI+" "+blk.Name+" "+blk.MimeType)
+				// Echo the prompt's blocks: its text, and the type and URI of
+				// any other.
+				var seen []string
+				for _, blk := range p.Prompt {
+					if blk.Type == "text" {
+						seen = append(seen, blk.Text)
+						continue
+					}
+					seen = append(seen, blk.Type+" "+blk.URI)
 				}
-				out, _ := json.Marshal(strings.Join(links, "; "))
+				out, _ := json.Marshal(strings.Join(seen, "; "))
 				update(acp.SessionUpdate{
 					Kind:    acp.UpdateKindAgentMessageChunk,
 					Content: json.RawMessage(`{"type":"text","text":` + string(out) + `}`),

@@ -47,8 +47,8 @@ type ACPBackend struct {
 	AutoApproveArgs []string
 
 	// Images sends an attached image as an image block, to an agent that
-	// also declares promptCapabilities.image; without it every file goes as
-	// a resource_link. It is Capabilities.Images, set from
+	// also declares promptCapabilities.image; without it every file is named
+	// in the prompt text. It is Capabilities.Images, set from
 	// harness.Harness.ACPImages, which records that the image was measured
 	// reaching the model: the declaration alone has been wrong.
 	Images bool
@@ -436,22 +436,28 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 	return nil
 }
 
-// promptBlocks converts our input to ACP content: the text, then each file.
-// An image with local bytes goes as an image block when images is set; every
-// other file goes as a resource_link, which every ACP agent accepts. images
-// takes both the agent's promptCapabilities.image and the registry's
-// measurement: kilo declares image and drops the block (kilo 7.8.8), and a
-// dropped image is worse than a link.
+// promptBlocks converts our input to ACP content: the text, then an image
+// block for each image with local bytes when images is set. Every other file
+// is named in the text by its local path, as the other drivers do, for the
+// agent to open itself. images takes both the agent's
+// promptCapabilities.image and the registry's measurement: kilo declares
+// image and drops the block (kilo 7.8.8), and a dropped image is worse than
+// a path.
+//
+// A file does not go as a resource_link: the ACP baseline has every agent
+// accept one, and grok 1.0.62 accepts it and leaves it out of the model's
+// request, so the model is never told the file exists.
 func promptBlocks(in Input, images bool) []acp.ContentBlock {
-	blocks := []acp.ContentBlock{acp.TextBlock(in.Text)}
+	var named []ap.FileRef
+	var blocks []acp.ContentBlock
 	for _, f := range in.Files {
 		if img, ok := imageOf(f); ok && images {
 			blocks = append(blocks, acp.ImageBlock(img.Data, img.MimeType, f.URI))
 			continue
 		}
-		blocks = append(blocks, acp.ResourceLinkBlock(f.URI, f.Filename, f.ContentType, f.Size))
+		named = append(named, f)
 	}
-	return blocks
+	return append([]acp.ContentBlock{acp.TextBlock(withFiles(in.Text, named))}, blocks...)
 }
 
 // awaitFirstEvent fails the turn when the agent shows no sign of work within

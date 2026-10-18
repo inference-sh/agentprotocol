@@ -382,7 +382,16 @@ var All = map[string]Harness{
 		// harness answers the dialog instead. The pattern is body text: the
 		// menu lines are redrawn when the selection moves, and matching one
 		// answered the dialog twice.
+		//
+		// Before it, kiro-cli 2.32 offers some launches a move to V3,
+		// "Switch to V3 and upgrade my configs" selected, then "Remind me
+		// later" and "Don't ask again". Who is offered it is the v3_prompt
+		// rollout, a percentage of devices, and each container is a new one:
+		// 3 launches in 16. Unanswered, kiro sat on it and never ran the
+		// prompt (2m8s, no requests; CI 2026-10-18). "Remind me later" keeps
+		// V2 and the agent's config as they are.
 		OnboardingDismiss: []DismissAction{
+			{Pattern: "Switch to V3 today", SendDown: true},
 			{Pattern: "accept responsibility", SendDown: true, Required: true}, {Pattern: "Welcome"},
 		},
 		ACPCmd:             []string{"kiro-cli", "acp"},

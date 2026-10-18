@@ -87,7 +87,7 @@ func TestServerReportsFailures(t *testing.T) {
 		t.Errorf("unknown tool = %v", unknown)
 	}
 
-	missing := handle(t, s, `{"jsonrpc":"2.0","id":3,"method":"resources/list"}`)
+	missing := handle(t, s, `{"jsonrpc":"2.0","id":3,"method":"sampling/createMessage"}`)
 	if e := missing["error"].(map[string]any); e["code"] != float64(-32601) {
 		t.Errorf("unknown method = %v", missing)
 	}
@@ -138,5 +138,59 @@ func TestLoopbackNeedsTheTokenAndAnswersOverHTTP(t *testing.T) {
 	}
 	if code, _ := post(l.Header(), `[{"jsonrpc":"2.0","id":1,"method":"ping"}]`); code != http.StatusBadRequest {
 		t.Errorf("batch: %d", code)
+	}
+}
+
+func TestServerNegotiatesTheProtocolVersion(t *testing.T) {
+	s := echoServer()
+	for requested, want := range map[string]string{
+		"2025-11-25": "2025-11-25",
+		"2025-06-18": "2025-06-18",
+		"2024-11-05": "2024-11-05",
+		"2099-01-01": "2025-11-25",
+		"":           "2025-11-25",
+	} {
+		res := handle(t, s, `{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"`+requested+`"}}`)
+		if got := res["result"].(map[string]any)["protocolVersion"]; got != want {
+			t.Errorf("asked %q, got %v; want %s", requested, got, want)
+		}
+	}
+}
+
+func TestServerAnswersUnadvertisedListsEmpty(t *testing.T) {
+	s := echoServer()
+	for method, key := range map[string]string{
+		"prompts/list": "prompts", "resources/list": "resources", "resources/templates/list": "resourceTemplates",
+	} {
+		res := handle(t, s, `{"jsonrpc":"2.0","id":1,"method":"`+method+`"}`)
+		list, ok := res["result"].(map[string]any)[key].([]any)
+		if !ok || len(list) != 0 {
+			t.Errorf("%s = %v", method, res)
+		}
+	}
+}
+
+func TestServerSendsImagesAfterText(t *testing.T) {
+	s := &Server{
+		Tools: []Tool{{Name: "shot", InputSchema: json.RawMessage(`{"type":"object"}`)}},
+		Run: func(_ context.Context, c Call) (Result, error) {
+			if strings.Contains(string(c.Arguments), "bare") {
+				return Result{Images: []Image{{MimeType: "image/png", Data: []byte{1, 2, 3}}}}, nil
+			}
+			return Result{Text: "here", Images: []Image{{MimeType: "image/png", Data: []byte{1, 2, 3}}}}, nil
+		},
+	}
+	res := handle(t, s, `{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"shot","arguments":{}}}`)
+	blocks := res["result"].(map[string]any)["content"].([]any)
+	if len(blocks) != 2 || blocks[0].(map[string]any)["text"] != "here" {
+		t.Fatalf("content = %v", blocks)
+	}
+	img := blocks[1].(map[string]any)
+	if img["type"] != "image" || img["mimeType"] != "image/png" || img["data"] != "AQID" {
+		t.Errorf("image block = %v", img)
+	}
+	bare := handle(t, s, `{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"shot","arguments":{"bare":1}}}`)
+	if blocks := bare["result"].(map[string]any)["content"].([]any); len(blocks) != 1 || blocks[0].(map[string]any)["type"] != "image" {
+		t.Errorf("image-only content = %v", blocks)
 	}
 }

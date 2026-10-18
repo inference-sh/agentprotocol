@@ -74,7 +74,11 @@ func callerToolServer(tools []ap.Tool, call ToolCaller) (*mcptools.Server, error
 		if err != nil {
 			return mcptools.Result{}, err
 		}
-		return mcptools.Result{Text: out.Text, IsError: out.IsError}, nil
+		res := mcptools.Result{Text: out.Text, IsError: out.IsError}
+		for _, img := range out.Images {
+			res.Images = append(res.Images, mcptools.Image{MimeType: img.MimeType, Data: img.Data})
+		}
+		return res, nil
 	}
 	return server, nil
 }

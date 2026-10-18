@@ -2,6 +2,7 @@ package mcptools
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 
@@ -48,10 +49,34 @@ type Call struct {
 	ToolUseID string
 }
 
-// Result is a tool's answer. Text is sent as one text block.
+// Result is a tool's answer: Text as one text block, then each image as an
+// image block.
 type Result struct {
 	Text    string
+	Images  []Image
 	IsError bool
+}
+
+// Image is an image a tool returns.
+type Image struct {
+	MimeType string
+	Data     []byte
+}
+
+// content is r as MCP content blocks. A result with neither text nor images
+// is one empty text block, since some clients reject an empty list.
+func (r Result) content() []map[string]any {
+	var out []map[string]any
+	if r.Text != "" || len(r.Images) == 0 {
+		out = append(out, map[string]any{"type": "text", "text": r.Text})
+	}
+	for _, img := range r.Images {
+		out = append(out, map[string]any{
+			"type": "image", "mimeType": img.MimeType,
+			"data": base64.StdEncoding.EncodeToString(img.Data),
+		})
+	}
+	return out
 }
 
 // toolUseIDMeta is the _meta key the CLI puts the model's tool_use id under on
@@ -62,8 +87,22 @@ const toolUseIDMeta = "claudecode/toolUseId"
 // clients this module writes itself (the pi driver's extension).
 const ToolCallIDMeta = "agentprotocol/toolCallId"
 
-// mcpProtocolVersion is answered to a client that names no version.
-const mcpProtocolVersion = "2025-06-18"
+// protocolVersions are the MCP revisions this server answers, newest first.
+// It speaks the same few methods in each.
+var protocolVersions = []string{"2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05"}
+
+// negotiateVersion is the version initialize answers: the client's when this
+// server knows it, else the newest this server speaks, which the client may
+// then refuse. Echoing a version this server has never heard of would claim
+// support for a revision nobody checked.
+func negotiateVersion(requested string) string {
+	for _, v := range protocolVersions {
+		if v == requested {
+			return v
+		}
+	}
+	return protocolVersions[0]
+}
 
 // Handle answers one JSON-RPC message. A notification returns nil.
 func (s *Server) Handle(ctx context.Context, raw json.RawMessage) (json.RawMessage, error) {
@@ -95,18 +134,24 @@ func (s *Server) dispatch(ctx context.Context, msg jsonrpc.Message) (any, *jsonr
 			ProtocolVersion string `json:"protocolVersion"`
 		}
 		_ = json.Unmarshal(msg.Params, &p)
-		version := p.ProtocolVersion
-		if version == "" {
-			version = mcpProtocolVersion
-		}
 		return map[string]any{
-			"protocolVersion": version,
+			"protocolVersion": negotiateVersion(p.ProtocolVersion),
 			"capabilities":    map[string]any{"tools": map[string]any{}},
 			"serverInfo":      map[string]any{"name": s.Name, "version": s.Version},
 		}, nil
 
 	case "ping":
 		return map[string]any{}, nil
+
+	// Not advertised, but answered empty: some clients (qwen) list them
+	// whatever the capabilities say and drop a server that answers
+	// method-not-found as broken.
+	case "prompts/list":
+		return map[string]any{"prompts": []any{}}, nil
+	case "resources/list":
+		return map[string]any{"resources": []any{}}, nil
+	case "resources/templates/list":
+		return map[string]any{"resourceTemplates": []any{}}, nil
 
 	case "tools/list":
 		tools := s.Tools
@@ -145,7 +190,7 @@ func (s *Server) dispatch(ctx context.Context, msg jsonrpc.Message) (any, *jsonr
 			res = r
 		}
 		return map[string]any{
-			"content": []map[string]any{{"type": "text", "text": res.Text}},
+			"content": res.content(),
 			"isError": res.IsError,
 		}, nil
 

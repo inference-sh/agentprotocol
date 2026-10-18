@@ -2,6 +2,7 @@ package driver
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -919,7 +920,7 @@ func (s *codexSession) runCallerTool(ctx context.Context, id json.RawMessage, pa
 		return nil, &codexapp.Error{Code: -32602, Message: err.Error()}
 	}
 	if s.callTool == nil {
-		return codexToolResult("this session has no caller tools", true), nil
+		return codexToolResult(ToolOutput{Text: "this session has no caller tools", IsError: true}), nil
 	}
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -927,7 +928,7 @@ func (s *codexSession) runCallerTool(ctx context.Context, id json.RawMessage, pa
 	s.mu.Lock()
 	if s.closing {
 		s.mu.Unlock()
-		return codexToolResult("the session closed", true), nil
+		return codexToolResult(ToolOutput{Text: "the session closed", IsError: true}), nil
 	}
 	s.calls[rpc] = &codexToolCall{turnID: p.TurnID, cancel: cancel}
 	s.mu.Unlock()
@@ -943,16 +944,29 @@ func (s *codexSession) runCallerTool(ctx context.Context, id json.RawMessage, pa
 	}
 	out, err := s.callTool(ctx, ToolCall{ToolInvocationID: p.CallID, Name: p.Tool, Arguments: args})
 	if err != nil {
-		return codexToolResult(err.Error(), true), nil
+		return codexToolResult(ToolOutput{Text: err.Error(), IsError: true}), nil
 	}
-	return codexToolResult(out.Text, out.IsError), nil
+	return codexToolResult(out), nil
 }
 
-func codexToolResult(text string, isError bool) codexapp.DynamicToolCallResponse {
-	item, _ := codexapp.NewDynamicToolCallOutputContentItem(codexapp.InputTextDynamicToolCallOutputContentItem{
-		Type: codexapp.DynamicToolCallOutputContentItemTypeInputText, Text: text,
-	})
-	return codexapp.DynamicToolCallResponse{ContentItems: []codexapp.DynamicToolCallOutputContentItem{item}, Success: !isError}
+// codexToolResult is a caller tool's output as codex content items: the text,
+// then each image as a data URL.
+func codexToolResult(out ToolOutput) codexapp.DynamicToolCallResponse {
+	var items []codexapp.DynamicToolCallOutputContentItem
+	if out.Text != "" || len(out.Images) == 0 {
+		item, _ := codexapp.NewDynamicToolCallOutputContentItem(codexapp.InputTextDynamicToolCallOutputContentItem{
+			Type: codexapp.DynamicToolCallOutputContentItemTypeInputText, Text: out.Text,
+		})
+		items = append(items, item)
+	}
+	for _, img := range out.Images {
+		item, _ := codexapp.NewDynamicToolCallOutputContentItem(codexapp.InputImageDynamicToolCallOutputContentItem{
+			Type:     codexapp.DynamicToolCallOutputContentItemTypeInputImage,
+			ImageURL: "data:" + img.MimeType + ";base64," + base64.StdEncoding.EncodeToString(img.Data),
+		})
+		items = append(items, item)
+	}
+	return codexapp.DynamicToolCallResponse{ContentItems: items, Success: !out.IsError}
 }
 
 // cancelCalls ends the context of the caller tools that match.

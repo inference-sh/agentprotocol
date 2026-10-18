@@ -193,8 +193,19 @@ type ToolCall struct {
 
 // ToolOutput is what a caller-supplied tool returns to the agent.
 type ToolOutput struct {
-	Text    string
+	Text string
+
+	// Images reach the model as images after Text, on every backend that
+	// takes caller tools.
+	Images []ToolImage
+
 	IsError bool
+}
+
+// ToolImage is an image a caller-supplied tool returns.
+type ToolImage struct {
+	MimeType string
+	Data     []byte
 }
 
 // Approvals is how a session's permission requests are decided.

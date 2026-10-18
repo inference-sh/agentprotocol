@@ -93,6 +93,15 @@ function text(result) {
 		.join("\n");
 }
 
+// content keeps the MCP blocks pi can take: text, and images, whose MCP shape
+// ({type, data, mimeType}) is pi's ImageContent.
+function content(result) {
+	const blocks = (result?.content ?? []).filter(
+		(c) => (c.type === "text" && typeof c.text === "string") || (c.type === "image" && c.data && c.mimeType),
+	);
+	return blocks.length > 0 ? blocks.map((c) => (c.type === "text" ? { type: "text", text: c.text } : { type: "image", data: c.data, mimeType: c.mimeType })) : [{ type: "text", text: "" }];
+}
+
 export default async function agentprotocolTools(pi) {
 	const listed = await rpc("tools/list", {});
 	for (const tool of listed?.tools ?? []) {
@@ -117,7 +126,7 @@ export default async function agentprotocolTools(pi) {
 				const out = text(result);
 				// pi makes a thrown error the call's error result.
 				if (result?.isError) throw new Error(out || `${name} failed`);
-				return { content: [{ type: "text", text: out }], details: {} };
+				return { content: content(result), details: {} };
 			},
 		});
 	}

@@ -158,10 +158,34 @@ func (p *Process) Pid() int { return p.proc.Pid() }
 
 // MCPConfigHTTP builds an --mcp-config value declaring one HTTP MCP server.
 func MCPConfigHTTP(name, url string, headers map[string]string) string {
+	return MCPConfig(map[string]any{name: MCPServerHTTP(url, headers)})
+}
+
+// MCPConfig builds an --mcp-config value from server entries keyed by name.
+func MCPConfig(servers map[string]any) string {
+	data, _ := json.Marshal(map[string]any{"mcpServers": servers})
+	return string(data)
+}
+
+// MCPServerHTTP is an --mcp-config entry for an HTTP MCP server.
+func MCPServerHTTP(url string, headers map[string]string) map[string]any {
 	server := map[string]any{"type": "http", "url": url}
 	if len(headers) > 0 {
 		server["headers"] = headers
 	}
-	data, _ := json.Marshal(map[string]any{"mcpServers": map[string]any{name: server}})
-	return string(data)
+	return server
+}
+
+// MCPServerSDK is an --mcp-config entry for a host-served server, one also
+// named in InitializeRequest.SDKMCPServers. Declaring it at launch as well
+// matters on resume: a resumed session whose last turn went unanswered
+// starts that turn before initialize's servers connect, so without this
+// entry its first request offers none of the server's tools (claude
+// 2.1.302). The Python SDK declares its servers this way.
+func MCPServerSDK(name string, timeoutMs int) map[string]any {
+	server := map[string]any{"type": "sdk", "name": name}
+	if timeoutMs > 0 {
+		server["timeout"] = timeoutMs
+	}
+	return server
 }

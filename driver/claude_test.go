@@ -375,8 +375,8 @@ func TestClaudeOnlyCallerToolsTurnsClaudesOwnOff(t *testing.T) {
 			t.Errorf("args lack %q: %s", want, args)
 		}
 	}
-	if strings.Contains(args, "--mcp-config") {
-		t.Errorf("an outside MCP server was kept: %s", args)
+	if strings.Contains(args, "other") || !strings.Contains(args, `--mcp-config {"mcpServers":{"tools":{"name":"tools","timeout":1800000,"type":"sdk"}}}`) {
+		t.Errorf("mcp-config should hold only the caller tool server: %s", args)
 	}
 }
 

@@ -169,15 +169,14 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 		Model:          cfg.Model,
 		PermissionMode: b.PermissionMode,
 		ExtraArgs:      b.ExtraArgs,
-		MCPConfig:      claudeMCPConfig(cfg.Metadata),
 	}
+	mcpServers := claudeMCPServers(cfg.Metadata)
 	if cfg.OnlyCallerTools {
-		// No built-in tool, no MCP server but ours (the SDK server is
-		// declared at initialize, which --strict-mcp-config does not filter),
-		// and no settings, hooks or skills from the machine.
+		// No built-in tool, no MCP server but ours, and no settings, hooks
+		// or skills from the machine.
 		opts.ExtraArgs = append(append([]string(nil), b.ExtraArgs...),
 			"--tools", "", "--strict-mcp-config", "--setting-sources", "", "--disable-slash-commands")
-		opts.MCPConfig = ""
+		mcpServers = map[string]any{}
 	}
 	if cfg.Approvals == ApprovalsSkip {
 		opts.PermissionMode = claudecode.PermissionModeBypassPermissions
@@ -209,12 +208,20 @@ func (b *ClaudeBackend) Open(ctx context.Context, cfg SessionConfig) (Session, e
 		init.SDKMCPServerConfigs = map[string]claudecode.SDKMCPServerConfig{
 			name: {TimeoutMs: int(timeout / time.Millisecond)},
 		}
+		if _, clash := mcpServers[name]; clash {
+			return nil, fmt.Errorf("driver: metadata MCP server %q has the name of the caller tool server", name)
+		}
+		mcpServers[name] = claudecode.MCPServerSDK(name, int(timeout/time.Millisecond))
 		onMCP = func(ctx context.Context, srv string, msg json.RawMessage) (json.RawMessage, error) {
 			if srv != name {
 				return nil, fmt.Errorf("SDK MCP server not found: %s", srv)
 			}
 			return server.Handle(ctx, msg)
 		}
+	}
+
+	if len(mcpServers) > 0 {
+		opts.MCPConfig = claudecode.MCPConfig(mcpServers)
 	}
 
 	proc, err := claudecode.Spawn(opts, claudecode.Handler{
@@ -1007,13 +1014,14 @@ func claudeArguments(raw json.RawMessage) ap.StringEncodedMap {
 	return m
 }
 
-// claudeMCPConfig reads the same MCP metadata keys the ACP backend does.
-func claudeMCPConfig(md map[string]string) string {
-	servers := mcpServersFrom(md)
-	if len(servers) == 0 {
-		return ""
+// claudeMCPServers reads the same MCP metadata keys the ACP backend does, as
+// --mcp-config entries.
+func claudeMCPServers(md map[string]string) map[string]any {
+	out := map[string]any{}
+	for _, srv := range mcpServersFrom(md) {
+		out[srv.Name] = claudecode.MCPServerHTTP(srv.URL, srv.Headers)
 	}
-	return claudecode.MCPConfigHTTP(servers[0].Name, servers[0].URL, servers[0].Headers)
+	return out
 }
 
 func orNone(s string) string {

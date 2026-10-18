@@ -7,7 +7,6 @@
       "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents,images",
       "checks": {
         "acp/compact": "skip:no-command",
-        "acp/cursor.exec.adopt_args": "pass",
         "acp/cursor.exec.agent_store_conflict_args": "pass",
         "acp/cursor.exec.background_shell_spawn_args": "pass",
         "acp/cursor.exec.canvas_diagnostics_args": "pass",
@@ -170,7 +169,6 @@
       "probes": "tools",
       "note": "the cursor tool snapshot was taken with cursor-agent -p, and headless sends different capability fields from ACP (env.sandbox_supported), so they are recorded for both",
       "checks": {
-        "headless/cursor.exec.adopt_args": "pass",
         "headless/cursor.exec.agent_store_conflict_args": "pass",
         "headless/cursor.exec.background_shell_spawn_args": "pass",
         "headless/cursor.exec.canvas_diagnostics_args": "pass",

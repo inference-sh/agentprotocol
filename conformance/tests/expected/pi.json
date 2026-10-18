@@ -38,7 +38,7 @@
         "acp/seedkinds.image-only-result": "pass:as-image",
         "acp/seedkinds.in-message-result": "pass:as-image",
         "acp/seedkinds.parallel-same-id": "pass:as-tool",
-        "acp/seedkinds.reasoning": "pass",
+        "acp/seedkinds.reasoning": "finding:not-given",
         "acp/seedkinds.retired-answer-as-summary.context": "pass",
         "acp/seedkinds.retired-answer-as-summary.history": "pass",
         "acp/seedkinds.retired-answer-as-summary.request": "pass",

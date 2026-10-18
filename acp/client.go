@@ -546,10 +546,7 @@ func (c *Client) call(ctx context.Context, method string, params any, budget tim
 	case errors.As(err, &peer):
 		return nil, fmt.Errorf("acp: %s: %w", method, peer)
 	case errors.Is(err, jsonrpc.ErrClosed):
-		if rerr := c.conn.Err(); rerr != nil {
-			return nil, fmt.Errorf("acp: stream ended during %s: %w", method, rerr)
-		}
-		return nil, fmt.Errorf("acp: stream ended during %s", method)
+		return nil, &streamEndedError{method: method, cause: c.conn.Err()}
 	case ctx.Err() != nil:
 		return nil, ctx.Err()
 	case errors.Is(err, context.DeadlineExceeded):
@@ -716,3 +713,29 @@ func (c *Client) respond(id json.RawMessage, result any) {
 func (c *Client) respondError(id json.RawMessage, code int, message string) {
 	_ = c.conn.ReplyError(id, &Error{Code: code, Message: message})
 }
+
+// streamEndedError is a call cut short by the end of the agent's stream. It is
+// jsonrpc.ErrClosed, so a caller can tell an agent that went away from one
+// that answered with an error.
+type streamEndedError struct {
+	method string
+	cause  error
+}
+
+func (e *streamEndedError) Error() string {
+	if e.cause != nil {
+		return fmt.Sprintf("acp: stream ended during %s: %v", e.method, e.cause)
+	}
+	return "acp: stream ended during " + e.method
+}
+
+func (e *streamEndedError) Unwrap() []error {
+	if e.cause != nil {
+		return []error{jsonrpc.ErrClosed, e.cause}
+	}
+	return []error{jsonrpc.ErrClosed}
+}
+
+// IsStreamEnded reports whether err is a call cut short by the end of the
+// agent's stream: the agent exited or the session is closing.
+func IsStreamEnded(err error) bool { return errors.Is(err, jsonrpc.ErrClosed) }

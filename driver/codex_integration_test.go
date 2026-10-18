@@ -475,9 +475,11 @@ func TestCodexRealCallerTools(t *testing.T) {
 					t.Errorf("request %d offers codex's own tools with OnlyCallerTools: %v", i, tools)
 				}
 				// Without OnlyCallerTools codex keeps its own, so the check
-				// above is not passing for want of them.
-				if !only && (!slices.Contains(tools, "exec_command") || !slices.Contains(tools, "apply_patch")) {
-					t.Errorf("request %d lacks codex's shell or apply_patch without OnlyCallerTools: %v", i, tools)
+				// above is not passing for want of them. The shell is
+				// always there; apply_patch is not (0.163.0 leaves it out
+				// for a model it has no metadata for, such as the mock's).
+				if !only && !slices.Contains(tools, "exec_command") {
+					t.Errorf("request %d lacks codex's shell without OnlyCallerTools: %v", i, tools)
 				}
 			}
 

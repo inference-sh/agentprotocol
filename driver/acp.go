@@ -394,13 +394,21 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 		res, err := s.proc.PromptBlocks(context.WithoutCancel(ctx), promptBlocks(in, s.images && s.proc.AgentCapabilities().Prompt.Image))
 		silent := s.release(life)
 		if err != nil {
+			wait := time.Duration(0)
+			if acp.IsStreamEnded(err) {
+				// The call fails as the stream ends, a moment before the
+				// process is seen to be done; without the wait a killed
+				// agent's turn was reported as a plain error rather than
+				// process_exited.
+				wait = acpStreamEndGrace
+			}
 			select {
 			case <-s.proc.Done():
 				// The stream is gone: the agent died or the session is
 				// closing. Whoever ends the session reports the turn, so
 				// it is left open for them to see.
 				return
-			default:
+			case <-time.After(wait):
 			}
 		}
 		if !settle() {
@@ -474,6 +482,10 @@ func (s *acpSession) awaitFirstEvent(life chan struct{}, settle func() bool) {
 		Message: s.stderr.quote(msg), Code: CodeNoResponse,
 	}))
 }
+
+// acpStreamEndGrace is how long a prompt cut short by the stream ending waits
+// for the session to be seen as done.
+const acpStreamEndGrace = 5 * time.Second
 
 // release ends the wait of the prompt that owns life, whose answer has
 // arrived, and reports whether it had seen no sign of work until then.

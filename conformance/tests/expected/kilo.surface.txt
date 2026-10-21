@@ -4,6 +4,7 @@ acp
 agent
 attach
 auth
+auto
 cloud
 completion
 config

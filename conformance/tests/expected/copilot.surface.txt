@@ -24,6 +24,7 @@ workflow
 --add-github-mcp-toolset
 --additional-mcp-config
 --agent
+--ahp-host
 --allow-all
 --allow-all-mcp-server-instructions
 --allow-all-paths
@@ -44,12 +45,15 @@ workflow
 --deny-tool
 --deny-url
 --disable-builtin-mcps
+--disable-client-telemetry
 --disable-mcp-server
 --disallow-temp-dir
 --dynamic-retrieval
 --enable-all-github-mcp-tools
 --enable-mcp-server
 --enable-memory
+--environment-compute-id
+--environment-host
 --excluded-tools
 --experimental
 --extension-sdk-path
@@ -91,6 +95,7 @@ workflow
 --share-gist
 --silent
 --stream
+--trust-folder
 --usage-output-file
 --version
 --yolo

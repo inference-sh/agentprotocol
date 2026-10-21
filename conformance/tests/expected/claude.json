@@ -8,7 +8,8 @@
       "checks": {
         "acp/compact.context": "pass:summary",
         "acp/compact.run": "pass:reported",
-        "acp/deferred.armed": "pass:no-search-tool",
+        "acp/deferred.armed": "pass",
+        "acp/deferred.expanded": "pass:revealed",
         "acp/hook-injection": "pass",
         "acp/hook.post-tool": "pass",
         "acp/hook.pre-compact": "pass",

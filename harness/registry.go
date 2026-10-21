@@ -48,10 +48,12 @@ func withTSPluginExport(h Harness, export string) Harness {
 // it exists nowhere and can do nothing if an agent runs it anyway.
 const gatedShellArgs = `{"command":"rm -rf /tmp/gated-probe-does-not-exist"}`
 
-// gatedWebFetchArgs is claude's gated call. Its own settings in this registry
+// gatedEditArgs is claude's gated call. Its own settings in this registry
 // allow Bash, Read and Write outright, so the gated tool has to be one outside
-// that list; WebFetch is declared on every turn, and the host does not exist.
-const gatedWebFetchArgs = `{"url":"https://gated-probe.invalid/","prompt":"Summarise the page."}`
+// that list and declared on every turn: since 2.1.306 WebFetch is deferred
+// behind ToolSearch, and Edit is not. An empty old_string creates the file, so
+// claude needs no earlier Read of a path that does not exist.
+const gatedEditArgs = `{"file_path":"/tmp/gated-probe-does-not-exist/probe.txt","old_string":"","new_string":"probe"}`
 
 // gatedExecArgs is codex's gated call: exec_command takes "cmd", and codex's
 // default approval policy (untrusted) asks before any command outside its
@@ -131,7 +133,7 @@ var All = map[string]Harness{
 		Driver:           DriverClaudeCode,
 		Sessions:         claude.Codec,
 		Usage:            claudeusage.Prober{},
-		ToolCallGated:    ToolCall{Name: "WebFetch", Args: gatedWebFetchArgs},
+		ToolCallGated:    ToolCall{Name: "Edit", Args: gatedEditArgs},
 		ToolCallSubagent: ToolCall{Name: "Agent", Args: `{"description":"probe subagent","prompt":"Reply with the word done.","subagent_type":"general-purpose"}`},
 		InstallCmd:       []string{"npm", "install", "-g", "@anthropic-ai/claude-code"},
 		DetectEnvVars:    []string{"CLAUDECODE", "CLAUDE_CODE", "CLAUDE_CODE_ENTRYPOINT"},

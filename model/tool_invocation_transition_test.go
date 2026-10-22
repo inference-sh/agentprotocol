@@ -38,6 +38,17 @@ func TestToolInvocationCanTransitionTo(t *testing.T) {
 		{ap.ToolInvocationStatusAwaitingInput, ap.ToolInvocationStatusPending, false},
 		{ap.ToolInvocationStatusAwaitingInput, ap.ToolInvocationStatusAwaitingApproval, false},
 
+		// in_progress → waiting; waiting → completed, failed, cancelled only
+		{ap.ToolInvocationStatusInProgress, ap.ToolInvocationStatusWaiting, true},
+		{ap.ToolInvocationStatusPending, ap.ToolInvocationStatusWaiting, false},
+		{ap.ToolInvocationStatusAwaitingInput, ap.ToolInvocationStatusWaiting, false},
+		{ap.ToolInvocationStatusWaiting, ap.ToolInvocationStatusCompleted, true},
+		{ap.ToolInvocationStatusWaiting, ap.ToolInvocationStatusFailed, true},
+		{ap.ToolInvocationStatusWaiting, ap.ToolInvocationStatusCancelled, true},
+		{ap.ToolInvocationStatusWaiting, ap.ToolInvocationStatusInProgress, false},
+		{ap.ToolInvocationStatusWaiting, ap.ToolInvocationStatusAwaitingInput, false},
+		{ap.ToolInvocationStatusCompleted, ap.ToolInvocationStatusWaiting, false},
+
 		// awaiting_approval → in_progress (approved), failed, cancelled
 		{ap.ToolInvocationStatusAwaitingApproval, ap.ToolInvocationStatusInProgress, true},
 		{ap.ToolInvocationStatusAwaitingApproval, ap.ToolInvocationStatusFailed, true},
@@ -85,6 +96,9 @@ func TestValidToolInvocationSourceStates(t *testing.T) {
 	}
 	if found[ap.ToolInvocationStatusAwaitingApproval] {
 		t.Error("awaiting_approval should NOT be a valid source for completed")
+	}
+	if !found[ap.ToolInvocationStatusWaiting] {
+		t.Error("waiting should be a valid source for completed")
 	}
 
 	// in_progress reachable from pending, awaiting_input, awaiting_approval

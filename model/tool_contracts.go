@@ -11,6 +11,7 @@ const (
 	ToolInvocationStatusInProgress       ToolInvocationStatus = "in_progress"
 	ToolInvocationStatusAwaitingInput    ToolInvocationStatus = "awaiting_input"    // Waiting for user input (widgets)
 	ToolInvocationStatusAwaitingApproval ToolInvocationStatus = "awaiting_approval" // Waiting for HIL approval
+	ToolInvocationStatusWaiting          ToolInvocationStatus = "waiting"           // Paused until a deadline (the wait tool); nobody needs to answer
 	ToolInvocationStatusCompleted        ToolInvocationStatus = "completed"
 	ToolInvocationStatusFailed           ToolInvocationStatus = "failed"
 	ToolInvocationStatusCancelled        ToolInvocationStatus = "cancelled"
@@ -23,8 +24,9 @@ func (s ToolInvocationStatus) IsTerminal() bool {
 // CanTransitionTo defines the allowed status transitions for tool invocations.
 //
 //	pending → in_progress, awaiting_approval, completed, failed, cancelled
-//	in_progress → awaiting_input, completed, failed, cancelled
+//	in_progress → awaiting_input, waiting, completed, failed, cancelled
 //	awaiting_input → in_progress, completed, failed, cancelled
+//	waiting → completed, failed, cancelled
 //	awaiting_approval → in_progress, failed, cancelled
 //	terminal → (nothing)
 func (s ToolInvocationStatus) CanTransitionTo(next ToolInvocationStatus) bool {
@@ -44,7 +46,7 @@ func (s ToolInvocationStatus) CanTransitionTo(next ToolInvocationStatus) bool {
 	case ToolInvocationStatusPending:
 		return next == ToolInvocationStatusInProgress || next == ToolInvocationStatusAwaitingApproval
 	case ToolInvocationStatusInProgress:
-		return next == ToolInvocationStatusAwaitingInput
+		return next == ToolInvocationStatusAwaitingInput || next == ToolInvocationStatusWaiting
 	case ToolInvocationStatusAwaitingInput:
 		return next == ToolInvocationStatusInProgress
 	case ToolInvocationStatusAwaitingApproval:
@@ -62,6 +64,7 @@ func ValidToolInvocationSourceStates(next ToolInvocationStatus) []ToolInvocation
 		ToolInvocationStatusInProgress,
 		ToolInvocationStatusAwaitingInput,
 		ToolInvocationStatusAwaitingApproval,
+		ToolInvocationStatusWaiting,
 	}
 	var sources []ToolInvocationStatus
 	for _, s := range all {

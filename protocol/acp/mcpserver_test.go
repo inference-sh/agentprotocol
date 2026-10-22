@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/inference-sh/agentprotocol/acp"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 
 // The ACP schema's McpServer: http and sse carry a type and headers as a

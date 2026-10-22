@@ -12,9 +12,9 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/codexapp"
 	"github.com/inference-sh/agentprotocol/driver"
-	"github.com/inference-sh/agentprotocol/usage"
+	"github.com/inference-sh/agentprotocol/protocol/codexapp"
+	"github.com/inference-sh/agentprotocol/report/usage"
 )
 
 // The codex tests use the same trick as the ACP ones: this test binary is

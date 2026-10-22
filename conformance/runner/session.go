@@ -13,8 +13,8 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/acp"
 	"github.com/inference-sh/agentprotocol/driver"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 
 // SessionDriver runs one session through agentprotocol's driver.Backend, the

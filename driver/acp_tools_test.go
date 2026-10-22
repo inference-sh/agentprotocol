@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/acp"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 
 func TestACPCallerToolMatching(t *testing.T) {

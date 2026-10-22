@@ -1111,11 +1111,11 @@ opencode and qwen losing retired tool calls. All are fixed in v0.13.0.
 
 ### What agents report about usage (`--probe usage`)
 
-agentprotocol's `usage` package maps each agent's own reports onto one model:
+agentprotocol's `report/usage` package maps each agent's own reports onto one model:
 a turn's tokens (`usage.updated`, once per turn, the prompt counting cached
 input), the context window's fill (`context.updated`), a plan's rate limits
 (`limits.updated`) and the account (`account.updated`). A per-agent package
-holds each mapping (`usage/claude`, `usage/codex`, `usage/acp`, `usage/pi`)
+holds each mapping (`report/usage/claude`, `report/usage/codex`, `report/usage/acp`, `report/usage/pi`)
 and the session drivers and the registry's probers share it. The probe runs
 one turn against the mock and reads those events, then runs the registry's
 prober outside a session and checks it made no model call.
@@ -1153,7 +1153,7 @@ to drop all of it: claude every message carrying `parent_tool_use_id`, codex
 every notification from a thread other than its own. Now they report it as
 `subagent.started` (with the tool call that started it), `subagent.updated`
 (status, summary, usage) and `subagent.completed`, mapped in
-`subagent/claude` (the `task_*` system messages) and `subagent/codex` (the
+`report/subagent/claude` (the `task_*` system messages) and `report/subagent/codex` (the
 `collabAgentToolCall` item and the spawned thread's notifications). What the
 subagent says and does is sent, tagged with `subagent_id`, only to a caller
 that sets `SubagentOutput`, so a consumer that merges every text delta into

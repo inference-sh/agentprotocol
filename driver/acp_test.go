@@ -15,8 +15,8 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/acp"
 	"github.com/inference-sh/agentprotocol/driver"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 
 // The backend spawns a real process, so the tests need a real ACP agent. This

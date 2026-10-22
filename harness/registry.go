@@ -1,6 +1,8 @@
 package harness
 
 import (
+	claudeusage "github.com/inference-sh/agentprotocol/report/usage/claude"
+	codexusage "github.com/inference-sh/agentprotocol/report/usage/codex"
 	"github.com/inference-sh/agentprotocol/transcript/claude"
 	"github.com/inference-sh/agentprotocol/transcript/codex"
 	"github.com/inference-sh/agentprotocol/transcript/copilot"
@@ -12,8 +14,6 @@ import (
 	"github.com/inference-sh/agentprotocol/transcript/kiro"
 	"github.com/inference-sh/agentprotocol/transcript/pi"
 	"github.com/inference-sh/agentprotocol/transcript/qwen"
-	claudeusage "github.com/inference-sh/agentprotocol/usage/claude"
-	codexusage "github.com/inference-sh/agentprotocol/usage/codex"
 )
 
 var standardEvents = Events{

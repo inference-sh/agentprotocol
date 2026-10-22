@@ -7,7 +7,7 @@ package pi
 
 import (
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/pirpc"
+	"github.com/inference-sh/agentprotocol/protocol/pirpc"
 )
 
 // Context is the window's fill get_session_stats reports; ok is false when pi

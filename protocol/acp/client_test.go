@@ -10,7 +10,7 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/acp"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 
 // fakeAgent is the other end of an ACP conversation, driven by a script. It

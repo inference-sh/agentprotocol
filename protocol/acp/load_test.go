@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/inference-sh/agentprotocol/acp"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 
 // initialize completes only the handshake, leaving the session unopened so a

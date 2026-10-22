@@ -5,8 +5,8 @@ import (
 	"sync"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/acp"
 	"github.com/inference-sh/agentprotocol/internal/mcptools"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 
 // acpCallerTools is one session's SessionConfig.Tools: the loopback MCP server

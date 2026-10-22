@@ -8,7 +8,7 @@ package claude
 
 import (
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/claudecode"
+	"github.com/inference-sh/agentprotocol/protocol/claudecode"
 )
 
 // Started maps task_started. A task started inside another task names it.

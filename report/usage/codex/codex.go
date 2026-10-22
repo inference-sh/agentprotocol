@@ -11,8 +11,8 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/codexapp"
-	"github.com/inference-sh/agentprotocol/usage"
+	"github.com/inference-sh/agentprotocol/protocol/codexapp"
+	"github.com/inference-sh/agentprotocol/report/usage"
 )
 
 // Window IDs: codex reports a plan's limits as a primary and a secondary

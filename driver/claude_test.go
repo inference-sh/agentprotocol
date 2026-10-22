@@ -14,8 +14,8 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/claudecode"
 	"github.com/inference-sh/agentprotocol/driver"
+	"github.com/inference-sh/agentprotocol/protocol/claudecode"
 )
 
 // The Claude backend launches a real process, so these tests launch this test

@@ -14,8 +14,8 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/claudecode"
-	"github.com/inference-sh/agentprotocol/usage"
+	"github.com/inference-sh/agentprotocol/protocol/claudecode"
+	"github.com/inference-sh/agentprotocol/report/usage"
 )
 
 // Window IDs. Scoped weekly windows are "seven_day_" and a slug of the

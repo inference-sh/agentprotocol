@@ -12,8 +12,8 @@ import (
 
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/harness"
-	"github.com/inference-sh/agentprotocol/pirpc"
-	piusage "github.com/inference-sh/agentprotocol/usage/pi"
+	"github.com/inference-sh/agentprotocol/protocol/pirpc"
+	piusage "github.com/inference-sh/agentprotocol/report/usage/pi"
 )
 
 // KindPi names the native pi backend: the pi coding agent driven over its own

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/claudecode"
+	"github.com/inference-sh/agentprotocol/protocol/claudecode"
 )
 
 func TestAccount(t *testing.T) {

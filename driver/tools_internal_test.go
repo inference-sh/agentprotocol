@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/codexapp"
+	"github.com/inference-sh/agentprotocol/protocol/codexapp"
 )
 
 func TestCallerToolImagesReachMCPContent(t *testing.T) {

@@ -2,8 +2,8 @@ package harness
 
 import (
 	"github.com/inference-sh/agentprotocol"
+	"github.com/inference-sh/agentprotocol/report/usage"
 	"github.com/inference-sh/agentprotocol/transcript"
-	"github.com/inference-sh/agentprotocol/usage"
 )
 
 // HookFormat describes how a harness expects hook configuration.

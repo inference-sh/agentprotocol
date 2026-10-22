@@ -7,7 +7,7 @@ import (
 
 	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/harness"
-	"github.com/inference-sh/agentprotocol/usage"
+	"github.com/inference-sh/agentprotocol/report/usage"
 )
 
 // usageSettle is how long the probe waits after a turn for usage the agent

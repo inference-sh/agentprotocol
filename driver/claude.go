@@ -12,10 +12,10 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/claudecode"
 	"github.com/inference-sh/agentprotocol/harness"
-	subagentclaude "github.com/inference-sh/agentprotocol/subagent/claude"
-	claudeusage "github.com/inference-sh/agentprotocol/usage/claude"
+	"github.com/inference-sh/agentprotocol/protocol/claudecode"
+	subagentclaude "github.com/inference-sh/agentprotocol/report/subagent/claude"
+	claudeusage "github.com/inference-sh/agentprotocol/report/usage/claude"
 )
 
 // KindClaude names the native Claude Code backend: the claude binary driven

@@ -14,10 +14,10 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/codexapp"
 	"github.com/inference-sh/agentprotocol/harness"
-	subagentcodex "github.com/inference-sh/agentprotocol/subagent/codex"
-	codexusage "github.com/inference-sh/agentprotocol/usage/codex"
+	"github.com/inference-sh/agentprotocol/protocol/codexapp"
+	subagentcodex "github.com/inference-sh/agentprotocol/report/subagent/codex"
+	codexusage "github.com/inference-sh/agentprotocol/report/usage/codex"
 )
 
 // KindCodex names the native Codex backend.

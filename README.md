@@ -12,7 +12,7 @@ The core has no dependencies outside the standard library.
 
 ## Drive a coding agent
 
-The `acp` package speaks the [Agent Client Protocol](https://agentclientprotocol.com), which is how editors talk to coding agents running as local processes. Zed, JetBrains and VS Code extensions use it. Gemini CLI and Cursor answer it directly; Claude Code and several others answer it through a small bridge process.
+The `protocol/acp` package speaks the [Agent Client Protocol](https://agentclientprotocol.com), which is how editors talk to coding agents running as local processes. Zed, JetBrains and VS Code extensions use it. Gemini CLI and Cursor answer it directly; Claude Code and several others answer it through a small bridge process.
 
 ```go
 proc, err := acp.Spawn(ctx, acp.ProcessConfig{
@@ -86,16 +86,24 @@ state.IsInterrupted()
 ## Packages
 
 ```
-agentprotocol      the model above, standard library only
-├── a2a/           Agent2Agent wire types and mappings
-├── acp/           Agent Client Protocol client
-├── codexapp/      `codex app-server` JSON-RPC client, types generated from codex's own schema
-├── driver/        one interface for running an agent over any transport
-├── pirpc/         `pi --mode rpc` JSONL client
-└── harness/       the registry of coding-agent CLIs: which exist, how to find them, how to drive them
+agentprotocol        the model above, standard library only
+├── driver/          one interface for running an agent over any transport
+├── harness/         the registry of coding-agent CLIs: which exist, how to find them, how to drive them
+├── transcript/      read and write each agent's session history (sqlite/ is its own module)
+├── a2a/             Agent2Agent wire types and mappings
+├── protocol/        one client per vendor wire protocol
+│   ├── acp/         Agent Client Protocol
+│   ├── claudecode/  Claude Code's stream-json control protocol
+│   ├── codexapp/    `codex app-server` JSON-RPC, types generated from codex's own schema
+│   └── pirpc/       `pi --mode rpc` JSONL
+├── report/          what agents report, mapped onto the model
+│   ├── usage/       turn usage, context fill, plan limits, account (acp, claude, codex, pi)
+│   └── subagent/    subagents started, updated and completed (claude, codex)
+├── internal/        process groups, JSON-RPC framing, the caller-tools MCP server
+└── conformance/     the nightly suite that runs every agent in Docker (its own module)
 ```
 
-Imports only ever flow downward. `a2a` and `acp` depend on the root; `codexapp` and `pirpc` depend on nothing but the standard library. `driver` depends on all of them. `harness` depends on nothing but the standard library. The transport packages never reference each other, which is deliberate: adapters that translate directly between formats grow as the square of how many formats you support, while adapters that translate to a shared model grow linearly.
+Imports only ever flow downward. The root depends on nothing. `protocol/*` depends on the root and `internal/` only, and its packages never reference each other. `report/*` maps one protocol's messages onto the root model. `harness` depends on `report/usage` and `transcript`; `driver` on everything above it. Adapters that translate directly between formats grow as the square of how many formats you support, while adapters that translate to a shared model grow linearly, which is why every protocol maps to the root and never to another protocol.
 
 ### harness
 

@@ -7,7 +7,7 @@ package codex
 
 import (
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/codexapp"
+	"github.com/inference-sh/agentprotocol/protocol/codexapp"
 )
 
 // Spawned is the subagents a spawnAgent call starts, one per spawned thread.

@@ -9,8 +9,8 @@ import (
 	"fmt"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/acp"
 	"github.com/inference-sh/agentprotocol/driver"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 
 // README: "Drive a coding agent"

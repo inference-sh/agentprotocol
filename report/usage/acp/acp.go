@@ -9,7 +9,7 @@ package acp
 
 import (
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/acp"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 
 // Context is the window's fill a usage_update reports.

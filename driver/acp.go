@@ -11,10 +11,10 @@ import (
 	"time"
 
 	ap "github.com/inference-sh/agentprotocol"
-	"github.com/inference-sh/agentprotocol/acp"
 	"github.com/inference-sh/agentprotocol/harness"
 	"github.com/inference-sh/agentprotocol/internal/mcptools"
-	acpusage "github.com/inference-sh/agentprotocol/usage/acp"
+	"github.com/inference-sh/agentprotocol/protocol/acp"
+	acpusage "github.com/inference-sh/agentprotocol/report/usage/acp"
 )
 
 // KindACP names the ACP backend.

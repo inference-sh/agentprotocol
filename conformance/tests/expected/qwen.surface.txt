@@ -5,6 +5,7 @@ auth
 batch
 board
 channel
+daemon
 extensions
 hooks
 mcp

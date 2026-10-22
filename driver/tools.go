@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/internal/mcptools"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // checkCallerTools refuses a SessionConfig the backend cannot honour, before

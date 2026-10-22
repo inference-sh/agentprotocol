@@ -3,7 +3,7 @@ package a2a
 import (
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // The run states and the A2A task states were chosen to use the same strings,

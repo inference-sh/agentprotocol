@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/inference-sh/agentprotocol"
+	agentprotocol "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/transcript"
 )
 

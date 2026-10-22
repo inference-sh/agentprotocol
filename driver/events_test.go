@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // A consumer that has not started reading loses nothing: the producer never

@@ -13,8 +13,8 @@ import (
 	"sync"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/harness"
+	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/protocol/codexapp"
 	subagentcodex "github.com/inference-sh/agentprotocol/report/subagent/codex"
 	codexusage "github.com/inference-sh/agentprotocol/report/usage/codex"

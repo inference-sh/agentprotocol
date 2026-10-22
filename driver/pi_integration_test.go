@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/driver"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // The real-binary test drives the installed pi against harness-test's mock

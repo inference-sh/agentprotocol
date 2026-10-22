@@ -1,4 +1,4 @@
-package agentprotocol
+package model
 
 // InterruptStatus tracks the lifecycle of an interrupt gate.
 type InterruptStatus string

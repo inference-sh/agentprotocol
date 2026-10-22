@@ -31,7 +31,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/inference-sh/agentprotocol"
+	agentprotocol "github.com/inference-sh/agentprotocol/model"
 )
 
 // Role is who produced an entry.

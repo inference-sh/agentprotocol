@@ -1,4 +1,4 @@
-package agentprotocol
+package model
 
 import (
 	"encoding/json"

@@ -1,4 +1,4 @@
-package agentprotocol
+package model
 
 // HookEvent is a lifecycle event in the agent conversation loop.
 // Events fire at well-defined points in the turn cycle, giving external

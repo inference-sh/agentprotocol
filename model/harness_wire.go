@@ -1,4 +1,4 @@
-package agentprotocol
+package model
 
 // Harness vocabulary the api and belt's daemon exchange about coding agents.
 // Declared here so the wire types can alias them; the harness and transcript

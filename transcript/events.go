@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/inference-sh/agentprotocol"
+	agentprotocol "github.com/inference-sh/agentprotocol/model"
 )
 
 // Events projects a session onto the agent event stream every other consumer

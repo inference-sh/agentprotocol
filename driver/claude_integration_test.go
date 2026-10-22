@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/driver"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // TestClaudeRealBinary drives the installed claude against a local mock of

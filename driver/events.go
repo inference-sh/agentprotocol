@@ -3,7 +3,7 @@ package driver
 import (
 	"sync"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // eventPump delivers events in order without ever blocking the producer: the

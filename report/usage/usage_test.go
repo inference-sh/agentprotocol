@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 var (

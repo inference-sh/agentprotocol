@@ -52,15 +52,15 @@ Env: acp.Environ("CLAUDE_CONFIG_DIR", "/home/me/.claude-work")
 
 ## The model
 
-The root package is the vocabulary, as plain data.
+The `model` package is the vocabulary, as plain data. Import it as `ap "github.com/inference-sh/agentprotocol/model"`.
 
 **Events.** `AgentEvent` carries a type, the run it belongs to, and a JSON payload. Thirteen payload types cover the run lifecycle: started, state changed, turn started and completed, content delta, tool started and completed, approval required and resolved, hook executed, usage updated, context compacted, error.
 
 ```go
-ev := agentprotocol.NewEvent(agentprotocol.AgentEventToolStarted, runID, chatID,
-	agentprotocol.ToolStartedPayload{ToolName: "bash", ToolType: agentprotocol.ToolTypeCall})
+ev := ap.NewEvent(ap.AgentEventToolStarted, runID, chatID,
+	ap.ToolStartedPayload{ToolName: "bash", ToolType: ap.ToolTypeCall})
 
-if p, ok := agentprotocol.PayloadAs[agentprotocol.ToolStartedPayload](ev, agentprotocol.AgentEventToolStarted); ok {
+if p, ok := ap.PayloadAs[ap.ToolStartedPayload](ev, ap.AgentEventToolStarted); ok {
 	fmt.Println(p.ToolName)
 }
 ```
@@ -70,7 +70,7 @@ Payloads stay as raw JSON until asked for, so a consumer can route on type witho
 **State.** `AgentRunState` is the run's lifecycle, and it knows its own legal transitions:
 
 ```go
-if state.CanTransitionTo(agentprotocol.AgentRunStateCompleted) { ... }
+if state.CanTransitionTo(ap.AgentRunStateCompleted) { ... }
 state.IsTerminal()
 state.IsInterrupted()
 ```
@@ -86,7 +86,8 @@ state.IsInterrupted()
 ## Packages
 
 ```
-agentprotocol        the model above, standard library only
+agentprotocol
+├── model/           the model above, standard library only
 ├── driver/          one interface for running an agent over any transport
 ├── harness/         the registry of coding-agent CLIs: which exist, how to find them, how to drive them
 ├── transcript/      read and write each agent's session history (sqlite/ is its own module)
@@ -103,7 +104,7 @@ agentprotocol        the model above, standard library only
 └── conformance/     the nightly suite that runs every agent in Docker (its own module)
 ```
 
-Imports only ever flow downward. The root depends on nothing. `protocol/*` depends on the root and `internal/` only, and its packages never reference each other. `report/*` maps one protocol's messages onto the root model. `harness` depends on `report/usage` and `transcript`; `driver` on everything above it. Adapters that translate directly between formats grow as the square of how many formats you support, while adapters that translate to a shared model grow linearly, which is why every protocol maps to the root and never to another protocol.
+Imports only ever flow downward. `model` depends on nothing. `protocol/*` depends on `model` and `internal/` only, and its packages never reference each other. `report/*` maps one protocol's messages onto `model`. `harness` depends on `report/usage` and `transcript`; `driver` on everything above it. Adapters that translate directly between formats grow as the square of how many formats you support, while adapters that translate to a shared model grow linearly, which is why every protocol maps to `model` and never to another protocol.
 
 ### harness
 
@@ -205,10 +206,10 @@ defer sess.Close()
 go func() {
 	for ev := range sess.Events() {
 		switch ev.Type {
-		case agentprotocol.AgentEventContentDelta:
+		case ap.AgentEventContentDelta:
 			// stream it to a user
-		case agentprotocol.AgentEventApprovalRequired:
-			p, _ := agentprotocol.PayloadAs[agentprotocol.ApprovalRequiredPayload](ev, ev.Type)
+		case ap.AgentEventApprovalRequired:
+			p, _ := ap.PayloadAs[ap.ApprovalRequiredPayload](ev, ev.Type)
 			// ask someone, then:
 			sess.Resolve(ctx, p.ToolInvocationID, driver.Allow())
 		}

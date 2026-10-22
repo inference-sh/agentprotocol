@@ -3,7 +3,7 @@ package acp
 import (
 	"encoding/json"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // Session update kinds. Agents do not agree on these strings, so the mapper

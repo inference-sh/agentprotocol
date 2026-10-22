@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/a2a"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // allRunStates is every state the lifecycle model defines. A new state added

@@ -16,7 +16,7 @@ import (
 	"context"
 	"encoding/json"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // Backend opens sessions against one kind of agent.

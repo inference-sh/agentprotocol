@@ -1,4 +1,4 @@
-package agentprotocol
+package model
 
 // AgentRunState tracks the lifecycle of an agent run (one user→agent turn).
 // Maps to A2A TaskState and AG-UI Run outcome for protocol compliance.

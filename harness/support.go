@@ -3,7 +3,7 @@ package harness
 import (
 	"fmt"
 
-	"github.com/inference-sh/agentprotocol"
+	agentprotocol "github.com/inference-sh/agentprotocol/model"
 )
 
 // TestedVersions is the range of an agent's versions inference has

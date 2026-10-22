@@ -10,9 +10,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/harness"
 	"github.com/inference-sh/agentprotocol/internal/mcptools"
+	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/protocol/acp"
 	acpusage "github.com/inference-sh/agentprotocol/report/usage/acp"
 )

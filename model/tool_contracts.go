@@ -1,4 +1,4 @@
-package agentprotocol
+package model
 
 // Tool contracts shared by every transport: which kind of tool a call names,
 // and the lifecycle an invocation of it moves through.

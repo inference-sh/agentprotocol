@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // attachments is an input with a local image, an image only reachable by

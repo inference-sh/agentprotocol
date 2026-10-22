@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/harness"
+	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/protocol/pirpc"
 	piusage "github.com/inference-sh/agentprotocol/report/usage/pi"
 )

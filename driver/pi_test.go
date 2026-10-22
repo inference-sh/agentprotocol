@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/driver"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // The pi backend launches a real process, so these tests launch this test

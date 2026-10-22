@@ -1,7 +1,7 @@
 package harness
 
 import (
-	"github.com/inference-sh/agentprotocol"
+	agentprotocol "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/report/usage"
 	"github.com/inference-sh/agentprotocol/transcript"
 )

@@ -1,9 +1,9 @@
-package agentprotocol_test
+package model_test
 
 import (
 	"testing"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 func TestToolInvocationCanTransitionTo(t *testing.T) {

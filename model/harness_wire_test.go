@@ -1,10 +1,10 @@
-package agentprotocol_test
+package model_test
 
 import (
 	"encoding/json"
 	"testing"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // The api, belt's daemon and the web app compare these values as strings

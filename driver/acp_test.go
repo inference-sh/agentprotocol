@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/driver"
+	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 

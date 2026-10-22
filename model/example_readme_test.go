@@ -1,4 +1,4 @@
-package agentprotocol_test
+package model_test
 
 // The README shows this library being used. A snippet that does not compile is
 // worse than no snippet, so every example there is reproduced here and built
@@ -8,8 +8,8 @@ import (
 	"context"
 	"fmt"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/driver"
+	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
 

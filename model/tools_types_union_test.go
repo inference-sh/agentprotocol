@@ -1,4 +1,4 @@
-package agentprotocol_test
+package model_test
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // The property is what a model provider reads. A union must reach it as anyOf

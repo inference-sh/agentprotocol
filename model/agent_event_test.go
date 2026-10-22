@@ -1,11 +1,11 @@
-package agentprotocol_test
+package model_test
 
 import (
 	"encoding/json"
 	"testing"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 func TestAgentEventRoundTrip(t *testing.T) {

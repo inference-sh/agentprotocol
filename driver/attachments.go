@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // maxImageBytes is the largest image a driver inlines. It is the Anthropic

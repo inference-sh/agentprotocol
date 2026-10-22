@@ -3,7 +3,7 @@ package runner
 import (
 	"fmt"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 	"slices"
 	"time"
 )

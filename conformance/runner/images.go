@@ -16,9 +16,9 @@ import (
 	"strings"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/driver"
 	"github.com/inference-sh/agentprotocol/harness"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // probeImages sends a prompt with a PNG attached, as a file outside the

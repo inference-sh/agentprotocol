@@ -1,4 +1,4 @@
-package agentprotocol
+package model
 
 // Subagents: an agent that hands part of its work to another agent (Claude
 // Code's Agent tool, codex's spawned agent threads). The parent's tool call

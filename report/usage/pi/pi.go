@@ -6,7 +6,7 @@
 package pi
 
 import (
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/protocol/pirpc"
 )
 

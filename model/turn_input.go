@@ -1,4 +1,4 @@
-package agentprotocol
+package model
 
 // TurnInput is what a user sends into a turn: the text and the files
 // attached to it. It is the one shape for a prompt from the server that

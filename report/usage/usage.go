@@ -19,7 +19,7 @@ import (
 	"strings"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 )
 
 // Env is how a probe runs the agent: the binary, its working directory and

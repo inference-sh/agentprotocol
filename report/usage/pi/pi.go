@@ -1,8 +1,8 @@
 // Package pi maps what pi (and Oh My Pi in its rpc mode) reports about usage
 // onto the agentprotocol types: the context window's fill from
 // get_session_stats. A turn's tokens come from the assistant messages'
-// usage, which the pi driver sums. pi reports no account or rate limits; its
-// login is the registry's status check.
+// usage, which the pi driver sums. pi reports no account or rate limits;
+// Prober reads them from the login pi saved.
 package pi
 
 import (

@@ -15,6 +15,7 @@ package usage
 
 import (
 	"context"
+	"os"
 	"slices"
 	"strings"
 	"time"
@@ -32,6 +33,60 @@ type Env struct {
 	Args   []string
 	Env    []string
 	Dir    string
+}
+
+// Lookup is a variable of the agent's environment: Env when it is set, else
+// this process's.
+func (e Env) Lookup(key string) string {
+	if e.Env == nil {
+		return os.Getenv(key)
+	}
+	v := ""
+	prefix := key + "="
+	for _, kv := range e.Env {
+		if strings.HasPrefix(kv, prefix) {
+			v = kv[len(prefix):]
+		}
+	}
+	return v
+}
+
+// Home is the agent's home directory: HOME in its environment, else this
+// user's.
+func (e Env) Home() string {
+	if h := e.Lookup("HOME"); h != "" {
+		return h
+	}
+	h, _ := os.UserHomeDir()
+	return h
+}
+
+// providerKeys are the API-key variables that multi-provider agents (pi,
+// omp, opencode, kilo) sign in with when no login is saved.
+var providerKeys = []string{
+	"ANTHROPIC_API_KEY", "OPENAI_API_KEY", "OPENROUTER_API_KEY", "GEMINI_API_KEY",
+	"GOOGLE_API_KEY", "XAI_API_KEY", "GROQ_API_KEY", "MISTRAL_API_KEY", "DEEPSEEK_API_KEY",
+	"MOONSHOT_API_KEY", "KIMI_API_KEY", "CEREBRAS_API_KEY", "ZAI_API_KEY", "TOGETHER_API_KEY",
+	"FIREWORKS_API_KEY", "AZURE_OPENAI_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_PROFILE",
+}
+
+// NoSavedLogin is the snapshot of an agent that keeps logins to many
+// providers and has none saved: an API key in the environment when one is
+// set, else unknown, since the agent's own config can hold keys a probe does
+// not read. Neither has plan limits.
+func NoSavedLogin(env Env, now time.Time) ap.UsageSnapshot {
+	for _, k := range providerKeys {
+		if env.Lookup(k) != "" {
+			return ap.UsageSnapshot{
+				Account: &ap.AgentAccount{Status: ap.AccountAuthenticated, Type: ap.AccountAPIKey},
+				Limits:  Unavailable(ap.UsageUnsupported, "plan limits do not apply to an API key", now),
+			}
+		}
+	}
+	return ap.UsageSnapshot{
+		Account: &ap.AgentAccount{Status: ap.AccountUnknown},
+		Limits:  Unavailable(ap.UsageUnsupported, "no saved login to read", now),
+	}
 }
 
 // Prober reads an agent's account and rate limits outside a session. It does

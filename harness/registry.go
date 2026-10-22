@@ -1,8 +1,23 @@
 package harness
 
 import (
+	"github.com/inference-sh/agentprotocol/report/usage"
 	claudeusage "github.com/inference-sh/agentprotocol/report/usage/claude"
 	codexusage "github.com/inference-sh/agentprotocol/report/usage/codex"
+	copilotusage "github.com/inference-sh/agentprotocol/report/usage/copilot"
+	cursorusage "github.com/inference-sh/agentprotocol/report/usage/cursor"
+	droidusage "github.com/inference-sh/agentprotocol/report/usage/droid"
+	geminiusage "github.com/inference-sh/agentprotocol/report/usage/gemini"
+	gooseusage "github.com/inference-sh/agentprotocol/report/usage/goose"
+	grokusage "github.com/inference-sh/agentprotocol/report/usage/grok"
+	hermesusage "github.com/inference-sh/agentprotocol/report/usage/hermes"
+	kilousage "github.com/inference-sh/agentprotocol/report/usage/kilo"
+	kimiusage "github.com/inference-sh/agentprotocol/report/usage/kimi"
+	kirousage "github.com/inference-sh/agentprotocol/report/usage/kiro"
+	ompusage "github.com/inference-sh/agentprotocol/report/usage/omp"
+	opencodeusage "github.com/inference-sh/agentprotocol/report/usage/opencode"
+	piusage "github.com/inference-sh/agentprotocol/report/usage/pi"
+	qwenusage "github.com/inference-sh/agentprotocol/report/usage/qwen"
 	"github.com/inference-sh/agentprotocol/transcript/claude"
 	"github.com/inference-sh/agentprotocol/transcript/codex"
 	"github.com/inference-sh/agentprotocol/transcript/copilot"
@@ -869,6 +884,30 @@ var configDirEnvs = map[string]string{
 	"opencode": "XDG_CONFIG_HOME",
 }
 
+// usageProbers reads each agent's account and plan limits outside a session
+// (Harness.Usage). claude and codex set theirs inline above; most others
+// read the login the agent saved and ask the vendor's account API, as the
+// agent's own usage command does. Those never refresh a token: a refresh can
+// rotate the refresh token the agent holds. grok, kiro and omp are asked
+// through the agent itself, which refreshes its login under its own lock as
+// a second session of it would.
+var usageProbers = map[string]usage.Prober{
+	"copilot":  copilotusage.Prober{},
+	"cursor":   cursorusage.Prober{},
+	"droid":    droidusage.Prober{},
+	"gemini":   geminiusage.Prober{},
+	"goose":    gooseusage.Prober{},
+	"grok":     grokusage.Prober{},
+	"hermes":   hermesusage.Prober{},
+	"kilo":     kilousage.Prober{},
+	"kimi":     kimiusage.Prober{},
+	"kiro":     kirousage.Prober{},
+	"omp":      ompusage.Prober{},
+	"opencode": opencodeusage.Prober{},
+	"pi":       piusage.Prober{},
+	"qwen":     qwenusage.Prober{},
+}
+
 // decorate applies f to a registered harness, and refuses to invent one.
 //
 // The satellite tables are keyed by the same names as All, and one of these
@@ -891,6 +930,9 @@ func init() {
 				h.SkillsDir = dir
 			}
 		})
+	}
+	for name, p := range usageProbers {
+		decorate("usageProbers", name, func(h *Harness) { h.Usage = p })
 	}
 	for name, env := range configDirEnvs {
 		decorate("configDirEnvs", name, func(h *Harness) { h.ConfigDirEnv = env })

@@ -1115,14 +1115,18 @@ agentprotocol's `report/usage` package maps each agent's own reports onto one mo
 a turn's tokens (`usage.updated`, once per turn, the prompt counting cached
 input), the context window's fill (`context.updated`), a plan's rate limits
 (`limits.updated`) and the account (`account.updated`). A per-agent package
-holds each mapping (`report/usage/claude`, `report/usage/codex`, `report/usage/acp`, `report/usage/pi`)
-and the session drivers and the registry's probers share it. The probe runs
+holds each mapping and prober (`report/usage/<agent>`), and the session drivers
+and the registry's probers share it. The probe runs
 one turn against the mock and reads those events, then runs the registry's
 prober outside a session and checks it made no model call.
 
 The mock signs every agent in with a key, so plan limits are never expected
 here (`usage.probe.limits = pass:unsupported`); they are covered by the
-mappings' unit tests against the vendors' own shapes. To report usage at all,
+mappings' unit tests against the vendors' own shapes. Where a vendor bills an
+API key against a plan (cursor, droid, kiro) the prober asks the vendor's
+account API, which the mock does not serve; a read that fails is
+`finding:probe_failed`. The prober runs with the session's provider
+arguments, as it reads the account those sessions use. To report usage at all,
 the mock now streams it as the real APIs do: Anthropic's `message_start`
 carries the input tokens, and a Chat Completions stream ends with a usage
 chunk when the request sets `stream_options.include_usage`.
@@ -1134,12 +1138,33 @@ Measured 2026-10-10 with agentprotocol v0.21.0:
 | turn usage, once per turn | claude, codex, pi |
 | context fill, with the window | claude, codex, pi, and over ACP copilot, goose, hermes, kimi, omp, qwen (`usage_update`) |
 | no context fill | cursor, droid, gemini, grok, kilo, kiro, opencode |
-| account in a session and from the prober, no model call | claude (api key), codex (signed in through the mock's provider) |
+| account in a session, no model call | claude (api key), codex (signed in through the mock's provider) |
+| account from the prober, no model call | all 16; grok reads the mock's grok.com login as a subscription |
+
+Measured 2026-10-22: every agent has a prober. How each reads a plan's limits
+outside the mock:
+
+| agent | reads | windows |
+|---|---|---|
+| claude, codex | the CLI (`get_usage`, `account/rateLimits/read`) | 5-hour, weekly |
+| copilot | `api.github.com/copilot_internal/user` with the saved or env token | monthly per quota |
+| cursor | `DashboardService` GetMe, GetPlanInfo, GetCurrentPeriodUsage | billing cycle |
+| droid | `/api/billing/limits` with the key or the decrypted login | 5-hour, weekly, monthly |
+| gemini | Code Assist `loadCodeAssist`, `retrieveUserQuota` | daily per model |
+| grok | ACP `_x.ai/auth/check_subscription`, `_x.ai/billing` | credits, on-demand |
+| kimi | `/me`, `/usages` | 5-hour, weekly, monthly |
+| kilo | `/api/profile`, Kilo Pass state | monthly pass |
+| kiro | `whoami`, ACP `_kiro.dev/commands/execute` `/usage` | monthly credits |
+| omp | `omp usage --json` | whatever omp reads |
+| opencode | Go plan `/zen/go/v1/usage` | 5-hour, weekly, monthly |
+| hermes, pi, goose | the provider's login: Nous portal, or Claude / ChatGPT / Kimi through the readers above | as that provider |
+| qwen | account only; qwen has no quota read | none |
 
 ACP's per-turn token counts are not mapped: they are a draft (the
 PromptResponse `usage` field, RFD end-turn-token-usage) that has not settled
 whether they count the turn or the session, or include the cache. ACP has no
-account or rate-limit report.
+account or rate-limit report; grok and kiro answer through their own ACP
+extensions.
 
 With usage in its streamed answers, qwen 0.25.0's `/compress` keeps the
 original wording on the next request (`compact.context = pass:original`,

@@ -98,7 +98,7 @@ agentprotocol
 │   ├── codexapp/    `codex app-server` JSON-RPC, types generated from codex's own schema
 │   └── pirpc/       `pi --mode rpc` JSONL
 ├── report/          what agents report, mapped onto the model
-│   ├── usage/       turn usage, context fill, plan limits, account (acp, claude, codex, pi)
+│   ├── usage/       turn usage, context fill, plan limits, account (a package per agent)
 │   └── subagent/    subagents started, updated and completed (claude, codex)
 ├── internal/        process groups, JSON-RPC framing, the caller-tools MCP server
 └── conformance/     the nightly suite that runs every agent in Docker (its own module)

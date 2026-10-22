@@ -24,7 +24,9 @@ const usageSettle = 5 * time.Second
 // limits. Outside one: the registry's prober, which reads the account and
 // limits without a model call. The mock signs every agent in with an API key,
 // so a plan's rate limits are not expected; an account read as anything but
-// an API key, or limits that are not "unsupported", would be a mapping bug.
+// an API key, or limits that are not "unsupported", would be a mapping bug,
+// except where the vendor bills an API key against a plan and the prober asks
+// its account API, which the mock does not serve (probe_failed).
 func (r *TestRunner) probeUsage() {
 	if r.harness.DriverKind() == "" {
 		return
@@ -184,6 +186,10 @@ func (r *TestRunner) probeUsageOutsideSession() {
 		r.fail("usage.probe.limits", fmt.Sprintf("usage: %s's prober returned no limits and no reason", name))
 	case l.Unavailable != nil && l.Unavailable.Reason == ap.UsageUnsupported:
 		r.pass("usage.probe.limits:unsupported", fmt.Sprintf("usage: %s's limits do not apply: %s", name, l.Unavailable.Message))
+	case l.Unavailable != nil && l.Unavailable.Reason == ap.UsageProbeFailed:
+		// Agents whose API keys carry plan limits (cursor, droid, kiro) ask
+		// the vendor's account API, which the mock does not serve.
+		r.finding("usage.probe.limits:probe_failed", fmt.Sprintf("usage: %s's limits could not be read here: %s", name, l.Unavailable.Message))
 	case l.Unavailable != nil:
 		r.fail("usage.probe.limits", fmt.Sprintf("usage: %s's limits could not be read: %s", name, l.Unavailable.Message))
 	default:
@@ -192,12 +198,21 @@ func (r *TestRunner) probeUsageOutsideSession() {
 }
 
 // usageEnv runs the prober the way this suite's sessions run the agent
-// (sessionBackend), so it reads the account they use.
+// (sessionBackend), with the arguments that pick its provider and login, so
+// it reads the account they use.
 func (r *TestRunner) usageEnv() usage.Env {
 	dir := r.workDir()
 	env := usage.Env{Binary: r.harness.Binary, Dir: dir, Env: r.envIn(dir)}
-	if r.harness.DriverKind() == harness.DriverCodex {
+	switch r.harness.DriverKind() {
+	case harness.DriverCodex:
 		env.Args = r.codexProviderArgs()
+	case harness.DriverPi:
+		env.Args = r.piProviderArgs()
+	case harness.DriverClaudeCode:
+	default:
+		for _, a := range r.harness.ACPArgs {
+			env.Args = append(env.Args, r.expand(a))
+		}
 	}
 	return env
 }

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
@@ -60,7 +61,10 @@ type Claude struct {
 	Home string
 
 	// WorkRoot holds a working directory per conversation, so its sessions
-	// are filed apart from the user's projects. Empty is os.TempDir().
+	// are filed apart from the user's projects. Empty is os.TempDir(). A
+	// conversation's directory is named after its key, so a restart, here
+	// or on another machine with the same WorkRoot, sends what the live
+	// process did.
 	WorkRoot string
 
 	// Idle is how long a conversation's process waits for its next call.
@@ -70,9 +74,10 @@ type Claude struct {
 	// Stderr receives the CLI's diagnostics. Nil discards them.
 	Stderr io.Writer
 
-	mu     sync.Mutex
-	live   map[string]*claudeConv
-	closed bool
+	mu       sync.Mutex
+	live     map[string]*claudeConv
+	contexts map[string]probed // by model; see contextFor
+	closed   bool
 }
 
 var _ Model = (*Claude)(nil)
@@ -204,7 +209,7 @@ func (c *Claude) start(ctx context.Context, req Request, onDelta func(Delta)) (*
 	if root == "" {
 		root = os.TempDir()
 	}
-	dir, err := os.MkdirTemp(root, "llm-claude-")
+	dir, err := workDir(root, req.Key)
 	if err != nil {
 		return nil, fmt.Errorf("llm: %w", err)
 	}
@@ -272,7 +277,12 @@ func (c *Claude) start(ctx context.Context, req Request, onDelta func(Delta)) (*
 		Stderr:    c.Stderr,
 	}
 	if len(seed) > 0 {
-		id, err := writeClaudeSession(ctx, home, dir, req.Model, seed)
+		date := seed[0].Time
+		if date.IsZero() {
+			date = time.Now()
+		}
+		attachments := c.contextFor(ctx, env, req.Model, dir, date)
+		id, err := writeClaudeSession(ctx, home, dir, req.Model, seed, attachments)
 		if err != nil {
 			return cleanup(err)
 		}
@@ -280,6 +290,7 @@ func (c *Claude) start(ctx context.Context, req Request, onDelta func(Delta)) (*
 	} else {
 		opts.SessionID = claudecode.NewSessionID()
 	}
+	conv.session = opts.ResumeSessionID + opts.SessionID
 
 	tools := req.Tools
 	if req.ToolChoice == "none" {
@@ -323,14 +334,11 @@ func (c *Claude) start(ctx context.Context, req Request, onDelta func(Delta)) (*
 	return conv, nil
 }
 
-// writeClaudeSession writes entries as a Claude Code session for dir and
+// writeClaudeSession writes entries as a Claude Code session for dir, with
+// the context attachments Claude Code records after the first prompt, and
 // returns its id. Entries are dated a millisecond apart, ending now: Claude
 // Code resumes from the newest row.
-func writeClaudeSession(ctx context.Context, home, dir, model string, entries []transcript.Entry) (string, error) {
-	st, err := claudetx.Codec.Open(home)
-	if err != nil {
-		return "", fmt.Errorf("llm: %w", err)
-	}
+func writeClaudeSession(ctx context.Context, home, dir, model string, entries []transcript.Entry, attachments []json.RawMessage) (string, error) {
 	now := time.Now().UTC()
 	es := make([]transcript.Entry, len(entries))
 	for i, e := range entries {
@@ -340,7 +348,8 @@ func writeClaudeSession(ctx context.Context, home, dir, model string, entries []
 		}
 		es[i] = e
 	}
-	id, err := st.Write(ctx, &transcript.Session{Agent: "llm", CWD: dir, Model: model, Created: es[0].Time, Updated: now, Entries: es})
+	s := &transcript.Session{Agent: "llm", CWD: dir, Model: model, Created: es[0].Time, Updated: now, Entries: es}
+	id, err := claudetx.WriteHosted(ctx, home, s, attachments)
 	if err != nil {
 		return "", fmt.Errorf("llm: write session: %w", err)
 	}
@@ -430,11 +439,12 @@ type heldCall struct {
 
 // claudeConv is one conversation's running CLI and what it holds.
 type claudeConv struct {
-	proc   *claudecode.Process
-	dir    string
-	home   string
-	server *toolServer
-	idle   *time.Timer
+	proc    *claudecode.Process
+	dir     string
+	home    string
+	session string // the Claude Code session it resumed or started
+	server  *toolServer
+	idle    *time.Timer
 
 	// sig, history, pending and ended describe what the agent holds after
 	// the last call: the settings, a fingerprint per entry of the
@@ -663,11 +673,17 @@ func (c *claudeConv) close() {
 	})
 }
 
-// removeFiles deletes the working directory and the sessions Claude Code
-// filed under it. Both are this conversation's alone.
+// removeFiles deletes the session this process kept, and its project and
+// working directory once nothing else is in them: a later process of the
+// same conversation uses the same ones, and may already be running.
 func (c *claudeConv) removeFiles() {
-	_ = os.RemoveAll(claudetx.Codec.Layout.Dir(c.home, c.dir))
-	_ = os.RemoveAll(c.dir)
+	project := claudetx.Codec.Layout.Dir(c.home, c.dir)
+	if c.session != "" {
+		_ = os.Remove(filepath.Join(project, c.session+".jsonl"))
+		_ = os.RemoveAll(filepath.Join(project, c.session))
+	}
+	_ = os.Remove(project)
+	_ = os.Remove(c.dir)
 }
 
 // claudeTurn collects one response from the stream.

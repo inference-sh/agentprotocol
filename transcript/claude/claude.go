@@ -66,6 +66,12 @@ type Vendor struct {
 	// summaryOf names, for each compact boundary this write creates, the
 	// summary row prepare put after it.
 	summaryOf map[string]string
+
+	// hosted is set by WriteHosted: tool results are written the way Claude
+	// Code records an MCP tool's, and attachments holds the context
+	// attachment rows to write, by entry id.
+	hosted      bool
+	attachments map[string]json.RawMessage
 }
 
 // row is a Claude transcript line. Only the fields the codec reads or
@@ -382,6 +388,9 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 	if sum, ok := v.summaryOf[e.ParentID]; ok && sum == e.ID {
 		return encodeSummary(e, s, v)
 	}
+	if a, ok := v.attachments[e.ID]; ok {
+		return encodeAttachment(e, s, v, a)
+	}
 	role := e.Role
 	if role == transcript.RoleTool {
 		role = transcript.RoleUser
@@ -419,6 +428,11 @@ func encode(e transcript.Entry, s *transcript.Session) (json.RawMessage, error) 
 			content = append(content, block{Type: "tool_use", ID: b.ToolID, Name: b.Name, Input: in})
 		case transcript.BlockToolResult:
 			var out any = b.Text
+			if v.hosted {
+				// An MCP tool's result is blocks even when it is only text
+				// (services/mcp/client.ts).
+				out = []textPart{{Type: "text", Text: b.Text}}
+			}
 			if media := returned[b.ToolID]; len(media) > 0 {
 				var parts []block
 				if b.Text != "" {

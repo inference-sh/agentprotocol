@@ -15,9 +15,9 @@ import (
 	"text/template"
 	"time"
 
-	ap "github.com/inference-sh/agentprotocol"
 	"github.com/inference-sh/agentprotocol/driver"
 	"github.com/inference-sh/agentprotocol/harness"
+	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/transcript"
 	"github.com/inference-sh/agentprotocol/transcript/all"
 )

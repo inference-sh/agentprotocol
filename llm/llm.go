@@ -32,7 +32,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	ap "github.com/inference-sh/agentprotocol"
+	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/transcript"
 )
 

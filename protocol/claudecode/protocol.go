@@ -209,8 +209,10 @@ type ContentBlock struct {
 	Content   json.RawMessage `json:"content,omitempty"`
 	IsError   bool            `json:"is_error,omitempty"`
 
-	// image
+	// image, document
 	Source *ImageSource `json:"source,omitempty"`
+	// Title is a document's name.
+	Title string `json:"title,omitempty"`
 }
 
 // ImageSource is an image block's bytes: the Messages API's base64 source.
@@ -223,6 +225,17 @@ type ImageSource struct {
 // ImageBlock builds a user image block from base64 data.
 func ImageBlock(mediaType, data string) ContentBlock {
 	return ContentBlock{Type: "image", Source: &ImageSource{Type: "base64", MediaType: mediaType, Data: data}}
+}
+
+// PDFBlock is a PDF document block, its bytes base64.
+func PDFBlock(title, data string) ContentBlock {
+	return ContentBlock{Type: "document", Title: title, Source: &ImageSource{Type: "base64", MediaType: "application/pdf", Data: data}}
+}
+
+// TextDocumentBlock is a plain-text document block; the API takes text
+// documents as text/plain only.
+func TextDocumentBlock(title, text string) ContentBlock {
+	return ContentBlock{Type: "document", Title: title, Source: &ImageSource{Type: "text", MediaType: "text/plain", Data: text}}
 }
 
 // ResultText flattens a tool_result's content, which is either a string or a

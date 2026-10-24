@@ -14,6 +14,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 
 	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/protocol/claudecode"
@@ -369,6 +370,22 @@ func hasToolResult(e transcript.Entry) bool {
 	return slices.ContainsFunc(e.Content, func(b transcript.Block) bool { return b.Kind == transcript.BlockToolResult })
 }
 
+// fileBlock is an attachment as Claude takes it: a PDF or a text file with
+// its bytes as a document, anything else named in the text.
+func fileBlock(b transcript.Block) claudecode.ContentBlock {
+	name := b.Name
+	if name == "" {
+		name = b.URI
+	}
+	switch {
+	case len(b.Data) > 0 && b.MediaType == "application/pdf":
+		return claudecode.PDFBlock(name, base64.StdEncoding.EncodeToString(b.Data))
+	case len(b.Data) > 0 && strings.HasPrefix(b.MediaType, "text/") && utf8.Valid(b.Data):
+		return claudecode.TextDocumentBlock(name, string(b.Data))
+	}
+	return claudecode.ContentBlock{Type: "text", Text: "[file: " + name + "]"}
+}
+
 // userBlocks is the content of user entries as one prompt.
 func userBlocks(es []transcript.Entry) []claudecode.ContentBlock {
 	var out []claudecode.ContentBlock
@@ -384,11 +401,7 @@ func userBlocks(es []transcript.Entry) []claudecode.ContentBlock {
 					out = append(out, claudecode.ContentBlock{Type: "text", Text: "[image: " + b.URI + "]"})
 				}
 			case transcript.BlockFile:
-				name := b.Name
-				if name == "" {
-					name = b.URI
-				}
-				out = append(out, claudecode.ContentBlock{Type: "text", Text: "[file: " + name + "]"})
+				out = append(out, fileBlock(b))
 			}
 		}
 	}

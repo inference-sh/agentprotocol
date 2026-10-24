@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/inference-sh/agentprotocol/transcript"
 	claudetx "github.com/inference-sh/agentprotocol/transcript/claude"
 )
 
@@ -73,5 +74,27 @@ func TestProbedForDir(t *testing.T) {
 		if string(got[i]) != want[i] {
 			t.Errorf("%d: got %s, want %s", i, got[i], want[i])
 		}
+	}
+}
+
+// A PDF or text attachment reaches Claude as a document with its bytes; any
+// other file is named in the text.
+func TestUserBlocks_filesAsDocuments(t *testing.T) {
+	blocks := userBlocks([]transcript.Entry{{Role: transcript.RoleUser, Content: []transcript.Block{
+		{Kind: transcript.BlockFile, Name: "brief.pdf", MediaType: "application/pdf", Data: []byte("%PDF-1.7")},
+		{Kind: transcript.BlockFile, Name: "notes.txt", MediaType: "text/plain", Data: []byte("plain notes")},
+		{Kind: transcript.BlockFile, Name: "sheet.xlsx", MediaType: "application/vnd.ms-excel", Data: []byte{0x50, 0x4b}},
+	}}})
+	if len(blocks) != 3 {
+		t.Fatalf("got %d blocks", len(blocks))
+	}
+	if b := blocks[0]; b.Type != "document" || b.Title != "brief.pdf" || b.Source.Type != "base64" || b.Source.MediaType != "application/pdf" || b.Source.Data != "JVBERi0xLjc=" {
+		t.Fatalf("pdf: %+v %+v", b, b.Source)
+	}
+	if b := blocks[1]; b.Type != "document" || b.Source.Type != "text" || b.Source.Data != "plain notes" {
+		t.Fatalf("text: %+v %+v", b, b.Source)
+	}
+	if b := blocks[2]; b.Type != "text" || b.Text != "[file: sheet.xlsx]" {
+		t.Fatalf("other: %+v", b)
 	}
 }

@@ -2,6 +2,7 @@ package claude
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"slices"
@@ -170,7 +171,8 @@ func IsOAuthToken(token string) bool {
 }
 
 // OAuthSnapshot is the account and windows of a Claude login another agent
-// holds: the profile for the account, /api/oauth/usage for the windows. A
+// holds: the profile for the account, /api/oauth/usage for the windows, or
+// the quota check (QuotaCheck) for a token that may not read them. A
 // token past expires (zero for unknown) is not used, since refreshing it
 // would rotate the refresh token out from under the agent; the limits read
 // as probe_failed until the agent refreshes it.
@@ -187,6 +189,11 @@ func OAuthSnapshot(ctx context.Context, client *http.Client, base, accessToken s
 		acct = ProfileAccount(p)
 	}
 	ws, err := OAuthUsage(ctx, client, base, accessToken)
+	if se := (*webjson.StatusError)(nil); errors.As(err, &se) && se.Code == http.StatusForbidden {
+		// A setup-token, which only has the inference scope: the windows
+		// come from the quota check instead.
+		ws, err = QuotaCheck(ctx, client, base, accessToken, "")
+	}
 	if err != nil {
 		snap.Limits = usage.Unavailable(ap.UsageProbeFailed, err.Error(), now)
 		return snap

@@ -2,6 +2,7 @@ package claude
 
 import (
 	"context"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -93,5 +94,74 @@ func TestIsOAuthToken(t *testing.T) {
 		if IsOAuthToken(tok) != want {
 			t.Errorf("IsOAuthToken(%q) = %v", tok, !want)
 		}
+	}
+}
+
+// setupTokenAPI is the API as a setup-token sees it: the account API refuses
+// it, and a Messages response carries the plan's windows in its headers.
+func setupTokenAPI(t *testing.T, token string, status int, headers map[string]string, asked *string) *httptest.Server {
+	t.Helper()
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("Authorization") != "Bearer "+token || r.Header.Get("anthropic-beta") != oauthBeta {
+			http.Error(w, "unauthenticated", http.StatusUnauthorized)
+			return
+		}
+		if r.URL.Path != "/v1/messages" || r.Method != http.MethodPost {
+			http.Error(w, `{"error":{"type":"permission_error"}}`, http.StatusForbidden)
+			return
+		}
+		var req struct {
+			Model     string `json:"model"`
+			MaxTokens int    `json:"max_tokens"`
+		}
+		_ = json.NewDecoder(r.Body).Decode(&req)
+		if req.MaxTokens != 1 {
+			t.Errorf("quota check asked for %d tokens", req.MaxTokens)
+		}
+		*asked = req.Model
+		for k, v := range headers {
+			w.Header().Set(k, v)
+		}
+		w.WriteHeader(status)
+		_, _ = io.WriteString(w, `{}`)
+	}))
+}
+
+func TestOAuthSnapshot_setupToken(t *testing.T) {
+	windows := map[string]string{
+		"anthropic-ratelimit-unified-5h-utilization": "0.25",
+		"anthropic-ratelimit-unified-5h-reset":       "1793113200",
+		"anthropic-ratelimit-unified-7d-utilization": "0.5",
+		"anthropic-ratelimit-unified-7d-reset":       "1793458800",
+	}
+	now := time.Now()
+	// A plan at its limit is refused, and still reports its windows.
+	for _, status := range []int{http.StatusOK, http.StatusTooManyRequests} {
+		var asked string
+		srv := setupTokenAPI(t, "tok", status, windows, &asked)
+		snap := OAuthSnapshot(context.Background(), nil, srv.URL, "tok", time.Time{}, now)
+		srv.Close()
+		if asked != QuotaModel {
+			t.Errorf("%d: quota check asked %q", status, asked)
+		}
+		l := snap.Limits
+		if l == nil || l.Unavailable != nil || len(l.Windows) != 2 {
+			t.Fatalf("%d: limits = %+v", status, l)
+		}
+		if w := l.Windows[0]; w.ID != WindowFiveHour || w.UsedPercent != 25 || w.Kind != ap.UsageWindowSession || !w.ResetsAt.Equal(time.Unix(1793113200, 0)) {
+			t.Errorf("%d: five_hour = %+v", status, w)
+		}
+		if w := l.Windows[1]; w.ID != WindowSevenDay || w.UsedPercent != 50 || w.Kind != ap.UsageWindowWeekly || w.DurationMinutes != 7*24*60 {
+			t.Errorf("%d: seven_day = %+v", status, w)
+		}
+	}
+
+	// No windows in the headers (an API key's response) is a failed probe.
+	var asked string
+	srv := setupTokenAPI(t, "tok", http.StatusOK, nil, &asked)
+	defer srv.Close()
+	snap := OAuthSnapshot(context.Background(), nil, srv.URL, "tok", time.Time{}, now)
+	if snap.Limits == nil || snap.Limits.Unavailable == nil || snap.Limits.Unavailable.Reason != ap.UsageProbeFailed {
+		t.Fatalf("limits = %+v", snap.Limits)
 	}
 }

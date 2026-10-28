@@ -98,16 +98,21 @@ func TestIsOAuthToken(t *testing.T) {
 }
 
 // setupTokenAPI is the API as a setup-token sees it: the account API refuses
-// it, and a Messages response carries the plan's windows in its headers.
-func setupTokenAPI(t *testing.T, token string, status int, headers map[string]string, asked *string) *httptest.Server {
+// it (with refused), and a Messages response carries the plan's windows in
+// its headers.
+func setupTokenAPI(t *testing.T, token string, status int, headers map[string]string, asked *string, refused ...int) *httptest.Server {
 	t.Helper()
+	refusal := http.StatusForbidden
+	if len(refused) > 0 {
+		refusal = refused[0]
+	}
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Authorization") != "Bearer "+token || r.Header.Get("anthropic-beta") != oauthBeta {
 			http.Error(w, "unauthenticated", http.StatusUnauthorized)
 			return
 		}
 		if r.URL.Path != "/v1/messages" || r.Method != http.MethodPost {
-			http.Error(w, `{"error":{"type":"permission_error"}}`, http.StatusForbidden)
+			http.Error(w, `{"error":{"type":"refused"}}`, refusal)
 			return
 		}
 		var req struct {
@@ -154,6 +159,15 @@ func TestOAuthSnapshot_setupToken(t *testing.T) {
 		if w := l.Windows[1]; w.ID != WindowSevenDay || w.UsedPercent != 50 || w.Kind != ap.UsageWindowWeekly || w.DurationMinutes != 7*24*60 {
 			t.Errorf("%d: seven_day = %+v", status, w)
 		}
+	}
+
+	// The account API's own rate limit falls back the same way.
+	var limited string
+	srv429 := setupTokenAPI(t, "tok", http.StatusOK, windows, &limited, http.StatusTooManyRequests)
+	snap429 := OAuthSnapshot(context.Background(), nil, srv429.URL, "tok", time.Time{}, now)
+	srv429.Close()
+	if l := snap429.Limits; l == nil || l.Unavailable != nil || len(l.Windows) != 2 || limited != QuotaModel {
+		t.Fatalf("rate-limited account API: limits = %+v", l)
 	}
 
 	// No windows in the headers (an API key's response) is a failed probe.

@@ -189,9 +189,11 @@ func OAuthSnapshot(ctx context.Context, client *http.Client, base, accessToken s
 		acct = ProfileAccount(p)
 	}
 	ws, err := OAuthUsage(ctx, client, base, accessToken)
-	if se := (*webjson.StatusError)(nil); errors.As(err, &se) && se.Code == http.StatusForbidden {
-		// A setup-token, which only has the inference scope: the windows
-		// come from the quota check instead.
+	if se := (*webjson.StatusError)(nil); errors.As(err, &se) {
+		// The account API refused: a setup-token, which only has the
+		// inference scope (403), or the API's own rate limit (429), which
+		// it reaches long before the plan's. The quota check reads the
+		// same windows from the Messages API.
 		ws, err = QuotaCheck(ctx, client, base, accessToken, "")
 	}
 	if err != nil {

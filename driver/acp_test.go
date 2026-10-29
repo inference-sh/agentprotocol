@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/inference-sh/agentprotocol/driver"
+	"github.com/inference-sh/agentprotocol/mcpbridge"
 	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/protocol/acp"
 )
@@ -39,6 +40,8 @@ func lingerIfAsked() {
 }
 
 func TestMain(m *testing.M) {
+	// Launched as the stdio MCP bridge of an agent (StdioBridge).
+	mcpbridge.Main()
 	if script := os.Getenv(agentEnv); script != "" {
 		runFakeAgent(script)
 		return
@@ -619,6 +622,10 @@ func TestOpenWithoutACommandFails(t *testing.T) {
 func runFakeAgent(script string) {
 	if strings.HasPrefix(script, "grok-") {
 		runFakeGrok(script)
+		return
+	}
+	if script == "stdio-tools" {
+		runFakeStdioTools()
 		return
 	}
 	in := bufio.NewScanner(os.Stdin)

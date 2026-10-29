@@ -307,6 +307,10 @@ func (r *TestRunner) Run() Result {
 			r.resetPhase(ModeACP)
 			r.probeSubagents()
 		}
+		if r.probes.Questions {
+			r.resetPhase(ModeACP)
+			r.probeQuestions()
+		}
 		if r.probes.Images {
 			r.probeImages()
 		}
@@ -1329,10 +1333,15 @@ func (r *TestRunner) sessionBackend(gated, emitReplay bool) BackendFactory {
 		if gated {
 			bin, args, _ = r.acpInvocationGated()
 		}
+		var ext func() driver.ACPExtension
+		if name := r.harness.ACPExtension; driver.ACPExtensionFor(name) != nil {
+			ext = func() driver.ACPExtension { return driver.ACPExtensionFor(name) }
+		}
 		return func(diagnose func(string)) driver.Backend {
 			return &driver.ACPBackend{Command: bin, Args: args, Env: env,
 				ClientName: "harness-test", ClientVersion: "1.0.0",
 				Images:     r.harness.ACPImages || r.acpImages,
+				Extension:  ext,
 				EmitReplay: emitReplay, OnDiagnostic: diagnose}
 		}
 	}

@@ -61,9 +61,11 @@ type SessionDriver struct {
 	turnEnded   bool
 	notes       []UpdateNote
 	permissions []PermissionObservation
-	load        LoadResult
-	usage       UsageObservation
-	subagents   SubagentObservation
+	// questions are the input requests the agent raised (questions probe).
+	questions []ap.InputRequest
+	load      LoadResult
+	usage     UsageObservation
+	subagents SubagentObservation
 
 	// updates wakes a waiter; the text itself is appended as it arrives, so a
 	// dropped wakeup costs nothing. turnOver is signalled when a turn ends.
@@ -418,6 +420,13 @@ func (d *SessionDriver) onApproval(p ap.ApprovalRequiredPayload, duringLoad bool
 		return
 	}
 	res, answer := driver.Allow(), AnswerApproved
+	if p.Input != nil {
+		// A question: answered with the probe's own text for each.
+		res.Values = probeAnswer(p.Input.Schema)
+		d.mu.Lock()
+		d.questions = append(d.questions, *p.Input)
+		d.mu.Unlock()
+	}
 	if duringLoad && d.CancelDuringLoad {
 		res, answer = driver.Deny("cancelled by harness-test"), AnswerCancelled
 	}

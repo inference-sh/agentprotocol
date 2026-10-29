@@ -521,7 +521,11 @@ func (s *claudeSession) Resolve(ctx context.Context, requestID string, res Resol
 
 	var result claudecode.PermissionResult
 	if res.Decision == ap.InterruptResolutionAllow {
-		result = claudecode.AllowResult(mergeInput(p.req.Input, res.Values))
+		values := res.Values
+		if qs := claudeQuestions(p.req); qs != nil {
+			values = map[string]any{"answers": claudeAnswers(qs, res.Values)}
+		}
+		result = claudecode.AllowResult(mergeInput(p.req.Input, values))
 		scope := res.Scope
 		if scope == ScopeAlways && p.req.SuppressAlwaysAllow {
 			s.backend.diagnose(fmt.Sprintf("claude marked %s as too broad to always allow; allowing for the session instead", p.req.ToolName))
@@ -906,13 +910,19 @@ func (s *claudeSession) onPermission(ctx context.Context, requestID string, req 
 	s.mu.Lock()
 	subagent := s.subTools[req.ToolUseID]
 	s.mu.Unlock()
-	s.emit(ap.NewEvent(ap.AgentEventApprovalRequired, s.runID, s.chatID, ap.ApprovalRequiredPayload{
+	payload := ap.ApprovalRequiredPayload{
 		ToolInvocationID: id,
 		ToolName:         req.ToolName,
 		Arguments:        claudeArguments(req.Input),
 		Reason:           ap.InterruptReasonToolApproval,
 		SubagentID:       subagent,
-	}))
+	}
+	if qs := claudeQuestions(req); qs != nil {
+		// AskUserQuestion asks the person; its answer is the form's.
+		input := QuestionsInput("", qs)
+		payload.Reason, payload.Input = ap.InterruptReasonInput, &input
+	}
+	s.emit(ap.NewEvent(ap.AgentEventApprovalRequired, s.runID, s.chatID, payload))
 
 	select {
 	case res := <-p.answer:
@@ -1029,4 +1039,57 @@ func orNone(s string) string {
 		return "none"
 	}
 	return s
+}
+
+// claudeAskUserQuestion is the tool Claude Code asks the person with.
+const claudeAskUserQuestion = "AskUserQuestion"
+
+// claudeQuestions reads AskUserQuestion's questions, nil for any other
+// request:
+//
+//	{"questions":[{"question","header","multiSelect","options":[{"label","description"}]}]}
+func claudeQuestions(req claudecode.PermissionRequest) []Question {
+	if req.ToolName != claudeAskUserQuestion {
+		return nil
+	}
+	var in struct {
+		Questions []struct {
+			Question    string `json:"question"`
+			Header      string `json:"header"`
+			MultiSelect bool   `json:"multiSelect"`
+			Options     []struct {
+				Label       string `json:"label"`
+				Description string `json:"description"`
+			} `json:"options"`
+		} `json:"questions"`
+	}
+	if json.Unmarshal(req.Input, &in) != nil || len(in.Questions) == 0 {
+		return nil
+	}
+	qs := make([]Question, len(in.Questions))
+	for i, q := range in.Questions {
+		qs[i] = Question{Header: q.Header, Text: q.Question, MultiSelect: q.MultiSelect}
+		for _, o := range q.Options {
+			qs[i].Options = append(qs[i].Options, QuestionOption{Label: o.Label, Description: o.Description})
+		}
+	}
+	return qs
+}
+
+// claudeAnswers is AskUserQuestion's answers input: each answered question's
+// text to its answer, the chosen labels joined by ", " and the person's own
+// text after them.
+func claudeAnswers(qs []Question, values map[string]any) map[string]string {
+	out := map[string]string{}
+	for i, a := range QuestionAnswers(qs, values) {
+		if a.Empty() {
+			continue
+		}
+		parts := append([]string(nil), a.Labels...)
+		if a.Text != "" {
+			parts = append(parts, a.Text)
+		}
+		out[qs[i].Text] = strings.Join(parts, ", ")
+	}
+	return out
 }

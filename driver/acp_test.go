@@ -617,6 +617,10 @@ func TestOpenWithoutACommandFails(t *testing.T) {
 // runFakeAgent speaks just enough ACP to exercise the backend, following one
 // of a few named scripts.
 func runFakeAgent(script string) {
+	if strings.HasPrefix(script, "grok-") {
+		runFakeGrok(script)
+		return
+	}
 	in := bufio.NewScanner(os.Stdin)
 	in.Buffer(make([]byte, 0, 64<<10), 1<<20)
 	out := os.Stdout

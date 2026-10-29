@@ -120,6 +120,11 @@ type ACPBackend struct {
 	// DefaultCallTimeout, and a resume by LoadTimeout.
 	FirstEventTimeout time.Duration
 
+	// Extension builds the adapter of the agent's own extensions of ACP for
+	// each session (ACPExtension); nil for an agent without. ForHarness sets
+	// it from harness.Harness.ACPExtension.
+	Extension func() ACPExtension
+
 	// ToolServerName names the MCP server SessionConfig.Tools are offered
 	// through. Agents prefix each tool with it in their own way
 	// (mcp__<name>__<tool>, <name>_<tool>); events and CallTool use the
@@ -228,12 +233,13 @@ func (b *ACPBackend) open(ctx context.Context, cfg SessionConfig, tools *acpCall
 	}
 
 	s := &acpSession{
-		autoAllow:  cfg.Approvals == ApprovalsSkip && len(b.AutoApproveArgs) == 0,
-		images:     b.Images,
-		runID:      cfg.RunID,
-		chatID:     cfg.ChatID,
-		pump:       newEventPump(),
-		pending:    make(map[string]*pendingPermission),
+		autoAllow: cfg.Approvals == ApprovalsSkip && len(b.AutoApproveArgs) == 0,
+		images:    b.Images,
+		runID:     cfg.RunID,
+		chatID:    cfg.ChatID,
+		pump:      newEventPump(),
+		pending:   make(map[string]*pendingRequest),
+
 		emitReplay: b.EmitReplay,
 		firstEvent: b.FirstEventTimeout,
 		diagnose:   b.diagnose,
@@ -242,6 +248,9 @@ func (b *ACPBackend) open(ctx context.Context, cfg SessionConfig, tools *acpCall
 	}
 	if s.firstEvent == 0 {
 		s.firstEvent = DefaultFirstEventTimeout
+	}
+	if b.Extension != nil {
+		s.ext = b.Extension()
 	}
 
 	name := b.ClientName
@@ -259,8 +268,11 @@ func (b *ACPBackend) open(ctx context.Context, cfg SessionConfig, tools *acpCall
 		Env:     b.Env,
 		Stderr:  stderr,
 	}, acp.ClientInfo{Name: name, Version: b.ClientVersion}, acp.Handler{
-		OnUpdate:     s.onUpdate,
-		OnPermission: s.onPermission,
+		OnUpdate:          s.onUpdate,
+		OnPermission:      s.onPermission,
+		OnElicitation:     s.onElicitation,
+		OnExtRequest:      s.onExtRequest,
+		OnExtNotification: s.onExtNotification,
 		OnPeerError: func(e *acp.Error) {
 			b.diagnose(fmt.Sprintf("agent reported an unattributed error: %v (code %d)", e, e.Code))
 		},
@@ -318,18 +330,38 @@ func (b *ACPBackend) open(ctx context.Context, cfg SessionConfig, tools *acpCall
 
 	go s.pump.run()
 	s.emit(ap.NewEvent(ap.AgentEventRunStarted, s.runID, s.chatID, ap.RunStartedPayload{}))
+	if s.ext != nil {
+		if w := s.ext.ContextWindow(proc.InitializeRaw(), proc.SessionRaw()); w > 0 {
+			s.window = w
+			// A new session's context is empty; a resumed one's fill comes
+			// with its replay.
+			if cfg.ResumeSessionID == "" {
+				s.emit(ap.NewEvent(ap.AgentEventContextUpdated, s.runID, s.chatID, ap.ContextUpdatedPayload{MaxTokens: w}))
+			}
+		}
+	}
 	go s.watch()
 	return s, nil
 }
 
-// pendingPermission is one unanswered question from the agent. The agent's
-// request is parked on a channel until a human decides, which is what makes an
-// approval on our side able to answer a prompt on someone's laptop.
-type pendingPermission struct {
-	req    acp.PermissionRequest
-	answer chan acp.PermissionResponse
-	once   sync.Once
+// pendingRequest is one unanswered request from the agent: a permission, a
+// question, an elicitation. The agent's request is parked on a channel until
+// a human decides, which is what makes an approval on our side able to
+// answer a prompt on someone's laptop.
+type pendingRequest struct {
+	toolName string
+	answer   chan acpAnswer
+	once     sync.Once
 }
+
+// acpAnswer is what a parked request got: a resolution, or cancelled when
+// the session ended or the agent withdrew it first.
+type acpAnswer struct {
+	res       Resolution
+	cancelled bool
+}
+
+func (p *pendingRequest) settle(a acpAnswer) { p.once.Do(func() { p.answer <- a }) }
 
 type acpSession struct {
 	proc   *acp.Process
@@ -358,8 +390,18 @@ type acpSession struct {
 	firstEvent time.Duration
 	diagnose   func(string)
 
+	// ext adapts the agent's vendor extensions; nil for an agent without.
+	ext ACPExtension
+	// window is the model's context window as the extension read it from the
+	// session's results, 0 when unknown: the size of a usage update that
+	// leaves it out.
+	window int
+	// agentTurn is the id of a turn the agent started on its own, "" when
+	// none is open (ACPHost.BeginAgentTurn).
+	agentTurn string
+
 	mu      sync.Mutex
-	pending map[string]*pendingPermission
+	pending map[string]*pendingRequest
 	// turns counts prompts still waiting on the agent's answer.
 	turns int
 	// waiting holds a channel per prompt that has not yet seen a sign of
@@ -566,18 +608,13 @@ func (s *acpSession) Resolve(ctx context.Context, requestID string, res Resoluti
 		return fmt.Errorf("driver: no pending request %q", requestID)
 	}
 
-	response := acp.ResponseForResolution(p.req, res.Decision)
-	if res.Decision == ap.InterruptResolutionAllow && res.Scope != ScopeOnce {
-		if id, found := p.req.PickOption(acp.OptionKindAllowAlways, acp.OptionKindAllowOnce); found {
-			response = acp.Selected(id)
-		}
-	}
-
-	p.once.Do(func() { p.answer <- response })
+	p.settle(acpAnswer{res: res})
 
 	s.emit(ap.NewEvent(ap.AgentEventApprovalResolved, s.runID, s.chatID, ap.ApprovalResolvedPayload{
 		ToolInvocationID: requestID,
-		ToolName:         toolNameOf(p.req),
+		ToolName:         p.toolName,
+		Decision:         string(res.Decision),
+		Reason:           res.Reason,
 	}))
 	return nil
 }
@@ -651,10 +688,10 @@ var _ Killer = (*acpSession)(nil)
 func (s *acpSession) failPending() {
 	s.mu.Lock()
 	pending := s.pending
-	s.pending = map[string]*pendingPermission{}
+	s.pending = map[string]*pendingRequest{}
 	s.mu.Unlock()
 	for _, p := range pending {
-		p.once.Do(func() { p.answer <- acp.Cancelled() })
+		p.settle(acpAnswer{cancelled: true})
 	}
 }
 
@@ -663,7 +700,11 @@ func (s *acpSession) onUpdate(n acp.UpdateNotification) {
 	// so it counts during a replay too: it is the fill the resume starts
 	// from.
 	if u, ok := n.Update.Usage(); ok {
-		s.emit(ap.NewEvent(ap.AgentEventContextUpdated, s.runID, s.chatID, acpusage.Context(u)))
+		c := acpusage.Context(u)
+		if c.MaxTokens == 0 {
+			c.MaxTokens = s.window
+		}
+		s.emit(ap.NewEvent(ap.AgentEventContextUpdated, s.runID, s.chatID, c))
 		return
 	}
 	if n.Replay && !s.emitReplay {
@@ -673,6 +714,9 @@ func (s *acpSession) onUpdate(n acp.UpdateNotification) {
 		// tool use. The updates are still delivered to a caller that asks for
 		// them by setting EmitReplay.
 		return
+	}
+	if !n.Replay && s.ext != nil {
+		s.ext.Update(acpHost{s}, n)
 	}
 	if !n.Replay && isWork(n.Update) {
 		s.alive()
@@ -720,17 +764,31 @@ func (s *acpSession) onPermission(ctx context.Context, req acp.PermissionRequest
 		// A caller tool raises no approval: the caller decides in CallTool.
 		return acp.ResponseForResolution(req, ap.InterruptResolutionAllow), nil
 	}
-	payload := acp.ApprovalForPermission(req)
+	a := s.park(ctx, acp.ApprovalForPermission(req))
+	if a.cancelled {
+		return acp.Cancelled(), nil
+	}
+	response := acp.ResponseForResolution(req, a.res.Decision)
+	if a.res.Decision == ap.InterruptResolutionAllow && a.res.Scope != ScopeOnce {
+		if id, found := req.PickOption(acp.OptionKindAllowAlways, acp.OptionKindAllowOnce); found {
+			response = acp.Selected(id)
+		}
+	}
+	return response, nil
+}
+
+// park raises payload as an approval-required event and waits for Resolve,
+// the context's end or the session's. A payload without a tool call id is
+// addressed to the session: some agents omit one, and one unanswered
+// question at a time is better than a question nobody can answer.
+func (s *acpSession) park(ctx context.Context, payload ap.ApprovalRequiredPayload) acpAnswer {
 	id := payload.ToolInvocationID
 	if id == "" {
-		// Some agents omit a tool call ID. Without one there is nothing to
-		// address a decision to, so fall back to the session: one unanswered
-		// question at a time is better than a question nobody can answer.
 		id = s.id
 		payload.ToolInvocationID = id
 	}
 
-	p := &pendingPermission{req: req, answer: make(chan acp.PermissionResponse, 1)}
+	p := &pendingRequest{toolName: payload.ToolName, answer: make(chan acpAnswer, 1)}
 	s.mu.Lock()
 	s.pending[id] = p
 	s.mu.Unlock()
@@ -738,15 +796,45 @@ func (s *acpSession) onPermission(ctx context.Context, req acp.PermissionRequest
 	s.emit(ap.NewEvent(ap.AgentEventApprovalRequired, s.runID, s.chatID, payload))
 
 	select {
-	case res := <-p.answer:
-		return res, nil
+	case a := <-p.answer:
+		return a
 	case <-ctx.Done():
-		s.dropPending(id)
-		return acp.Cancelled(), nil
 	case <-s.proc.Done():
-		s.dropPending(id)
-		return acp.Cancelled(), nil
 	}
+	s.dropPending(id)
+	return acpAnswer{cancelled: true}
+}
+
+// ask puts questions to the person as a form (ap.InputRequest) and waits for
+// the answer. A session that skips approvals still asks: nobody else can
+// answer a question.
+func (s *acpSession) ask(ctx context.Context, toolCallID, toolName string, args ap.StringEncodedMap, input ap.InputRequest) (Resolution, bool) {
+	s.alive()
+	a := s.park(ctx, ap.ApprovalRequiredPayload{
+		ToolInvocationID: toolCallID,
+		ToolName:         toolName,
+		Arguments:        args,
+		Reason:           ap.InterruptReasonInput,
+		Input:            &input,
+	})
+	return a.res, !a.cancelled
+}
+
+// onElicitation asks the person what the agent's elicitation/create asks,
+// as the form it already is.
+func (s *acpSession) onElicitation(ctx context.Context, p acp.ElicitationParams) (acp.ElicitationResponse, error) {
+	res, answered := s.ask(ctx, "", "elicitation", nil, ap.InputRequest{Message: p.Message, Schema: p.Schema})
+	switch {
+	case !answered:
+		return acp.ElicitationResponse{Action: acp.ElicitationCancel}, nil
+	case res.Decision != ap.InterruptResolutionAllow:
+		return acp.ElicitationResponse{Action: acp.ElicitationDecline}, nil
+	}
+	content, err := json.Marshal(res.Values)
+	if err != nil {
+		return acp.ElicitationResponse{Action: acp.ElicitationCancel}, nil
+	}
+	return acp.ElicitationResponse{Action: acp.ElicitationConfirm, Content: content}, nil
 }
 
 func (s *acpSession) dropPending(id string) {
@@ -756,13 +844,6 @@ func (s *acpSession) dropPending(id string) {
 }
 
 func (s *acpSession) emit(ev ap.AgentEvent) { s.pump.push(ev) }
-
-func toolNameOf(r acp.PermissionRequest) string {
-	if r.ToolCall == nil {
-		return ""
-	}
-	return r.ToolCall.Title
-}
 
 // mcpServersFrom reads MCP server declarations out of session metadata. This
 // is how a caller injects its own tools into an agent it does not own: the

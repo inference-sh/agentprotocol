@@ -78,7 +78,19 @@ type RunStateChangedPayload struct {
 type TurnStartedPayload struct {
 	TurnIndex int    `json:"turn_index"`
 	Model     string `json:"model,omitempty"`
+	// Origin is what started the turn: empty for a prompt, TurnOriginBackground
+	// for one the agent started itself when background work it left running
+	// finished (TaskID names it).
+	Origin TurnOrigin `json:"origin,omitempty"`
+	TaskID string     `json:"task_id,omitempty"`
 }
+
+// TurnOrigin is what started a turn.
+type TurnOrigin string
+
+// TurnOriginBackground is a turn the agent started on its own, with no
+// prompt, because background work it left running finished.
+const TurnOriginBackground TurnOrigin = "background"
 
 type TurnCompletedPayload struct {
 	TurnIndex  int    `json:"turn_index"`
@@ -126,6 +138,10 @@ type ApprovalRequiredPayload struct {
 	ToolName         string           `json:"tool_name"`
 	Arguments        StringEncodedMap `json:"arguments,omitempty"`
 	Reason           InterruptReason  `json:"reason"`
+	// Input is set when the agent asks the person questions rather than
+	// for permission (Reason is then input). The answer is the resolution's
+	// values, one per Input.Schema property; a deny declines to answer.
+	Input *InputRequest `json:"input,omitempty"`
 	// SubagentID is set when a subagent asks: its tool call, not the
 	// agent's.
 	SubagentID string `json:"subagent_id,omitempty"`

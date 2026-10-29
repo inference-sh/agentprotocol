@@ -82,4 +82,5 @@ const (
 	InterruptReasonAuth         InterruptReason = "auth"          // missing integration credentials
 	InterruptReasonConfirmation InterruptReason = "confirmation"  // agent asking for explicit confirmation
 	InterruptReasonHookGate     InterruptReason = "hook_gate"     // lifecycle hook gate awaiting external decision
+	InterruptReasonInput        InterruptReason = "input"         // agent asks the person questions (ApprovalRequiredPayload.Input)
 )

@@ -176,6 +176,12 @@ type Harness struct {
 	// like ToolCallGated. Empty for an agent with no such tool.
 	ToolCallSubagent ToolCall
 
+	// ToolCallQuestion is a call to the agent's tool that asks the person
+	// multiple-choice questions (Claude Code's AskUserQuestion, grok's
+	// ask_user_question), which the driver raises as an input request
+	// (model.InputRequest). Empty for an agent with no such tool.
+	ToolCallQuestion ToolCall
+
 	// ACPAutoApproveArgs are the arguments that stop this agent asking its
 	// client for permission. They are kept apart from ACPArgs so the in-flight
 	// probe can compose an invocation without them, rather than trying to
@@ -189,6 +195,12 @@ type Harness struct {
 	// It is what the ACP backend reports as Capabilities.Images; each session
 	// still follows the agent's own promptCapabilities.image.
 	ACPImages bool
+
+	// ACPExtension names the adapter of this agent's own extensions of ACP
+	// (driver.RegisterACPExtension): requests and notifications outside the
+	// protocol, and what it puts in _meta. Empty for an agent that speaks
+	// plain ACP.
+	ACPExtension string
 
 	// SessionDir is where this agent writes its session transcripts, as a
 	// template ({{.HomeDir}}, {{.RepoDir}}). SessionExt is the file extension

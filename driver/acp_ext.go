@@ -49,7 +49,7 @@ type ACPExtension interface {
 type ACPHost interface {
 	// Ask puts questions to the person as a form and waits for the answer.
 	// answered is false when the session ended or ctx did first.
-	Ask(ctx context.Context, toolCallID, toolName string, args ap.StringEncodedMap, input ap.InputRequest) (res Resolution, answered bool)
+	Ask(ctx context.Context, toolCallID, toolName string, args ap.StringEncodedMap, input ap.InputForm) (res Resolution, answered bool)
 	// Approve asks the person to allow something the agent wants to do
 	// (leave plan mode, say), and waits for the decision.
 	Approve(ctx context.Context, toolCallID, toolName string, args ap.StringEncodedMap) (res Resolution, answered bool)
@@ -116,7 +116,7 @@ func ACPExtensions() []string {
 // acpHost is a session's ACPHost.
 type acpHost struct{ s *acpSession }
 
-func (h acpHost) Ask(ctx context.Context, toolCallID, toolName string, args ap.StringEncodedMap, input ap.InputRequest) (Resolution, bool) {
+func (h acpHost) Ask(ctx context.Context, toolCallID, toolName string, args ap.StringEncodedMap, input ap.InputForm) (Resolution, bool) {
 	return h.s.ask(ctx, toolCallID, toolName, args, input)
 }
 

@@ -179,7 +179,7 @@ type Harness struct {
 	// ToolCallQuestion is a call to the agent's tool that asks the person
 	// multiple-choice questions (Claude Code's AskUserQuestion, grok's
 	// ask_user_question), which the driver raises as an input request
-	// (model.InputRequest). Empty for an agent with no such tool.
+	// (model.InputForm). Empty for an agent with no such tool.
 	ToolCallQuestion ToolCall
 
 	// ACPAutoApproveArgs are the arguments that stop this agent asking its

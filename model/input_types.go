@@ -2,7 +2,7 @@ package model
 
 import "encoding/json"
 
-// InputRequest is a set of questions an agent asks the person, as a form:
+// InputForm is a set of questions an agent asks the person, as a form:
 // form-mode elicitation as MCP and ACP define it. Schema is a flat JSON
 // object schema whose properties are the questions:
 //
@@ -17,9 +17,9 @@ import "encoding/json"
 //
 // Agents ask in their own shapes (Claude Code's AskUserQuestion, Grok's
 // x.ai/ask_user_question, ACP's elicitation/create); a driver turns each into
-// an InputRequest and the answer back into the agent's shape, so a person
+// an InputForm and the answer back into the agent's shape, so a person
 // answers every agent the same way.
-type InputRequest struct {
+type InputForm struct {
 	Message string          `json:"message,omitempty"`
 	Schema  json.RawMessage `json:"requested_schema"`
 }

@@ -62,7 +62,7 @@ type SessionDriver struct {
 	notes       []UpdateNote
 	permissions []PermissionObservation
 	// questions are the input requests the agent raised (questions probe).
-	questions []ap.InputRequest
+	questions []ap.InputForm
 	load      LoadResult
 	usage     UsageObservation
 	subagents SubagentObservation

@@ -805,10 +805,10 @@ func (s *acpSession) park(ctx context.Context, payload ap.ApprovalRequiredPayloa
 	return acpAnswer{cancelled: true}
 }
 
-// ask puts questions to the person as a form (ap.InputRequest) and waits for
+// ask puts questions to the person as a form (ap.InputForm) and waits for
 // the answer. A session that skips approvals still asks: nobody else can
 // answer a question.
-func (s *acpSession) ask(ctx context.Context, toolCallID, toolName string, args ap.StringEncodedMap, input ap.InputRequest) (Resolution, bool) {
+func (s *acpSession) ask(ctx context.Context, toolCallID, toolName string, args ap.StringEncodedMap, input ap.InputForm) (Resolution, bool) {
 	s.alive()
 	a := s.park(ctx, ap.ApprovalRequiredPayload{
 		ToolInvocationID: toolCallID,
@@ -823,7 +823,7 @@ func (s *acpSession) ask(ctx context.Context, toolCallID, toolName string, args 
 // onElicitation asks the person what the agent's elicitation/create asks,
 // as the form it already is.
 func (s *acpSession) onElicitation(ctx context.Context, p acp.ElicitationParams) (acp.ElicitationResponse, error) {
-	res, answered := s.ask(ctx, "", "elicitation", nil, ap.InputRequest{Message: p.Message, Schema: p.Schema})
+	res, answered := s.ask(ctx, "", "elicitation", nil, ap.InputForm{Message: p.Message, Schema: p.Schema})
 	switch {
 	case !answered:
 		return acp.ElicitationResponse{Action: acp.ElicitationCancel}, nil

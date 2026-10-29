@@ -33,10 +33,10 @@ func probeAnswer(schema json.RawMessage) map[string]any {
 }
 
 // Questions is the input requests the agent raised so far.
-func (d *SessionDriver) Questions() []ap.InputRequest {
+func (d *SessionDriver) Questions() []ap.InputForm {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	return append([]ap.InputRequest(nil), d.questions...)
+	return append([]ap.InputForm(nil), d.questions...)
 }
 
 // probeQuestions makes the agent ask a multiple-choice question and asks

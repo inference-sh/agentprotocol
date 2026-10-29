@@ -88,7 +88,7 @@ type fakeHost struct {
 	turns    []string
 }
 
-func (h *fakeHost) Ask(_ context.Context, id, name string, args ap.StringEncodedMap, in ap.InputRequest) (Resolution, bool) {
+func (h *fakeHost) Ask(_ context.Context, id, name string, args ap.StringEncodedMap, in ap.InputForm) (Resolution, bool) {
 	h.asked = append(h.asked, ap.ApprovalRequiredPayload{ToolInvocationID: id, ToolName: name, Arguments: args, Input: &in, Reason: ap.InterruptReasonInput})
 	return h.res, h.answered
 }

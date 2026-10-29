@@ -45,7 +45,7 @@ func questionOtherKey(i int) string { return fmt.Sprintf("q%d_other", i+1) }
 
 // QuestionsInput is the form that asks qs: per question a single or multiple
 // choice, and a free-text field for an answer of the person's own.
-func QuestionsInput(message string, qs []Question) ap.InputRequest {
+func QuestionsInput(message string, qs []Question) ap.InputForm {
 	type choice struct {
 		Const       string `json:"const"`
 		Title       string `json:"title"`
@@ -78,7 +78,7 @@ func QuestionsInput(message string, qs []Question) ap.InputRequest {
 		}
 	}
 	schema, _ := json.Marshal(map[string]any{"type": "object", "properties": props})
-	return ap.InputRequest{Message: message, Schema: schema}
+	return ap.InputForm{Message: message, Schema: schema}
 }
 
 // QuestionAnswers reads the answers to qs out of a resolution's values, one

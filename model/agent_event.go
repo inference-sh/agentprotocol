@@ -141,7 +141,7 @@ type ApprovalRequiredPayload struct {
 	// Input is set when the agent asks the person questions rather than
 	// for permission (Reason is then input). The answer is the resolution's
 	// values, one per Input.Schema property; a deny declines to answer.
-	Input *InputRequest `json:"input,omitempty"`
+	Input *InputForm `json:"input,omitempty"`
 	// SubagentID is set when a subagent asks: its tool call, not the
 	// agent's.
 	SubagentID string `json:"subagent_id,omitempty"`

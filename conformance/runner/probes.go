@@ -91,6 +91,11 @@ type Probes struct {
 	// (subagents.go).
 	Subagents bool
 
+	// Questions makes the agent ask the person a multiple-choice question
+	// and answers it with text of its own, then checks the answer reached
+	// the model (questions.go).
+	Questions bool
+
 	// Images attaches an image to a prompt and checks it reaches the model
 	// as an image when the backend says it does (images.go).
 	Images bool
@@ -104,7 +109,7 @@ type Probes struct {
 // ParseProbes reads a comma-separated probe list:
 //
 //	resume, resume=kill, resumeafter=65s, inflight, inflight=cancel, inflight=hold, compact,
-//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, images, direct
+//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, questions, images, direct
 func ParseProbes(spec string) (Probes, error) {
 	var p Probes
 	for _, part := range strings.Split(spec, ",") {
@@ -170,6 +175,8 @@ func ParseProbes(spec string) (Probes, error) {
 			p.Usage = true
 		case "subagents":
 			p.Subagents = true
+		case "questions":
+			p.Questions = true
 		case "images":
 			p.Images = true
 		case "direct":

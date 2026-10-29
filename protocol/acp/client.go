@@ -77,6 +77,19 @@ type Handler struct {
 	// the agent continue without an answer rather than hanging on one.
 	OnElicitation func(context.Context, ElicitationParams) (ElicitationResponse, error)
 
+	// OnExtRequest answers an agent-initiated request the protocol does not
+	// define: an agent's own extension method, such as Grok's
+	// _x.ai/ask_user_question. handled false leaves it to OnUnhandled and
+	// method-not-found. An error that is an *Error is sent as it is; any other
+	// is sent as an internal error. It runs on its own goroutine, like
+	// OnPermission, since it may wait on a person.
+	OnExtRequest func(ctx context.Context, method string, params json.RawMessage) (result any, handled bool, err error)
+
+	// OnExtNotification takes a notification the protocol does not define.
+	// It reports whether it handled it; one it did not goes to OnUnhandled.
+	// It runs on the read loop, in order with session/update.
+	OnExtNotification func(method string, params json.RawMessage) bool
+
 	// OnUnhandled is called for any other agent-initiated request. The client
 	// always replies with method-not-found afterwards: an unanswered request
 	// leaves the agent waiting on its own timeout, which looks like a hang
@@ -106,6 +119,8 @@ type Client struct {
 
 	mu        sync.Mutex
 	sessionID string
+	// sessionRaw is the result of the last session/new or session/load.
+	sessionRaw json.RawMessage
 
 	initRaw json.RawMessage
 	initRes InitializeResult
@@ -217,6 +232,15 @@ func (c *Client) InitializeRaw() json.RawMessage {
 	return c.initRaw
 }
 
+// SessionRaw is the agent's unmodified result for the last session/new or
+// session/load, nil before one answered. Agents put more in it than the
+// session id (models, modes, config options, extensions in _meta).
+func (c *Client) SessionRaw() json.RawMessage {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.sessionRaw
+}
+
 // AgentInfo is the agent's self-description from the handshake.
 func (c *Client) AgentInfo() AgentInfo {
 	c.mu.Lock()
@@ -283,6 +307,7 @@ func (c *Client) NewSession(ctx context.Context, cwd string, servers []MCPServer
 	}
 	c.mu.Lock()
 	c.sessionID = res.SessionID
+	c.sessionRaw = raw
 	c.mu.Unlock()
 	return res.SessionID, nil
 }
@@ -393,7 +418,12 @@ func (c *Client) LoadSession(ctx context.Context, sessionID, cwd string, servers
 	params := LoadSessionParams{SessionID: sessionID, CWD: cwd, MCPServers: servers}
 	done := make(chan error, 1)
 	go func() {
-		_, err := c.Call(ctx, MethodSessionLoad, params)
+		raw, err := c.Call(ctx, MethodSessionLoad, params)
+		if err == nil {
+			c.mu.Lock()
+			c.sessionRaw = raw
+			c.mu.Unlock()
+		}
 		done <- err
 	}()
 
@@ -566,6 +596,9 @@ func (c *Client) Notify(method string, params any) error {
 
 func (c *Client) onNotification(method string, params json.RawMessage) {
 	if method != MethodSessionUpdate {
+		if c.h.OnExtNotification != nil && c.h.OnExtNotification(method, params) {
+			return
+		}
 		if c.h.OnUnhandled != nil {
 			c.h.OnUnhandled(method, params)
 		}
@@ -699,6 +732,21 @@ func (c *Client) handleRequest(msg jsonrpc.Message, duringLoad bool) {
 		c.respond(id, res)
 
 	default:
+		if c.h.OnExtRequest != nil {
+			res, handled, err := c.h.OnExtRequest(ctx, msg.Method, msg.Params)
+			if handled {
+				var peer *Error
+				switch {
+				case errors.As(err, &peer):
+					c.respondError(id, peer.Code, peer.Message)
+				case err != nil:
+					c.respondError(id, ErrCodeInternal, err.Error())
+				default:
+					c.respond(id, res)
+				}
+				return
+			}
+		}
 		if c.h.OnUnhandled != nil {
 			c.h.OnUnhandled(msg.Method, msg.Params)
 		}

@@ -63,6 +63,9 @@ func withTSPluginExport(h Harness, export string) Harness {
 // it exists nowhere and can do nothing if an agent runs it anyway.
 const gatedShellArgs = `{"command":"rm -rf /tmp/gated-probe-does-not-exist"}`
 
+// probeQuestionArgs is AskUserQuestion's call in the questions probe.
+const probeQuestionArgs = `{"questions":[{"question":"Which database?","header":"Database","multiSelect":false,"options":[{"label":"Redis","description":"in-memory"},{"label":"Postgres","description":"durable"}]}]}`
+
 // gatedEditArgs is claude's gated call. Its own settings in this registry
 // allow Bash, Read and Write outright, so the gated tool has to be one outside
 // that list and declared on every turn: since 2.1.306 WebFetch is deferred
@@ -150,6 +153,7 @@ var All = map[string]Harness{
 		Usage:            claudeusage.Prober{},
 		ToolCallGated:    ToolCall{Name: "Edit", Args: gatedEditArgs},
 		ToolCallSubagent: ToolCall{Name: "Agent", Args: `{"description":"probe subagent","prompt":"Reply with the word done.","subagent_type":"general-purpose"}`},
+		ToolCallQuestion: ToolCall{Name: "AskUserQuestion", Args: probeQuestionArgs},
 		InstallCmd:       []string{"npm", "install", "-g", "@anthropic-ai/claude-code"},
 		DetectEnvVars:    []string{"CLAUDECODE", "CLAUDE_CODE", "CLAUDE_CODE_ENTRYPOINT"},
 		APIFormat:        Anthropic,
@@ -347,14 +351,16 @@ var All = map[string]Harness{
 	"grok": {
 		Sessions: grok.Codec,
 		Name:     "grok", Binary: "grok",
-		DetectEnvVars:  []string{"GROK_SESSION_ID", "GROK_WORKSPACE_ROOT"},
-		ToolCallGated:  ToolCall{Name: "run_terminal_command", Args: gatedShellArgs},
-		InstallCmd:     []string{"sh", "-c", "curl -fsSL https://x.ai/cli/install.sh | bash"},
-		InstallBinDirs: []string{".grok/bin"},
-		APIFormat:      Responses,
-		ToolCallName:   "read_file",
-		ToolCallArgs:   `{"target_file":"README.md"}`,
-		ToolCallPath:   "chat/completions",
+		DetectEnvVars: []string{"GROK_SESSION_ID", "GROK_WORKSPACE_ROOT"},
+		ToolCallGated: ToolCall{Name: "run_terminal_command", Args: gatedShellArgs},
+		// grok's own field names (grok-build ask_user_question): no header.
+		ToolCallQuestion: ToolCall{Name: "ask_user_question", Args: `{"questions":[{"question":"Which database?","multiSelect":false,"options":[{"label":"Redis","description":"in-memory"},{"label":"Postgres","description":"durable"}]}]}`},
+		InstallCmd:       []string{"sh", "-c", "curl -fsSL https://x.ai/cli/install.sh | bash"},
+		InstallBinDirs:   []string{".grok/bin"},
+		APIFormat:        Responses,
+		ToolCallName:     "read_file",
+		ToolCallArgs:     `{"target_file":"README.md"}`,
+		ToolCallPath:     "chat/completions",
 		EnvVars: map[string]string{
 			"GROK_CLI_CHAT_PROXY_BASE_URL": "{{.BaseURL}}",
 			"GROK_XAI_API_BASE_URL":        "{{.BaseURL}}",
@@ -387,6 +393,10 @@ var All = map[string]Harness{
 		ExitCommand:    "/exit",
 		CompactCommand: "/compact",
 		ACPCmd:         []string{"grok", "agent", "stdio"},
+		// Questions (_x.ai/ask_user_question), plan approval, background
+		// tasks and their wake turns, and the model's context window are
+		// grok's own extensions (driver/acp_grok.go).
+		ACPExtension: "grok",
 		// No Direct row: grok never declares an MCP tool to the model, only its search_tool/use_tool dispatchers, so the caller's tools cannot be the model's (measured 2026-10-17, grok 1.0.62; GROK_AGENT with promptMode: full does replace the system prompt).
 	},
 	"pi": {

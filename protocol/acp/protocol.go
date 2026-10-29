@@ -49,7 +49,19 @@ const (
 const (
 	ErrCodeMethodNotFound = jsonrpc.CodeMethodNotFound
 	ErrCodeInvalidRequest = jsonrpc.CodeInvalidRequest
+	ErrCodeInternal       = -32603
 )
+
+// ExtMethod is an extension method's name without the leading underscore
+// ACP reserves for them: agents send _x.ai/ask_user_question and its docs
+// call it x.ai/ask_user_question. A name that is not an extension is
+// returned unchanged.
+func ExtMethod(method string) string {
+	if len(method) > 1 && method[0] == '_' {
+		return method[1:]
+	}
+	return method
+}
 
 // --- JSON-RPC envelope ---
 
@@ -361,6 +373,9 @@ func ImageBlock(data, mimeType, uri string) ContentBlock {
 type UpdateNotification struct {
 	SessionID string        `json:"sessionId"`
 	Update    SessionUpdate `json:"update"`
+	// Meta is the notification's _meta, where agents put their own
+	// bookkeeping (Grok: the promptId of the turn the update belongs to).
+	Meta json.RawMessage `json:"_meta,omitempty"`
 
 	// Replay marks an update that arrived while LoadSession was rebuilding a
 	// session, meaning it is history rather than progress.
@@ -385,6 +400,9 @@ type SessionUpdate struct {
 	Status     string          `json:"status,omitempty"`
 	Title      string          `json:"title,omitempty"`
 	RawInput   json.RawMessage `json:"rawInput,omitempty"`
+	RawOutput  json.RawMessage `json:"rawOutput,omitempty"`
+	// Meta is the update's _meta.
+	Meta json.RawMessage `json:"_meta,omitempty"`
 
 	// Used, Size and Cost are a usage_update's fields.
 	Used *int64 `json:"used,omitempty"`

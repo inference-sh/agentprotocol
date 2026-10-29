@@ -12,6 +12,7 @@ import (
 
 	"github.com/inference-sh/agentprotocol/harness"
 	"github.com/inference-sh/agentprotocol/internal/mcptools"
+	"github.com/inference-sh/agentprotocol/mcpbridge"
 	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/protocol/acp"
 	acpusage "github.com/inference-sh/agentprotocol/report/usage/acp"
@@ -130,6 +131,36 @@ type ACPBackend struct {
 	// (mcp__<name>__<tool>, <name>_<tool>); events and CallTool use the
 	// bare name. Empty means DefaultACPToolServer.
 	ToolServerName string
+
+	// StdioBridge is the command (argv) that runs mcpbridge in the host's
+	// binary, usually os.Executable() of a program whose main calls
+	// mcpbridge.Main. An agent whose initialize does not declare
+	// mcpCapabilities.http gets SessionConfig.Tools as a stdio server running
+	// it, pointed at the loopback server through its environment. Without
+	// it, Open refuses such an agent when there are Tools.
+	StdioBridge []string
+}
+
+// toolServer is how the agent reaches the caller tools: the loopback server
+// itself when the agent dials HTTP MCP, or else a stdio StdioBridge to it.
+func (b *ACPBackend) toolServer(agentHTTP bool, tools *acpCallerTools) (acp.MCPServer, error) {
+	if agentHTTP {
+		return acp.MCPServer{
+			Type:    "http",
+			Name:    tools.server,
+			URL:     tools.loopback.URL,
+			Headers: map[string]string{"Authorization": tools.loopback.Header()},
+		}, nil
+	}
+	if len(b.StdioBridge) == 0 {
+		return acp.MCPServer{}, fmt.Errorf("driver: this agent takes only stdio MCP servers (its initialize does not declare mcpCapabilities.http), and SessionConfig.Tools need ACPBackend.StdioBridge to reach it")
+	}
+	return acp.MCPServer{
+		Name:    tools.server,
+		Command: b.StdioBridge[0],
+		Args:    append([]string(nil), b.StdioBridge[1:]...),
+		Env:     mcpbridge.Env(tools.loopback.URL, tools.loopback.Header()),
+	}, nil
 }
 
 // DefaultACPToolServer is the MCP server name SessionConfig.Tools are offered
@@ -182,8 +213,9 @@ func (b *ACPBackend) diagnose(msg string) {
 // Tools: SessionConfig.Tools are served on a loopback HTTP MCP server
 // (127.0.0.1, a bearer token per session) declared in session/new or
 // session/load, and run by SessionConfig.CallTool with no approval-required
-// event. Open fails for an agent whose initialize does not declare
-// mcpCapabilities.http. An MCP server named in Metadata (mcp_url, mcp_name,
+// event. An agent whose initialize does not declare mcpCapabilities.http
+// gets them as a stdio server running StdioBridge, which carries its stdio
+// to the loopback server; without a StdioBridge, Open fails for it. An MCP server named in Metadata (mcp_url, mcp_name,
 // mcp_token) is declared alongside it, behind the agent's usual approvals.
 //
 // OnlyCallerTools is false: ACP has no request that turns an agent's own
@@ -288,9 +320,10 @@ func (b *ACPBackend) open(ctx context.Context, cfg SessionConfig, tools *acpCall
 
 	servers := mcpServersFrom(cfg.Metadata)
 	if tools != nil {
-		if !proc.AgentCapabilities().MCP.HTTP {
+		toolServer, err := b.toolServer(proc.AgentCapabilities().MCP.HTTP, tools)
+		if err != nil {
 			_ = proc.Kill()
-			return nil, fmt.Errorf("driver: SessionConfig.Tools are served over HTTP MCP and this agent's initialize does not declare mcpCapabilities.http")
+			return nil, err
 		}
 		for _, srv := range servers {
 			if srv.Name == tools.server {
@@ -298,12 +331,7 @@ func (b *ACPBackend) open(ctx context.Context, cfg SessionConfig, tools *acpCall
 				return nil, fmt.Errorf("driver: the metadata MCP server and the caller tool server are both named %q; set ACPBackend.ToolServerName", srv.Name)
 			}
 		}
-		servers = append(servers, acp.MCPServer{
-			Type:    "http",
-			Name:    tools.server,
-			URL:     tools.loopback.URL,
-			Headers: map[string]string{"Authorization": tools.loopback.Header()},
-		})
+		servers = append(servers, toolServer)
 	}
 
 	if cfg.ResumeSessionID != "" {

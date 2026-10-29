@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -81,6 +82,61 @@ func opencodeWith(t *testing.T, mock, extra string) acpRealAgent {
 	}
 }
 
+// realHermes is hermes against the mock as an OpenAI-compatible endpoint.
+// hermes takes only stdio MCP servers, so the tools reach it through this
+// test binary as its StdioBridge (TestMain runs mcpbridge.Main).
+func realHermes(t *testing.T, mock string) acpRealAgent {
+	bin := os.Getenv("HERMES_BIN")
+	if bin == "" {
+		var err error
+		if bin, err = exec.LookPath("hermes"); err != nil {
+			t.Skip("hermes not installed")
+		}
+	}
+	home := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(home, ".hermes"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for name, content := range map[string]string{
+		// provider custom: with openrouter, hermes keeps openrouter.ai and
+		// drops base_url.
+		"config.yaml": "model:\n  default: gpt-4o-mini\n  provider: custom\n  base_url: " + mock + "/v1\n  api_key: mock-key\nhooks: {}\nhooks_auto_accept: true\n",
+	} {
+		if err := os.WriteFile(filepath.Join(home, ".hermes", name), []byte(content), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	exe, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return acpRealAgent{
+		name: "hermes",
+		backend: &driver.ACPBackend{
+			Command: bin, Args: []string{"acp"},
+			Env:         isolatedEnv(home, "HERMES_", "OPENROUTER_", "OPENAI_"),
+			StdioBridge: []string{exe, "-test.run=^$"},
+		},
+		toolName: hermesToolName(t, bin),
+		reqPath:  "/chat/completions",
+	}
+}
+
+// hermesToolName is how the installed hermes names an MCP tool:
+// mcp_<server>_<tool> before 0.19, mcp__<server>__<tool> from 0.19 (measured
+// on 0.14.0 and 0.19.0).
+func hermesToolName(t *testing.T, bin string) func(server, tool string) string {
+	out, _ := exec.Command(bin, "--version").Output()
+	var major, minor int
+	if _, err := fmt.Sscanf(strings.TrimPrefix(strings.Fields(string(out) + " x x x")[2], "v"), "%d.%d", &major, &minor); err != nil {
+		t.Fatalf("hermes --version: %q", out)
+	}
+	if major == 0 && minor < 19 {
+		return func(server, tool string) string { return "mcp_" + server + "_" + tool }
+	}
+	return func(server, tool string) string { return "mcp__" + server + "__" + tool }
+}
+
 // isolatedEnv is the parent environment with HOME replaced, the XDG
 // directories under it, and variables with the given prefixes dropped.
 func isolatedEnv(home string, drop ...string) []string {
@@ -130,6 +186,7 @@ func TestACPRealCallerTools(t *testing.T) {
 	for name, setup := range map[string]func(*testing.T, string) acpRealAgent{
 		"opencode":        realOpencode,
 		"opencode-asking": realOpencodeAsking,
+		"hermes":          realHermes,
 	} {
 		t.Run(name, func(t *testing.T) {
 			agent := setup(t, mock)
@@ -245,8 +302,8 @@ func TestACPRealCallerTools(t *testing.T) {
 
 // TestACPRealRefusesAgentsWithoutHTTPMCP opens a session with a caller tool on
 // installed agents whose initialize declares no mcpCapabilities.http (droid
-// 0.199.0 and hermes 0.14.0 when this was written): Open must fail rather
-// than drop the tools. Only initialize runs, so no model is called.
+// 0.199.0 and hermes 0.14.0 when this was written) with no StdioBridge: Open
+// must fail rather than drop the tools. Only initialize runs, so no model is called.
 func TestACPRealRefusesAgentsWithoutHTTPMCP(t *testing.T) {
 	if os.Getenv("ACP_MOCK_URL") == "" {
 		t.Skip("ACP_MOCK_URL not set; see the comment above acpRealAgent")

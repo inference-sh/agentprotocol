@@ -15,6 +15,7 @@ package usage
 
 import (
 	"context"
+	"math"
 	"os"
 	"slices"
 	"strings"
@@ -218,7 +219,8 @@ func KindForDuration(minutes int) ap.UsageWindowKind {
 	}
 }
 
-// normalize clamps percentages and orders windows session, weekly, monthly,
+// normalize clamps percentages to 0..100, rounded to hundredths (a
+// fraction times 100 reads 7.000000000000001), and orders windows session, weekly, monthly,
 // other, then by ID, so a display and a comparison see one order.
 func normalize(l ap.UsageLimits) ap.UsageLimits {
 	if l.Windows == nil {
@@ -256,6 +258,6 @@ func clampPercent(p float64) float64 {
 	case p > 100:
 		return 100
 	default:
-		return p
+		return math.Round(p*100) / 100
 	}
 }

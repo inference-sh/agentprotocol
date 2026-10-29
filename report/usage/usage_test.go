@@ -16,6 +16,13 @@ func probed(windows ...ap.UsageWindow) ap.UsageSnapshot {
 	return ap.UsageSnapshot{Account: &ap.AgentAccount{Status: ap.AccountAuthenticated, Email: "a@x.dev"}, Limits: Limits(windows, t0)}
 }
 
+func TestProbeRoundsToHundredths(t *testing.T) {
+	l := Limits([]ap.UsageWindow{{ID: "five_hour", Kind: ap.UsageWindowSession, UsedPercent: 0.07 * 100}, {ID: "seven_day", Kind: ap.UsageWindowWeekly, UsedPercent: 12.345678}}, t0)
+	if l.Windows[0].UsedPercent != 7 || l.Windows[1].UsedPercent != 12.35 {
+		t.Fatalf("windows = %+v", l.Windows)
+	}
+}
+
 func TestProbeOrdersAndClamps(t *testing.T) {
 	var s State
 	s.ApplyProbe(probed(

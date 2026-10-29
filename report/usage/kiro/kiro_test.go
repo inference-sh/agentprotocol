@@ -143,7 +143,7 @@ func TestProbe_subscription(t *testing.T) {
 		t.Fatalf("limits = %+v", l)
 	}
 	c, b := l.Windows[0], l.Windows[1]
-	if c.ID != "credit" || c.Kind != ap.UsageWindowMonthly || c.Label != "Credits" || c.UsedPercent != 12.345 ||
+	if c.ID != "credit" || c.Kind != ap.UsageWindowMonthly || c.Label != "Credits" || c.UsedPercent != 12.35 ||
 		!c.ResetsAt.Equal(time.Date(2026, 11, 2, 0, 0, 0, 0, time.UTC)) {
 		t.Errorf("credits = %+v", c)
 	}

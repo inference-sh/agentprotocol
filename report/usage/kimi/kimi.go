@@ -22,6 +22,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/inference-sh/agentprotocol/internal/tomlstr"
 	"github.com/inference-sh/agentprotocol/internal/webjson"
 	ap "github.com/inference-sh/agentprotocol/model"
 	"github.com/inference-sh/agentprotocol/report/usage"
@@ -144,16 +145,16 @@ func ReadLogin(env usage.Env, home string) (Login, error) {
 	if env.Lookup("KIMI_MODEL_NAME") != "" {
 		return Login{Kind: LoginAPIKey}, nil
 	}
-	cfg, err := readConfig(filepath.Join(home, "config.toml"))
+	cfg, err := tomlstr.Read(filepath.Join(home, "config.toml"))
 	if err != nil {
 		return Login{}, err
 	}
-	name := cfg[keyPath("models", cfg[keyPath("default_model")], "provider")]
-	if name == "" && cfg[keyPath("providers", ManagedProvider, "type")] != "" {
+	name := cfg[tomlstr.Key("models", cfg[tomlstr.Key("default_model")], "provider")]
+	if name == "" && cfg[tomlstr.Key("providers", ManagedProvider, "type")] != "" {
 		name = ManagedProvider
 	}
 	if name != "" {
-		prov := func(k ...string) string { return cfg[keyPath(append([]string{"providers", name}, k...)...)] }
+		prov := func(k ...string) string { return cfg[tomlstr.Key(append([]string{"providers", name}, k...)...)] }
 		if key := prov("oauth", "key"); key != "" {
 			base := firstNonEmpty(env.Lookup("KIMI_CODE_BASE_URL"), prov("base_url"), DefaultBaseURL)
 			file, err := credentialFile(key)

@@ -290,6 +290,13 @@ var All = map[string]Harness{
 		},
 		SDKCmd:  []string{"codex", "exec", "--experimental-json"},
 		SDKArgs: append([]string{"--dangerously-bypass-hook-trust", "--dangerously-bypass-approvals-and-sandbox"}, codexProviderArgs...),
+		// The mock provider of codexProviderArgs again, where a codex session
+		// written by transcript/codex reads the provider to save it under:
+		// a -c override reaches codex alone, and codex 0.166 resumes a
+		// thread only under the provider it was saved with.
+		ConfigFiles: []ConfigFile{
+			{Path: ".codex/config.toml", Content: "model_provider = \"mock\"\n\n[model_providers.mock]\nname = \"Mock\"\nbase_url = \"{{.BaseURL}}\"\nenv_key = \"OPENAI_API_KEY\"\nwire_api = \"responses\"\n"},
+		},
 	},
 	"copilot": {
 		Sessions: copilot.Codec,
@@ -1188,10 +1195,11 @@ export const Direct = async () => ({
 				"settings.json":                  `{"hooks":{"hooksDisabled":true},"blockOnMcpLoad":true}`,
 				"{{.WorkDir}}/.factory/mcp.json": `{"mcpServers":{"agentbrowser":{"type":"http","url":"{{.MCPURL}}","headers":{"Authorization":"Bearer {{.MCPToken}}"}}}}`,
 			},
-			MCPInArgs: true,
-			ToolName:  "agentbrowser___{{.Tool}}",
-			Measured:  "0.244.0 2026-10-17",
-			Partial:   "ACP keeps droid's own system prompt and its 15 built-in tools; only stream-jsonrpc sessions can replace them",
+			MCPInArgs:      true,
+			ToolName:       "agentbrowser___{{.Tool}}",
+			ApprovalPrefix: "agentbrowser: ",
+			Measured:       "1.0.0 2026-10-30",
+			Partial:        "ACP keeps droid's own system prompt and its 15 built-in tools; only stream-jsonrpc sessions can replace them",
 		},
 	},
 

@@ -41,6 +41,14 @@ type Direct struct {
 	// caller's tool calls the same way, so they match the tools offered.
 	ToolName string
 
+	// ApprovalPrefix starts the title the harness gives a permission
+	// request for one of the caller's tools, for a harness that titles them
+	// by server and a display name rather than by ToolName (droid 1.0.0:
+	// "agentbrowser: Probe echo" for probe_echo). The server holds only the
+	// caller's tools, so a request under it is for one of them. Empty
+	// matches by tool name alone.
+	ApprovalPrefix string
+
 	// ContinuePrompt is sent after a restart whose written session ends in
 	// tool results, for an agent that will not start a turn without a
 	// prompt. Empty is "Continue.".

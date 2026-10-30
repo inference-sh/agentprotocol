@@ -139,3 +139,25 @@ func TestCheckRequest(t *testing.T) {
 		t.Error("a conversation ending with the assistant has nothing to answer")
 	}
 }
+
+// An approval is the caller's when it names a caller tool, or when the row's
+// ApprovalPrefix starts it (droid 1.0.0 titles one "agentbrowser: Probe
+// echo"); anything else the agent asks to run is not.
+func TestHarnessOurs(t *testing.T) {
+	c := &harnessConv{names: map[string]string{"probe_echo": "agentbrowser___probe_echo"}, approvalPrefix: "agentbrowser: "}
+	for title, want := range map[string]bool{
+		"agentbrowser___probe_echo": true,
+		"probe_echo":                true,
+		"agentbrowser: Probe echo":  true,
+		"Execute":                   false,
+		"other: Probe echo":         false,
+	} {
+		if got := c.ours(title); got != want {
+			t.Errorf("ours(%q) = %v, want %v", title, got, want)
+		}
+	}
+	c.approvalPrefix = ""
+	if c.ours("agentbrowser: Probe echo") {
+		t.Error("a display title matched with no ApprovalPrefix")
+	}
+}

@@ -5,6 +5,7 @@ app
 doctor
 export
 fork
+import-sessions
 install-desktop
 login
 migrate

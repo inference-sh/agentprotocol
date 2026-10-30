@@ -1,4 +1,6 @@
-package kimi
+// Package tomlstr reads the string values of the TOML config files agents
+// keep (kimi, codex), enough to look up a setting without a TOML library.
+package tomlstr
 
 import (
 	"errors"
@@ -7,9 +9,9 @@ import (
 	"strings"
 )
 
-// readConfig reads kimi's config.toml as the string values it holds, keyed by
-// keyPath. A missing file is an empty config.
-func readConfig(path string) (map[string]string, error) {
+// Read reads a TOML file as the string values it holds, keyed by Key. A
+// missing file is an empty map.
+func Read(path string) (map[string]string, error) {
 	raw, err := os.ReadFile(path)
 	if errors.Is(err, os.ErrNotExist) {
 		return map[string]string{}, nil
@@ -17,19 +19,19 @@ func readConfig(path string) (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	return parseTOML(string(raw)), nil
+	return Parse(string(raw)), nil
 }
 
-// keyPath joins a dotted TOML key's parts. Parts can hold dots themselves
+// Key joins a dotted TOML key's parts. Parts can hold dots themselves
 // (providers."managed:kimi-code"), so they are joined with a byte TOML keys
 // cannot hold.
-func keyPath(parts ...string) string { return strings.Join(parts, "\x00") }
+func Key(parts ...string) string { return strings.Join(parts, "\x00") }
 
-// parseTOML reads the string values of a TOML document: the tables and
-// inline tables kimi writes, with bare and quoted keys. Other values
-// (numbers, booleans, arrays) are skipped, as are arrays of tables. It is
-// lenient: what it cannot read it skips to the end of the line.
-func parseTOML(src string) map[string]string {
+// Parse reads the string values of a TOML document: tables and inline
+// tables, with bare and quoted keys. Other values (numbers, booleans,
+// arrays) are skipped, as are arrays of tables. It is lenient: what it
+// cannot read it skips to the end of the line.
+func Parse(src string) map[string]string {
 	p := &tomlParser{s: src, out: map[string]string{}}
 	var table []string
 	for {
@@ -158,7 +160,7 @@ func (p *tomlParser) value(path []string, keep bool) {
 	switch c := p.s[p.i]; c {
 	case '"', '\'':
 		if s, ok := p.str(); ok && keep {
-			p.out[keyPath(path...)] = s
+			p.out[Key(path...)] = s
 		}
 	case '{':
 		p.i++

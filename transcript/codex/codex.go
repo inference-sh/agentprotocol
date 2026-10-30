@@ -38,6 +38,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/inference-sh/agentprotocol/internal/tomlstr"
 	"github.com/inference-sh/agentprotocol/transcript"
 )
 
@@ -301,6 +302,11 @@ func (st *store) Write(ctx context.Context, s *transcript.Session) (string, erro
 	// ids are settled first; the engine's own pass then changes nothing.
 	transcript.AssignIDs(&head, files.IDs, files.Tree)
 	p := newPlan(&head)
+	provider, err := configuredProvider(st.home)
+	if err != nil {
+		return "", err
+	}
+	p.provider = provider
 	w := files
 	w.Encode = p.encode
 	w.WriteHeader = p.header
@@ -409,6 +415,27 @@ func newer(a, b string) bool {
 	return strings.ToLower(ra) > strings.ToLower(rb)
 }
 
+// configuredProvider is the model provider codex runs with under home, as it
+// picks one from config.toml: the active profile's model_provider, then the
+// top-level one, then "openai". An override on codex's command line (-c
+// model_provider=...) is not seen here; a caller that launches codex with one
+// puts the same provider in config.toml.
+func configuredProvider(home string) (string, error) {
+	cfg, err := tomlstr.Read(filepath.Join(home, codexDir, "config.toml"))
+	if err != nil {
+		return "", fmt.Errorf("transcript: codex: %w", err)
+	}
+	if prof := cfg[tomlstr.Key("profile")]; prof != "" {
+		if p := cfg[tomlstr.Key("profiles", prof, "model_provider")]; p != "" {
+			return p, nil
+		}
+	}
+	if p := cfg[tomlstr.Key("model_provider")]; p != "" {
+		return p, nil
+	}
+	return "openai", nil
+}
+
 func rollouts(home, cwd string) ([]string, error) {
 	return transcript.Glob(filepath.Join(home, root, "*", "*", "*", "rollout-*.jsonl"))
 }
@@ -504,6 +531,8 @@ type plan struct {
 	// kept holds, for each compaction marker this write records, the
 	// earlier entries it keeps after its summary, by the marker's id.
 	kept map[string][]transcript.Entry
+	// provider is the model provider a session_meta without one records.
+	provider string
 }
 
 func newPlan(s *transcript.Session) *plan {
@@ -619,6 +648,17 @@ func (p *plan) header(s *transcript.Session) ([]json.RawMessage, error) {
 	}
 	if _, ok := meta["cli_version"]; !ok {
 		meta["cli_version"] = json.RawMessage(`""`)
+	}
+	// Codex 0.166 resumes a thread only under the provider it was saved
+	// with, and saves a session_meta without one as "", which no config
+	// names: thread/resume fails with modelProviderNotConfigured. A thread
+	// written here is saved under the provider codex is configured with.
+	if _, ok := meta["model_provider"]; !ok && p.provider != "" {
+		raw, err := json.Marshal(p.provider)
+		if err != nil {
+			return nil, err
+		}
+		meta["model_provider"] = raw
 	}
 	payload, err := json.Marshal(meta)
 	if err != nil {

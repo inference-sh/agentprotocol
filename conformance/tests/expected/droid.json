@@ -71,7 +71,7 @@
         "acp/subagents": "skip:no-tool",
         "acp/transcript": "pass",
         "acp/usage.account": "finding:not-reported",
-        "acp/usage.context": "finding:not-reported",
+        "acp/usage.context": "pass:with-window",
         "acp/usage.limits": "finding:not-reported",
         "acp/usage.probe.account": "pass:api_key",
         "acp/usage.probe.limits": "finding:probe_failed",

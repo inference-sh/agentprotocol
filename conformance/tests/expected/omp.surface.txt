@@ -72,10 +72,12 @@ worktree
 --goal
 --hide-thinking
 --hook
+--max-cost
 --max-time
 --mode
 --model
 --models
+--no-context-files
 --no-extensions
 --no-lsp
 --no-prewalk
@@ -109,3 +111,5 @@ worktree
 --thinking
 --tools
 --view
+--wait-async
+--warn-cost

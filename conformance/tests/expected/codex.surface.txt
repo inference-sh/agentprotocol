@@ -17,6 +17,7 @@ help
 login
 logout
 mcp
+migrate-nfs-db
 migrate-rollouts
 plugin
 queue

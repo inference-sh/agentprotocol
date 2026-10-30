@@ -24,6 +24,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 )
 
 // The environment variables a bridge reads its server from.
@@ -59,9 +60,13 @@ func Main() {
 // writes the server's answers to out, one per line. Messages are sent as they
 // arrive, so a long tool call does not hold back the next request; answers are
 // written in the order they come back. A request the server fails is answered
-// with a JSON-RPC error, so the agent is never left waiting. Run returns when
-// in ends and every answer is written.
+// with a JSON-RPC error, so the agent is never left waiting. Once in ends, Run
+// waits up to EOFGrace for the answers still being fetched, then cancels
+// them: the agent has gone or is going, and a tool call the server never
+// finishes must not keep the bridge alive.
 func Run(ctx context.Context, url, authorization string, in io.Reader, out io.Writer) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	b := &bridge{url: url, auth: authorization, out: out}
 	sc := bufio.NewScanner(in)
 	sc.Buffer(make([]byte, 64<<10), maxMessage)
@@ -78,9 +83,20 @@ func Run(ctx context.Context, url, authorization string, in io.Reader, out io.Wr
 			b.forward(ctx, msg)
 		}()
 	}
-	wg.Wait()
+	done := make(chan struct{})
+	go func() { wg.Wait(); close(done) }()
+	select {
+	case <-done:
+	case <-time.After(EOFGrace):
+		cancel()
+		<-done
+	}
 	return sc.Err()
 }
+
+// EOFGrace is how long Run waits, once its input has ended, for answers still
+// being fetched. A variable for tests.
+var EOFGrace = 10 * time.Second
 
 type bridge struct {
 	url  string

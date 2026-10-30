@@ -98,3 +98,34 @@ func TestEnv(t *testing.T) {
 		t.Fatalf("env %v", e)
 	}
 }
+
+// Once the agent's input has ended, a call the server never finishes is
+// answered no more and does not keep the bridge running: after EOFGrace it
+// is cancelled and Run returns.
+func TestRunEndsAfterInputWithAHangingCall(t *testing.T) {
+	hang := make(chan struct{})
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		select {
+		case <-hang:
+		case <-r.Context().Done():
+		}
+	}))
+	t.Cleanup(func() { close(hang); srv.Close() })
+	prev := EOFGrace
+	EOFGrace = 100 * time.Millisecond
+	t.Cleanup(func() { EOFGrace = prev })
+
+	done := make(chan error, 1)
+	var out bytes.Buffer
+	go func() {
+		done <- Run(context.Background(), srv.URL, "", strings.NewReader(`{"jsonrpc":"2.0","id":1,"method":"tools/call"}`+"\n"), &out)
+	}()
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatalf("run: %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("Run kept waiting on a call nobody will read")
+	}
+}

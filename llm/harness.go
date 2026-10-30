@@ -270,7 +270,7 @@ func (h *Harness) start(ctx context.Context, req Request, onDelta func(Delta)) (
 	if settle == 0 {
 		settle = DefaultSettle
 	}
-	c := &harnessConv{dir: dir, settle: settle, names: map[string]string{}}
+	c := &harnessConv{dir: dir, settle: settle, names: map[string]string{}, approvalPrefix: d.ApprovalPrefix}
 	fail := func(err error) (*harnessConv, error) {
 		c.close()
 		return nil, err
@@ -491,6 +491,8 @@ type harnessConv struct {
 	settle time.Duration
 	idle   *time.Timer
 	names  map[string]string // tool name to the name the model is given
+	// approvalPrefix is Direct.ApprovalPrefix.
+	approvalPrefix string
 
 	sig     string
 	history []string
@@ -673,8 +675,12 @@ func (c *harnessConv) pump() {
 }
 
 // ours reports whether an approval names one of the caller's tools. Agents
-// title a request in their own way, so the name is looked for in it.
+// title a request in their own way, so the name is looked for in it, or the
+// row's ApprovalPrefix starts it.
 func (c *harnessConv) ours(title string) bool {
+	if c.approvalPrefix != "" && strings.HasPrefix(title, c.approvalPrefix) {
+		return true
+	}
 	for tool, visible := range c.names {
 		if strings.Contains(title, visible) || strings.Contains(title, tool) {
 			return true

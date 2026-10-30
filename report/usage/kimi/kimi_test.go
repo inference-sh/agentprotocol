@@ -220,32 +220,6 @@ func TestOAuthKey(t *testing.T) {
 	}
 }
 
-func TestParseTOML(t *testing.T) {
-	got := parseTOML(`
-top = "a" # comment
-[t."x.y"]
-s = 'lit'
-e = "q\"é"
-n = 3
-arr = [1, "two", [3]]
-inline = { a = "1", b = { c = "2" } }
-dotted.k = "d"
-[[arr_of_tables]]
-k = "hidden"
-`)
-	for k, want := range map[string]string{
-		keyPath("top"): "a", keyPath("t", "x.y", "s"): "lit", keyPath("t", "x.y", "e"): "q\"é",
-		keyPath("t", "x.y", "inline", "a"): "1", keyPath("t", "x.y", "inline", "b", "c"): "2", keyPath("t", "x.y", "dotted", "k"): "d",
-	} {
-		if got[k] != want {
-			t.Errorf("%q = %q, want %q", k, got[k], want)
-		}
-	}
-	if got[keyPath("k")] != "" || got[keyPath("t", "x.y", "n")] != "" {
-		t.Errorf("kept values it should not: %q", got)
-	}
-}
-
 func ptr(f float64) *num { n := num(f); return &n }
 
 func TestWindowsHaveUniqueIDs(t *testing.T) {

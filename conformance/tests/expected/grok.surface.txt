@@ -3,7 +3,6 @@
 agent
 clone
 completions
-cursor-worker
 dashboard
 doctor
 du
@@ -23,9 +22,11 @@ trace
 update
 usage
 version
+worker
 worktree
 wrap
 [flags]
+--add-dir
 --agent
 --agents
 --allow

@@ -284,6 +284,82 @@ func TestForeignLegacy(t *testing.T) {
 	})
 }
 
+// A session written here records the provider codex is configured with:
+// codex 0.166 saves a session_meta without one as "" and then refuses to
+// resume it (modelProviderNotConfigured).
+func TestWriteRecordsConfiguredProvider(t *testing.T) {
+	for _, c := range []struct{ name, config, want string }{
+		{"default", "", "openai"},
+		{"top-level", "model_provider = \"mock\"\n", "mock"},
+		{"profile", "model_provider = \"mock\"\nprofile = \"work\"\n[profiles.work]\nmodel_provider = \"azure\"\n", "azure"},
+		{"profile without one", "model_provider = \"mock\"\nprofile = \"work\"\n[profiles.work]\nmodel = \"x\"\n", "mock"},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			home := t.TempDir()
+			if c.config != "" {
+				if err := os.MkdirAll(filepath.Join(home, ".codex"), 0o755); err != nil {
+					t.Fatal(err)
+				}
+				if err := os.WriteFile(filepath.Join(home, ".codex", "config.toml"), []byte(c.config), 0o644); err != nil {
+					t.Fatal(err)
+				}
+			}
+			st, _ := codex.Codec.Open(home)
+			s := &transcript.Session{Agent: "other", CWD: "/p", Entries: []transcript.Entry{
+				{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "hi"}}},
+			}}
+			if _, err := st.Write(context.Background(), s); err != nil {
+				t.Fatal(err)
+			}
+			if got := metaProvider(t, home); got != c.want {
+				t.Fatalf("model_provider = %q, want %q", got, c.want)
+			}
+		})
+	}
+}
+
+// A session codex wrote keeps the provider it was saved with, whatever the
+// config says now.
+func TestWriteKeepsSavedProvider(t *testing.T) {
+	home := t.TempDir()
+	st, _ := codex.Codec.Open(home)
+	s := &transcript.Session{Agent: "codex", CWD: "/p",
+		Vendor: &codex.Vendor{Meta: map[string]json.RawMessage{"model_provider": json.RawMessage(`"saved"`)}},
+		Entries: []transcript.Entry{
+			{Role: transcript.RoleUser, Content: []transcript.Block{{Kind: transcript.BlockText, Text: "hi"}}},
+		}}
+	if _, err := st.Write(context.Background(), s); err != nil {
+		t.Fatal(err)
+	}
+	if got := metaProvider(t, home); got != "saved" {
+		t.Fatalf("model_provider = %q, want saved", got)
+	}
+}
+
+// metaProvider is the model_provider of the one rollout under home.
+func metaProvider(t *testing.T, home string) string {
+	t.Helper()
+	st, _ := codex.Codec.Open(home)
+	infos, _ := st.List(context.Background(), "")
+	if len(infos) != 1 {
+		t.Fatalf("list = %+v", infos)
+	}
+	var got string
+	eachRow(t, infos[0].Path, func(r row) {
+		if r.Type != "session_meta" {
+			return
+		}
+		var m struct {
+			Provider *string `json:"model_provider"`
+		}
+		if err := json.Unmarshal(r.Payload, &m); err != nil || m.Provider == nil {
+			t.Fatalf("session_meta has no model_provider: %s", r.Payload)
+		}
+		got = *m.Provider
+	})
+	return got
+}
+
 // row is the envelope of a rollout line.
 type row struct {
 	Ordinal *uint64         `json:"ordinal"`

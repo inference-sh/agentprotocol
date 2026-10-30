@@ -70,7 +70,16 @@ func (r *TestRunner) probeUsage() {
 		r.finding("usage.context:not-reported", fmt.Sprintf("usage: %s reported no context window fill", name))
 	} else {
 		c := u.Context[len(u.Context)-1]
+		filled := false
+		for _, e := range u.Context {
+			filled = filled || e.UsedTokens > 0
+		}
 		switch {
+		case c.UsedTokens <= 0 && c.MaxTokens > 0 && !filled:
+			// The driver reports a new session's window as an empty fill
+			// before the first turn (driver/acp.go); an agent that never
+			// sends one after it has reported the window alone.
+			r.finding("usage.context:window-only", fmt.Sprintf("usage: %s reported its context window (%d tokens) and no fill after the turn", name, c.MaxTokens))
 		case c.UsedTokens <= 0:
 			r.fail("usage.context", fmt.Sprintf("usage: %s reported an empty context fill: %+v", name, c))
 		case c.MaxTokens <= 0:

@@ -39,6 +39,9 @@ type acpRealAgent struct {
 	asks bool
 	// builtin is a call of one of the agent's own tools, for asks.
 	builtin, builtinArgs string
+	// load is the call that loads a deferred MCP tool, run in a turn of its
+	// own before the tool is called; empty when the agent offers it outright.
+	load, loadArgs string
 }
 
 func realOpencode(t *testing.T, mock string) acpRealAgent { return opencodeWith(t, mock, "") }
@@ -122,6 +125,47 @@ func realHermes(t *testing.T, mock string) acpRealAgent {
 	}
 }
 
+// realDroid is droid against the mock as a custom OpenAI model. droid takes
+// only stdio MCP servers, so the tools reach it through this test binary as
+// its StdioBridge, as belt's remote sessions do.
+func realDroid(t *testing.T, mock string) acpRealAgent {
+	bin := os.Getenv("DROID_BIN")
+	if bin == "" {
+		var err error
+		if bin, err = exec.LookPath("droid"); err != nil {
+			t.Skip("droid not installed")
+		}
+	}
+	home := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(home, ".factory"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	settings := `{"customModels":[{"model":"gpt-4o-mini","displayName":"Mock","baseUrl":"` + mock + `/v1","apiKey":"mock-key","provider":"openai","maxOutputTokens":4096,"maxContextLimit":128000}],"sessionDefaultSettings":{"model":"custom:gpt-4o-mini"}}`
+	if err := os.WriteFile(filepath.Join(home, ".factory", "settings.json"), []byte(settings), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	exe, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	env := append(isolatedEnv(home, "FACTORY_", "DROID_"),
+		"FACTORY_API_BASE_URL="+mock, "FACTORY_API_KEY=fk-mock-key-0123456789abcdef0123", "FACTORY_DISABLE_KEYRING=1")
+	return acpRealAgent{
+		name: "droid",
+		backend: &driver.ACPBackend{
+			Command: bin, Args: []string{"exec", "--output-format", "acp", "-m", "custom:gpt-4o-mini"},
+			Env:         env,
+			StdioBridge: []string{exe, "-test.run=^$"},
+		},
+		toolName: func(server, tool string) string { return server + "___" + tool },
+		reqPath:  "/responses",
+		// droid 1.1.0 defers an MCP tool behind ToolSearch unless its
+		// server's name contains "github" or "agentbrowser", and drops a
+		// call of one not loaded yet.
+		load: "ToolSearch", loadArgs: `{"query":"select:tools___lookup"}`,
+	}
+}
+
 // hermesToolName is how the installed hermes names an MCP tool:
 // mcp_<server>_<tool> before 0.19, mcp__<server>__<tool> from 0.19 (measured
 // on 0.14.0 and 0.19.0).
@@ -187,6 +231,7 @@ func TestACPRealCallerTools(t *testing.T) {
 		"opencode":        realOpencode,
 		"opencode-asking": realOpencodeAsking,
 		"hermes":          realHermes,
+		"droid":           realDroid,
 	} {
 		t.Run(name, func(t *testing.T) {
 			agent := setup(t, mock)
@@ -227,6 +272,14 @@ func TestACPRealCallerTools(t *testing.T) {
 			defer sess.Close()
 			untilWithin(t, sess.Events(), ap.AgentEventRunStarted, 30*time.Second)
 
+			if agent.load != "" {
+				mockCtl(t, mock, "POST", "/ctl/toolcall", map[string]any{"Name": agent.load, "Args": agent.loadArgs})
+				mockCtl(t, mock, "POST", "/text", map[string]any{"Text": "LOADED"})
+				if err := sess.Prompt(context.Background(), driver.TextInput("load the lookup tool")); err != nil {
+					t.Fatalf("prompt: %v", err)
+				}
+				untilWithin(t, sess.Events(), ap.AgentEventTurnCompleted, 120*time.Second)
+			}
 			mockCtl(t, mock, "POST", "/ctl/toolcall", map[string]any{"Name": agent.toolName("tools", "lookup"), "Args": `{"word":"orb"}`})
 			mockCtl(t, mock, "POST", "/text", map[string]any{"Text": "TOOLS-DONE"})
 			if err := sess.Prompt(context.Background(), driver.TextInput("look up orb")); err != nil {

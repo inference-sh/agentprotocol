@@ -1,6 +1,7 @@
 package driver
 
 import (
+	"encoding/json"
 	"strings"
 	"sync"
 
@@ -53,15 +54,20 @@ func (t *acpCallerTools) close() {
 //	mcp_<server>_  <server>__  <server>/  <server>.  <server>:
 //	                  other agents' forms (not measured)
 //
-// A permission request or later update whose toolCallId a matching tool_call
-// announced is ours too (see observe). A bare title equal to a tool name is
-// not matched: an agent's own tool of that name (bash, read) would be taken
-// for ours, and auto-allowed. An agent whose title is a description rather
-// than the tool's name is not recognised, and its permission requests for
-// our tools reach the caller as approvals.
-func (t *acpCallerTools) match(title string) (string, bool) {
+// A tool call whose _meta names our server and tool is ours whatever its
+// title (see matchMeta). A permission request or later update whose
+// toolCallId a matching tool_call announced is ours too (see observe). A bare
+// title equal to a tool name is not matched: an agent's own tool of that name
+// (bash, read) would be taken for ours, and auto-allowed. An agent whose title
+// is a description rather than the tool's name, and whose _meta does not name
+// the tool, is not recognised, and its permission requests for our tools
+// reach the caller as approvals.
+func (t *acpCallerTools) match(title string, meta json.RawMessage) (string, bool) {
 	if t == nil {
 		return "", false
+	}
+	if bare, ok := t.matchMeta(meta); ok {
+		return bare, true
 	}
 	srv := t.server
 	for _, prefix := range []string{
@@ -73,6 +79,29 @@ func (t *acpCallerTools) match(title string) (string, bool) {
 		}
 	}
 	return "", false
+}
+
+// matchMeta reads the MCP server and tool a tool call's _meta names. droid
+// 1.1.0 titles a call of our lookup "tools: Lookup" and puts
+// {"factory":{"source":"mcp","server":"tools","tool":"lookup"}} in _meta, on
+// the tool_call and on its permission request.
+func (t *acpCallerTools) matchMeta(meta json.RawMessage) (string, bool) {
+	if len(meta) == 0 {
+		return "", false
+	}
+	var m struct {
+		Factory struct {
+			Source, Server, Tool string
+		} `json:"factory"`
+	}
+	if json.Unmarshal(meta, &m) != nil {
+		return "", false
+	}
+	f := m.Factory
+	if f.Source != "mcp" || f.Server != t.server || !t.names[f.Tool] {
+		return "", false
+	}
+	return f.Tool, true
 }
 
 // observe records a tool_call or tool_call_update and returns the bare name
@@ -87,7 +116,7 @@ func (t *acpCallerTools) observe(u acp.SessionUpdate) (string, bool) {
 	if t == nil {
 		return "", false
 	}
-	bare, ok := t.match(u.Title)
+	bare, ok := t.match(u.Title, u.Meta)
 	if u.ToolCallID == "" {
 		return bare, ok
 	}
@@ -118,12 +147,12 @@ func isTerminalToolStatus(s string) bool {
 }
 
 // owns reports whether a permission request is for one of our tools: its
-// title matches, or its toolCallId was announced in a tool_call that did.
+// title or _meta matches, or its toolCallId was announced in a tool_call that did.
 func (t *acpCallerTools) owns(req acp.PermissionRequest) bool {
 	if t == nil || req.ToolCall == nil {
 		return false
 	}
-	if _, ok := t.match(req.ToolCall.Title); ok {
+	if _, ok := t.match(req.ToolCall.Title, req.ToolCall.Meta); ok {
 		return true
 	}
 	t.mu.Lock()

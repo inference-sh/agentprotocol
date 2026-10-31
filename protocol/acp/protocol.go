@@ -490,6 +490,8 @@ type PermissionToolRef struct {
 	ToolCallID string          `json:"toolCallId,omitempty"`
 	Title      string          `json:"title,omitempty"`
 	RawInput   json.RawMessage `json:"rawInput,omitempty"`
+	// Meta is the tool call's _meta.
+	Meta json.RawMessage `json:"_meta,omitempty"`
 }
 
 // PermissionOption is one answer the agent will accept. Kind is the

@@ -1,6 +1,7 @@
 package driver
 
 import (
+	"encoding/json"
 	"testing"
 
 	ap "github.com/inference-sh/agentprotocol/model"
@@ -18,10 +19,39 @@ func TestACPCallerToolMatching(t *testing.T) {
 		"tools_":           false,
 		"":                 false,
 	} {
-		bare, ok := tools.match(title)
+		bare, ok := tools.match(title, nil)
 		if ok != want || (ok && bare != "echo") {
 			t.Errorf("match(%q) = %q, %v; want %v", title, bare, ok, want)
 		}
+	}
+}
+
+// droid 1.1.0 titles our echo "tools: Echo" and names it in _meta.
+func TestACPCallerToolMatchingByMeta(t *testing.T) {
+	tools := newACPCallerTools("tools", nil, []ap.Tool{{Function: ap.ToolFunction{Name: "echo"}}})
+	for meta, want := range map[string]bool{
+		`{"factory":{"source":"mcp","server":"tools","tool":"echo"}}`:     true,
+		`{"factory":{"source":"mcp","server":"other","tool":"echo"}}`:     false,
+		`{"factory":{"source":"mcp","server":"tools","tool":"bash"}}`:     false,
+		`{"factory":{"source":"builtin","server":"tools","tool":"echo"}}`: false,
+		`{"other":{}}`: false,
+		`not json`:     false,
+	} {
+		bare, ok := tools.match("tools: Echo", json.RawMessage(meta))
+		if ok != want || (ok && bare != "echo") {
+			t.Errorf("match(%s) = %q, %v; want %v", meta, bare, ok, want)
+		}
+	}
+	// The permission request follows the tool_call with the same id.
+	meta := json.RawMessage(`{"factory":{"source":"mcp","server":"tools","tool":"echo"}}`)
+	if bare, ok := tools.observe(acp.SessionUpdate{Kind: acp.UpdateKindToolCall, ToolCallID: "c1", Title: "tools: Echo", Meta: meta}); !ok || bare != "echo" {
+		t.Fatal("droid's tool_call not recognised")
+	}
+	if !tools.owns(acp.PermissionRequest{ToolCall: &acp.PermissionToolRef{ToolCallID: "c1", Title: "tools: Echo"}}) {
+		t.Error("droid's permission for our tool not recognised")
+	}
+	if !tools.owns(acp.PermissionRequest{ToolCall: &acp.PermissionToolRef{ToolCallID: "c9", Title: "tools: Echo", Meta: meta}}) {
+		t.Error("a permission whose _meta names our tool not recognised")
 	}
 }
 

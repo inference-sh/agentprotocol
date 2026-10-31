@@ -586,7 +586,8 @@ func minedCommands(binary string) (names, roots []string) {
 				return nil
 			}
 			info, err := d.Info()
-			if err != nil || info.Size() > 300<<20 {
+			// claude 2.1.316's binary is 313 MiB.
+			if err != nil || info.Size() > 1<<30 {
 				return nil
 			}
 			// Sources, and executables big enough to be a runtime with the

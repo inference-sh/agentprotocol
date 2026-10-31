@@ -74,7 +74,7 @@
         "acp/usage.context": "pass:with-window",
         "acp/usage.limits": "finding:not-reported",
         "acp/usage.probe.account": "pass:api_key",
-        "acp/usage.probe.limits": "finding:probe_failed",
+        "acp/usage.probe.limits": "pass:windows",
         "acp/usage.probe.no-model-call": "pass",
         "acp/usage.turn": "finding:not-reported",
         "setup/binary": "pass",

@@ -150,6 +150,14 @@ func New() *MockServer {
 	mux.HandleFunc("GET /api/cli/org", s.stubJSON(map[string]any{
 		"id": "mock-org-001", "name": "Mock Org",
 	}))
+	// droid 1.1.0 reads data.hasActiveSubscription from this at start; any
+	// other reply ends the TUI with "Failed to create session".
+	window := map[string]any{"usedPercent": 0, "windowEnd": nil}
+	mux.HandleFunc("GET /api/billing/limits", s.stubJSON(map[string]any{
+		"hasActiveSubscription":  true,
+		"limits":                 map[string]any{"standard": map[string]any{"fiveHour": window, "weekly": window, "monthly": window}},
+		"extraUsageBalanceCents": 0,
+	}))
 
 	// Kimi managed API stubs
 	mux.HandleFunc("GET /coding/v1/me", s.stubJSON(map[string]any{

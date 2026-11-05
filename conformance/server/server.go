@@ -209,19 +209,20 @@ func New() *MockServer {
 			})
 		case "AWSCognitoIdentityService.GetOpenIdToken":
 			writeJSON(w, map[string]any{"IdentityId": "us-east-1:mock-identity-id", "Token": "mock-openid-token"})
-		// CodeWhisperer management
-		case "AmazonCodeWhispererService.GetProfile":
+		// CodeWhisperer management; kiro-cli 3.0 calls the same operations
+		// on KiroControlPlaneBearerService and KiroRuntimeService.
+		case "AmazonCodeWhispererService.GetProfile", "KiroControlPlaneBearerService.GetProfile":
 			writeJSON(w, map[string]any{"profileArn": "arn:aws:codewhisperer:us-east-1:mock:profile/mock", "profileName": "mock"})
 		case "AmazonCodeWhispererService.GetUsageLimits":
 			writeJSON(w, map[string]any{"usageLimits": []any{}})
-		case "AmazonCodeWhispererService.ListAvailableModels":
+		case "AmazonCodeWhispererService.ListAvailableModels", "KiroControlPlaneBearerService.ListAvailableModels":
 			writeJSON(w, map[string]any{"models": []map[string]any{
 				{"modelId": "kiro-default", "modelName": "Kiro Default", "provider": "kiro"},
 			}})
 		case "AmazonCodeWhispererService.SendTelemetryEvent":
 			writeJSON(w, map[string]any{})
 		// CodeWhisperer streaming (LLM call)
-		case "AmazonCodeWhispererStreamingService.GenerateAssistantResponse":
+		case "AmazonCodeWhispererStreamingService.GenerateAssistantResponse", "KiroRuntimeService.GenerateAssistantResponse":
 			body, _ := io.ReadAll(r.Body)
 			// Record the model kiro actually asked for, not a constant: with the
 			// constant, the model check compared "kiro-default" with itself.

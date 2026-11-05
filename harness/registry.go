@@ -495,18 +495,23 @@ export default function (pi: any) {
 			Stop:         "stop",
 		},
 		NeedsIntercept: true,
-		// kiro-cli has two engines. `chat --no-interactive` starts V1 for 75% of
-		// installs and V2 for the rest (the embedded "v2_non_interactive"
-		// rollout, treatment_percent 25); fresh Docker installs landed on
-		// either. Headless pins V1, the one most scripted runs get; the
-		// TUI and ACP run V2. V2's non-interactive client also drops --model
-		// ("failed to set model 'kiro-default': Method not found", 2.21.3).
-		HeadlessCmd: []string{"kiro-cli", "chat", "--no-interactive", "--trust-all-tools", "--agent-engine", "v1", "--model", "{{.Model}}"},
+		// kiro-cli 3.0 runs one engine, KAS, for chat, the TUI and ACP; it
+		// ignores --agent-engine v1 ("no longer runs Classic"). Before 3.0,
+		// `chat --no-interactive` started V1 for most installs and headless
+		// pinned it. V2's non-interactive client dropped --model ("failed to
+		// set model 'kiro-default': Method not found", 2.21.3).
+		HeadlessCmd: []string{"kiro-cli", "chat", "--no-interactive", "--trust-all-tools", "--model", "{{.Model}}"},
 		ToolCallByMode: map[Mode]ToolCall{
 			ModeHeadless: {Name: "fs_read", Args: `{"operations":[{"mode":"Line","path":"README.md"}]}`},
 		},
 		// Without --model, kiro sends an empty modelId and the backend picks.
-		InteractiveCmd:          []string{"kiro-cli", "chat", "--trust-all-tools", "--model", "{{.Model}}"},
+		// kiro-cli 3.0's TUI (V3) asks "Trust this workspace?" after its
+		// engine has started, and the engine runs stop hooks only in a
+		// workspace trusted when it started (KAS 3.0.0, hooks.v2
+		// executionDisabledUntrustedWorkspace): answered there, the first
+		// session's stop hook never fires. --trust-workspace trusts it from
+		// the start, as a workspace trusted on an earlier launch is.
+		InteractiveCmd:          []string{"kiro-cli", "chat", "--trust-all-tools", "--trust-workspace", "--model", "{{.Model}}"},
 		InteractiveArgs:         []string{"What is the project codename? Reply ONLY the codename."},
 		InteractivePromptInArgs: true,
 		ExitCommand:             "/exit",
@@ -527,10 +532,13 @@ export default function (pi: any) {
 		// rollout, a percentage of devices, and each container is a new one:
 		// 3 launches in 16. Unanswered, kiro sat on it and never ran the
 		// prompt (2m8s, no requests; CI 2026-10-18). "Remind me later" keeps
-		// V2 and the agent's config as they are.
+		// V2 and the agent's config as they are. kiro-cli 3.0 opens on its
+		// "Welcome to Kiro CLI V3" banner; with an older "Welcome"
+		// dismissal, the Enter pressed on it left the trust-all-tools dialog
+		// unanswered and the session never started.
 		OnboardingDismiss: []DismissAction{
 			{Pattern: "Switch to V3 today", SendDown: true},
-			{Pattern: "accept responsibility", SendDown: true, Required: true}, {Pattern: "Welcome"},
+			{Pattern: "accept responsibility", SendDown: true, Required: true},
 		},
 		// Measured with the mock's request bodies. KIRO_HOME moves kiro's
 		// own home (agents, settings, steering, skills, mcp.json, sessions)

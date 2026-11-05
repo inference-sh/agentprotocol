@@ -4,6 +4,7 @@ extensions
 gemma
 hooks
 mcp
+models
 skills
 [flags]
 --accept-raw-output-risk
@@ -19,6 +20,7 @@ skills
 --help
 --include-directories
 --list-extensions
+--list-models
 --list-sessions
 --model
 --output-format

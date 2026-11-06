@@ -56,9 +56,6 @@ workflow
 --extension-sdk-path
 --fleet
 --help
---host-ahp
---host-compute-id
---host-environment
 --interactive
 --log-dir
 --log-level

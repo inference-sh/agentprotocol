@@ -266,6 +266,12 @@ func TestClaudeRealBinary(t *testing.T) {
 	})
 
 	t.Run("mcp tool", func(t *testing.T) {
+		// Claude 2.1.316 and later defer MCP tools behind ToolSearch, so the
+		// model loads echo in a turn of its own first. Earlier versions offer
+		// it directly and answer the ToolSearch call with an error.
+		mock.tool("ToolSearch", `{"query":"select:mcp__host__echo"}`)
+		mock.text("MCP-LOADED")
+		turn("load the echo tool")
 		mock.tool("mcp__host__echo", `{"text":"MCP-PING"}`)
 		mock.text("MCP-DONE")
 		p := approval("use the echo tool")

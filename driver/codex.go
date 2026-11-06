@@ -123,7 +123,7 @@ func (b *CodexBackend) Kind() string { return KindCodex }
 // OnlyCallerTools: launch overrides (codexOwnToolsOff), no environment on
 // the thread and on every turn, and every MCP server in the user's config
 // disabled for the thread. The model is then offered the caller's tools and
-// nothing else on 0.148.0 and 0.156.1. Before 0.146.0 codex always offers
+// nothing else on 0.148.0, 0.156.1 and 0.167.0. Before 0.146.0 codex always offers
 // update_plan, so it is false for an older Version, and Open checks the
 // version codex reports either way.
 func (b *CodexBackend) Capabilities() Capabilities {
@@ -142,9 +142,12 @@ func (b *CodexBackend) Capabilities() Capabilities {
 // for SessionConfig.OnlyCallerTools, with a thread started with no
 // environment (no shell, apply_patch or view_image). They go on the
 // app-server command line: codex 0.156.1 ignores orchestrator.skills.enabled
-// in thread/start's config. Keys a version does not know are ignored by it.
+// in thread/start's config, and codex 0.167.0 offers view_image with no
+// environment unless features.view_image is off. Keys a version does not
+// know are ignored by it.
 var codexOwnToolsOff = []string{
 	"features.shell_tool=false",
+	"features.view_image=false",
 	"features.goals=false",
 	"features.multi_agent=false",
 	"features.image_generation=false",

@@ -6,6 +6,7 @@ anonymize
 auth
 auth-broker
 auth-gateway
+bash
 bench
 browser-relay
 cleanse
@@ -38,6 +39,7 @@ say
 search
 session
 setup
+sh
 share
 shell
 skill
@@ -51,6 +53,7 @@ ttsr
 update
 usage
 worktree
+zsh
 [flags]
 --add-dir
 --advisor
@@ -73,10 +76,12 @@ worktree
 --hide-thinking
 --hook
 --max-cost
+--max-fps
 --max-time
 --mode
 --model
 --models
+--motion
 --no-context-files
 --no-extensions
 --no-lsp
@@ -106,6 +111,7 @@ worktree
 --skills
 --slow
 --smol
+--spinner-interval
 --system-prompt
 --system-prompt-template
 --thinking

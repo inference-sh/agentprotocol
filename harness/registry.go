@@ -852,7 +852,7 @@ export const Direct = async () => ({
 		Name: "goose", Binary: "goose",
 		DetectEnvVars:  []string{"GOOSE_DISABLE_KEYRING"},
 		ToolCallGated:  ToolCall{Name: "shell", Args: gatedShellArgs},
-		InstallCmd:     []string{"sh", "-c", "mkdir -p $HOME/.local/bin && curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/goose-x86_64-unknown-linux-gnu.tar.bz2 | tar -xj --strip-components=0 -C $HOME/.local/bin"},
+		InstallCmd:     []string{"sh", "-c", "set -e; mkdir -p $HOME/.local/bin; f=$(mktemp); curl -fsSL --retry 5 --retry-all-errors -o \"$f\" https://github.com/aaif-goose/goose/releases/download/stable/goose-x86_64-unknown-linux-gnu.tar.bz2; tar -xjf \"$f\" -C $HOME/.local/bin; rm -f \"$f\""},
 		InstallBinDirs: []string{".local/bin"},
 		APIFormat:      OpenAI,
 		EnvVars: map[string]string{

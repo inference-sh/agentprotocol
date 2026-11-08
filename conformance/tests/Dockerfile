@@ -45,8 +45,10 @@ RUN mkdir -p /home/testuser/.npm-global \
 
 USER testuser
 
-# bun runtime (Oh My Pi requires it)
-RUN curl -fsSL https://bun.sh/install | bash
+# bun runtime (Oh My Pi requires it), from npm: bun.sh/install downloads
+# from GitHub releases, which answered 500/503 for hours on 2026-11-08 and
+# failed every image build.
+RUN npm install -g --no-fund --no-audit bun && bun --version
 ENV PATH="/home/testuser/.bun/bin:$PATH"
 
 WORKDIR /home/testuser

@@ -64,3 +64,19 @@ func TestSameVersion(t *testing.T) {
 		}
 	}
 }
+
+func TestPinnableVersion(t *testing.T) {
+	for _, c := range []struct{ agent, printed, want string }{
+		{"droid", "1.5.0", "1.5.0"},
+		{"claude", "2.1.318 (Claude Code)", "2.1.318"},
+		{"codex", "codex-cli 0.167.0", "0.167.0"},
+		{"cursor", "2026.05.16-0338208", "2026.05.16-0338208"},
+		{"droid", "", ""},
+		{"cursor", "2026.05.16", ""},
+	} {
+		got, ok := PinnableVersion(harness.All[c.agent], c.printed)
+		if got != c.want || ok != (c.want != "") {
+			t.Errorf("%s %q: got %q %v, want %q", c.agent, c.printed, got, ok, c.want)
+		}
+	}
+}

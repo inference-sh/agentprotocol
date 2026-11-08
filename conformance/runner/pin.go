@@ -68,6 +68,9 @@ func PinnedInstallCmd(h harness.Harness, version string) ([]string, error) {
 // commit, as the download URLs and `cursor-agent --version` spell it.
 var cursorBuildRe = regexp.MustCompile(`^[0-9]{4}\.[0-9]{2}\.[0-9]{2}-[0-9a-f]{7}$`)
 
+// cursorBuildInRe finds a cursor build id inside a --version line.
+var cursorBuildInRe = regexp.MustCompile(`[0-9]{4}\.[0-9]{2}\.[0-9]{2}-[0-9a-f]{7}`)
+
 // pinnedInstallers install a given version of the agents that install with
 // a script.
 var pinnedInstallers = map[string]func(harness.Harness, string) ([]string, error){
@@ -176,4 +179,22 @@ func sameVersion(printed, want string) bool {
 		}
 	}
 	return true
+}
+
+// PinnableVersion is the version to pass PinnedInstallCmd for an agent whose
+// --version printed printed: the first dotted number, or cursor's build
+// id. ok is false when printed holds no version or h has no way to
+// install a chosen one.
+func PinnableVersion(h harness.Harness, printed string) (string, bool) {
+	v := harness.ParseVersion(printed)
+	if h.Name == "cursor" {
+		v = cursorBuildInRe.FindString(printed)
+	}
+	if v == "" {
+		return "", false
+	}
+	if _, err := PinnedInstallCmd(h, v); err != nil {
+		return "", false
+	}
+	return v, true
 }

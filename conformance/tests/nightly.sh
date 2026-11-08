@@ -54,8 +54,14 @@ run() {
 case "$what" in
 probes)
   docker run --rm -v "$expected:/expected:ro" "$IMAGE" --harness "$agent" --runs "/expected/$agent.json" > "$OUT/runs.txt"
+  # The first run installs the latest; the rest install the version it
+  # tested, so an agent publishing mid-job cannot split the job across
+  # versions or land a run between its package and its binary.
+  pin=""
   while read -r name mode probes; do
-    run "$name" "$RUN_TIMEOUT" --harness "$agent" --mode "$mode" --probe "$probes" --report "/out/$name.json" < /dev/null
+    # shellcheck disable=SC2086
+    run "$name" "$RUN_TIMEOUT" --harness "$agent" --mode "$mode" --probe "$probes" --report "/out/$name.json" $pin < /dev/null
+    [ -n "$pin" ] || pin="--agent-version-from /out/$name.json"
   done < "$OUT/runs.txt"
   if [ "$update" = --update ]; then
     docker run --rm -v "$expected:/expected:ro" -v "$OUT:/out" "$IMAGE" --harness "$agent" \

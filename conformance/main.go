@@ -292,6 +292,7 @@ func main() {
 		}
 	}
 
+	resolveAgentVersion(targets)
 	checkAgentVersion(targets)
 
 	totalPassed, totalFailed, totalSkipped, totalFound := 0, 0, 0, 0

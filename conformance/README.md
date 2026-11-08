@@ -1577,6 +1577,8 @@ codex, copilot, droid, gemini, goose, grok, hermes, kilo, kiro, omp and pi have 
 
 Without it every run installs the latest release through the registry's `InstallCmd`, and skips the install when the binary is already on PATH. `--agent-version <v>` (one `--harness` only) installs exactly `v`, whatever is on PATH, then fails the `binary` check unless the installed agent's `--version` reports that version. The report records the installed version as before.
 
+`--agent-version-from <report.json>` takes `v` from an earlier run's report, when the agent has a mechanism below and the report has a version; otherwise the run installs the latest. `tests/nightly.sh probes` passes the first run's report to every later run, so one job tests one version even when the agent publishes mid-job.
+
 | mechanism | agents | how `v` is installed |
 |---|---|---|
 | npm | claude, codex, copilot, droid, gemini, kilo, kimi, omp, opencode, pi, qwen | `npm install -g <pkg>@v` |

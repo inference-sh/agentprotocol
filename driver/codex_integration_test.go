@@ -129,6 +129,9 @@ func untilWithin(t *testing.T, ch <-chan ap.AgentEvent, want ap.AgentEventType, 
 
 func TestCodexRealTurnApprovalInterruptSteerResume(t *testing.T) {
 	mock, b, _ := realCodex(t)
+	// Codex's default sandbox is read-only, so an approved write fails where
+	// the host supports the sandbox and passes where it does not.
+	b.Sandbox = "workspace-write"
 	work := t.TempDir()
 	mockCtl(t, mock, "POST", "/ctl/delay", map[string]any{"Ms": 0})
 	mockCtl(t, mock, "DELETE", "/log", nil)

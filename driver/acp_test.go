@@ -241,6 +241,131 @@ func TestPermissionBecomesAnApprovalEventAndResolveAnswersIt(t *testing.T) {
 	}
 }
 
+func TestInterruptCancelsAParkedApproval(t *testing.T) {
+	// An approval parked on a human must not outlive the turn it belongs to. On
+	// interrupt the agent abandons its open permission request and ends the
+	// turn; the driver must cancel that request, so the agent receives its
+	// cancelled response and the onPermission goroutine returns, and must tell
+	// the caller the approval was cancelled, rather than leaving it dangling
+	// until the session is torn down.
+	b := backendRunning(t, "permission-cancel")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir(),
+	})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+
+	if err := sess.Prompt(context.Background(), driver.TextInput("do something risky")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+	approval, ok := findEvent(collect(t, sess.Events(), 3, 3*time.Second), ap.AgentEventApprovalRequired)
+	if !ok {
+		t.Fatal("agent never parked on an approval")
+	}
+	parked, _ := ap.PayloadAs[ap.ApprovalRequiredPayload](approval, ap.AgentEventApprovalRequired)
+
+	if err := sess.Interrupt(context.Background()); err != nil {
+		t.Fatalf("interrupt: %v", err)
+	}
+
+	// The turn ends, and the parked approval is resolved as cancelled before it.
+	// Before the fix the resolution never arrived: the request stayed parked on
+	// a context that never cancels.
+	after := until(t, sess.Events(), ap.AgentEventTurnCompleted)
+	resolved, ok := findEvent(after, ap.AgentEventApprovalResolved)
+	if !ok {
+		t.Fatalf("interrupt left the approval dangling; got %v", typesOf(after))
+	}
+	rp, _ := ap.PayloadAs[ap.ApprovalResolvedPayload](resolved, ap.AgentEventApprovalResolved)
+	if rp.ToolInvocationID != parked.ToolInvocationID {
+		t.Errorf("resolved %q, want the parked request %q", rp.ToolInvocationID, parked.ToolInvocationID)
+	}
+	if rp.Decision != "cancelled" {
+		t.Errorf("decision = %q, want cancelled", rp.Decision)
+	}
+
+	// The request is gone, so resolving it now fails: no goroutine is still
+	// parked on it.
+	if err := sess.Resolve(context.Background(), parked.ToolInvocationID, driver.Allow()); err == nil {
+		t.Error("the cancelled approval was still resolvable, so it was never released")
+	}
+
+	// The cancel must reach the agent over the wire, not only the event stream:
+	// the fake agent echoes the outcome it received on the permission response,
+	// and that echo must name a cancellation. It is a content delta that can
+	// arrive just before or after the turn completes, so check what was already
+	// collected, then read on until it appears.
+	const wantWire = "wire-outcome:cancelled"
+	hasWire := func(events []ap.AgentEvent) bool {
+		for _, ev := range events {
+			if p, ok := ap.PayloadAs[ap.ContentDeltaPayload](ev, ap.AgentEventContentDelta); ok && strings.Contains(p.Delta, wantWire) {
+				return true
+			}
+		}
+		return false
+	}
+	if !hasWire(after) && !hasWire(until(t, sess.Events(), ap.AgentEventContentDelta)) {
+		t.Error("the agent never received the cancelled permission response over the wire")
+	}
+}
+
+func TestTwoApprovalsSharingAToolCallIDStayDistinct(t *testing.T) {
+	// Two permission requests can carry the same tool-call id (or none, so both
+	// fall back to the session id). Parked at once they must stay distinct
+	// approvals: one must not overwrite the other in the pending map, and each
+	// must be answerable on its own.
+	b := backendRunning(t, "permission-collision")
+	sess, err := b.Open(context.Background(), driver.SessionConfig{
+		RunID: "run_1", ChatID: "chat_1", WorkDir: t.TempDir(),
+	})
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	defer sess.Close()
+
+	if err := sess.Prompt(context.Background(), driver.TextInput("do two risky things")); err != nil {
+		t.Fatalf("prompt: %v", err)
+	}
+
+	// Both approvals arrive; their invocation ids must differ.
+	var ids []string
+	deadline := time.After(3 * time.Second)
+	for len(ids) < 2 {
+		select {
+		case ev := <-sess.Events():
+			if p, ok := ap.PayloadAs[ap.ApprovalRequiredPayload](ev, ap.AgentEventApprovalRequired); ok {
+				ids = append(ids, p.ToolInvocationID)
+			}
+		case <-deadline:
+			t.Fatalf("got %d approval-required events, want 2: %v", len(ids), ids)
+		}
+	}
+	if ids[0] == ids[1] {
+		t.Fatalf("both approvals carry id %q, so one overwrote the other", ids[0])
+	}
+
+	// Each resolves on its own id; neither answer reports an unknown request.
+	for _, id := range ids {
+		if err := sess.Resolve(context.Background(), id, driver.Allow()); err != nil {
+			t.Fatalf("resolve %q: %v", id, err)
+		}
+	}
+
+	resolved := map[string]bool{}
+	for _, ev := range until(t, sess.Events(), ap.AgentEventTurnCompleted) {
+		if p, ok := ap.PayloadAs[ap.ApprovalResolvedPayload](ev, ap.AgentEventApprovalResolved); ok {
+			resolved[p.ToolInvocationID] = true
+		}
+	}
+	for _, id := range ids {
+		if !resolved[id] {
+			t.Errorf("approval %q never resolved; the collision lost it", id)
+		}
+	}
+}
+
 // fakeAutoApproveFlag stands in for an agent's own skip-permissions flag.
 const fakeAutoApproveFlag = "--fake-yolo"
 
@@ -651,6 +776,10 @@ func runFakeAgent(script string) {
 	// answer, so the turn only completes after the human decides.
 	pendingPrompt := 0
 
+	// collisionAcks counts the permission answers back for "permission-collision",
+	// so the turn ends only once both parked requests are resolved.
+	collisionAcks := 0
+
 	// tools is the caller tool server session/new declared, for
 	// "caller-tools".
 	var tools fakeToolServer
@@ -855,7 +984,29 @@ func runFakeAgent(script string) {
 				continue
 			}
 
-			if script == "permission" {
+			if script == "permission-collision" {
+				// Two permission requests sharing one tool-call id, both parked
+				// at once: the driver must keep them as distinct, independently
+				// resolvable approvals rather than letting the second overwrite
+				// the first.
+				pendingPrompt = *msg.ID
+				for _, id := range []int{9201, 9202} {
+					send(map[string]any{
+						"jsonrpc": "2.0", "id": id, "method": acp.MethodRequestPermission,
+						"params": acp.PermissionRequest{
+							SessionID: "sess_fake",
+							ToolCall:  &acp.PermissionToolRef{ToolCallID: "call_danger", Title: "dangerous"},
+							Options: []acp.PermissionOption{
+								{OptionID: "o_allow", Kind: acp.OptionKindAllowOnce},
+								{OptionID: "o_reject", Kind: acp.OptionKindRejectOnce},
+							},
+						},
+					})
+				}
+				continue
+			}
+
+			if script == "permission" || script == "permission-cancel" {
 				pendingPrompt = *msg.ID
 				send(map[string]any{
 					"jsonrpc": "2.0",
@@ -920,7 +1071,26 @@ func runFakeAgent(script string) {
 			update(acp.SessionUpdate{Kind: acp.UpdateKindToolCallUpdate, ToolCallID: "call_builtin", Status: "failed"})
 			reply(pendingPrompt, map[string]any{"stopReason": "end_turn"})
 
+		case msg.IsResponse() && msg.ID != nil && (*msg.ID == 9201 || *msg.ID == 9202):
+			// A collision approval was answered; finish the turn once both are.
+			collisionAcks++
+			if collisionAcks == 2 && pendingPrompt != 0 {
+				reply(pendingPrompt, map[string]any{"stopReason": "end_turn"})
+			}
+
 		case msg.IsResponse() && msg.ID != nil && *msg.ID == 9001:
+			if script == "permission-cancel" {
+				// The driver cancelled the open request after the turn ended.
+				// Echo the outcome it sent so the test can confirm the cancel
+				// reached the agent over the wire, not only the event stream.
+				var res acp.PermissionResponse
+				_ = json.Unmarshal(msg.Result, &res)
+				update(acp.SessionUpdate{
+					Kind:    acp.UpdateKindAgentMessageChunk,
+					Content: json.RawMessage(`{"type":"text","text":"wire-outcome:` + res.Outcome.Outcome + `"}`),
+				})
+				continue
+			}
 			// The permission answer came back; finish the turn, naming the
 			// option chosen.
 			var res acp.PermissionResponse
@@ -949,7 +1119,13 @@ func runFakeAgent(script string) {
 			os.Exit(0)
 
 		case msg.Method == acp.MethodSessionCancel:
-			// Notification; nothing to answer.
+			// A spec-conformant agent abandons its open permission request and
+			// ends the turn on cancel; cancelling the request itself is the
+			// client's job.
+			if script == "permission-cancel" && pendingPrompt != 0 {
+				reply(pendingPrompt, map[string]any{"stopReason": "cancelled"})
+				pendingPrompt = 0
+			}
 
 		default:
 			if msg.ID != nil {

@@ -489,8 +489,18 @@ func (s *acpSession) Prompt(ctx context.Context, in Input) error {
 		if !settle() {
 			return // already reported as no_response
 		}
+		// A request still parked when the last turn ends belonged to it: the
+		// agent abandoned it on cancel or finished without it. Claim it here,
+		// before the turn's end, so the agent gets its cancelled response and the
+		// caller is not left with an approval that can never be answered. pending
+		// is not keyed by turn, so the claim happens only with no other turn in
+		// flight, and the turn count and the claim share one lock so a turn
+		// starting concurrently cannot have its approval swept.
 		s.mu.Lock()
 		s.turns--
+		if s.turns == 0 {
+			s.cancelParkedLocked("turn ended")
+		}
 		s.mu.Unlock()
 		if err != nil {
 			s.emit(ap.NewEvent(ap.AgentEventError, s.runID, s.chatID, ap.ErrorPayload{
@@ -556,6 +566,9 @@ func (s *acpSession) awaitFirstEvent(life chan struct{}, settle func() bool) {
 	}
 	s.mu.Lock()
 	s.turns--
+	if s.turns == 0 {
+		s.cancelParkedLocked("no response")
+	}
 	s.mu.Unlock()
 	_ = s.proc.Cancel(context.Background())
 	msg := fmt.Sprintf("agent sent nothing for %s after session/prompt: no message, tool call, permission request or response; session/cancel sent", s.firstEvent)
@@ -629,21 +642,22 @@ func (s *acpSession) Resolve(ctx context.Context, requestID string, res Resoluti
 	p, ok := s.pending[requestID]
 	if ok {
 		delete(s.pending, requestID)
+		p.settle(acpAnswer{res: res})
+		// Emit under the lock, as the turn-end sweep does, so a request parking
+		// with this same id cannot emit a new ApprovalRequired before this
+		// resolution is out.
+		s.emit(ap.NewEvent(ap.AgentEventApprovalResolved, s.runID, s.chatID, ap.ApprovalResolvedPayload{
+			ToolInvocationID: requestID,
+			ToolName:         p.toolName,
+			Decision:         string(res.Decision),
+			Reason:           res.Reason,
+		}))
 	}
 	s.mu.Unlock()
 
 	if !ok {
 		return fmt.Errorf("driver: no pending request %q", requestID)
 	}
-
-	p.settle(acpAnswer{res: res})
-
-	s.emit(ap.NewEvent(ap.AgentEventApprovalResolved, s.runID, s.chatID, ap.ApprovalResolvedPayload{
-		ToolInvocationID: requestID,
-		ToolName:         p.toolName,
-		Decision:         string(res.Decision),
-		Reason:           res.Reason,
-	}))
 	return nil
 }
 
@@ -723,6 +737,25 @@ func (s *acpSession) failPending() {
 	}
 }
 
+// cancelParkedLocked cancels every parked request when a turn ends: it settles
+// each (so onPermission returns the cancelled response ACP expects) and emits
+// the resolution that lets a caller close the approval. The caller holds s.mu,
+// and the settle and emit happen before it is released, so a request parking
+// with a reused id (the session fallback in particular) cannot emit a new
+// ApprovalRequired before the old request's ApprovalResolved is out.
+func (s *acpSession) cancelParkedLocked(reason string) {
+	for id, p := range s.pending {
+		delete(s.pending, id)
+		p.settle(acpAnswer{cancelled: true})
+		s.emit(ap.NewEvent(ap.AgentEventApprovalResolved, s.runID, s.chatID, ap.ApprovalResolvedPayload{
+			ToolInvocationID: id,
+			ToolName:         p.toolName,
+			Decision:         "cancelled",
+			Reason:           reason,
+		}))
+	}
+}
+
 func (s *acpSession) onUpdate(n acp.UpdateNotification) {
 	// The window's fill is the session's state, not part of its history,
 	// so it counts during a replay too: it is the fill the resume starts
@@ -792,7 +825,9 @@ func (s *acpSession) onPermission(ctx context.Context, req acp.PermissionRequest
 		// A caller tool raises no approval: the caller decides in CallTool.
 		return acp.ResponseForResolution(req, ap.InterruptResolutionAllow), nil
 	}
-	a := s.park(ctx, acp.ApprovalForPermission(req))
+	// A permission raised with no turn in flight is orphaned and cancelled,
+	// unless it came in during a load, which runs outside a turn.
+	a := s.park(ctx, acp.ApprovalForPermission(req), !req.DuringLoad)
 	if a.cancelled {
 		return acp.Cancelled(), nil
 	}
@@ -809,19 +844,39 @@ func (s *acpSession) onPermission(ctx context.Context, req acp.PermissionRequest
 // the context's end or the session's. A payload without a tool call id is
 // addressed to the session: some agents omit one, and one unanswered
 // question at a time is better than a question nobody can answer.
-func (s *acpSession) park(ctx context.Context, payload ap.ApprovalRequiredPayload) acpAnswer {
+func (s *acpSession) park(ctx context.Context, payload ap.ApprovalRequiredPayload, cancelWhenNoTurn bool) acpAnswer {
 	id := payload.ToolInvocationID
 	if id == "" {
 		id = s.id
-		payload.ToolInvocationID = id
 	}
 
 	p := &pendingRequest{toolName: payload.ToolName, answer: make(chan acpAnswer, 1)}
-	s.mu.Lock()
-	s.pending[id] = p
-	s.mu.Unlock()
 
+	s.mu.Lock()
+	if cancelWhenNoTurn && s.turns == 0 {
+		// An agent permission arriving with no turn in flight belonged to a turn
+		// that already ended, so the answer is cancellation. Nothing is emitted,
+		// so there is no ApprovalRequired left without its resolution. Only a
+		// turn-bound request is cancelled this way: a load-time or out-of-turn
+		// request has no turn to wait for and is answered or torn down instead.
+		s.mu.Unlock()
+		return acpAnswer{cancelled: true}
+	}
+	// Keep ids distinct: a reused tool-call id or the session fallback would
+	// otherwise overwrite an earlier request and strand it.
+	base := id
+	for n := 1; ; n++ {
+		if _, taken := s.pending[id]; !taken {
+			break
+		}
+		id = fmt.Sprintf("%s#%d", base, n)
+	}
+	payload.ToolInvocationID = id
+	s.pending[id] = p
+	// Emit under the lock so a turn ending now cannot claim this request and
+	// emit its resolution before the required event it pairs with.
 	s.emit(ap.NewEvent(ap.AgentEventApprovalRequired, s.runID, s.chatID, payload))
+	s.mu.Unlock()
 
 	select {
 	case a := <-p.answer:
@@ -829,7 +884,7 @@ func (s *acpSession) park(ctx context.Context, payload ap.ApprovalRequiredPayloa
 	case <-ctx.Done():
 	case <-s.proc.Done():
 	}
-	s.dropPending(id)
+	s.dropPending(id, p)
 	return acpAnswer{cancelled: true}
 }
 
@@ -844,7 +899,7 @@ func (s *acpSession) ask(ctx context.Context, toolCallID, toolName string, args 
 		Arguments:        args,
 		Reason:           ap.InterruptReasonInput,
 		Input:            &input,
-	})
+	}, false)
 	return a.res, !a.cancelled
 }
 
@@ -865,9 +920,15 @@ func (s *acpSession) onElicitation(ctx context.Context, p acp.ElicitationParams)
 	return acp.ElicitationResponse{Action: acp.ElicitationConfirm, Content: content}, nil
 }
 
-func (s *acpSession) dropPending(id string) {
+// dropPending removes a request that ended on its own context or the process,
+// but only if it is still the one registered under id: a later request can
+// reuse the id (the session fallback in particular), and deleting by id alone
+// would drop that newcomer instead.
+func (s *acpSession) dropPending(id string, p *pendingRequest) {
 	s.mu.Lock()
-	delete(s.pending, id)
+	if cur, ok := s.pending[id]; ok && cur == p {
+		delete(s.pending, id)
+	}
 	s.mu.Unlock()
 }
 

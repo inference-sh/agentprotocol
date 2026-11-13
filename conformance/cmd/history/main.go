@@ -218,7 +218,30 @@ func readRuns(index, logs string, patterns []history.Pattern) ([]history.Run, er
 		return nil, err
 	}
 	fillVersions(runs)
+	allGreen(runs)
 	return runs, nil
+}
+
+// allGreen leaves a job green only when every job of its run for the same
+// agent finished green: a run whose probes failed is not a green run of
+// that version because its surface job passed.
+func allGreen(runs []history.Run) {
+	green := map[string]bool{} // source + agent
+	for _, r := range runs {
+		for _, s := range r.Sections {
+			k := r.Source + " " + s.Agent
+			if g, ok := green[k]; !ok || g {
+				green[k] = r.Green
+			}
+		}
+	}
+	for i := range runs {
+		for _, s := range runs[i].Sections {
+			if !green[runs[i].Source+" "+s.Agent] {
+				runs[i].Green = false
+			}
+		}
+	}
 }
 
 // fillVersions gives a section that printed no version (probe runs before

@@ -142,8 +142,7 @@
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.0.92",
@@ -155,8 +154,7 @@
       ],
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.0.93",
@@ -168,8 +166,7 @@
       ],
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.0.94",
@@ -181,8 +178,7 @@
       ],
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.0.95",
@@ -237,8 +233,7 @@
       ],
       "suites": [
         "230e1aebc696f60caa141d1c4f246768c9987ce5"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.0.101",
@@ -278,8 +273,7 @@
       "suites": [
         "4cb72ef646116332b2edab1aed37bbe14afe15d9",
         "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.0.104",
@@ -291,8 +285,7 @@
       ],
       "suites": [
         "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.0.105",
@@ -364,6 +357,18 @@
         "bd11f9f9dfa332e150f80ef01929d282c8365a86"
       ],
       "green": true
+    },
+    {
+      "version": "1.0.110",
+      "first": "2026-11-13",
+      "last": "2026-11-13",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 43362989456"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
     },
     {
       "version": "1.0.111",
@@ -1844,7 +1849,7 @@
         "message": "seed shapes (image-only-result): copilot sent the call and not the image its codec kept"
       },
       {
-        "from": "1.0.111",
+        "from": "1.0.110",
         "last": "1.0.111",
         "outcome": "pass:as-image",
         "message": "seed shapes (image-only-result): copilot sent the call and the image as image data"
@@ -1858,7 +1863,7 @@
         "message": "seed shapes (in-message-result): copilot sent the result and not the image its codec kept"
       },
       {
-        "from": "1.0.111",
+        "from": "1.0.110",
         "last": "1.0.111",
         "outcome": "pass:as-image",
         "message": "seed shapes (in-message-result): copilot sent the result and the image as image data"
@@ -1968,7 +1973,7 @@
         "message": "seed kinds: copilot's codec kept the image and the agent did not send it (result text sent: true)"
       },
       {
-        "from": "1.0.111",
+        "from": "1.0.110",
         "last": "1.0.111",
         "outcome": "pass:as-image",
         "message": "seed kinds: copilot sent the tool's image as image data (result text sent: true)"

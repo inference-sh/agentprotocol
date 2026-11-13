@@ -175,8 +175,7 @@
       ],
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.1.0",
@@ -270,14 +269,14 @@
       "version": "1.5.2",
       "first": "2026-11-11",
       "last": "2026-11-13",
-      "runs": 3,
+      "runs": 4,
       "sources": [
         "agentprotocol Nightly 42956725835",
-        "agentprotocol Nightly 43454788852"
+        "agentprotocol Nightly 43362989456"
       ],
       "suites": [
         "bd11f9f9dfa332e150f80ef01929d282c8365a86",
-        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
       ],
       "green": true
     }

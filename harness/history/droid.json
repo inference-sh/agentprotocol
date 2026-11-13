@@ -374,8 +374,7 @@
       ],
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "0.237.0",
@@ -497,8 +496,7 @@
       ],
       "suites": [
         "182188f8a44ea2cb12b8ea6fdcedd2409c692294"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "0.248.0",
@@ -510,8 +508,7 @@
       ],
       "suites": [
         "4cb72ef646116332b2edab1aed37bbe14afe15d9"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "0.249.0",
@@ -525,8 +522,7 @@
       "suites": [
         "a336c97eb0c942be66bac8dc3fbbd95ba4caa9c0",
         "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "0.250.0",
@@ -538,8 +534,7 @@
       ],
       "suites": [
         "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "0.251.0",
@@ -553,8 +548,7 @@
       "suites": [
         "790173f6c302548ca8b83fe508f108d9599c158f",
         "790173f6c302548ca8b83fe508f108d9599c158f"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.0.0",
@@ -566,8 +560,7 @@
       ],
       "suites": [
         "f1878055d64897edecc84634f9221b56602a8913"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "1.1.0",
@@ -681,12 +674,14 @@
       "version": "1.10.0",
       "first": "2026-11-13",
       "last": "2026-11-13",
-      "runs": 1,
+      "runs": 2,
       "sources": [
-        "agentprotocol Nightly 43454788852"
+        "agentprotocol Nightly 43454788852",
+        "agentprotocol Nightly 43362989456"
       ],
       "suites": [
-        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+        "77ff6ef09cb5bca7ed27d28a28b32172a38430de",
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
       ],
       "green": true
     }

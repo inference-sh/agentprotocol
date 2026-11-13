@@ -237,8 +237,7 @@
       ],
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "2.27.1",
@@ -252,8 +251,7 @@
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "2.28.0",
@@ -267,8 +265,7 @@
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ],
-      "green": true
+      ]
     },
     {
       "version": "2.29.0",
@@ -513,12 +510,14 @@
       "version": "3.3.0",
       "first": "2026-11-13",
       "last": "2026-11-13",
-      "runs": 1,
+      "runs": 2,
       "sources": [
-        "agentprotocol Nightly 43454788852"
+        "agentprotocol Nightly 43454788852",
+        "agentprotocol Nightly 43362989456"
       ],
       "suites": [
-        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+        "77ff6ef09cb5bca7ed27d28a28b32172a38430de",
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
       ],
       "green": true
     }

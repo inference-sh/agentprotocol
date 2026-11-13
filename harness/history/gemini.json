@@ -170,14 +170,14 @@
       "version": "0.68.0",
       "first": "2026-11-11",
       "last": "2026-11-13",
-      "runs": 3,
+      "runs": 4,
       "sources": [
         "agentprotocol Nightly 42956725835",
-        "agentprotocol Nightly 43454788852"
+        "agentprotocol Nightly 43362989456"
       ],
       "suites": [
         "bd11f9f9dfa332e150f80ef01929d282c8365a86",
-        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
       ],
       "green": true
     }
@@ -764,7 +764,7 @@
         "from": "0.65.0",
         "last": "0.68.0",
         "outcome": "finding:added",
-        "message": "direct: gemini added 538 characters to the conversation: \"\u003csession_context\u003e\\nThis is the Gemini CLI. We are setting up the context for our chat.\\nToday's date is Friday, November 13, 2026 (formatted according to the user's locale).\\nMy operating system is: linux\\nThe project's temporary directory is: /tmp/harness-test-gemini-3996440434/.gemini/tmp/llm-gemini-7\""
+        "message": "direct: gemini added 538 characters to the conversation: \"\u003csession_context\u003e\\nThis is the Gemini CLI. We are setting up the context for our chat.\\nToday's date is Friday, November 13, 2026 (formatted according to the user's locale).\\nMy operating system is: linux\\nThe project's temporary directory is: /tmp/harness-test-gemini-3354784262/.gemini/tmp/llm-gemini-6\""
       }
     ],
     "[direct] direct.restart": [

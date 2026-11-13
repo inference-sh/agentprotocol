@@ -819,8 +819,9 @@ export const Direct = async () => ({
 			Stop:         "Stop",
 		},
 		KnownIssues: map[string]string{
-			"acp:event:STOP":      kimiStopIssue,
-			"headless:event:STOP": kimiStopIssue,
+			"acp:event:STOP":         kimiStopIssue,
+			"headless:event:STOP":    kimiStopIssue,
+			"interactive:event:STOP": kimiStopIssue,
 		},
 		TokenHashInput: `{"oauthHost":"https://auth.kimi.com","baseUrl":"{{.BaseURL}}/coding/v1"}`,
 		ConfigFiles: []ConfigFile{

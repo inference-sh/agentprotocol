@@ -41,6 +41,10 @@ type FeatureStatus struct {
 	// Versions are the versions the same State holds for, as far as the
 	// record bounds them; zero is every version.
 	Versions VersionRange `json:"versions"`
+	// Seen is what the conformance suite saw on this version, or on the
+	// newest older version it ran, when its history has the check: the
+	// hook events (the mock hooks run of each mode) and direct mode.
+	Seen *Seen `json:"seen,omitempty"`
 }
 
 // Compat is what inference knows about one installed version of an agent.
@@ -68,12 +72,21 @@ func Compatibility(name, version string) Compat {
 // Compatibility is the package-level Compatibility for h.
 func (h Harness) Compatibility(version string) Compat {
 	c := Compat{Agent: h.Name, Version: ParseVersion(version), Support: h.Support(version)}
+	hist, _ := AgentHistory(h.Name)
+	seen := func(check string) *Seen {
+		if s, ok := hist.Seen(check, version); ok {
+			return &s
+		}
+		return nil
+	}
 	for _, mode := range h.modes() {
 		for _, spec := range hookEvents {
 			if spec.agentName(h.Events) == "" {
 				continue
 			}
-			c.Features = append(c.Features, h.issueStatus("hook:"+string(spec.Event), mode, string(mode)+":event:"+spec.Tag, version))
+			s := h.issueStatus("hook:"+string(spec.Event), mode, string(mode)+":event:"+spec.Tag, version)
+			s.Seen = seen(hookCheck(mode, spec.Tag))
+			c.Features = append(c.Features, s)
 		}
 	}
 	var checks []string
@@ -88,7 +101,9 @@ func (h Harness) Compatibility(version string) Compat {
 		c.Features = append(c.Features, h.issueStatus(check, Mode(mode), key, version))
 	}
 	if h.Direct != nil {
-		c.Features = append(c.Features, h.Direct.status(version))
+		s := h.Direct.status(version)
+		s.Seen = seen("[direct] direct.tools")
+		c.Features = append(c.Features, s)
 	}
 	names := make([]string, 0, len(h.Features))
 	for f := range h.Features {

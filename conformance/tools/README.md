@@ -50,3 +50,28 @@ The output is candidates, not measurements. It reads strings near other
 strings, so parameter names and status values survive the filter, and a name
 in a package may be dead code, an alias or a flagged feature. The wire is
 still the only place an answer comes from.
+
+## history-logs.sh and cmd/history
+
+Build `harness/history/<agent>.json`, the per-version record
+`harness.Compatibility` reads, from the suite's CI logs.
+
+```bash
+tools/history-logs.sh /tmp/hist        # paced; keeps KEEP=2000 API calls for others
+go run ./cmd/history -index /tmp/hist/index.tsv -logs /tmp/hist/raw
+```
+
+`cmd/history` reads every result line (`✓ ✗ ○ ●`) under each run header,
+names it by the runner's check ID (read from `runner/*.go`, so `acp: stop
+hook fired` and `acp: stop hook not fired — …` are both `acp/hook.stop`),
+and folds the runs into one outcome per check per version: the outcome at
+least two thirds of that version's runs printed, else `mixed`. A skip counts
+only when it says the agent cannot do the thing (`known-missing`,
+`known-issue`); "the agent was never offered the tool call" and the like say
+the check was not asked, and are left out.
+
+It prints each change between two versions. `AGENT` marks a change whose two
+sides ran the same suite commit, so the agent changed; `suite?` marks one
+where the suite changed too, which needs checking before it goes in the
+registry. GitHub keeps job logs for 90 days, so runs older than that are gone
+from the API; their versions stay in the committed files.

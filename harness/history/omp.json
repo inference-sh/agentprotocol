@@ -1,0 +1,3185 @@
+{
+  "agent": "omp",
+  "versions": [
+    {
+      "version": "18.0.11",
+      "first": "2026-08-30",
+      "last": "2026-09-01",
+      "runs": 3,
+      "sources": [
+        "harness-test Nightly 33304738193",
+        "harness-test Nightly 33490715458"
+      ],
+      "suites": [
+        "611a9d19424b237fa5a2ffb121eb9428c1d3e35b",
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "18.1.2",
+      "first": "2026-09-02",
+      "last": "2026-09-02",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33608359908"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "18.1.5",
+      "first": "2026-09-03",
+      "last": "2026-09-03",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33733871676"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "18.1.9",
+      "first": "2026-09-04",
+      "last": "2026-09-04",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33853528009"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "18.1.10",
+      "first": "2026-09-05",
+      "last": "2026-09-05",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33954153873"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "18.1.11",
+      "first": "2026-09-06",
+      "last": "2026-09-06",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34021594066"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "18.1.13",
+      "first": "2026-09-07",
+      "last": "2026-09-07",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34103083759"
+      ],
+      "suites": [
+        "855064be4f99253339d09f4f7d6bfb110d49b9e8"
+      ]
+    },
+    {
+      "version": "18.1.14",
+      "first": "2026-09-08",
+      "last": "2026-09-08",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34205328389"
+      ],
+      "suites": [
+        "855064be4f99253339d09f4f7d6bfb110d49b9e8"
+      ]
+    },
+    {
+      "version": "18.1.15",
+      "first": "2026-09-09",
+      "last": "2026-09-09",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34390357791"
+      ],
+      "suites": [
+        "740fa298dce134e64f5d7d28554c28330e13e715"
+      ]
+    },
+    {
+      "version": "18.1.16",
+      "first": "2026-09-10",
+      "last": "2026-09-10",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34456245064"
+      ],
+      "suites": [
+        "0c24a7c62380500409bff4bef04565904cb76386"
+      ]
+    },
+    {
+      "version": "18.1.17",
+      "first": "2026-09-11",
+      "last": "2026-09-11",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34579708071"
+      ],
+      "suites": [
+        "df794c70277adc500372cbb51d7d6fb015049d68"
+      ]
+    },
+    {
+      "version": "18.1.18",
+      "first": "2026-09-12",
+      "last": "2026-09-12",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34683048524"
+      ],
+      "suites": [
+        "9d63c9a46257ee8451b72da138b86862b2dca1b4"
+      ]
+    },
+    {
+      "version": "18.1.19",
+      "first": "2026-09-13",
+      "last": "2026-09-13",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34748584236"
+      ],
+      "suites": [
+        "b10105e257b0921eedc319456b343ceb2d3b0c20"
+      ]
+    },
+    {
+      "version": "18.1.21",
+      "first": "2026-09-14",
+      "last": "2026-09-14",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34828575477"
+      ],
+      "suites": [
+        "2ee8cc237fc9fdee19f1f721e1f498a9f6056bdb"
+      ]
+    },
+    {
+      "version": "18.2.0",
+      "first": "2026-09-15",
+      "last": "2026-09-15",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34951102273"
+      ],
+      "suites": [
+        "441ec02f5dfa2ea4d2a2f2ddeeff82d2d0e8d59a"
+      ]
+    },
+    {
+      "version": "18.2.1",
+      "first": "2026-09-16",
+      "last": "2026-09-16",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35077226550"
+      ],
+      "suites": [
+        "b3ac6bb2f58cf3007bcf7855ebecc9e98880e36b"
+      ]
+    },
+    {
+      "version": "18.2.3",
+      "first": "2026-09-17",
+      "last": "2026-09-17",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35203792956"
+      ],
+      "suites": [
+        "581e638b56223aa0c643ba0688f09c57394261ae"
+      ]
+    },
+    {
+      "version": "18.2.5",
+      "first": "2026-09-18",
+      "last": "2026-09-18",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35325922801"
+      ],
+      "suites": [
+        "581e638b56223aa0c643ba0688f09c57394261ae"
+      ]
+    },
+    {
+      "version": "18.2.6",
+      "first": "2026-09-19",
+      "last": "2026-09-20",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 35432190178",
+        "harness-test Nightly 35501236224"
+      ],
+      "suites": [
+        "72735ff2b78db6d8fdf4896ccb955c57ccc3fb9c",
+        "989f5cafa5963813a5c378f4222667d589e7058f"
+      ]
+    },
+    {
+      "version": "18.2.7",
+      "first": "2026-09-21",
+      "last": "2026-09-21",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35584121206"
+      ],
+      "suites": [
+        "a4b32f8c51124c2be30021f0e015c539e9f26ff1"
+      ]
+    },
+    {
+      "version": "18.2.8",
+      "first": "2026-09-22",
+      "last": "2026-09-22",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35707853499"
+      ],
+      "suites": [
+        "61eeafe7a2b83b34f1f5d455e2e614be2f61744a"
+      ]
+    },
+    {
+      "version": "18.2.11",
+      "first": "2026-09-23",
+      "last": "2026-09-23",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35840661694"
+      ],
+      "suites": [
+        "2c4e019a24aeeb80ae95c9487720f091ac8c6e70"
+      ]
+    },
+    {
+      "version": "18.3.0",
+      "first": "2026-09-24",
+      "last": "2026-09-24",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36053950012"
+      ],
+      "suites": [
+        "67105fc788dc41d8a18b4bb0dfad53ca12d61214"
+      ]
+    },
+    {
+      "version": "18.3.1",
+      "first": "2026-09-25",
+      "last": "2026-09-25",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36118003323"
+      ],
+      "suites": [
+        "00d21b3321a659f770b86595fd9defcf9f938eef"
+      ]
+    },
+    {
+      "version": "18.3.2",
+      "first": "2026-09-26",
+      "last": "2026-09-26",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36231704775"
+      ],
+      "suites": [
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "18.3.4",
+      "first": "2026-09-27",
+      "last": "2026-09-27",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36310513405"
+      ],
+      "suites": [
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "18.4.1",
+      "first": "2026-09-28",
+      "last": "2026-09-28",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36410294180"
+      ],
+      "suites": [
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "18.4.3",
+      "first": "2026-09-29",
+      "last": "2026-09-29",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36555294068"
+      ],
+      "suites": [
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "18.4.4",
+      "first": "2026-09-30",
+      "last": "2026-09-30",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36712043616"
+      ],
+      "suites": [
+        "3dfe8b85764bbb5f8d474e6ed7744bcd180c9abd"
+      ]
+    },
+    {
+      "version": "18.4.8",
+      "first": "2026-10-01",
+      "last": "2026-10-01",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36850829836"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "18.4.10",
+      "first": "2026-10-02",
+      "last": "2026-10-02",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36994678212"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "18.5.0",
+      "first": "2026-10-03",
+      "last": "2026-10-03",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37113791464"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "18.6.0",
+      "first": "2026-10-04",
+      "last": "2026-10-04",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37195213527"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "18.6.1",
+      "first": "2026-10-05",
+      "last": "2026-10-05",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37301178197"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "18.8.0",
+      "first": "2026-10-07",
+      "last": "2026-10-07",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37610001483"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "18.8.4",
+      "first": "2026-10-08",
+      "last": "2026-10-08",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37768023609"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "18.8.6",
+      "first": "2026-10-09",
+      "last": "2026-10-09",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37921732070"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "18.8.7",
+      "first": "2026-10-09",
+      "last": "2026-10-10",
+      "runs": 3,
+      "sources": [
+        "harness-test Nightly 37966651758",
+        "agentprotocol Nightly 38044259962"
+      ],
+      "suites": [
+        "95c8e0314fdd6d85d8ceeab3007d5b3a1ea5986e",
+        "7f4f77f2b68b80e5cca233a768342fcabfaf159d"
+      ]
+    },
+    {
+      "version": "18.9.0",
+      "first": "2026-10-11",
+      "last": "2026-10-11",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38131950655"
+      ],
+      "suites": [
+        "295bc031b1ec1fd0e465b51eb47ca11ffe52d41f"
+      ]
+    },
+    {
+      "version": "18.10.1",
+      "first": "2026-10-12",
+      "last": "2026-10-12",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38244666690"
+      ],
+      "suites": [
+        "a58f623df58ba07cd26f58352d53f57a04eb73fb"
+      ]
+    },
+    {
+      "version": "18.10.3",
+      "first": "2026-10-13",
+      "last": "2026-10-13",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38391078200"
+      ],
+      "suites": [
+        "ff859396e65d13f40628fab61aae6e762ac65822"
+      ]
+    },
+    {
+      "version": "18.10.4",
+      "first": "2026-10-14",
+      "last": "2026-10-14",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38540218254"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "18.11.0",
+      "first": "2026-10-15",
+      "last": "2026-10-15",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38707474717"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "18.11.1",
+      "first": "2026-10-16",
+      "last": "2026-10-16",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38874809332"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "18.11.3",
+      "first": "2026-10-17",
+      "last": "2026-10-17",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 39016230369"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "18.12.1",
+      "first": "2026-10-18",
+      "last": "2026-10-18",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 39162072245"
+      ],
+      "suites": [
+        "1a7475bf8cbf8166604e062a612c51ca709a0e17"
+      ]
+    },
+    {
+      "version": "18.12.2",
+      "first": "2026-10-19",
+      "last": "2026-10-19",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 39229995996"
+      ],
+      "suites": [
+        "230e1aebc696f60caa141d1c4f246768c9987ce5"
+      ]
+    },
+    {
+      "version": "18.12.3",
+      "first": "2026-10-20",
+      "last": "2026-10-20",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 39397461615"
+      ],
+      "suites": [
+        "230e1aebc696f60caa141d1c4f246768c9987ce5"
+      ]
+    },
+    {
+      "version": "18.12.5",
+      "first": "2026-10-21",
+      "last": "2026-10-21",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 39577276198"
+      ],
+      "suites": [
+        "e6c823a32c2aa602243eb8fefc964623eed5c17f"
+      ]
+    },
+    {
+      "version": "18.12.6",
+      "first": "2026-10-22",
+      "last": "2026-10-26",
+      "runs": 5,
+      "sources": [
+        "agentprotocol Nightly 39752228857",
+        "agentprotocol Nightly 40299994085"
+      ],
+      "suites": [
+        "182188f8a44ea2cb12b8ea6fdcedd2409c692294",
+        "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
+      ]
+    },
+    {
+      "version": "18.13.1",
+      "first": "2026-10-27",
+      "last": "2026-10-27",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 40480811689"
+      ],
+      "suites": [
+        "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
+      ]
+    },
+    {
+      "version": "18.13.2",
+      "first": "2026-10-28",
+      "last": "2026-10-28",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 40669860434"
+      ],
+      "suites": [
+        "790173f6c302548ca8b83fe508f108d9599c158f"
+      ]
+    },
+    {
+      "version": "18.13.3",
+      "first": "2026-10-29",
+      "last": "2026-10-29",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 40858586290"
+      ],
+      "suites": [
+        "790173f6c302548ca8b83fe508f108d9599c158f"
+      ]
+    },
+    {
+      "version": "18.14.0",
+      "first": "2026-10-30",
+      "last": "2026-10-30",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 41041818652"
+      ],
+      "suites": [
+        "f1878055d64897edecc84634f9221b56602a8913"
+      ]
+    },
+    {
+      "version": "18.14.2",
+      "first": "2026-11-01",
+      "last": "2026-11-01",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 41299499743"
+      ],
+      "suites": [
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "18.15.0",
+      "first": "2026-11-02",
+      "last": "2026-11-02",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 41439920602"
+      ],
+      "suites": [
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "18.16.0",
+      "first": "2026-11-03",
+      "last": "2026-11-04",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 41575845638",
+        "agentprotocol Nightly 41770888503"
+      ],
+      "suites": [
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b",
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "18.17.0",
+      "first": "2026-11-06",
+      "last": "2026-11-06",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42201531930"
+      ],
+      "suites": [
+        "e25b88d8ccb4be54d0d39209b55e7cf4f774b00c"
+      ]
+    },
+    {
+      "version": "18.18.1",
+      "first": "2026-11-08",
+      "last": "2026-11-08",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42479125985"
+      ],
+      "suites": [
+        "3378cf7b141f87fb28c7ff5deefda58574a1c8d4"
+      ]
+    },
+    {
+      "version": "18.18.3",
+      "first": "2026-11-09",
+      "last": "2026-11-09",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42589195324"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "18.18.6",
+      "first": "2026-11-10",
+      "last": "2026-11-10",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42753368328"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "18.18.8",
+      "first": "2026-11-11",
+      "last": "2026-11-11",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42956725835"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "18.19.0",
+      "first": "2026-11-12",
+      "last": "2026-11-12",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 43152242605"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "18.20.0",
+      "first": "2026-11-13",
+      "last": "2026-11-13",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 43454788852"
+      ],
+      "suites": [
+        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+      ]
+    }
+  ],
+  "checks": {
+    "[acp, belt hooks] acp/belt-hook.prompt": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.stop": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/model": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/requests": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/streaming": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] binary": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.install": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.answer": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.completed": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.start": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] skills": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook-injection": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.prompt": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.stop": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/model": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/requests": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/streaming": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] binary": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] hooks.install": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.answer": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.completed": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.start": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] skills": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook-injection": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.prompt": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.stop": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions../AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/model": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/requests": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/streaming": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] binary": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.OPENAI_API_KEY": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.OPENAI_BASE_URL": [
+      {
+        "from": "18.0.11",
+        "last": "18.0.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] hooks.install": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written../AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.answer": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.completed": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.start": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] skills": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook-injection": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.prompt": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.stop": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions../AGENTS.md": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/model": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/requests": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/streaming": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] binary": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.call": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.messages": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "finding:added",
+        "message": "direct: omp added 154 characters to the conversation: \"\u003csystem-reminder\u003e\\nToday: 2026-11-13; current working directory: '/tmp/llm-omp-324168502'. Do not repeat this information in your reply.\\n\u003c/system-reminder\u003e\""
+      }
+    ],
+    "[direct] direct.restart": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.result": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.system": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass:exact",
+        "message": "direct: omp sent the probe's system prompt and nothing else"
+      }
+    ],
+    "[direct] direct.tools": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass:only",
+        "message": "direct: omp offered the probe's tool alone, as mcp__tools_probe_echo"
+      }
+    ],
+    "[direct] env.OPENAI_API_KEY": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] hooks.install": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written../AGENTS.md": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.answer": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.completed": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.start": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] skills": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] binary": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.prompt": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.stop": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/model": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/requests": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/streaming": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.install": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] skills": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] turn": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] binary": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook-injection": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.prompt": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.stop": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/model": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/requests": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/streaming": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] hooks.install": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] skills": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] turn": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] binary": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.OPENAI_API_KEY": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.OPENAI_BASE_URL": [
+      {
+        "from": "18.0.11",
+        "last": "18.0.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook-injection": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.prompt": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.stop": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions../AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/model": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/requests": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/streaming": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] hooks.install": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written../AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] skills": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] turn": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook-injection": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.prompt": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.stop": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/instructions../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/model": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/requests": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/streaming": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] binary": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] env.OPENAI_API_KEY": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] hooks.install": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] inflight.park": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] inflight.reraise": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "finding:none",
+        "message": "in-flight: omp does not re-raise the parked approval on resume"
+      }
+    ],
+    "[inflight-cancel] inflight.resume": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] inflight.resume-twice": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] instructions.written../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] session.answer": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] session.completed": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] session.start": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] skills": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook-injection": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.prompt": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.stop": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/instructions../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/model": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/requests": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/streaming": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] binary": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] env.OPENAI_API_KEY": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] hooks.install": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] inflight.park": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] inflight.reraise": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "finding:none",
+        "message": "in-flight: omp does not re-raise the parked approval on resume"
+      }
+    ],
+    "[inflight-hold] inflight.resume": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] inflight.resume-twice": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] instructions.written../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] session.answer": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] session.completed": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] session.start": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] skills": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] binary": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.install": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.prompt": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.stop": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/model": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/requests": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/streaming": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] skills": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.completed": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.start": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] binary": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] hooks.install": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook-injection": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.prompt": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.stop": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/model": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/requests": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/streaming": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] skills": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.completed": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.start": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook-injection": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.prompt": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.stop": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/model": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/requests": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/streaming": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] binary": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] deferred.armed": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass:no-search-tool",
+        "message": "deferred tools: omp declares no tool-search tool, so its 0 declared tools are the whole surface it offers on a turn"
+      }
+    ],
+    "[probes] env.OPENAI_API_KEY": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] hooks.install": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] images.sent": [
+      {
+        "from": "18.10.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] inflight.park": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] inflight.reraise": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "finding:none",
+        "message": "in-flight: omp does not re-raise the parked approval on resume"
+      }
+    ],
+    "[probes] inflight.resume": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] inflight.resume-twice": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.context": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.load": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.replay": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed shapes (file-uri).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (file-uri): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"e481478c-91e3-447e-aded-30f1a9b70147\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (image-only-result).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (image-only-result): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"f49c679b-d053-4399-89ef-48c72733dec9\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (in-message-result).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (in-message-result): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"f5f0495b-a80f-4b6e-9af5-bb1e3f3d1101\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (parallel-same-id).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (parallel-same-id): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"24345bca-b4ae-41df-bb11-1478ad982d7c\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (retired-answer-as-summary).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (retired-answer-as-summary): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"2ffcec0c-9a0a-48fb-8ba3-9d9b8bb577a5\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (retired-tool).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (retired-tool): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"a21a3ece-4901-467a-9a2a-ca9184f542d7\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (tool-after-text).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (tool-after-text): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"49ab645e-f910-4304-a95e-48f4fc872772\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (trailing-prompt).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (trailing-prompt): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"af69da95-bf1c-4f5b-9c7a-caf6d7f3d54b\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (trailing-tool-result).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (trailing-tool-result): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"d3865185-0362-4bfb-a9b9-359ea3db452e\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (untyped-file-path).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (untyped-file-path): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"d4d08848-6679-4f16-b67a-b7312206fb0d\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed shapes (user-attachments).prompt": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding",
+        "message": "seed shapes (user-attachments): omp failed before any request carried the prompt: driver: resume acp session: acp: load session \"27463b83-74ff-449f-aedc-2bfb680f4edf\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seed.appended": [
+      {
+        "from": "18.3.0",
+        "last": "18.4.10",
+        "outcome": "pass"
+      },
+      {
+        "from": "18.5.0",
+        "last": "18.8.6",
+        "outcome": "finding:not-reached",
+        "message": "seed (appended): omp loaded 01a1205a-bfe0-7038-a19f-81a0e9f6a4ff, and the planted fact never reached the model"
+      },
+      {
+        "from": "18.8.7",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.hand-built": [
+      {
+        "from": "18.3.0",
+        "last": "18.6.1",
+        "outcome": "pass"
+      },
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding:load-rejected",
+        "message": "seed (hand-built): omp rejected session/load of 649a4b0d-0488-42c6-a560-7b991594c9c0: driver: resume acp session: acp: load session \"649a4b0d-0488-42c6-a560-7b991594c9c0\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      },
+      {
+        "from": "18.8.7",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.kinds": [
+      {
+        "from": "18.8.0",
+        "last": "18.8.6",
+        "outcome": "finding:load-rejected",
+        "message": "seed (kinds): omp rejected session/load of 78c9dc6b-c867-45b3-b2a2-0edb0790f7c3: driver: resume acp session: acp: load session \"78c9dc6b-c867-45b3-b2a2-0edb0790f7c3\": acp: session/load: Internal error: {\"details\":\"Could not restore model undefined/undefined\"}"
+      }
+    ],
+    "[probes] seedkinds.assistant text": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.context": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.history": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.request": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.file-uri": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (file-uri): omp sent the image's bytes (codec kept them inline: true)"
+      }
+    ],
+    "[probes] seedkinds.first user message": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.image-only-result": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (image-only-result): omp sent the call and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.in-message-result": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (in-message-result): omp sent the result and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.reasoning": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.context": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.history": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.request": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.context": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.history": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.request": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's answer": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's user message": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.shown-only": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool call arguments": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool result": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-after-text": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-image": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass:as-image",
+        "message": "seed kinds: omp sent the tool's image as image data (result text sent: true)"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.history": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.request": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-prompt): omp loaded the session and sent the last prompt"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.history": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.request": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-tool-result): omp loaded the session and sent the last tool result"
+      }
+    ],
+    "[probes] seedkinds.untyped-file-path": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass:as-text",
+        "message": "seed shapes (untyped-file-path): omp sent the file's content"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.image": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (user-attachments): omp sent the attached image as image data"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.pdf": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "finding:not-kept",
+        "message": "seed shapes (user-attachments): omp's codec kept no attached PDF"
+      }
+    ],
+    "[probes] session.answer": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.completed": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.start": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] transcript": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] turn": [
+      {
+        "from": "18.3.1",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.account": [
+      {
+        "from": "18.9.0",
+        "last": "18.20.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: omp's driver reported no account"
+      }
+    ],
+    "[probes] usage.context": [
+      {
+        "from": "18.9.0",
+        "last": "18.20.0",
+        "outcome": "pass:with-window",
+        "message": "usage: omp reported 10 of 128000 tokens in context"
+      }
+    ],
+    "[probes] usage.limits": [
+      {
+        "from": "18.9.0",
+        "last": "18.20.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: omp pushed no rate limits"
+      }
+    ],
+    "[probes] usage.probe.limits": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass:unsupported",
+        "message": "usage: omp's limits do not apply: plan limits do not apply to an API key"
+      }
+    ],
+    "[probes] usage.probe.no-model-call": [
+      {
+        "from": "18.12.6",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.turn": [
+      {
+        "from": "18.9.0",
+        "last": "18.20.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: omp's driver reported no usage for the turn"
+      }
+    ],
+    "[resume-kill] acp/hook-injection": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.prompt": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.stop": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/model": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/requests": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/streaming": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] binary": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.OPENAI_API_KEY": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] hooks.install": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written../AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.context": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.load": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.replay": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.answer": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.completed": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.start": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] skills": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] binary": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] hooks.install": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.prompt": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.stop": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/instructions../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/model": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/requests": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/streaming": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] skills": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] turn": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] binary": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] hooks.install": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook-injection": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.prompt": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.stop": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/instructions../AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/model": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/requests": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/streaming": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] skills": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] turn": [
+      {
+        "from": "18.1.15",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] binary": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] env.OPENAI_API_KEY": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] env.OPENAI_BASE_URL": [
+      {
+        "from": "18.0.11",
+        "last": "18.0.11",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] hooks.install": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] instructions.written../AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] instructions.written.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/hook-injection": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/hook.prompt": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/hook.stop": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/instructions../AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/instructions.~/.omp/agent/AGENTS.md": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/model": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/requests": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/streaming": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] skills": [
+      {
+        "from": "18.1.13",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] turn": [
+      {
+        "from": "18.0.11",
+        "last": "18.1.14",
+        "outcome": "pass"
+      }
+    ],
+    "[surface] binary": [
+      {
+        "from": "18.3.0",
+        "last": "18.20.0",
+        "outcome": "pass"
+      }
+    ]
+  }
+}

@@ -1,0 +1,2734 @@
+{
+  "agent": "gemini",
+  "versions": [
+    {
+      "version": "0.57.0",
+      "first": "2026-08-29",
+      "last": "2026-09-01",
+      "runs": 4,
+      "sources": [
+        "harness-test Nightly 33239663195",
+        "harness-test Nightly 33490715458"
+      ],
+      "suites": [
+        "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "0.58.0",
+      "first": "2026-09-02",
+      "last": "2026-09-08",
+      "runs": 7,
+      "sources": [
+        "harness-test Nightly 33608359908",
+        "harness-test Nightly 34205328389"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e",
+        "855064be4f99253339d09f4f7d6bfb110d49b9e8"
+      ]
+    },
+    {
+      "version": "0.59.0",
+      "first": "2026-09-09",
+      "last": "2026-09-15",
+      "runs": 7,
+      "sources": [
+        "harness-test Nightly 34390357791",
+        "harness-test Nightly 34951102273"
+      ],
+      "suites": [
+        "740fa298dce134e64f5d7d28554c28330e13e715",
+        "441ec02f5dfa2ea4d2a2f2ddeeff82d2d0e8d59a"
+      ]
+    },
+    {
+      "version": "0.60.0",
+      "first": "2026-09-16",
+      "last": "2026-09-23",
+      "runs": 8,
+      "sources": [
+        "harness-test Nightly 35077226550",
+        "harness-test Nightly 35840661694"
+      ],
+      "suites": [
+        "b3ac6bb2f58cf3007bcf7855ebecc9e98880e36b",
+        "2c4e019a24aeeb80ae95c9487720f091ac8c6e70"
+      ]
+    },
+    {
+      "version": "0.61.0",
+      "first": "2026-09-24",
+      "last": "2026-09-29",
+      "runs": 6,
+      "sources": [
+        "harness-test Nightly 36053950012",
+        "harness-test Nightly 36555294068"
+      ],
+      "suites": [
+        "67105fc788dc41d8a18b4bb0dfad53ca12d61214",
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "0.62.0",
+      "first": "2026-10-01",
+      "last": "2026-10-05",
+      "runs": 5,
+      "sources": [
+        "harness-test Nightly 36850829836",
+        "harness-test Nightly 37301178197"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "0.63.0",
+      "first": "2026-10-07",
+      "last": "2026-10-11",
+      "runs": 7,
+      "sources": [
+        "harness-test Nightly 37610001483",
+        "agentprotocol Nightly 38131950655"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "295bc031b1ec1fd0e465b51eb47ca11ffe52d41f"
+      ]
+    },
+    {
+      "version": "0.64.0",
+      "first": "2026-10-14",
+      "last": "2026-10-20",
+      "runs": 7,
+      "sources": [
+        "agentprotocol Nightly 38540218254",
+        "agentprotocol Nightly 39397461615"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
+        "230e1aebc696f60caa141d1c4f246768c9987ce5"
+      ]
+    },
+    {
+      "version": "0.65.0",
+      "first": "2026-10-21",
+      "last": "2026-10-27",
+      "runs": 7,
+      "sources": [
+        "agentprotocol Nightly 39577276198",
+        "agentprotocol Nightly 40480811689"
+      ],
+      "suites": [
+        "e6c823a32c2aa602243eb8fefc964623eed5c17f",
+        "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
+      ]
+    },
+    {
+      "version": "0.66.0",
+      "first": "2026-10-28",
+      "last": "2026-11-04",
+      "runs": 7,
+      "sources": [
+        "agentprotocol Nightly 40669860434",
+        "agentprotocol Nightly 41770888503"
+      ],
+      "suites": [
+        "790173f6c302548ca8b83fe508f108d9599c158f",
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "0.67.0",
+      "first": "2026-11-05",
+      "last": "2026-11-10",
+      "runs": 5,
+      "sources": [
+        "agentprotocol Nightly 42088559659",
+        "agentprotocol Nightly 42753368328"
+      ],
+      "suites": [
+        "4538a57ac0525dbd5c345fcebad4e55477ca2838",
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "0.68.0",
+      "first": "2026-11-11",
+      "last": "2026-11-13",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 42956725835",
+        "agentprotocol Nightly 43454788852"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86",
+        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+      ]
+    }
+  ],
+  "checks": {
+    "[acp, belt hooks] acp/belt-hook.post-tool": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: belt post-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.pre-compact": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.pre-tool": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: belt pre-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.prompt": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.session-start": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: belt session-start hook not fired — gemini fires SessionStart only in the non-interactive main(); the ACP newSession never does (gemini-cli 0.59 source)"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.stop": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions../GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/model": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/requests": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/streaming": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] belt-hook-shape": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] binary": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GEMINI_API_KEY": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.install": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.project-copy": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written../GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.answer": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.completed": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.start": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] skills": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook-injection": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.post-tool": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: post-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.pre-compact": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.pre-tool": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.prompt": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.session-start": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — gemini fires SessionStart only in the non-interactive main(); the ACP newSession never does (gemini-cli 0.59 source)"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.stop": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions../GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/model": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/requests": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/streaming": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] binary": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GEMINI_API_KEY": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] hooks.install": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written../GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.answer": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.completed": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.start": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] skills": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook-injection": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.pre-compact": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.prompt": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.stop": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions../GEMINI.md": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/model": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/requests": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/streaming": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] binary": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GEMINI_API_KEY": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] hooks.install": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written../GEMINI.md": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.answer": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.completed": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.start": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] skills": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook-injection": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.post-tool": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: post-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[direct] acp/hook.pre-compact": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.pre-tool": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[direct] acp/hook.prompt": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.session-start": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — gemini fires SessionStart only in the non-interactive main(); the ACP newSession never does (gemini-cli 0.59 source)"
+      }
+    ],
+    "[direct] acp/hook.stop": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions../GEMINI.md": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/model": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/requests": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/streaming": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] binary": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.call": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.messages": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "finding:added",
+        "message": "direct: gemini added 538 characters to the conversation: \"\u003csession_context\u003e\\nThis is the Gemini CLI. We are setting up the context for our chat.\\nToday's date is Friday, November 13, 2026 (formatted according to the user's locale).\\nMy operating system is: linux\\nThe project's temporary directory is: /tmp/harness-test-gemini-3996440434/.gemini/tmp/llm-gemini-7\""
+      }
+    ],
+    "[direct] direct.restart": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.result": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.system": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "finding:added",
+        "message": "direct: gemini added 1197 characters to the probe's system prompt: \"…\\n\\n# Contextual Instructions (__direct_none__.md, GEMINI.md)\\nThe following content is loaded from local and global configuration files.\\n**Context Precedence:**\\n- **Global (~/.gemini/):** foundational user preferences. Apply these broadly.\\n- **Extensions:** supplementary knowledge and capabilities.\\n-\""
+      }
+    ],
+    "[direct] direct.tools": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass:only",
+        "message": "direct: gemini offered the probe's tool alone, as mcp_tools_probe_echo"
+      }
+    ],
+    "[direct] env.GEMINI_API_KEY": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] hooks.install": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written../GEMINI.md": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.answer": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.completed": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.start": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] skills": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] belt-hook-shape": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] binary": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GEMINI_API_KEY": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.post-tool": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.pre-compact": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.pre-tool": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.prompt": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.session-start": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.stop": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions../GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/model": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/requests": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/streaming": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.install": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.project-copy": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written../GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] skills": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] turn": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] binary": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GEMINI_API_KEY": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook-injection": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.post-tool": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.pre-compact": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.pre-tool": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.prompt": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.session-start": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.stop": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions../GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/model": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/requests": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/streaming": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] hooks.install": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written../GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] skills": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] turn": [
+      {
+        "from": "0.59.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] binary": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GEMINI_API_KEY": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook-injection": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.post-tool": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.pre-compact": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.pre-tool": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.prompt": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.session-start": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.stop": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions../GEMINI.md": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/model": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/requests": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/streaming": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] hooks.install": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written../GEMINI.md": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] skills": [
+      {
+        "from": "0.58.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] turn": [
+      {
+        "from": "0.57.0",
+        "last": "0.58.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook-injection": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.post-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: post-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[inflight-cancel] acp/hook.pre-compact": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.pre-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[inflight-cancel] acp/hook.prompt": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.session-start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — gemini fires SessionStart only in the non-interactive main(); the ACP newSession never does (gemini-cli 0.59 source)"
+      }
+    ],
+    "[inflight-cancel] acp/hook.stop": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/instructions../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/model": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/requests": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/streaming": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] binary": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] env.GEMINI_API_KEY": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] hooks.install": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] inflight.park": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] inflight.reraise": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "finding:none",
+        "message": "in-flight: gemini does not re-raise the parked approval on resume"
+      }
+    ],
+    "[inflight-cancel] inflight.resume": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] inflight.resume-twice": [
+      {
+        "from": "0.63.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] instructions.written../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] session.answer": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] session.completed": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] session.start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] skills": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook-injection": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.post-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: post-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[inflight-hold] acp/hook.pre-compact": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.pre-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[inflight-hold] acp/hook.prompt": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.session-start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — gemini fires SessionStart only in the non-interactive main(); the ACP newSession never does (gemini-cli 0.59 source)"
+      }
+    ],
+    "[inflight-hold] acp/hook.stop": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/instructions../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/model": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/requests": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/streaming": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] binary": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] env.GEMINI_API_KEY": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] hooks.install": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] inflight.park": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] inflight.reraise": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "finding:none",
+        "message": "in-flight: gemini does not re-raise the parked approval on resume"
+      }
+    ],
+    "[inflight-hold] inflight.resume": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] inflight.resume-twice": [
+      {
+        "from": "0.63.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] instructions.written../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] session.answer": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] session.completed": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] session.start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] skills": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] belt-hook-shape": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] binary": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GEMINI_API_KEY": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.install": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.project-copy": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.post-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.pre-compact": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.prompt": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.session-start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.stop": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/model": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/requests": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/streaming": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] skills": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.completed": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] binary": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GEMINI_API_KEY": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] hooks.install": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook-injection": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.post-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.pre-compact": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.pre-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.prompt": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.session-start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.stop": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/model": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/requests": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/streaming": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] skills": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.completed": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook-injection": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.post-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: post-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[probes] acp/hook.pre-compact": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.pre-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[probes] acp/hook.prompt": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.session-start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — gemini fires SessionStart only in the non-interactive main(); the ACP newSession never does (gemini-cli 0.59 source)"
+      }
+    ],
+    "[probes] acp/hook.stop": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/model": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/requests": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/streaming": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] binary": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] compact.run": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "finding:as-prompt",
+        "message": "compaction: gemini sent /compress to the model as a user message, so over ACP it is a prompt, not a command, and nothing was compacted"
+      }
+    ],
+    "[probes] deferred.armed": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:no-search-tool",
+        "message": "deferred tools: gemini declares no tool-search tool, so its 15 declared tools are the whole surface it offers on a turn"
+      }
+    ],
+    "[probes] env.GEMINI_API_KEY": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] hooks.install": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] images.sent": [
+      {
+        "from": "0.64.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] inflight.park": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] inflight.reraise": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "finding:none",
+        "message": "in-flight: gemini does not re-raise the parked approval on resume"
+      }
+    ],
+    "[probes] inflight.resume": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] inflight.resume-twice": [
+      {
+        "from": "0.63.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.context": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.load": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.replay": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.appended": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.hand-built": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.assistant text": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.context": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.history": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "finding:summary-only",
+        "message": "seed kinds: gemini's session has no compaction and no retired turn: the writer applied the compaction (Lower without Compaction); the shown-only entry is not kept"
+      }
+    ],
+    "[probes] seedkinds.compaction.request": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.file-uri": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (file-uri): gemini sent the image's bytes (codec kept them inline: true)"
+      }
+    ],
+    "[probes] seedkinds.first user message": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.image-only-result": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (image-only-result): gemini sent the call and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.in-message-result": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (in-message-result): gemini sent the result and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.reasoning": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "finding:not-kept",
+        "message": "seed kinds: gemini's codec kept no reasoning in the session's context, so the model could not get it"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.context": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.history": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "finding:dropped-user",
+        "message": "seed shapes (retired-answer-as-summary): gemini's Linearize() lost the retired prompt (answer kept: false)"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.request": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.context": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.history": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "finding:summary-only",
+        "message": "seed shapes (retired-tool): gemini's writer applied the compaction; no retired entry is kept"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.request": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's answer": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's user message": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.shown-only": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool call arguments": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool result": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-after-text": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-image": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:as-image",
+        "message": "seed kinds: gemini sent the tool's image as image data (result text sent: true)"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.history": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.request": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-prompt): gemini loaded the session and sent the last prompt"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.history": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.request": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-tool-result): gemini loaded the session and sent the last tool result"
+      }
+    ],
+    "[probes] seedkinds.untyped-file-path": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:as-text",
+        "message": "seed shapes (untyped-file-path): gemini sent the file's content"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.image": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (user-attachments): gemini sent the attached image as image data"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.pdf": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass:as-document",
+        "message": "seed shapes (user-attachments): gemini sent the PDF's bytes (name sent: false)"
+      }
+    ],
+    "[probes] session.answer": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.completed": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] transcript": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] turn": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.account": [
+      {
+        "from": "0.63.0",
+        "last": "0.68.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: gemini's driver reported no account"
+      }
+    ],
+    "[probes] usage.context": [
+      {
+        "from": "0.63.0",
+        "last": "0.63.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: gemini reported no context window fill"
+      },
+      {
+        "from": "0.64.0",
+        "last": "0.68.0",
+        "outcome": "pass:with-window",
+        "message": "usage: gemini reported 15 of 1048576 tokens in context"
+      }
+    ],
+    "[probes] usage.limits": [
+      {
+        "from": "0.63.0",
+        "last": "0.68.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: gemini pushed no rate limits"
+      }
+    ],
+    "[probes] usage.probe.limits": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass:unsupported",
+        "message": "usage: gemini's limits do not apply: plan quota applies only to a Google login"
+      }
+    ],
+    "[probes] usage.probe.no-model-call": [
+      {
+        "from": "0.65.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.turn": [
+      {
+        "from": "0.63.0",
+        "last": "0.68.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: gemini's driver reported no usage for the turn"
+      }
+    ],
+    "[resume-kill] acp/hook-injection": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.post-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: post-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[resume-kill] acp/hook.pre-compact": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.pre-tool": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-tool hook not fired — gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[resume-kill] acp/hook.prompt": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.session-start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — gemini fires SessionStart only in the non-interactive main(); the ACP newSession never does (gemini-cli 0.59 source)"
+      }
+    ],
+    "[resume-kill] acp/hook.stop": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/model": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/requests": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/streaming": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] binary": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GEMINI_API_KEY": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GEMINI_CLI_TRUST_WORKSPACE": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GOOGLE_GEMINI_BASE_URL": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] hooks.install": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written../GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written.~/.gemini/GEMINI.md": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.context": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.load": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.replay": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.answer": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.completed": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.start": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] skills": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ],
+    "[surface] binary": [
+      {
+        "from": "0.61.0",
+        "last": "0.68.0",
+        "outcome": "pass"
+      }
+    ]
+  }
+}

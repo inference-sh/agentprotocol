@@ -1,0 +1,2077 @@
+{
+  "agent": "pi",
+  "versions": [
+    {
+      "version": "0.84.4",
+      "first": "2026-08-29",
+      "last": "2026-09-04",
+      "runs": 7,
+      "sources": [
+        "harness-test Nightly 33239663195",
+        "harness-test Nightly 33853528009"
+      ],
+      "suites": [
+        "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "0.85.0",
+      "first": "2026-09-05",
+      "last": "2026-09-05",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33954153873"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "0.85.1",
+      "first": "2026-09-06",
+      "last": "2026-09-19",
+      "runs": 14,
+      "sources": [
+        "harness-test Nightly 34021594066",
+        "harness-test Nightly 35432190178"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e",
+        "72735ff2b78db6d8fdf4896ccb955c57ccc3fb9c"
+      ]
+    },
+    {
+      "version": "0.86.0",
+      "first": "2026-09-20",
+      "last": "2026-09-20",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35501236224"
+      ],
+      "suites": [
+        "989f5cafa5963813a5c378f4222667d589e7058f"
+      ]
+    },
+    {
+      "version": "0.86.1",
+      "first": "2026-09-21",
+      "last": "2026-09-21",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35584121206"
+      ],
+      "suites": [
+        "a4b32f8c51124c2be30021f0e015c539e9f26ff1"
+      ]
+    },
+    {
+      "version": "0.87.0",
+      "first": "2026-09-22",
+      "last": "2026-09-22",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35707853499"
+      ],
+      "suites": [
+        "61eeafe7a2b83b34f1f5d455e2e614be2f61744a"
+      ]
+    },
+    {
+      "version": "0.87.1",
+      "first": "2026-09-23",
+      "last": "2026-09-29",
+      "runs": 7,
+      "sources": [
+        "harness-test Nightly 35840661694",
+        "harness-test Nightly 36555294068"
+      ],
+      "suites": [
+        "2c4e019a24aeeb80ae95c9487720f091ac8c6e70",
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "0.99.1",
+      "first": "2026-09-30",
+      "last": "2026-09-30",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36712043616"
+      ],
+      "suites": [
+        "3dfe8b85764bbb5f8d474e6ed7744bcd180c9abd"
+      ]
+    },
+    {
+      "version": "0.99.2",
+      "first": "2026-10-01",
+      "last": "2026-10-01",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36850829836"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "first": "2026-10-02",
+      "last": "2026-10-03",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 36994678212",
+        "harness-test Nightly 37113791464"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "1.0.2",
+      "first": "2026-10-04",
+      "last": "2026-10-04",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37195213527"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "1.0.3",
+      "first": "2026-10-05",
+      "last": "2026-10-05",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37301178197"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "1.0.4",
+      "first": "2026-10-07",
+      "last": "2026-10-07",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37610001483"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "first": "2026-10-08",
+      "last": "2026-10-11",
+      "runs": 6,
+      "sources": [
+        "harness-test Nightly 37768023609",
+        "agentprotocol Nightly 38131950655"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "295bc031b1ec1fd0e465b51eb47ca11ffe52d41f"
+      ]
+    },
+    {
+      "version": "1.2.0",
+      "first": "2026-10-14",
+      "last": "2026-10-15",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 38540218254",
+        "agentprotocol Nightly 38707474717"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "1.3.0",
+      "first": "2026-10-16",
+      "last": "2026-10-21",
+      "runs": 6,
+      "sources": [
+        "agentprotocol Nightly 38874809332",
+        "agentprotocol Nightly 39577276198"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
+        "e6c823a32c2aa602243eb8fefc964623eed5c17f"
+      ]
+    },
+    {
+      "version": "1.4.0",
+      "first": "2026-10-22",
+      "last": "2026-11-01",
+      "runs": 10,
+      "sources": [
+        "agentprotocol Nightly 39752228857",
+        "agentprotocol Nightly 41299499743"
+      ],
+      "suites": [
+        "182188f8a44ea2cb12b8ea6fdcedd2409c692294",
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "1.5.0",
+      "first": "2026-11-02",
+      "last": "2026-11-09",
+      "runs": 6,
+      "sources": [
+        "agentprotocol Nightly 41439920602",
+        "agentprotocol Nightly 42589195324"
+      ],
+      "suites": [
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b",
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "1.5.1",
+      "first": "2026-11-10",
+      "last": "2026-11-10",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42753368328"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "1.5.2",
+      "first": "2026-11-11",
+      "last": "2026-11-13",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 42956725835",
+        "agentprotocol Nightly 43454788852"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86",
+        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+      ]
+    }
+  ],
+  "checks": {
+    "[acp, belt hooks] acp/belt-hook.prompt": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.stop": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/model": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/requests": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/streaming": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] binary": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.install": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.answer": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.completed": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.start": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] skills": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook-injection": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.prompt": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.stop": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/model": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/requests": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/streaming": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] binary": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] hooks.install": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.answer": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.completed": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.start": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] skills": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook-injection": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.prompt": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.stop": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions../AGENTS.md": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/model": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/requests": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/streaming": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] binary": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.call": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.messages": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass:exact",
+        "message": "direct: pi sent the probe's prompt and nothing else in the conversation"
+      }
+    ],
+    "[direct] direct.restart": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.result": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.system": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass:exact",
+        "message": "direct: pi sent the probe's system prompt and nothing else"
+      }
+    ],
+    "[direct] direct.tools": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass:only",
+        "message": "direct: pi offered the probe's tool alone, as mcp__tools__probe_echo"
+      }
+    ],
+    "[direct] env.OPENROUTER_API_KEY": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] hooks.install": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written../AGENTS.md": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.answer": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.completed": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.start": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] skills": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] binary": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.prompt": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.stop": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/model": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/requests": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/streaming": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.install": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] skills": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] turn": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] binary": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook-injection": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.prompt": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.stop": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/model": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/requests": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/streaming": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] hooks.install": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] skills": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] turn": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] binary": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook-injection": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.prompt": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.stop": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/model": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/requests": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/streaming": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] hooks.install": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] skills": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] turn": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] binary": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.install": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.prompt": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.stop": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/model": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/requests": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/streaming": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] skills": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.completed": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.start": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] binary": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] hooks.install": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook-injection": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.prompt": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.stop": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/model": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/requests": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/streaming": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] skills": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.completed": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.start": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook-injection": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.prompt": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.stop": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/model": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/requests": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/streaming": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] binary": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] deferred.armed": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:no-search-tool",
+        "message": "deferred tools: pi declares no tool-search tool, so its 4 declared tools are the whole surface it offers on a turn"
+      }
+    ],
+    "[probes] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] hooks.install": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] images.sent": [
+      {
+        "from": "1.2.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.context": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.load": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:by-id",
+        "message": "resume after closed: pi reopened the session 0s after the process ended (resumes by id)"
+      }
+    ],
+    "[probes] seed.appended": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.hand-built": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.assistant text": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.context": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.history": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.request": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.file-uri": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (file-uri): pi sent the image's bytes (codec kept them inline: true)"
+      }
+    ],
+    "[probes] seedkinds.first user message": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.image-only-result": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (image-only-result): pi sent the call and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.in-message-result": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (in-message-result): pi sent the result and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.reasoning": [
+      {
+        "from": "0.87.1",
+        "last": "1.2.0",
+        "outcome": "pass"
+      },
+      {
+        "from": "1.3.0",
+        "last": "1.5.2",
+        "outcome": "finding:not-given",
+        "message": "seed kinds: pi loaded the reasoning and did not give it to the model"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.context": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.history": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.request": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.context": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.history": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.request": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's answer": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's user message": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.shown-only": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool call arguments": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool result": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-after-text": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-image": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:as-image",
+        "message": "seed kinds: pi sent the tool's image as image data (result text sent: true)"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.history": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.request": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-prompt): pi loaded the session and sent the last prompt"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.history": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.request": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-tool-result): pi loaded the session and sent the last tool result"
+      }
+    ],
+    "[probes] seedkinds.untyped-file-path": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:as-text",
+        "message": "seed shapes (untyped-file-path): pi sent the file's content"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.image": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (user-attachments): pi sent the attached image as image data"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.pdf": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "finding:not-kept",
+        "message": "seed shapes (user-attachments): pi's codec kept no attached PDF"
+      }
+    ],
+    "[probes] session.answer": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.completed": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.start": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] transcript": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] turn": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.account": [
+      {
+        "from": "1.1.0",
+        "last": "1.5.2",
+        "outcome": "finding:not-reported",
+        "message": "usage: pi's driver reported no account"
+      }
+    ],
+    "[probes] usage.context": [
+      {
+        "from": "1.1.0",
+        "last": "1.5.2",
+        "outcome": "pass:with-window",
+        "message": "usage: pi reported 15 of 128000 tokens in context"
+      }
+    ],
+    "[probes] usage.limits": [
+      {
+        "from": "1.1.0",
+        "last": "1.5.2",
+        "outcome": "finding:not-reported",
+        "message": "usage: pi pushed no rate limits"
+      }
+    ],
+    "[probes] usage.probe.limits": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass:unsupported",
+        "message": "usage: pi's limits do not apply: plan limits do not apply to an API key (openrouter)"
+      }
+    ],
+    "[probes] usage.probe.no-model-call": [
+      {
+        "from": "1.4.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.turn": [
+      {
+        "from": "1.1.0",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook-injection": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.prompt": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.stop": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/model": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/requests": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/streaming": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] binary": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] hooks.install": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written../AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.context": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.load": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass:by-id",
+        "message": "resume after killed: pi reopened the session 0s after the process ended (resumes by id)"
+      }
+    ],
+    "[resume-kill] session.answer": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.completed": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.start": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] skills": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] binary": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] hooks.install": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.prompt": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.stop": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/instructions../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/model": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/requests": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/streaming": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] skills": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] turn": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] binary": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] hooks.install": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook-injection": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.prompt": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.stop": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/instructions../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/model": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/requests": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/streaming": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] skills": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] turn": [
+      {
+        "from": "0.85.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] binary": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] env.OPENROUTER_API_KEY": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] hooks.install": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] instructions.written../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] instructions.written.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/hook-injection": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/hook.prompt": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/hook.stop": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/instructions../AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/instructions.~/.pi/agent/AGENTS.md": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/model": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/requests": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] sdk/streaming": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] skills": [
+      {
+        "from": "0.85.1",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk] turn": [
+      {
+        "from": "0.84.4",
+        "last": "0.85.1",
+        "outcome": "pass"
+      }
+    ],
+    "[surface] binary": [
+      {
+        "from": "0.87.1",
+        "last": "1.5.2",
+        "outcome": "pass"
+      }
+    ]
+  }
+}

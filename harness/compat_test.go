@@ -107,3 +107,53 @@ func TestKnownIssue(t *testing.T) {
 		t.Error("gemini: unranged issue not applied to an unread version")
 	}
 }
+
+func TestHistorySeen(t *testing.T) {
+	h, ok := AgentHistory("kimi")
+	if !ok {
+		t.Fatal("no kimi history")
+	}
+	check := hookCheck(ModeACP, "STOP")
+	if s, ok := h.Seen(check, "2.5.3"); !ok || s.Outcome != "pass" || s.Version != "2.5.3" {
+		t.Errorf("kimi 2.5.3 %s = %+v, %v", check, s, ok)
+	}
+	if s, ok := h.Seen(check, "2.6.1"); !ok || s.Outcome != "skip:known-missing" || s.Message == "" {
+		t.Errorf("kimi 2.6.1 %s = %+v, %v", check, s, ok)
+	}
+	// A version between two the suite ran is answered by the older one.
+	if s, ok := h.Seen(check, "2.5.9"); !ok || s.Version != "2.5.3" {
+		t.Errorf("kimi 2.5.9 %s = %+v, %v", check, s, ok)
+	}
+	if _, ok := h.Seen(check, "0.1.0"); ok {
+		t.Error("kimi 0.1.0: seen on a version older than any run")
+	}
+	if s, _ := Compatibility("kimi", "2.6.1").Feature("hook:stop", ModeACP); s.Seen == nil || s.Seen.Outcome != "skip:known-missing" {
+		t.Errorf("Compatibility kimi 2.6.1 hook:stop seen = %+v", s.Seen)
+	}
+}
+
+func TestHistoryFiles(t *testing.T) {
+	entries, err := history.ReadDir("history")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range entries {
+		name := e.Name()[:len(e.Name())-len(".json")]
+		if _, ok := All[name]; !ok {
+			t.Errorf("history/%s names no registry agent", e.Name())
+		}
+		if h, ok := AgentHistory(name); !ok || h.Agent != name || len(h.Versions) == 0 {
+			t.Errorf("history/%s does not read as %s's history", e.Name(), name)
+		}
+	}
+}
+
+// droid 1.9.0 fires the prompt hook in plain exec; 1.8.0 did not.
+func TestDroidHeadlessPrompt(t *testing.T) {
+	if s, _ := Compatibility("droid", "1.8.0").Feature("hook:user-prompt-submit", ModeHeadless); s.State != FeatureMissing {
+		t.Errorf("droid 1.8.0 headless prompt hook = %+v", s)
+	}
+	if s, _ := Compatibility("droid", "1.9.0").Feature("hook:user-prompt-submit", ModeHeadless); s.State != FeatureWorks || s.Seen == nil || s.Seen.Outcome != "pass" {
+		t.Errorf("droid 1.9.0 headless prompt hook = %+v", s)
+	}
+}

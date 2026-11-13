@@ -1,0 +1,2270 @@
+{
+  "agent": "goose",
+  "versions": [
+    {
+      "version": "1.48.0",
+      "first": "2026-08-29",
+      "last": "2026-09-03",
+      "runs": 6,
+      "sources": [
+        "harness-test Nightly 33239663195",
+        "harness-test Nightly 33733871676"
+      ],
+      "suites": [
+        "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "1.49.0",
+      "first": "2026-09-04",
+      "last": "2026-09-08",
+      "runs": 5,
+      "sources": [
+        "harness-test Nightly 33853528009",
+        "harness-test Nightly 34205328389"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e",
+        "855064be4f99253339d09f4f7d6bfb110d49b9e8"
+      ]
+    },
+    {
+      "version": "1.50.0",
+      "first": "2026-09-09",
+      "last": "2026-09-14",
+      "runs": 6,
+      "sources": [
+        "harness-test Nightly 34390357791",
+        "harness-test Nightly 34828575477"
+      ],
+      "suites": [
+        "740fa298dce134e64f5d7d28554c28330e13e715",
+        "2ee8cc237fc9fdee19f1f721e1f498a9f6056bdb"
+      ]
+    },
+    {
+      "version": "1.50.1",
+      "first": "2026-09-15",
+      "last": "2026-09-17",
+      "runs": 3,
+      "sources": [
+        "harness-test Nightly 34951102273",
+        "harness-test Nightly 35203792956"
+      ],
+      "suites": [
+        "441ec02f5dfa2ea4d2a2f2ddeeff82d2d0e8d59a",
+        "581e638b56223aa0c643ba0688f09c57394261ae"
+      ]
+    },
+    {
+      "version": "1.51.0",
+      "first": "2026-09-18",
+      "last": "2026-09-23",
+      "runs": 6,
+      "sources": [
+        "harness-test Nightly 35325922801",
+        "harness-test Nightly 35840661694"
+      ],
+      "suites": [
+        "581e638b56223aa0c643ba0688f09c57394261ae",
+        "2c4e019a24aeeb80ae95c9487720f091ac8c6e70"
+      ]
+    },
+    {
+      "version": "1.52.0",
+      "first": "2026-09-24",
+      "last": "2026-10-02",
+      "runs": 8,
+      "sources": [
+        "harness-test Nightly 36053950012",
+        "harness-test Nightly 36994678212"
+      ],
+      "suites": [
+        "67105fc788dc41d8a18b4bb0dfad53ca12d61214",
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "1.53.0",
+      "first": "2026-10-03",
+      "last": "2026-10-08",
+      "runs": 5,
+      "sources": [
+        "harness-test Nightly 37113791464",
+        "harness-test Nightly 37768023609"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "1.54.0",
+      "first": "2026-10-09",
+      "last": "2026-10-16",
+      "runs": 8,
+      "sources": [
+        "harness-test Nightly 37921732070",
+        "agentprotocol Nightly 38874809332"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "1.55.0",
+      "first": "2026-10-17",
+      "last": "2026-10-23",
+      "runs": 7,
+      "sources": [
+        "agentprotocol Nightly 39016230369",
+        "agentprotocol Nightly 39928240672"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
+        "4cb72ef646116332b2edab1aed37bbe14afe15d9"
+      ]
+    },
+    {
+      "version": "1.56.0",
+      "first": "2026-10-24",
+      "last": "2026-10-28",
+      "runs": 5,
+      "sources": [
+        "agentprotocol Nightly 40078309840",
+        "agentprotocol Nightly 40669860434"
+      ],
+      "suites": [
+        "a336c97eb0c942be66bac8dc3fbbd95ba4caa9c0",
+        "790173f6c302548ca8b83fe508f108d9599c158f"
+      ]
+    },
+    {
+      "version": "1.57.0",
+      "first": "2026-10-29",
+      "last": "2026-11-09",
+      "runs": 9,
+      "sources": [
+        "agentprotocol Nightly 40858586290",
+        "agentprotocol Nightly 42589195324"
+      ],
+      "suites": [
+        "790173f6c302548ca8b83fe508f108d9599c158f",
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "1.58.0",
+      "first": "2026-11-10",
+      "last": "2026-11-10",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42753368328"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "1.59.0",
+      "first": "2026-11-11",
+      "last": "2026-11-13",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 42956725835",
+        "agentprotocol Nightly 43454788852"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86",
+        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+      ]
+    }
+  ],
+  "checks": {
+    "[acp, belt hooks] acp/belt-hook.post-tool": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.prompt": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.session-start": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.stop": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions../.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/model": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/requests": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/streaming": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] belt-hook-shape": [
+      {
+        "from": "1.50.0",
+        "last": "1.50.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] binary": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GOOSE_MODE": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GOOSE_MODEL": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.install": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.project-copy": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written../.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.answer": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.completed": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.start": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] skills": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.post-tool": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.prompt": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.session-start": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.stop": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions../.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/model": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/requests": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/streaming": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] binary": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GOOSE_MODE": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GOOSE_MODEL": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] hooks.install": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written../.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.answer": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.completed": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.start": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] skills": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook-injection": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.post-tool": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.prompt": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.session-start": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.stop": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions../.goosehints": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/model": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/requests": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/streaming": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] binary": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GOOSE_MODE": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GOOSE_MODEL": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.OPENAI_API_KEY": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] hooks.install": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written../.goosehints": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.answer": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.completed": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.start": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] skills": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.post-tool": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.prompt": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.session-start": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.stop": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions../.goosehints": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/model": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/requests": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/streaming": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] binary": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.call": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.messages": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass:exact",
+        "message": "direct: goose sent the probe's prompt and nothing else in the conversation"
+      }
+    ],
+    "[direct] direct.restart": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.result": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.system": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "finding:added",
+        "message": "direct: goose added 1165 characters to the probe's system prompt: \"…\\n\\n# Additional Instructions:\\n\\n# Skills\\n\\nYou have these skills at your disposal. Load one when it can help with the task or when the user asks for it:\\n- goose-doc-guide: Reference goose documentation to create, configure, or explain goose-specific features like recipes, extensions, sessions, and pro\""
+      }
+    ],
+    "[direct] direct.tools": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "finding:more",
+        "message": "direct: goose offered 1 tools of its own with the probe's: [load_skill]"
+      }
+    ],
+    "[direct] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GOOSE_MODE": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GOOSE_MODEL": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.OPENAI_API_KEY": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] hooks.install": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written../.goosehints": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.answer": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.completed": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.start": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] skills": [
+      {
+        "from": "1.56.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] belt-hook-shape": [
+      {
+        "from": "1.50.0",
+        "last": "1.50.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] binary": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GOOSE_MODE": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GOOSE_MODEL": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.post-tool": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.prompt": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.session-start": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.stop": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions../.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/model": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/requests": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/streaming": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.install": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.project-copy": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written../.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] skills": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] turn": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] binary": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GOOSE_MODE": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GOOSE_MODEL": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.post-tool": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.prompt": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.session-start": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.stop": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions../.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/model": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/requests": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/streaming": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] hooks.install": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written../.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] skills": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] turn": [
+      {
+        "from": "1.50.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] binary": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GOOSE_MODE": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GOOSE_MODEL": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.OPENAI_API_KEY": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook-injection": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.post-tool": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.prompt": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.session-start": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.stop": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions../.goosehints": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/model": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/requests": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/streaming": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] hooks.install": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written../.goosehints": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] skills": [
+      {
+        "from": "1.49.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] turn": [
+      {
+        "from": "1.48.0",
+        "last": "1.49.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] binary": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GOOSE_MODE": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GOOSE_MODEL": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.install": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.project-copy": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written../.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.post-tool": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.prompt": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.session-start": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.stop": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions../.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/model": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/requests": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/streaming": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] skills": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.completed": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.start": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] binary": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GOOSE_MODE": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GOOSE_MODEL": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.OPENAI_API_KEY": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] hooks.install": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written../.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.post-tool": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.prompt": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.session-start": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.stop": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions../.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/model": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/requests": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/streaming": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] skills": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.completed": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.start": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.post-tool": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.prompt": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.session-start": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.stop": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions../.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/model": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/requests": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/streaming": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] binary": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] deferred.armed": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:no-search-tool",
+        "message": "deferred tools: goose declares no tool-search tool, so its 0 declared tools are the whole surface it offers on a turn"
+      }
+    ],
+    "[probes] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GOOSE_MODE": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GOOSE_MODEL": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.OPENAI_API_KEY": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] hooks.install": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] images.sent": [
+      {
+        "from": "1.54.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written../.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.context": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.load": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.replay": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.appended": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.hand-built": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.assistant text": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.context": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.history": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.request": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.file-uri": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (file-uri): goose sent the image's bytes (codec kept them inline: true)"
+      }
+    ],
+    "[probes] seedkinds.first user message": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.image-only-result": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (image-only-result): goose sent the call and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.in-message-result": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (in-message-result): goose sent the result and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.reasoning": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.context": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.history": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.request": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.context": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.history": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.request": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's answer": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's user message": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.shown-only": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool call arguments": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool result": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-after-text": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-image": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:as-image",
+        "message": "seed kinds: goose sent the tool's image as image data (result text sent: true)"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.history": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.request": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-prompt): goose loaded the session and sent the last prompt"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.history": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.request": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-tool-result): goose loaded the session and sent the last tool result"
+      }
+    ],
+    "[probes] seedkinds.untyped-file-path": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:as-text",
+        "message": "seed shapes (untyped-file-path): goose sent the file's content"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.image": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (user-attachments): goose sent the attached image as image data"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.pdf": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass:as-document",
+        "message": "seed shapes (user-attachments): goose sent the PDF's bytes (name sent: true)"
+      }
+    ],
+    "[probes] session.answer": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.completed": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.start": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] transcript": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] turn": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.account": [
+      {
+        "from": "1.54.0",
+        "last": "1.59.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: goose's driver reported no account"
+      }
+    ],
+    "[probes] usage.context": [
+      {
+        "from": "1.54.0",
+        "last": "1.59.0",
+        "outcome": "pass:with-window",
+        "message": "usage: goose reported 15 of 128000 tokens in context"
+      }
+    ],
+    "[probes] usage.limits": [
+      {
+        "from": "1.54.0",
+        "last": "1.59.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: goose pushed no rate limits"
+      }
+    ],
+    "[probes] usage.probe.limits": [
+      {
+        "from": "1.55.0",
+        "last": "1.59.0",
+        "outcome": "pass:unsupported",
+        "message": "usage: goose's limits do not apply: plan limits do not apply to the mock provider"
+      }
+    ],
+    "[probes] usage.probe.no-model-call": [
+      {
+        "from": "1.55.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.turn": [
+      {
+        "from": "1.54.0",
+        "last": "1.59.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: goose's driver reported no usage for the turn"
+      }
+    ],
+    "[resume-kill] acp/hook.post-tool": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.prompt": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.session-start": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.stop": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions../.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions.~/.config/goose/.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/model": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/requests": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/streaming": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] binary": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GOOSE_DISABLE_SESSION_NAMING": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GOOSE_MODE": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GOOSE_MODEL": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GOOSE_PROVIDER": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.OPENAI_API_KEY": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] hooks.install": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written../.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written.~/.config/goose/.goosehints": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.context": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.load": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.replay": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.answer": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.completed": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.start": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] skills": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ],
+    "[surface] binary": [
+      {
+        "from": "1.52.0",
+        "last": "1.59.0",
+        "outcome": "pass"
+      }
+    ]
+  }
+}

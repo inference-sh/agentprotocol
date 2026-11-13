@@ -1,0 +1,3159 @@
+{
+  "agent": "droid",
+  "versions": [
+    {
+      "version": "0.208.1",
+      "first": "2026-08-29",
+      "last": "2026-08-30",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 33239663195",
+        "harness-test Nightly 33304738193"
+      ],
+      "suites": [
+        "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
+        "611a9d19424b237fa5a2ffb121eb9428c1d3e35b"
+      ]
+    },
+    {
+      "version": "0.208.2",
+      "first": "2026-08-31",
+      "last": "2026-08-31",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33382669488"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "0.209.0",
+      "first": "2026-09-01",
+      "last": "2026-09-01",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33490715458"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "0.210.0",
+      "first": "2026-09-02",
+      "last": "2026-09-02",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33608359908"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "0.211.0",
+      "first": "2026-09-03",
+      "last": "2026-09-03",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33733871676"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "0.212.0",
+      "first": "2026-09-04",
+      "last": "2026-09-04",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 33853528009"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
+      ]
+    },
+    {
+      "version": "0.213.0",
+      "first": "2026-09-05",
+      "last": "2026-09-08",
+      "runs": 4,
+      "sources": [
+        "harness-test Nightly 33954153873",
+        "harness-test Nightly 34205328389"
+      ],
+      "suites": [
+        "26bf2cd027bbf0f1cd959c38874f59816509dc0e",
+        "855064be4f99253339d09f4f7d6bfb110d49b9e8"
+      ]
+    },
+    {
+      "version": "0.215.1",
+      "first": "2026-09-09",
+      "last": "2026-09-09",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34390357791"
+      ],
+      "suites": [
+        "740fa298dce134e64f5d7d28554c28330e13e715"
+      ]
+    },
+    {
+      "version": "0.216.0",
+      "first": "2026-09-10",
+      "last": "2026-09-10",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34456245064"
+      ],
+      "suites": [
+        "0c24a7c62380500409bff4bef04565904cb76386"
+      ]
+    },
+    {
+      "version": "0.217.0",
+      "first": "2026-09-11",
+      "last": "2026-09-11",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34579708071"
+      ],
+      "suites": [
+        "df794c70277adc500372cbb51d7d6fb015049d68"
+      ]
+    },
+    {
+      "version": "0.218.1",
+      "first": "2026-09-12",
+      "last": "2026-09-13",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 34683048524",
+        "harness-test Nightly 34748584236"
+      ],
+      "suites": [
+        "9d63c9a46257ee8451b72da138b86862b2dca1b4",
+        "b10105e257b0921eedc319456b343ceb2d3b0c20"
+      ]
+    },
+    {
+      "version": "0.218.2",
+      "first": "2026-09-14",
+      "last": "2026-09-14",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34828575477"
+      ],
+      "suites": [
+        "2ee8cc237fc9fdee19f1f721e1f498a9f6056bdb"
+      ]
+    },
+    {
+      "version": "0.219.0",
+      "first": "2026-09-15",
+      "last": "2026-09-15",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34951102273"
+      ],
+      "suites": [
+        "441ec02f5dfa2ea4d2a2f2ddeeff82d2d0e8d59a"
+      ]
+    },
+    {
+      "version": "0.220.0",
+      "first": "2026-09-16",
+      "last": "2026-09-16",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35077226550"
+      ],
+      "suites": [
+        "b3ac6bb2f58cf3007bcf7855ebecc9e98880e36b"
+      ]
+    },
+    {
+      "version": "0.221.0",
+      "first": "2026-09-17",
+      "last": "2026-09-17",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35203792956"
+      ],
+      "suites": [
+        "581e638b56223aa0c643ba0688f09c57394261ae"
+      ]
+    },
+    {
+      "version": "0.222.0",
+      "first": "2026-09-18",
+      "last": "2026-09-18",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35325922801"
+      ],
+      "suites": [
+        "581e638b56223aa0c643ba0688f09c57394261ae"
+      ]
+    },
+    {
+      "version": "0.223.0",
+      "first": "2026-09-19",
+      "last": "2026-09-21",
+      "runs": 3,
+      "sources": [
+        "harness-test Nightly 35432190178",
+        "harness-test Nightly 35584121206"
+      ],
+      "suites": [
+        "72735ff2b78db6d8fdf4896ccb955c57ccc3fb9c",
+        "a4b32f8c51124c2be30021f0e015c539e9f26ff1"
+      ]
+    },
+    {
+      "version": "0.224.1",
+      "first": "2026-09-22",
+      "last": "2026-09-22",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35707853499"
+      ],
+      "suites": [
+        "61eeafe7a2b83b34f1f5d455e2e614be2f61744a"
+      ]
+    },
+    {
+      "version": "0.225.1",
+      "first": "2026-09-23",
+      "last": "2026-09-23",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 35840661694"
+      ],
+      "suites": [
+        "2c4e019a24aeeb80ae95c9487720f091ac8c6e70"
+      ]
+    },
+    {
+      "version": "0.226.2",
+      "first": "2026-09-24",
+      "last": "2026-09-24",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36053950012"
+      ],
+      "suites": [
+        "67105fc788dc41d8a18b4bb0dfad53ca12d61214"
+      ]
+    },
+    {
+      "version": "0.227.0",
+      "first": "2026-09-25",
+      "last": "2026-09-25",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36118003323"
+      ],
+      "suites": [
+        "00d21b3321a659f770b86595fd9defcf9f938eef"
+      ]
+    },
+    {
+      "version": "0.228.0",
+      "first": "2026-09-26",
+      "last": "2026-09-28",
+      "runs": 3,
+      "sources": [
+        "harness-test Nightly 36231704775",
+        "harness-test Nightly 36410294180"
+      ],
+      "suites": [
+        "746c36ea652b76d8daf1417b55a7019607bb1a35",
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "0.229.0",
+      "first": "2026-09-29",
+      "last": "2026-09-29",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36555294068"
+      ],
+      "suites": [
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "0.231.0",
+      "first": "2026-10-01",
+      "last": "2026-10-01",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36850829836"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "0.232.0",
+      "first": "2026-10-02",
+      "last": "2026-10-02",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36994678212"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "0.233.0",
+      "first": "2026-10-03",
+      "last": "2026-10-05",
+      "runs": 3,
+      "sources": [
+        "harness-test Nightly 37113791464",
+        "harness-test Nightly 37301178197"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "0.235.0",
+      "first": "2026-10-07",
+      "last": "2026-10-07",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37610001483"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "0.236.0",
+      "first": "2026-10-08",
+      "last": "2026-10-08",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 37768023609"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "0.237.0",
+      "first": "2026-10-09",
+      "last": "2026-10-09",
+      "runs": 3,
+      "sources": [
+        "harness-test Nightly 37921732070",
+        "agentprotocol Nightly 37974988779"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "ba80da371bb47162c717a0c4f80cc5215b64ae20"
+      ]
+    },
+    {
+      "version": "0.238.0",
+      "first": "2026-10-10",
+      "last": "2026-10-11",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 38044259962",
+        "agentprotocol Nightly 38131950655"
+      ],
+      "suites": [
+        "7f4f77f2b68b80e5cca233a768342fcabfaf159d",
+        "295bc031b1ec1fd0e465b51eb47ca11ffe52d41f"
+      ]
+    },
+    {
+      "version": "0.241.1",
+      "first": "2026-10-14",
+      "last": "2026-10-14",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38540218254"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "0.242.0",
+      "first": "2026-10-15",
+      "last": "2026-10-15",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38707474717"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "0.243.0",
+      "first": "2026-10-16",
+      "last": "2026-10-16",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38874809332"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "0.244.0",
+      "first": "2026-10-17",
+      "last": "2026-10-19",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 39016230369",
+        "agentprotocol Nightly 39229995996"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
+        "230e1aebc696f60caa141d1c4f246768c9987ce5"
+      ]
+    },
+    {
+      "version": "0.245.0",
+      "first": "2026-10-20",
+      "last": "2026-10-20",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 39397461615"
+      ],
+      "suites": [
+        "230e1aebc696f60caa141d1c4f246768c9987ce5"
+      ]
+    },
+    {
+      "version": "0.245.1",
+      "first": "2026-10-21",
+      "last": "2026-10-21",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 39577276198"
+      ],
+      "suites": [
+        "e6c823a32c2aa602243eb8fefc964623eed5c17f"
+      ]
+    },
+    {
+      "version": "0.247.0",
+      "first": "2026-10-22",
+      "last": "2026-10-22",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 39752228857"
+      ],
+      "suites": [
+        "182188f8a44ea2cb12b8ea6fdcedd2409c692294"
+      ]
+    },
+    {
+      "version": "0.248.0",
+      "first": "2026-10-23",
+      "last": "2026-10-23",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 39928240672"
+      ],
+      "suites": [
+        "4cb72ef646116332b2edab1aed37bbe14afe15d9"
+      ]
+    },
+    {
+      "version": "0.249.0",
+      "first": "2026-10-24",
+      "last": "2026-10-26",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 40078309840",
+        "agentprotocol Nightly 40299994085"
+      ],
+      "suites": [
+        "a336c97eb0c942be66bac8dc3fbbd95ba4caa9c0",
+        "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
+      ]
+    },
+    {
+      "version": "0.250.0",
+      "first": "2026-10-27",
+      "last": "2026-10-27",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 40480811689"
+      ],
+      "suites": [
+        "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
+      ]
+    },
+    {
+      "version": "0.251.0",
+      "first": "2026-10-28",
+      "last": "2026-10-29",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 40669860434",
+        "agentprotocol Nightly 40858586290"
+      ],
+      "suites": [
+        "790173f6c302548ca8b83fe508f108d9599c158f",
+        "790173f6c302548ca8b83fe508f108d9599c158f"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "first": "2026-10-30",
+      "last": "2026-10-30",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 41041818652"
+      ],
+      "suites": [
+        "f1878055d64897edecc84634f9221b56602a8913"
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "first": "2026-10-31",
+      "last": "2026-11-02",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 41194026827",
+        "agentprotocol Nightly 41439920602"
+      ],
+      "suites": [
+        "9f5188af73a851f16f0dd7101d63a1936b54f23e",
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "1.2.0",
+      "first": "2026-11-03",
+      "last": "2026-11-03",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 41575845638"
+      ],
+      "suites": [
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "1.3.0",
+      "first": "2026-11-04",
+      "last": "2026-11-04",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 41770888503"
+      ],
+      "suites": [
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "1.5.0",
+      "first": "2026-11-06",
+      "last": "2026-11-06",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42201531930"
+      ],
+      "suites": [
+        "e25b88d8ccb4be54d0d39209b55e7cf4f774b00c"
+      ]
+    },
+    {
+      "version": "1.6.0",
+      "first": "2026-11-08",
+      "last": "2026-11-09",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 42479125985",
+        "agentprotocol Nightly 42589195324"
+      ],
+      "suites": [
+        "3378cf7b141f87fb28c7ff5deefda58574a1c8d4",
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "1.7.0",
+      "first": "2026-11-10",
+      "last": "2026-11-10",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42753368328"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "1.8.0",
+      "first": "2026-11-11",
+      "last": "2026-11-11",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42956725835"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "1.9.0",
+      "first": "2026-11-12",
+      "last": "2026-11-12",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 43152242605"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "1.10.0",
+      "first": "2026-11-13",
+      "last": "2026-11-13",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 43454788852"
+      ],
+      "suites": [
+        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+      ]
+    }
+  ],
+  "checks": {
+    "[acp, belt hooks] acp/belt-hook.post-tool": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.pre-compact": [
+      {
+        "from": "0.216.0",
+        "last": "1.10.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: belt pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.pre-tool": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.prompt": [
+      {
+        "from": "0.216.0",
+        "last": "0.217.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: belt prompt hook not fired — observed only; no prompt hook over ACP, cause not established"
+      },
+      {
+        "from": "0.218.1",
+        "last": "0.218.1",
+        "outcome": "mixed"
+      },
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.session-start": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.stop": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/model": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/requests": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/streaming": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] belt-hook-shape": [
+      {
+        "from": "0.218.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] binary": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.FACTORY_API_KEY": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.install": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.project-copy": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.answer": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.completed": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.start": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] skills": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook-injection": [
+      {
+        "from": "0.236.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.post-tool": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.pre-compact": [
+      {
+        "from": "0.216.0",
+        "last": "1.10.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.pre-tool": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.prompt": [
+      {
+        "from": "0.216.0",
+        "last": "0.235.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: prompt hook not fired — the ACP agent (exec --output-format acp, also each acp-daemon child) calls the turn runner directly; UserPromptSubmit runs only in the JSON-RPC processUserMessage path (droid 0.217 source)"
+      },
+      {
+        "from": "0.236.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.session-start": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.stop": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/model": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/requests": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/streaming": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] binary": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.FACTORY_API_KEY": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] hooks.install": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.answer": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.completed": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.start": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] skills": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.post-tool": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.pre-tool": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.session-start": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.stop": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.213.0",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.213.0",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/model": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/requests": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/streaming": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] binary": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.FACTORY_API_KEY": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] hooks.install": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written../AGENTS.md": [
+      {
+        "from": "0.213.0",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.213.0",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.answer": [
+      {
+        "from": "0.208.1",
+        "last": "0.208.2",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.completed": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.start": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] skills": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook-injection": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.post-tool": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.pre-compact": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
+      }
+    ],
+    "[direct] acp/hook.pre-tool": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.prompt": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.session-start": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.stop": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/model": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/requests": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/streaming": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] binary": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.call": [
+      {
+        "from": "0.249.0",
+        "last": "1.0.0",
+        "outcome": "fail",
+        "message": "direct: droid answered end_turn with [], want one probe_echo call with ping-7"
+      },
+      {
+        "from": "1.1.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.messages": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "finding:added",
+        "message": "direct: droid added 8648 characters to the conversation: \"\u003csystem-reminder\u003e\\nUnified tool catalog:\\nThe tools listed below are available in this environment, but their schemas may be omitted from the current tool list to save context. The list is unified (native tools, MCP server tools, and tools from third-party connectors the user has connected); load and \""
+      }
+    ],
+    "[direct] direct.restart": [
+      {
+        "from": "1.1.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.result": [
+      {
+        "from": "1.1.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] direct.side-requests": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "finding",
+        "message": "direct: droid made 4 model requests of its own beside the probe's"
+      }
+    ],
+    "[direct] direct.system": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "finding:added",
+        "message": "direct: droid added 9360 characters to the probe's system prompt: \"You are Droid, an AI software engineering agent built by Factory.\\n\\nYou work in the user's environment. You are direct, plain-spoken, and precise.\\n\\n# Harness\\n- Text outside tool calls is shown to the user as GitHub-flavored Markdown.\\n- In user-facing Markdown, never leave TeX backslash commands in pl\""
+      }
+    ],
+    "[direct] direct.tools": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "finding:more",
+        "message": "direct: droid offered 15 tools of its own with the probe's: [AskUser Create Edit Execute ExitSpecMode Glob Grep LS Read Skill Task TaskOutput TaskStop TodoWrite ToolSearch]"
+      }
+    ],
+    "[direct] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.FACTORY_API_KEY": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] hooks.install": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written../AGENTS.md": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.answer": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.completed": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.start": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] skills": [
+      {
+        "from": "0.249.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] belt-hook-shape": [
+      {
+        "from": "0.218.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] binary": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.FACTORY_API_KEY": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.post-tool": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.pre-compact": [
+      {
+        "from": "0.216.0",
+        "last": "1.10.0",
+        "outcome": "skip:known-missing",
+        "message": "headless: belt pre-compact hook not fired — PreCompact fires only from the TUI's manual compaction; exec never compacts (droid 0.217 source)"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.pre-tool": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.prompt": [
+      {
+        "from": "0.215.1",
+        "last": "0.217.0",
+        "outcome": "pass"
+      },
+      {
+        "from": "0.218.1",
+        "last": "0.218.1",
+        "outcome": "mixed"
+      },
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.session-start": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.stop": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions../AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/model": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/requests": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/streaming": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.install": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.project-copy": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] skills": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] turn": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] binary": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.FACTORY_API_KEY": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook-injection": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.post-tool": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.pre-compact": [
+      {
+        "from": "0.216.0",
+        "last": "1.10.0",
+        "outcome": "skip:known-missing",
+        "message": "headless: pre-compact hook not fired — PreCompact fires only from the TUI's manual compaction; exec never compacts (droid 0.217 source)"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.pre-tool": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.prompt": [
+      {
+        "from": "0.215.1",
+        "last": "0.217.0",
+        "outcome": "pass"
+      },
+      {
+        "from": "0.218.1",
+        "last": "1.8.0",
+        "outcome": "skip:known-missing",
+        "message": "headless: prompt hook not fired — plain exec (-o text/json/stream-json) runs the turn through kDA, which never calls executeUserPromptSubmitHooks; only -o stream-jsonrpc goes through the JSON-RPC processUserMessage path (droid 0.217 source)"
+      },
+      {
+        "from": "1.9.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.session-start": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.stop": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions../AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/model": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/requests": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/streaming": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] hooks.install": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] skills": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] turn": [
+      {
+        "from": "0.215.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] binary": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.FACTORY_API_KEY": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook-injection": [
+      {
+        "from": "0.213.0",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.post-tool": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.pre-tool": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.prompt": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.session-start": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.stop": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions../AGENTS.md": [
+      {
+        "from": "0.213.0",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.213.0",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/model": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/requests": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/streaming": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] hooks.install": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written../AGENTS.md": [
+      {
+        "from": "0.213.0",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.213.0",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] skills": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] turn": [
+      {
+        "from": "0.208.1",
+        "last": "0.213.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] belt-hook-shape": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] binary": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.FACTORY_API_KEY": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.install": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.project-copy": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.post-tool": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.pre-compact": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.prompt": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.session-start": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.stop": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/model": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/requests": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/streaming": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] skills": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.completed": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.start": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] binary": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.FACTORY_API_KEY": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] hooks.install": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook-injection": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.post-tool": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.pre-compact": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.pre-tool": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.prompt": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.session-start": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.stop": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions../AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/model": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/requests": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/streaming": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] skills": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.completed": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.start": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook-injection": [
+      {
+        "from": "0.236.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.post-tool": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.pre-compact": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
+      }
+    ],
+    "[probes] acp/hook.pre-tool": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.prompt": [
+      {
+        "from": "0.226.2",
+        "last": "0.235.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: prompt hook not fired — the ACP agent (exec --output-format acp, also each acp-daemon child) calls the turn runner directly; UserPromptSubmit runs only in the JSON-RPC processUserMessage path (droid 0.217 source)"
+      },
+      {
+        "from": "0.236.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.session-start": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.stop": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/model": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/requests": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/streaming": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] binary": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] compact.run": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "finding:as-prompt",
+        "message": "compaction: droid sent /compress to the model as a user message, so over ACP it is a prompt, not a command, and nothing was compacted"
+      }
+    ],
+    "[probes] deferred.armed": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] deferred.expanded": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass:revealed",
+        "message": "deferred tools: droid revealed 3 tool(s) not visible on a plain turn: EditAutomation ListAutomationTemplates ListAutomations"
+      }
+    ],
+    "[probes] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.FACTORY_API_KEY": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] hooks.install": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] images.sent": [
+      {
+        "from": "0.241.1",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written../AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.context": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.load": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.replay": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.appended": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.hand-built": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.kinds": [
+      {
+        "from": "0.236.0",
+        "last": "0.237.0",
+        "outcome": "finding:load-rejected",
+        "message": "seed (kinds): droid rejected session/load of fe37835d-3752-4c20-bc9b-75ca1927fb6e: driver: resume acp session: acp: load session \"fe37835d-3752-4c20-bc9b-75ca1927fb6e\": acp: session/load: Internal error: {\"details\":\"RPC Error: Load session request failed\"}"
+      }
+    ],
+    "[probes] seedkinds.assistant text": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.context": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.history": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.request": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.file-uri": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (file-uri): droid sent the image's bytes (codec kept them inline: true)"
+      }
+    ],
+    "[probes] seedkinds.first user message": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.image-only-result": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (image-only-result): droid sent the call and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.in-message-result": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (in-message-result): droid sent the result and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.reasoning": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "finding:not-given",
+        "message": "seed kinds: droid loaded the reasoning and did not give it to the model"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.context": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.history": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.request": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.context": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.history": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.request": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's answer": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's user message": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.shown-only": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool call arguments": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool result": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-after-text": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-image": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass:as-image",
+        "message": "seed kinds: droid sent the tool's image as image data (result text sent: true)"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.history": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.request": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-prompt): droid loaded the session and sent the last prompt"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.history": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.request": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-tool-result): droid loaded the session and sent the last tool result"
+      }
+    ],
+    "[probes] seedkinds.untyped-file-path": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass:as-text",
+        "message": "seed shapes (untyped-file-path): droid sent the file's content"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.image": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (user-attachments): droid sent the attached image as image data"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.pdf": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass:as-document",
+        "message": "seed shapes (user-attachments): droid sent the PDF's bytes (name sent: true)"
+      }
+    ],
+    "[probes] session.answer": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.completed": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.start": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] transcript": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] turn": [
+      {
+        "from": "0.227.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.account": [
+      {
+        "from": "0.238.0",
+        "last": "1.10.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: droid's driver reported no account"
+      }
+    ],
+    "[probes] usage.context": [
+      {
+        "from": "0.238.0",
+        "last": "0.245.1",
+        "outcome": "finding:not-reported",
+        "message": "usage: droid reported no context window fill"
+      },
+      {
+        "from": "0.247.0",
+        "last": "1.10.0",
+        "outcome": "pass:with-window",
+        "message": "usage: droid reported 15 of 128000 tokens in context"
+      }
+    ],
+    "[probes] usage.limits": [
+      {
+        "from": "0.238.0",
+        "last": "1.10.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: droid pushed no rate limits"
+      }
+    ],
+    "[probes] usage.probe.limits": [
+      {
+        "from": "0.248.0",
+        "last": "1.0.0",
+        "outcome": "finding:probe_failed",
+        "message": "usage: droid's limits could not be read here: droid: /api/billing/limits: unexpected end of JSON input"
+      },
+      {
+        "from": "1.1.0",
+        "last": "1.10.0",
+        "outcome": "pass:windows",
+        "message": "usage: droid's prober read 3 window(s)"
+      }
+    ],
+    "[probes] usage.probe.no-model-call": [
+      {
+        "from": "0.248.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.turn": [
+      {
+        "from": "0.238.0",
+        "last": "1.10.0",
+        "outcome": "finding:not-reported",
+        "message": "usage: droid's driver reported no usage for the turn"
+      }
+    ],
+    "[resume-kill] acp/hook-injection": [
+      {
+        "from": "0.236.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.post-tool": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.pre-compact": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
+      }
+    ],
+    "[resume-kill] acp/hook.pre-tool": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.prompt": [
+      {
+        "from": "0.226.2",
+        "last": "0.235.0",
+        "outcome": "skip:known-missing",
+        "message": "acp: prompt hook not fired — the ACP agent (exec --output-format acp, also each acp-daemon child) calls the turn runner directly; UserPromptSubmit runs only in the JSON-RPC processUserMessage path (droid 0.217 source)"
+      },
+      {
+        "from": "0.236.0",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.session-start": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.stop": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/model": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/requests": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/streaming": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] binary": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.FACTORY_API_KEY": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] hooks.install": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written../AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.context": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.load": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.replay": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.answer": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.completed": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.start": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] skills": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] belt-hook-shape": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] binary": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] env.FACTORY_API_KEY": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] hooks.install": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] hooks.project-copy": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.post-tool": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.pre-compact": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "skip:known-missing",
+        "message": "sdk: belt pre-compact hook not fired — SDK mode is droid exec -o stream-jsonrpc; PreCompact still fires only from the TUI's manual compaction (same investigation as headless)"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.pre-tool": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.prompt": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.session-start": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/belt-hook.stop": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/instructions../AGENTS.md": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/model": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/requests": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/streaming": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] skills": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] turn": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] binary": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] env.FACTORY_API_BASE_URL": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] env.FACTORY_API_KEY": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] env.FACTORY_DISABLE_KEYRING": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] hooks.install": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] instructions.written.~/.factory/AGENTS.md": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook-injection": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.post-tool": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.pre-compact": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "skip:known-missing",
+        "message": "sdk: pre-compact hook not fired — SDK mode is droid exec -o stream-jsonrpc; PreCompact still fires only from the TUI's manual compaction (same investigation as headless)"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.pre-tool": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.prompt": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.session-start": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/hook.stop": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/instructions../AGENTS.md": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/instructions.~/.factory/AGENTS.md": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/model": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/requests": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/streaming": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] skills": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] turn": [
+      {
+        "from": "0.218.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ],
+    "[surface] binary": [
+      {
+        "from": "0.226.2",
+        "last": "1.10.0",
+        "outcome": "pass"
+      }
+    ]
+  }
+}

@@ -1,0 +1,2527 @@
+{
+  "agent": "grok",
+  "versions": [
+    {
+      "version": "1.0.13",
+      "first": "2026-08-29",
+      "last": "2026-09-08",
+      "runs": 11,
+      "sources": [
+        "harness-test Nightly 33239663195",
+        "harness-test Nightly 34205328389"
+      ],
+      "suites": [
+        "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
+        "855064be4f99253339d09f4f7d6bfb110d49b9e8"
+      ]
+    },
+    {
+      "version": "1.0.24",
+      "first": "2026-09-09",
+      "last": "2026-09-09",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 34390357791"
+      ],
+      "suites": [
+        "740fa298dce134e64f5d7d28554c28330e13e715"
+      ]
+    },
+    {
+      "version": "1.0.25",
+      "first": "2026-09-10",
+      "last": "2026-09-11",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 34456245064",
+        "harness-test Nightly 34579708071"
+      ],
+      "suites": [
+        "0c24a7c62380500409bff4bef04565904cb76386",
+        "df794c70277adc500372cbb51d7d6fb015049d68"
+      ]
+    },
+    {
+      "version": "1.0.30",
+      "first": "2026-09-12",
+      "last": "2026-09-16",
+      "runs": 5,
+      "sources": [
+        "harness-test Nightly 34683048524",
+        "harness-test Nightly 35077226550"
+      ],
+      "suites": [
+        "9d63c9a46257ee8451b72da138b86862b2dca1b4",
+        "b3ac6bb2f58cf3007bcf7855ebecc9e98880e36b"
+      ]
+    },
+    {
+      "version": "1.0.34",
+      "first": "2026-09-17",
+      "last": "2026-09-20",
+      "runs": 4,
+      "sources": [
+        "harness-test Nightly 35203792956",
+        "harness-test Nightly 35501236224"
+      ],
+      "suites": [
+        "581e638b56223aa0c643ba0688f09c57394261ae",
+        "989f5cafa5963813a5c378f4222667d589e7058f"
+      ]
+    },
+    {
+      "version": "1.0.40",
+      "first": "2026-09-21",
+      "last": "2026-09-22",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 35584121206",
+        "harness-test Nightly 35707853499"
+      ],
+      "suites": [
+        "a4b32f8c51124c2be30021f0e015c539e9f26ff1",
+        "61eeafe7a2b83b34f1f5d455e2e614be2f61744a"
+      ]
+    },
+    {
+      "version": "1.0.41",
+      "first": "2026-09-23",
+      "last": "2026-09-28",
+      "runs": 6,
+      "sources": [
+        "harness-test Nightly 35840661694",
+        "harness-test Nightly 36410294180"
+      ],
+      "suites": [
+        "2c4e019a24aeeb80ae95c9487720f091ac8c6e70",
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "1.0.44",
+      "first": "2026-09-29",
+      "last": "2026-09-29",
+      "runs": 1,
+      "sources": [
+        "harness-test Nightly 36555294068"
+      ],
+      "suites": [
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "1.0.46",
+      "first": "2026-10-01",
+      "last": "2026-10-08",
+      "runs": 7,
+      "sources": [
+        "harness-test Nightly 36850829836",
+        "harness-test Nightly 37768023609"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "1.0.50",
+      "first": "2026-10-09",
+      "last": "2026-10-11",
+      "runs": 5,
+      "sources": [
+        "harness-test Nightly 37921732070",
+        "agentprotocol Nightly 38131950655"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "295bc031b1ec1fd0e465b51eb47ca11ffe52d41f"
+      ]
+    },
+    {
+      "version": "1.0.52",
+      "first": "2026-10-13",
+      "last": "2026-10-15",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 38391078200",
+        "agentprotocol Nightly 38707474717"
+      ],
+      "suites": [
+        "ff859396e65d13f40628fab61aae6e762ac65822",
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "1.0.60",
+      "first": "2026-10-16",
+      "last": "2026-10-16",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 38874809332"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "1.0.62",
+      "first": "2026-10-17",
+      "last": "2026-10-21",
+      "runs": 5,
+      "sources": [
+        "agentprotocol Nightly 39016230369",
+        "agentprotocol Nightly 39577276198"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
+        "e6c823a32c2aa602243eb8fefc964623eed5c17f"
+      ]
+    },
+    {
+      "version": "1.0.67",
+      "first": "2026-10-22",
+      "last": "2026-10-23",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 39752228857",
+        "agentprotocol Nightly 39928240672"
+      ],
+      "suites": [
+        "182188f8a44ea2cb12b8ea6fdcedd2409c692294",
+        "4cb72ef646116332b2edab1aed37bbe14afe15d9"
+      ]
+    },
+    {
+      "version": "1.0.70",
+      "first": "2026-10-24",
+      "last": "2026-11-04",
+      "runs": 11,
+      "sources": [
+        "agentprotocol Nightly 40078309840",
+        "agentprotocol Nightly 41770888503"
+      ],
+      "suites": [
+        "a336c97eb0c942be66bac8dc3fbbd95ba4caa9c0",
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "1.0.77",
+      "first": "2026-11-06",
+      "last": "2026-11-13",
+      "runs": 7,
+      "sources": [
+        "agentprotocol Nightly 42201531930",
+        "agentprotocol Nightly 43454788852"
+      ],
+      "suites": [
+        "e25b88d8ccb4be54d0d39209b55e7cf4f774b00c",
+        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+      ]
+    }
+  ],
+  "checks": {
+    "[acp, belt hooks] acp/belt-hook.post-tool": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.pre-tool": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.prompt": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.stop": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions../AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/model": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/requests": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/streaming": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] belt-hook-shape": [
+      {
+        "from": "1.0.30",
+        "last": "1.0.30",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] binary": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.XAI_API_KEY": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.install": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.answer": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.completed": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.start": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] skills": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook-injection": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.24",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.post-tool": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.pre-tool": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.prompt": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.stop": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions../AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/model": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/requests": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/streaming": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] binary": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.XAI_API_KEY": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] hooks.install": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.answer": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.completed": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.start": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] skills": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook-injection": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "mixed"
+      }
+    ],
+    "[acp] acp/hook.post-tool": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.pre-tool": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.prompt": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/hook.stop": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions../AGENTS.md": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/model": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/requests": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] acp/streaming": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] binary": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] env.XAI_API_KEY": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] hooks.install": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.answer": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.completed": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] session.start": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[acp] skills": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.post-tool": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.pre-tool": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.prompt": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.stop": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions../AGENTS.md": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/model": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/requests": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/streaming": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] binary": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.XAI_API_KEY": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] hooks.install": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.answer": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.completed": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.start": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] skills": [
+      {
+        "from": "1.0.70",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] belt-hook-shape": [
+      {
+        "from": "1.0.30",
+        "last": "1.0.30",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] binary": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.XAI_API_KEY": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.post-tool": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.pre-tool": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.prompt": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.stop": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions../AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/model": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/requests": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/streaming": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.install": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] skills": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] turn": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] binary": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.XAI_API_KEY": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook-injection": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.24",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.post-tool": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.pre-tool": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.prompt": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.stop": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions../AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/model": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/requests": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/streaming": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] hooks.install": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] skills": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] turn": [
+      {
+        "from": "1.0.24",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] binary": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.XAI_API_KEY": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook-injection": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.post-tool": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.pre-tool": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.prompt": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.stop": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions../AGENTS.md": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/model": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/requests": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/streaming": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] hooks.install": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] skills": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] turn": [
+      {
+        "from": "1.0.13",
+        "last": "1.0.13",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] binary": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.XAI_API_KEY": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.install": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.post-tool": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.prompt": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.stop": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/model": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/requests": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/streaming": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] skills": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.completed": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.start": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] binary": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.XAI_API_KEY": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] hooks.install": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.post-tool": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.pre-tool": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.prompt": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.stop": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions../AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/model": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/requests": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/streaming": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] skills": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.completed": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.start": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.post-tool": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.pre-tool": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.prompt": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.stop": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions../AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/model": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/requests": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/streaming": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] binary": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] compact.context": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass:summary",
+        "message": "compaction: grok sent the model 7 message(s) but not the original wording, so the resume carries a summary"
+      }
+    ],
+    "[probes] compact.run": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] deferred.armed": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] deferred.expanded": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass:nothing-new",
+        "message": "deferred tools: grok ran search_tool and declared nothing new — its search returns results to the model rather than expanding the tool list"
+      }
+    ],
+    "[probes] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.XAI_API_KEY": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] hooks.install": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] images.declined": [
+      {
+        "from": "1.0.52",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] images.named": [
+      {
+        "from": "1.0.52",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.context": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.load": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.replay": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.appended": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.hand-built": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.assistant text": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.context": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.history": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.request": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.file-uri": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (file-uri): grok sent the image's bytes (codec kept them inline: true)"
+      }
+    ],
+    "[probes] seedkinds.first user message": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.image-only-result": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (image-only-result): grok sent the call and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.in-message-result": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (in-message-result): grok sent the result and the image as image data"
+      }
+    ],
+    "[probes] seedkinds.reasoning": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.context": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.history": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.request": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.context": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.history": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.request": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's answer": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's user message": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.shown-only": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool call arguments": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool result": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-after-text": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-image": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "finding:not-given",
+        "message": "seed kinds: grok's codec kept the image and the agent did not send it (result text sent: true)"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.history": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.request": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-prompt): grok loaded the session and sent the last prompt"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.history": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.request": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-tool-result): grok loaded the session and sent the last tool result"
+      }
+    ],
+    "[probes] seedkinds.untyped-file-path": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass:as-text",
+        "message": "seed shapes (untyped-file-path): grok sent the file's content"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.image": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass:as-image",
+        "message": "seed shapes (user-attachments): grok sent the attached image as image data"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.pdf": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "finding:not-kept",
+        "message": "seed shapes (user-attachments): grok's codec kept no attached PDF"
+      }
+    ],
+    "[probes] session.answer": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.completed": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.start": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] transcript": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] turn": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.account": [
+      {
+        "from": "1.0.50",
+        "last": "1.0.77",
+        "outcome": "finding:not-reported",
+        "message": "usage: grok's driver reported no account"
+      }
+    ],
+    "[probes] usage.context": [
+      {
+        "from": "1.0.50",
+        "last": "1.0.67",
+        "outcome": "finding:not-reported",
+        "message": "usage: grok reported no context window fill"
+      },
+      {
+        "from": "1.0.70",
+        "last": "1.0.70",
+        "outcome": "mixed"
+      },
+      {
+        "from": "1.0.77",
+        "last": "1.0.77",
+        "outcome": "finding:window-only",
+        "message": "usage: grok reported its context window (256000 tokens) and no fill after the turn"
+      }
+    ],
+    "[probes] usage.limits": [
+      {
+        "from": "1.0.50",
+        "last": "1.0.77",
+        "outcome": "finding:not-reported",
+        "message": "usage: grok pushed no rate limits"
+      }
+    ],
+    "[probes] usage.probe.limits": [
+      {
+        "from": "1.0.67",
+        "last": "1.0.77",
+        "outcome": "pass:unsupported",
+        "message": "usage: grok's limits do not apply: grok reports no credit usage for this plan"
+      }
+    ],
+    "[probes] usage.probe.no-model-call": [
+      {
+        "from": "1.0.67",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.turn": [
+      {
+        "from": "1.0.50",
+        "last": "1.0.77",
+        "outcome": "finding:not-reported",
+        "message": "usage: grok's driver reported no usage for the turn"
+      }
+    ],
+    "[resume-kill] acp/hook.post-tool": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.pre-tool": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.prompt": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.stop": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions../AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/model": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/requests": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/streaming": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] binary": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GROK_CLI_CHAT_PROXY_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GROK_CONVERSATIONS_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GROK_FEEDBACK_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GROK_MANAGED_CONFIG_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GROK_MODELS_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GROK_TRACE_UPLOAD_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.GROK_XAI_API_BASE_URL": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.XAI_API_KEY": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] hooks.install": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written../AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written.~/.grok/AGENTS.md": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.context": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.load": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.replay": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.answer": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.completed": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.start": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] skills": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ],
+    "[surface] binary": [
+      {
+        "from": "1.0.41",
+        "last": "1.0.77",
+        "outcome": "pass"
+      }
+    ]
+  }
+}

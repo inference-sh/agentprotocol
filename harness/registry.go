@@ -1162,10 +1162,11 @@ export const Direct = async () => ({
 			"acp:event:PROMPT":           "before 0.236.0 the ACP agent (exec --output-format acp, also each acp-daemon child) calls the turn runner directly; UserPromptSubmit runs only in the JSON-RPC processUserMessage path (droid 0.217 source). 0.236.0 runs it over ACP, and its context reaches the model (harness-test nightly 2026-10-08)",
 			"headless:event:PRE_COMPACT": "PreCompact fires only from the TUI's manual compaction; exec never compacts (droid 0.217 source)",
 			"sdk:event:PRE_COMPACT":      "SDK mode is droid exec -o stream-jsonrpc; PreCompact still fires only from the TUI's manual compaction (same investigation as headless)",
-			"headless:event:PROMPT":      "plain exec (-o text/json/stream-json) runs the turn through kDA, which never calls executeUserPromptSubmitHooks; only -o stream-jsonrpc goes through the JSON-RPC processUserMessage path (droid 0.217 source)",
+			"headless:event:PROMPT":      "plain exec (-o text/json/stream-json) runs the turn through kDA, which never calls executeUserPromptSubmitHooks; only -o stream-jsonrpc goes through the JSON-RPC processUserMessage path (droid 0.217 source). 1.9.0 fires it in plain exec: missing on 1.8.0, fired on 1.9.0 with the same suite commit (nightly 42956725835 and 43152242605)",
 		},
 		IssueVersions: map[string]VersionRange{
-			"acp:event:PROMPT": {Before: "0.236.0"},
+			"acp:event:PROMPT":      {Before: "0.236.0"},
+			"headless:event:PROMPT": {Before: "1.9.0"},
 		},
 		Events: standardEvents,
 		ConfigFiles: []ConfigFile{

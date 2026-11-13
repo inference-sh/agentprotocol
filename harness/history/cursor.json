@@ -1,0 +1,3211 @@
+{
+  "agent": "cursor",
+  "versions": [
+    {
+      "version": "2026.09.02",
+      "first": "2026-09-07",
+      "last": "2026-09-08",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 34103083759",
+        "harness-test Nightly 34205328389"
+      ],
+      "suites": [
+        "855064be4f99253339d09f4f7d6bfb110d49b9e8",
+        "855064be4f99253339d09f4f7d6bfb110d49b9e8"
+      ]
+    },
+    {
+      "version": "2026.09.08",
+      "first": "2026-09-09",
+      "last": "2026-09-10",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 34390357791",
+        "harness-test Nightly 34456245064"
+      ],
+      "suites": [
+        "740fa298dce134e64f5d7d28554c28330e13e715",
+        "0c24a7c62380500409bff4bef04565904cb76386"
+      ]
+    },
+    {
+      "version": "2026.09.10",
+      "first": "2026-09-11",
+      "last": "2026-09-16",
+      "runs": 6,
+      "sources": [
+        "harness-test Nightly 34579708071",
+        "harness-test Nightly 35077226550"
+      ],
+      "suites": [
+        "df794c70277adc500372cbb51d7d6fb015049d68",
+        "b3ac6bb2f58cf3007bcf7855ebecc9e98880e36b"
+      ]
+    },
+    {
+      "version": "2026.09.15",
+      "first": "2026-09-17",
+      "last": "2026-09-18",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 35203792956",
+        "harness-test Nightly 35325922801"
+      ],
+      "suites": [
+        "581e638b56223aa0c643ba0688f09c57394261ae",
+        "581e638b56223aa0c643ba0688f09c57394261ae"
+      ]
+    },
+    {
+      "version": "2026.09.18",
+      "first": "2026-09-19",
+      "last": "2026-09-23",
+      "runs": 5,
+      "sources": [
+        "harness-test Nightly 35432190178",
+        "harness-test Nightly 35840661694"
+      ],
+      "suites": [
+        "72735ff2b78db6d8fdf4896ccb955c57ccc3fb9c",
+        "2c4e019a24aeeb80ae95c9487720f091ac8c6e70"
+      ]
+    },
+    {
+      "version": "2026.09.23",
+      "first": "2026-09-24",
+      "last": "2026-09-25",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 36053950012",
+        "harness-test Nightly 36118003323"
+      ],
+      "suites": [
+        "67105fc788dc41d8a18b4bb0dfad53ca12d61214",
+        "00d21b3321a659f770b86595fd9defcf9f938eef"
+      ]
+    },
+    {
+      "version": "2026.09.26",
+      "first": "2026-09-26",
+      "last": "2026-09-28",
+      "runs": 3,
+      "sources": [
+        "harness-test Nightly 36231704775",
+        "harness-test Nightly 36410294180"
+      ],
+      "suites": [
+        "746c36ea652b76d8daf1417b55a7019607bb1a35",
+        "746c36ea652b76d8daf1417b55a7019607bb1a35"
+      ]
+    },
+    {
+      "version": "2026.09.28",
+      "first": "2026-09-29",
+      "last": "2026-10-01",
+      "runs": 2,
+      "sources": [
+        "harness-test Nightly 36555294068",
+        "harness-test Nightly 36850829836"
+      ],
+      "suites": [
+        "746c36ea652b76d8daf1417b55a7019607bb1a35",
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
+      ]
+    },
+    {
+      "version": "2026.10.01",
+      "first": "2026-10-02",
+      "last": "2026-10-11",
+      "runs": 11,
+      "sources": [
+        "harness-test Nightly 36994678212",
+        "agentprotocol Nightly 38131950655"
+      ],
+      "suites": [
+        "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
+        "295bc031b1ec1fd0e465b51eb47ca11ffe52d41f"
+      ]
+    },
+    {
+      "version": "2026.10.14",
+      "first": "2026-10-14",
+      "last": "2026-10-16",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 38540218254",
+        "agentprotocol Nightly 38874809332"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
+      ]
+    },
+    {
+      "version": "2026.10.16",
+      "first": "2026-10-17",
+      "last": "2026-10-19",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 39016230369",
+        "agentprotocol Nightly 39229995996"
+      ],
+      "suites": [
+        "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
+        "230e1aebc696f60caa141d1c4f246768c9987ce5"
+      ]
+    },
+    {
+      "version": "2026.10.19",
+      "first": "2026-10-20",
+      "last": "2026-10-22",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 39397461615",
+        "agentprotocol Nightly 39752228857"
+      ],
+      "suites": [
+        "230e1aebc696f60caa141d1c4f246768c9987ce5",
+        "182188f8a44ea2cb12b8ea6fdcedd2409c692294"
+      ]
+    },
+    {
+      "version": "2026.10.22",
+      "first": "2026-10-23",
+      "last": "2026-11-04",
+      "runs": 12,
+      "sources": [
+        "agentprotocol Nightly 39928240672",
+        "agentprotocol Nightly 41770888503"
+      ],
+      "suites": [
+        "4cb72ef646116332b2edab1aed37bbe14afe15d9",
+        "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
+      ]
+    },
+    {
+      "version": "2026.11.05",
+      "first": "2026-11-06",
+      "last": "2026-11-10",
+      "runs": 4,
+      "sources": [
+        "agentprotocol Nightly 42201531930",
+        "agentprotocol Nightly 42753368328"
+      ],
+      "suites": [
+        "e25b88d8ccb4be54d0d39209b55e7cf4f774b00c",
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "2026.11.10",
+      "first": "2026-11-11",
+      "last": "2026-11-11",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 42956725835"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+      ]
+    },
+    {
+      "version": "2026.11.11",
+      "first": "2026-11-12",
+      "last": "2026-11-13",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 43152242605",
+        "agentprotocol Nightly 43454788852"
+      ],
+      "suites": [
+        "bd11f9f9dfa332e150f80ef01929d282c8365a86",
+        "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
+      ]
+    }
+  ],
+  "checks": {
+    "[acp, belt hooks] acp/belt-hook.post-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.pre-compact": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.pre-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.prompt": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.session-start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "skip:known-missing",
+        "message": "acp: belt session-start hook not fired — cursor runs sessionStart only in runAgent, the TUI and --print path; the ACP server module never calls it (bundle 2026.09.23: 1699.index.js has no sessionStart reference) and the hook did not fire under the mock"
+      }
+    ],
+    "[acp, belt hooks] acp/belt-hook.stop": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/model": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/requests": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/streaming": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] belt-hook-shape": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] binary": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.install": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] hooks.project-copy": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.answer": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.completed": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] session.start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] skills": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook-injection": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.post-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.pre-compact": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.pre-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.prompt": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.session-start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — cursor runs sessionStart only in runAgent, the TUI and --print path; the ACP server module never calls it (bundle 2026.09.23: 1699.index.js has no sessionStart reference) and the hook did not fire under the mock"
+      }
+    ],
+    "[acp, mock hooks] acp/hook.stop": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/model": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/requests": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/streaming": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] binary": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] hooks.install": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.answer": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.completed": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] session.start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] skills": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook-injection": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.post-tool": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.pre-compact": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.pre-tool": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.prompt": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/hook.session-start": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — cursor runs sessionStart only in runAgent, the TUI and --print path; the ACP server module never calls it (bundle 2026.09.23: 1699.index.js has no sessionStart reference) and the hook did not fire under the mock"
+      }
+    ],
+    "[direct] acp/hook.stop": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/model": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/requests": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/streaming": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] binary": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] hooks.install": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.answer": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.completed": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] session.start": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] skills": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] belt-hook-shape": [
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] binary": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.post-tool": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.pre-compact": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.09.08",
+        "outcome": "skip:known-missing",
+        "message": "headless: belt pre-compact hook not fired — agent -p never compacts"
+      },
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.pre-tool": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.prompt": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.09.08",
+        "outcome": "skip:known-missing",
+        "message": "headless: belt prompt hook not fired — agent -p never runs the prompt hook"
+      },
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.session-start": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/belt-hook.stop": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.09.08",
+        "outcome": "skip:known-missing",
+        "message": "headless: belt stop hook not fired — agent -p never runs the stop hook"
+      },
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/model": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/requests": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/streaming": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.install": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.project-copy": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] skills": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] turn": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] binary": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook-injection": [
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.post-tool": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.pre-compact": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.09.08",
+        "outcome": "skip:known-missing",
+        "message": "headless: pre-compact hook not fired — agent -p never compacts"
+      },
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.pre-tool": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.prompt": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.09.08",
+        "outcome": "skip:known-missing",
+        "message": "headless: prompt hook not fired — agent -p never runs the prompt hook"
+      },
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.session-start": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/hook.stop": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.09.08",
+        "outcome": "skip:known-missing",
+        "message": "headless: stop hook not fired — agent -p never runs the stop hook"
+      },
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/model": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/requests": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/streaming": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] hooks.install": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] skills": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] turn": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] binary": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.post-tool": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.pre-tool": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/hook.session-start": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/model": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/requests": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] headless/streaming": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] hooks.install": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] skills": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[headless] turn": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook-injection": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.post-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.pre-compact": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.pre-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.prompt": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/hook.session-start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — cursor runs sessionStart only in runAgent, the TUI and --print path; the ACP server module never calls it (bundle 2026.09.23: 1699.index.js has no sessionStart reference) and the hook did not fire under the mock"
+      }
+    ],
+    "[inflight-cancel] acp/hook.stop": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/model": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/requests": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/streaming": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] binary": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] hooks.install": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] inflight.park": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] inflight.reraise": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:none",
+        "message": "in-flight: cursor does not re-raise the parked approval on resume"
+      }
+    ],
+    "[inflight-cancel] inflight.resume": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] inflight.resume-twice": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] session.answer": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] session.completed": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] session.start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] skills": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook-injection": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.post-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.pre-compact": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.pre-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.prompt": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/hook.session-start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — cursor runs sessionStart only in runAgent, the TUI and --print path; the ACP server module never calls it (bundle 2026.09.23: 1699.index.js has no sessionStart reference) and the hook did not fire under the mock"
+      }
+    ],
+    "[inflight-hold] acp/hook.stop": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/model": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/requests": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/streaming": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] binary": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] hooks.install": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] inflight.park": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] inflight.reraise": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:none",
+        "message": "in-flight: cursor does not re-raise the parked approval on resume"
+      }
+    ],
+    "[inflight-hold] inflight.resume": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] inflight.resume-twice": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] session.answer": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] session.completed": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] session.start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] skills": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] belt-hook-shape": [
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] binary": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.install": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] hooks.project-copy": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.post-tool": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.pre-compact": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.09.08",
+        "outcome": "skip:known-missing",
+        "message": "interactive: belt pre-compact hook not fired — the TUI has no compaction command to drive"
+      },
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.prompt": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.session-start": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/belt-hook.stop": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/model": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/requests": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/streaming": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] skills": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.completed": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] tui.start": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] binary": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] hooks.install": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook-injection": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.post-tool": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.pre-compact": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.09.08",
+        "outcome": "skip:known-missing",
+        "message": "interactive: pre-compact hook not fired — the TUI has no compaction command to drive"
+      },
+      {
+        "from": "2026.09.10",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.pre-tool": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.prompt": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.session-start": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/hook.stop": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/model": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/requests": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/streaming": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] skills": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.completed": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] tui.start": [
+      {
+        "from": "2026.09.08",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] binary": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] hooks.install": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/hook-injection": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/hook.post-tool": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/hook.pre-tool": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/hook.prompt": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/hook.session-start": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/hook.stop": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/model": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/requests": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] interactive/streaming": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] skills": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] tui.completed": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive] tui.start": [
+      {
+        "from": "2026.09.02",
+        "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.adopt_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.01",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.agent_store_conflict_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.background_shell_spawn_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.canvas_diagnostics_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.computer_use_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.conversation_search_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.delete_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.diagnostics_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.execute_hook_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.fetch_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.force_background_shell_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.force_background_subagent_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.git_diff_request": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.grep_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.list_mcp_resources_exec_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.ls_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.mcp_allowlist_precheck_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.mcp_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.mcp_state_exec_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.mini_swe_agent_bash_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.pi_bash_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.pi_edit_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.pi_find_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.pi_grep_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.pi_ls_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.pi_read_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.pi_write_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.read_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.read_mcp_resource_exec_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.record_screen_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.redacted_read_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.request_context_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.shell_allowlist_precheck_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.shell_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.shell_stream_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.smart_mode_classifier_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.subagent_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.subagent_await_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.web_fetch_allowlist_precheck_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.write_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.exec.write_shell_stdin_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.flag.*": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cursor.snapshot": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook-injection": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.post-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.pre-compact": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.pre-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.prompt": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/hook.session-start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — cursor runs sessionStart only in runAgent, the TUI and --print path; the ACP server module never calls it (bundle 2026.09.23: 1699.index.js has no sessionStart reference) and the hook did not fire under the mock"
+      }
+    ],
+    "[probes] acp/hook.stop": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/model": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/requests": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/streaming": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] binary": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] deferred.armed": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass:no-search-tool",
+        "message": "deferred tools: cursor declares no tool-search tool, so its 0 declared tools are the whole surface it offers on a turn"
+      }
+    ],
+    "[probes] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] hidden.*": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass:help",
+        "message": "hidden: cursor-agent worker-server works (help: its own help, 4 lines: \"Usage: agent worker-server [options]\") and --help does not list it (registered in the package)"
+      }
+    ],
+    "[probes] hooks.install": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] images.declined": [
+      {
+        "from": "2026.10.14",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] images.named": [
+      {
+        "from": "2026.10.14",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] inflight.park": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] inflight.reraise": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:none",
+        "message": "in-flight: cursor does not re-raise the parked approval on resume"
+      }
+    ],
+    "[probes] inflight.resume": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] inflight.resume-twice": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.context": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.load": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] resume.replay": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.appended": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seed.hand-built": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.assistant text": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.context": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.compaction.history": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:summary-only",
+        "message": "seed kinds: cursor's session has no compaction and no retired turn: the writer applied the compaction (Lower without Compaction); the shown-only entry is not kept"
+      }
+    ],
+    "[probes] seedkinds.compaction.request": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.file-uri": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass:as-reference",
+        "message": "seed shapes (file-uri): cursor sent the image's path and not its bytes"
+      }
+    ],
+    "[probes] seedkinds.first user message": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.image-only-result": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:image-not-kept",
+        "message": "seed shapes (image-only-result): cursor sent the call; its codec kept no image"
+      }
+    ],
+    "[probes] seedkinds.in-message-result": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:image-not-kept",
+        "message": "seed shapes (in-message-result): cursor sent the result; its codec kept no image"
+      }
+    ],
+    "[probes] seedkinds.reasoning": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.context": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.history": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:dropped-user",
+        "message": "seed shapes (retired-answer-as-summary): cursor's Linearize() lost the retired prompt (answer kept: false)"
+      }
+    ],
+    "[probes] seedkinds.retired-answer-as-summary.request": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.context": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.history": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:summary-only",
+        "message": "seed shapes (retired-tool): cursor's writer applied the compaction; no retired entry is kept"
+      }
+    ],
+    "[probes] seedkinds.retired-tool.request": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's answer": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.second turn's user message": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.shown-only": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool call arguments": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool result": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-after-text": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.tool-image": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:not-kept",
+        "message": "seed kinds: cursor's codec kept no image in the session's context (result text sent: true)"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.history": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-prompt.request": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-prompt): cursor loaded the session and sent the last prompt"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.history": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] seedkinds.trailing-tool result.request": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass:sent",
+        "message": "seed shapes (trailing-tool-result): cursor loaded the session and sent the last tool result"
+      }
+    ],
+    "[probes] seedkinds.untyped-file-path": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass:as-text",
+        "message": "seed shapes (untyped-file-path): cursor sent the file's content"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.image": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:not-kept",
+        "message": "seed shapes (user-attachments): cursor's codec kept no attached image"
+      }
+    ],
+    "[probes] seedkinds.user-attachments.pdf": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "finding:not-kept",
+        "message": "seed shapes (user-attachments): cursor's codec kept no attached PDF"
+      }
+    ],
+    "[probes] session.answer": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.completed": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] session.start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] transcript": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] turn": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.account": [
+      {
+        "from": "2026.10.01",
+        "last": "2026.11.11",
+        "outcome": "finding:not-reported",
+        "message": "usage: cursor's driver reported no account"
+      }
+    ],
+    "[probes] usage.context": [
+      {
+        "from": "2026.10.01",
+        "last": "2026.11.11",
+        "outcome": "finding:not-reported",
+        "message": "usage: cursor reported no context window fill"
+      }
+    ],
+    "[probes] usage.limits": [
+      {
+        "from": "2026.10.01",
+        "last": "2026.11.11",
+        "outcome": "finding:not-reported",
+        "message": "usage: cursor pushed no rate limits"
+      }
+    ],
+    "[probes] usage.probe.limits": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass:unsupported",
+        "message": "usage: cursor's limits do not apply: the plan has no included usage to measure"
+      }
+    ],
+    "[probes] usage.probe.no-model-call": [
+      {
+        "from": "2026.10.22",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] usage.turn": [
+      {
+        "from": "2026.10.01",
+        "last": "2026.11.11",
+        "outcome": "finding:not-reported",
+        "message": "usage: cursor's driver reported no usage for the turn"
+      }
+    ],
+    "[resume-kill] acp/hook-injection": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.post-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.pre-compact": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.pre-tool": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.prompt": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/hook.session-start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "skip:known-missing",
+        "message": "acp: session-start hook not fired — cursor runs sessionStart only in runAgent, the TUI and --print path; the ACP server module never calls it (bundle 2026.09.23: 1699.index.js has no sessionStart reference) and the hook did not fire under the mock"
+      }
+    ],
+    "[resume-kill] acp/hook.stop": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/model": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/requests": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/streaming": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] binary": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] hooks.install": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.context": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.load": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] resume.replay": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.answer": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.completed": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] session.start": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] skills": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[surface] binary": [
+      {
+        "from": "2026.09.23",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] binary": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] env.CURSOR_API_ENDPOINT": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] env.CURSOR_API_KEY": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.adopt_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.01",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.agent_store_conflict_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.background_shell_spawn_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.canvas_diagnostics_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.computer_use_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.conversation_search_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.delete_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.diagnostics_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.execute_hook_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.fetch_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.force_background_shell_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.force_background_subagent_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.git_diff_request": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.grep_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.list_mcp_resources_exec_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.ls_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.mcp_allowlist_precheck_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.mcp_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.mcp_state_exec_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.mini_swe_agent_bash_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.pi_bash_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.pi_edit_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.pi_find_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.pi_grep_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.pi_ls_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.pi_read_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.pi_write_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.10.19",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.read_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.read_mcp_resource_exec_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.record_screen_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.redacted_read_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.request_context_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.shell_allowlist_precheck_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.shell_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.shell_stream_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.smart_mode_classifier_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.subagent_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.subagent_await_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.web_fetch_allowlist_precheck_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.write_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.exec.write_shell_stdin_args": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.flag.*": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/cursor.snapshot": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/hook-injection": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/hook.post-tool": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/hook.pre-compact": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/hook.pre-tool": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/hook.prompt": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/hook.session-start": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/hook.stop": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/instructions../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/model": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/requests": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/streaming": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] hooks.install": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] instructions.written../.cursor/rules/belt.mdc": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] skills": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] turn": [
+      {
+        "from": "2026.09.26",
+        "last": "2026.11.11",
+        "outcome": "pass"
+      }
+    ]
+  }
+}

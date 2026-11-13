@@ -1,6 +1,6 @@
 module github.com/inference-sh/agentprotocol/conformance
 
-go 1.26.7
+go 1.26.11
 
 require (
 	github.com/creack/pty v1.1.24

@@ -1,7 +1,7 @@
 # The Go version go.mod asks for, from the image rather than go.dev: the old
 # go1.24.5 tarball then made go download the go.mod toolchain as well, and
 # either download failing mid-stream failed CI jobs (2026-09-24).
-FROM golang:1.26.7-bookworm AS builder
+FROM golang:1.26.11-bookworm AS builder
 
 # The build context is the agentprotocol repository: this module replaces the
 # library with the code beside it, so the image tests that code.

@@ -1,6 +1,6 @@
 module github.com/inference-sh/agentprotocol
 
-go 1.26.7
+go 1.26.11
 
 require github.com/stretchr/testify v1.12.1
 

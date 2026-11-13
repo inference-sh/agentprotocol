@@ -101,7 +101,8 @@
         "surface/hidden.project": "pass:help",
         "surface/hidden.remote-control": "pass:help",
         "surface/hidden.sandbox": "pass:help",
-        "surface/hidden.workspace-trust": "pass:help"
+        "surface/hidden.workspace-trust": "pass:help",
+        "surface/hidden.worktree-hook": "pass:help"
       }
     },
     {

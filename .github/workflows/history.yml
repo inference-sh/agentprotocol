@@ -13,8 +13,10 @@ on:
   workflow_run:
     workflows: [Nightly]
     types: [completed]
-    # Nightly has no pull_request trigger, and this job checks out main,
-    # never the triggering run's ref; it only reads that run's logs.
+    # Nightly has no pull_request trigger, and after a nightly this job
+    # checks out main, never the triggering run's ref; it only reads that
+    # run's logs. A dispatch (write access only) runs the dispatched ref's
+    # code, and pushes history/auto only from main.
     branches: [main]
   workflow_dispatch:
     inputs:
@@ -45,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || 'main' }}
           fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
@@ -70,6 +72,7 @@ jobs:
           { echo "## Nightly $RUN"; echo; cat "$RUNNER_TEMP/history.md"; } >> "$GITHUB_STEP_SUMMARY"
           [ "$status" = 0 ] || [ "$status" = 3 ] || exit "$status"
       - name: Push history/auto
+        if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
         run: |
           git add ../harness/history tests/history
           git diff --cached --quiet && { echo "nothing new"; exit 0; }

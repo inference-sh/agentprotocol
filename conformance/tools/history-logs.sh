@@ -18,6 +18,11 @@ REPOS=${REPOS:-"belt-sh/harness-test inference-sh/agentprotocol"}
 WORKFLOWS="Nightly claude codex copilot cursor droid gemini goose grok hermes kilo kimi kiro omp opencode pi qwen"
 mkdir -p "$OUT"
 
+# Job logs are full of terminal escape sequences, which newer gh refuses to
+# write without --allow-escape-sequences; older gh has no such flag.
+LOGFLAGS=()
+gh api --help 2>&1 | grep -q -- --allow-escape-sequences && LOGFLAGS=(--allow-escape-sequences)
+
 budget() {
   local rem reset
   while :; do
@@ -65,7 +70,7 @@ while IFS=$'\t' read -r repo wf run created event branch sha; do
     [ -s "$d/$job.log.gz" ] && continue
     [ $((n++ % 50)) = 0 ] && budget
     # A failed call (expired log, rate limit) leaves nothing behind.
-    if gh api "repos/$repo/actions/jobs/$job/logs" > "$d/$job.log" 2> "$OUT/last-error"; then
+    if gh api "${LOGFLAGS[@]}" "repos/$repo/actions/jobs/$job/logs" > "$d/$job.log" 2> "$OUT/last-error"; then
       gzip -f "$d/$job.log"
     else
       failed=$((failed + 1))

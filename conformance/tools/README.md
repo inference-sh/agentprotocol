@@ -75,3 +75,15 @@ sides ran the same suite commit, so the agent changed; `suite?` marks one
 where the suite changed too, which needs checking before it goes in the
 registry. GitHub keeps job logs for 90 days, so runs older than that are gone
 from the API; their versions stay in the committed files.
+
+After each nightly on main the History workflow (`.github/workflows/history.yml`)
+does this for that run alone: `tools/history-logs.sh OUT RUN`, then
+`cmd/history -merge`, which adds the run to the committed history. A version's
+outcome for a check stays the one two thirds of its runs printed because the
+runs behind each recent version are kept in `tests/history/<agent>.tally.json`;
+a version not run for 14 days drops out of the tallies and keeps its recorded
+outcomes. A run already counted is not counted again. The workflow pushes the
+result to the branch `history/auto` (main takes pull requests only), and fails
+when a change is marked `AGENT`, listing it in its summary. Merge
+`history/auto` to ship the new history in a release; a version with a green
+run there raises `Tested.Max` without a registry edit.

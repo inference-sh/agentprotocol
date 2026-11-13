@@ -1,0 +1,4434 @@
+{
+  "ingested": {
+    "agentprotocol Nightly 41041818652": "2026-10-30",
+    "agentprotocol Nightly 41299499743": "2026-11-01",
+    "agentprotocol Nightly 41439920602": "2026-11-02",
+    "agentprotocol Nightly 41575845638": "2026-11-03",
+    "agentprotocol Nightly 41770888503": "2026-11-04",
+    "agentprotocol Nightly 42201531930": "2026-11-06",
+    "agentprotocol Nightly 42479125985": "2026-11-08",
+    "agentprotocol Nightly 42589195324": "2026-11-09",
+    "agentprotocol Nightly 42753368328": "2026-11-10",
+    "agentprotocol Nightly 42956725835": "2026-11-11",
+    "agentprotocol Nightly 43152242605": "2026-11-12",
+    "agentprotocol Nightly 43454788852": "2026-11-13"
+  },
+  "versions": {
+    "2026.10.22": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-compact": {
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "skip:known-missing": 12
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 12
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 12
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 12
+      },
+      "[acp, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[acp, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 12
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 12
+      },
+      "[acp, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 12
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 12
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 12
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/hook.pre-compact": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "skip:known-missing": 12
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 12
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 12
+      },
+      "[acp, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[acp, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 12
+      },
+      "[acp, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 12
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 12
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 12
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 12
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 10
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 10
+      },
+      "[direct] acp/hook.pre-compact": {
+        "pass": 10
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 10
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 10
+      },
+      "[direct] acp/hook.session-start": {
+        "skip:known-missing": 10
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 10
+      },
+      "[direct] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 10
+      },
+      "[direct] acp/model": {
+        "pass": 10
+      },
+      "[direct] acp/requests": {
+        "pass": 10
+      },
+      "[direct] acp/streaming": {
+        "pass": 10
+      },
+      "[direct] binary": {
+        "pass": 10
+      },
+      "[direct] env.CURSOR_API_ENDPOINT": {
+        "pass": 10
+      },
+      "[direct] env.CURSOR_API_KEY": {
+        "pass": 10
+      },
+      "[direct] hooks.install": {
+        "pass": 10
+      },
+      "[direct] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 10
+      },
+      "[direct] session.answer": {
+        "pass": 10
+      },
+      "[direct] session.completed": {
+        "pass": 10
+      },
+      "[direct] session.start": {
+        "pass": 10
+      },
+      "[direct] skills": {
+        "pass": 10
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 11
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 12
+      },
+      "[headless, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[headless, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-compact": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 12
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 12
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 12
+      },
+      "[headless, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 12
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 12
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 12
+      },
+      "[headless, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[headless, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/hook.pre-compact": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 12
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 12
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 12
+      },
+      "[headless, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 12
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/hook.pre-compact": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "skip:known-missing": 12
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 12
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 12
+      },
+      "[inflight-cancel] binary": {
+        "pass": 12
+      },
+      "[inflight-cancel] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[inflight-cancel] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 12
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 12
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 12
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass": 12
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass": 12
+      },
+      "[inflight-cancel] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 12
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 12
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 12
+      },
+      "[inflight-cancel] skills": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/hook.pre-compact": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "skip:known-missing": 12
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 12
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 12
+      },
+      "[inflight-hold] binary": {
+        "pass": 12
+      },
+      "[inflight-hold] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[inflight-hold] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 12
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 12
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 12
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass": 12
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass": 12
+      },
+      "[inflight-hold] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 12
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 12
+      },
+      "[inflight-hold] session.start": {
+        "pass": 12
+      },
+      "[inflight-hold] skills": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 11
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/hook.pre-compact": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.agent_store_conflict_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.background_shell_spawn_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.canvas_diagnostics_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.computer_use_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.conversation_search_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.delete_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.diagnostics_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.execute_hook_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.fetch_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.force_background_shell_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.force_background_subagent_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.git_diff_request": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.grep_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.list_mcp_resources_exec_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.ls_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.mcp_allowlist_precheck_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.mcp_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.mcp_state_exec_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.mini_swe_agent_bash_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.read_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.read_mcp_resource_exec_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.record_screen_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.redacted_read_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.request_context_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.shell_allowlist_precheck_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.shell_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.shell_stream_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.smart_mode_classifier_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.subagent_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.subagent_await_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.web_fetch_allowlist_precheck_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.write_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.exec.write_shell_stdin_args": {
+        "pass": 12
+      },
+      "[probes] acp/cursor.flag.*": {
+        "pass": 300
+      },
+      "[probes] acp/cursor.snapshot": {
+        "pass": 12
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 12
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 12
+      },
+      "[probes] acp/hook.pre-compact": {
+        "pass": 12
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 12
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 12
+      },
+      "[probes] acp/hook.session-start": {
+        "skip:known-missing": 12
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 12
+      },
+      "[probes] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[probes] acp/model": {
+        "pass": 12
+      },
+      "[probes] acp/requests": {
+        "pass": 12
+      },
+      "[probes] acp/streaming": {
+        "pass": 12
+      },
+      "[probes] binary": {
+        "pass": 12
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 12
+      },
+      "[probes] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[probes] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[probes] hidden.*": {
+        "pass:acp": 12,
+        "pass:help": 144
+      },
+      "[probes] hooks.install": {
+        "pass": 12
+      },
+      "[probes] images.declined": {
+        "pass": 12
+      },
+      "[probes] images.named": {
+        "pass": 12
+      },
+      "[probes] inflight.park": {
+        "pass": 12
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 12
+      },
+      "[probes] inflight.resume": {
+        "pass": 12
+      },
+      "[probes] inflight.resume-twice": {
+        "pass": 12
+      },
+      "[probes] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[probes] resume.context": {
+        "pass": 12
+      },
+      "[probes] resume.load": {
+        "pass": 12
+      },
+      "[probes] resume.replay": {
+        "pass": 12
+      },
+      "[probes] seed.appended": {
+        "pass": 12
+      },
+      "[probes] seed.hand-built": {
+        "pass": 12
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 12
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 12
+      },
+      "[probes] seedkinds.compaction.history": {
+        "finding:summary-only": 12
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 12
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-reference": 12
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 12
+      },
+      "[probes] seedkinds.image-only-result": {
+        "finding:image-not-kept": 12
+      },
+      "[probes] seedkinds.in-message-result": {
+        "finding:image-not-kept": 12
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 12
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 12
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "finding:dropped-user": 12
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 12
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 12
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "finding:summary-only": 12
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 12
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 12
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 12
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 12
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 12
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 12
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 12
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-kept": 12
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 12
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 12
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 12
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 12
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 12
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "finding:not-kept": 12
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 12
+      },
+      "[probes] session.answer": {
+        "pass": 12
+      },
+      "[probes] session.completed": {
+        "pass": 12
+      },
+      "[probes] session.start": {
+        "pass": 12
+      },
+      "[probes] skills": {
+        "pass": 12
+      },
+      "[probes] transcript": {
+        "pass": 12
+      },
+      "[probes] turn": {
+        "pass": 96
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 12
+      },
+      "[probes] usage.context": {
+        "finding:not-reported": 12
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 12
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 12
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 12
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 12
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 12
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 12
+      },
+      "[resume-kill] acp/hook.pre-compact": {
+        "pass": 12
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 12
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 12
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "skip:known-missing": 12
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 12
+      },
+      "[resume-kill] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[resume-kill] acp/model": {
+        "pass": 12
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 12
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 12
+      },
+      "[resume-kill] binary": {
+        "pass": 12
+      },
+      "[resume-kill] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[resume-kill] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 12
+      },
+      "[resume-kill] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[resume-kill] resume.context": {
+        "pass": 12
+      },
+      "[resume-kill] resume.load": {
+        "pass": 12
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 12
+      },
+      "[resume-kill] session.answer": {
+        "pass": 12
+      },
+      "[resume-kill] session.completed": {
+        "pass": 12
+      },
+      "[resume-kill] session.start": {
+        "pass": 12
+      },
+      "[resume-kill] skills": {
+        "pass": 12
+      },
+      "[surface] binary": {
+        "pass": 12
+      },
+      "[tools-headless] binary": {
+        "pass": 12
+      },
+      "[tools-headless] env.CURSOR_API_ENDPOINT": {
+        "pass": 12
+      },
+      "[tools-headless] env.CURSOR_API_KEY": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.agent_store_conflict_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.background_shell_spawn_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.canvas_diagnostics_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.computer_use_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.conversation_search_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.delete_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.diagnostics_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.execute_hook_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.fetch_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.force_background_shell_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.force_background_subagent_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.git_diff_request": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.grep_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.list_mcp_resources_exec_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.ls_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.mcp_allowlist_precheck_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.mcp_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.mcp_state_exec_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.mini_swe_agent_bash_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.read_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.read_mcp_resource_exec_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.record_screen_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.redacted_read_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.request_context_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.shell_allowlist_precheck_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.shell_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.shell_stream_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.smart_mode_classifier_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.subagent_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.subagent_await_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.web_fetch_allowlist_precheck_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.write_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.exec.write_shell_stdin_args": {
+        "pass": 12
+      },
+      "[tools-headless] headless/cursor.flag.*": {
+        "pass": 300
+      },
+      "[tools-headless] headless/cursor.snapshot": {
+        "pass": 12
+      },
+      "[tools-headless] headless/hook-injection": {
+        "pass": 12
+      },
+      "[tools-headless] headless/hook.post-tool": {
+        "pass": 12
+      },
+      "[tools-headless] headless/hook.pre-compact": {
+        "pass": 12
+      },
+      "[tools-headless] headless/hook.pre-tool": {
+        "pass": 12
+      },
+      "[tools-headless] headless/hook.prompt": {
+        "pass": 12
+      },
+      "[tools-headless] headless/hook.session-start": {
+        "pass": 12
+      },
+      "[tools-headless] headless/hook.stop": {
+        "pass": 12
+      },
+      "[tools-headless] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[tools-headless] headless/model": {
+        "pass": 12
+      },
+      "[tools-headless] headless/requests": {
+        "pass": 12
+      },
+      "[tools-headless] headless/streaming": {
+        "pass": 12
+      },
+      "[tools-headless] hooks.install": {
+        "pass": 12
+      },
+      "[tools-headless] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 12
+      },
+      "[tools-headless] skills": {
+        "pass": 12
+      },
+      "[tools-headless] turn": {
+        "pass": 12
+      }
+    },
+    "2026.11.05": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-compact": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "skip:known-missing": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 4
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 4
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 4
+      },
+      "[acp, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[acp, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 4
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 4
+      },
+      "[acp, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 4
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 4
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 4
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.pre-compact": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "skip:known-missing": 4
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 4
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 4
+      },
+      "[acp, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[acp, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 4
+      },
+      "[acp, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 4
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 4
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 4
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 4
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 4
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[direct] acp/hook.pre-compact": {
+        "pass": 4
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[direct] acp/hook.session-start": {
+        "skip:known-missing": 4
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 4
+      },
+      "[direct] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[direct] acp/model": {
+        "pass": 4
+      },
+      "[direct] acp/requests": {
+        "pass": 4
+      },
+      "[direct] acp/streaming": {
+        "pass": 4
+      },
+      "[direct] binary": {
+        "pass": 4
+      },
+      "[direct] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[direct] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[direct] hooks.install": {
+        "pass": 4
+      },
+      "[direct] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[direct] session.answer": {
+        "pass": 4
+      },
+      "[direct] session.completed": {
+        "pass": 4
+      },
+      "[direct] session.start": {
+        "pass": 4
+      },
+      "[direct] skills": {
+        "pass": 4
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 4
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 4
+      },
+      "[headless, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[headless, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-compact": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 4
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 4
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 4
+      },
+      "[headless, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 4
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 4
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 4
+      },
+      "[headless, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[headless, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.pre-compact": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 4
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 4
+      },
+      "[headless, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 4
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.pre-compact": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "skip:known-missing": 4
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 4
+      },
+      "[inflight-cancel] binary": {
+        "pass": 4
+      },
+      "[inflight-cancel] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[inflight-cancel] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 4
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 4
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 4
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass": 4
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass": 4
+      },
+      "[inflight-cancel] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 4
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 4
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 4
+      },
+      "[inflight-cancel] skills": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.pre-compact": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "skip:known-missing": 4
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 4
+      },
+      "[inflight-hold] binary": {
+        "pass": 4
+      },
+      "[inflight-hold] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[inflight-hold] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 4
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 4
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 4
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass": 4
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass": 4
+      },
+      "[inflight-hold] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 4
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 4
+      },
+      "[inflight-hold] session.start": {
+        "pass": 4
+      },
+      "[inflight-hold] skills": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.pre-compact": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.agent_store_conflict_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.background_shell_spawn_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.canvas_diagnostics_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.computer_use_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.conversation_search_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.delete_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.diagnostics_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.execute_hook_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.fetch_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.force_background_shell_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.force_background_subagent_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.git_diff_request": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.grep_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.list_mcp_resources_exec_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.ls_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.mcp_allowlist_precheck_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.mcp_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.mcp_state_exec_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.mini_swe_agent_bash_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.read_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.read_mcp_resource_exec_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.record_screen_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.redacted_read_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.request_context_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.shell_allowlist_precheck_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.shell_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.shell_stream_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.smart_mode_classifier_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.subagent_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.subagent_await_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.web_fetch_allowlist_precheck_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.write_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.exec.write_shell_stdin_args": {
+        "pass": 4
+      },
+      "[probes] acp/cursor.flag.*": {
+        "pass": 100
+      },
+      "[probes] acp/cursor.snapshot": {
+        "pass": 4
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 4
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[probes] acp/hook.pre-compact": {
+        "pass": 4
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[probes] acp/hook.session-start": {
+        "skip:known-missing": 4
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 4
+      },
+      "[probes] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[probes] acp/model": {
+        "pass": 4
+      },
+      "[probes] acp/requests": {
+        "pass": 4
+      },
+      "[probes] acp/streaming": {
+        "pass": 4
+      },
+      "[probes] binary": {
+        "pass": 4
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 4
+      },
+      "[probes] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[probes] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[probes] hidden.*": {
+        "pass:acp": 4,
+        "pass:help": 48
+      },
+      "[probes] hooks.install": {
+        "pass": 4
+      },
+      "[probes] images.declined": {
+        "pass": 4
+      },
+      "[probes] images.named": {
+        "pass": 4
+      },
+      "[probes] inflight.park": {
+        "pass": 4
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 4
+      },
+      "[probes] inflight.resume": {
+        "pass": 4
+      },
+      "[probes] inflight.resume-twice": {
+        "pass": 4
+      },
+      "[probes] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[probes] resume.context": {
+        "pass": 4
+      },
+      "[probes] resume.load": {
+        "pass": 4
+      },
+      "[probes] resume.replay": {
+        "pass": 4
+      },
+      "[probes] seed.appended": {
+        "pass": 4
+      },
+      "[probes] seed.hand-built": {
+        "pass": 4
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 4
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 4
+      },
+      "[probes] seedkinds.compaction.history": {
+        "finding:summary-only": 4
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 4
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-reference": 4
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 4
+      },
+      "[probes] seedkinds.image-only-result": {
+        "finding:image-not-kept": 4
+      },
+      "[probes] seedkinds.in-message-result": {
+        "finding:image-not-kept": 4
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "finding:dropped-user": 4
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "finding:summary-only": 4
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 4
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 4
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 4
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-kept": 4
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 4
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 4
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 4
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 4
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 4
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "finding:not-kept": 4
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 4
+      },
+      "[probes] session.answer": {
+        "pass": 4
+      },
+      "[probes] session.completed": {
+        "pass": 4
+      },
+      "[probes] session.start": {
+        "pass": 4
+      },
+      "[probes] skills": {
+        "pass": 4
+      },
+      "[probes] transcript": {
+        "pass": 4
+      },
+      "[probes] turn": {
+        "pass": 32
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 4
+      },
+      "[probes] usage.context": {
+        "finding:not-reported": 4
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 4
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 4
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 4
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 4
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.pre-compact": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "skip:known-missing": 4
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 4
+      },
+      "[resume-kill] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[resume-kill] acp/model": {
+        "pass": 4
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 4
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 4
+      },
+      "[resume-kill] binary": {
+        "pass": 4
+      },
+      "[resume-kill] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[resume-kill] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 4
+      },
+      "[resume-kill] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[resume-kill] resume.context": {
+        "pass": 4
+      },
+      "[resume-kill] resume.load": {
+        "pass": 4
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 4
+      },
+      "[resume-kill] session.answer": {
+        "pass": 4
+      },
+      "[resume-kill] session.completed": {
+        "pass": 4
+      },
+      "[resume-kill] session.start": {
+        "pass": 4
+      },
+      "[resume-kill] skills": {
+        "pass": 4
+      },
+      "[surface] binary": {
+        "pass": 4
+      },
+      "[tools-headless] binary": {
+        "pass": 4
+      },
+      "[tools-headless] env.CURSOR_API_ENDPOINT": {
+        "pass": 4
+      },
+      "[tools-headless] env.CURSOR_API_KEY": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.agent_store_conflict_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.background_shell_spawn_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.canvas_diagnostics_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.computer_use_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.conversation_search_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.delete_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.diagnostics_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.execute_hook_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.fetch_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.force_background_shell_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.force_background_subagent_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.git_diff_request": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.grep_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.list_mcp_resources_exec_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.ls_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.mcp_allowlist_precheck_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.mcp_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.mcp_state_exec_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.mini_swe_agent_bash_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.read_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.read_mcp_resource_exec_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.record_screen_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.redacted_read_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.request_context_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.shell_allowlist_precheck_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.shell_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.shell_stream_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.smart_mode_classifier_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.subagent_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.subagent_await_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.web_fetch_allowlist_precheck_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.write_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.exec.write_shell_stdin_args": {
+        "pass": 4
+      },
+      "[tools-headless] headless/cursor.flag.*": {
+        "pass": 100
+      },
+      "[tools-headless] headless/cursor.snapshot": {
+        "pass": 4
+      },
+      "[tools-headless] headless/hook-injection": {
+        "pass": 4
+      },
+      "[tools-headless] headless/hook.post-tool": {
+        "pass": 4
+      },
+      "[tools-headless] headless/hook.pre-compact": {
+        "pass": 4
+      },
+      "[tools-headless] headless/hook.pre-tool": {
+        "pass": 4
+      },
+      "[tools-headless] headless/hook.prompt": {
+        "pass": 4
+      },
+      "[tools-headless] headless/hook.session-start": {
+        "pass": 4
+      },
+      "[tools-headless] headless/hook.stop": {
+        "pass": 4
+      },
+      "[tools-headless] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[tools-headless] headless/model": {
+        "pass": 4
+      },
+      "[tools-headless] headless/requests": {
+        "pass": 4
+      },
+      "[tools-headless] headless/streaming": {
+        "pass": 4
+      },
+      "[tools-headless] hooks.install": {
+        "pass": 4
+      },
+      "[tools-headless] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 4
+      },
+      "[tools-headless] skills": {
+        "pass": 4
+      },
+      "[tools-headless] turn": {
+        "pass": 4
+      }
+    },
+    "2026.11.10": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-compact": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "skip:known-missing": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-compact": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "skip:known-missing": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.pre-compact": {
+        "pass": 1
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.session-start": {
+        "skip:known-missing": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[direct] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-compact": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 1
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.pre-compact": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 1
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.pre-compact": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "skip:known-missing": 1
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-cancel] binary": {
+        "pass": 1
+      },
+      "[inflight-cancel] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[inflight-cancel] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass": 1
+      },
+      "[inflight-cancel] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 1
+      },
+      "[inflight-cancel] skills": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.pre-compact": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "skip:known-missing": 1
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-hold] binary": {
+        "pass": 1
+      },
+      "[inflight-hold] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[inflight-hold] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass": 1
+      },
+      "[inflight-hold] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 1
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 1
+      },
+      "[inflight-hold] session.start": {
+        "pass": 1
+      },
+      "[inflight-hold] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.pre-compact": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.agent_store_conflict_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.background_shell_spawn_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.canvas_diagnostics_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.computer_use_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.conversation_search_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.delete_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.diagnostics_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.execute_hook_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.fetch_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.force_background_shell_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.force_background_subagent_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.git_diff_request": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.grep_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.list_mcp_resources_exec_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.ls_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.mcp_allowlist_precheck_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.mcp_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.mcp_state_exec_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.mini_swe_agent_bash_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.read_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.read_mcp_resource_exec_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.record_screen_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.redacted_read_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.request_context_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.shell_allowlist_precheck_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.shell_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.shell_stream_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.smart_mode_classifier_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.subagent_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.subagent_await_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.web_fetch_allowlist_precheck_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.write_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.exec.write_shell_stdin_args": {
+        "pass": 1
+      },
+      "[probes] acp/cursor.flag.*": {
+        "pass": 25
+      },
+      "[probes] acp/cursor.snapshot": {
+        "pass": 1
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 1
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.pre-compact": {
+        "pass": 1
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[probes] acp/hook.session-start": {
+        "skip:known-missing": 1
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 1
+      },
+      "[probes] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[probes] acp/model": {
+        "pass": 1
+      },
+      "[probes] acp/requests": {
+        "pass": 1
+      },
+      "[probes] acp/streaming": {
+        "pass": 1
+      },
+      "[probes] binary": {
+        "pass": 1
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 1
+      },
+      "[probes] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[probes] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[probes] hidden.*": {
+        "pass:acp": 1,
+        "pass:help": 12
+      },
+      "[probes] hooks.install": {
+        "pass": 1
+      },
+      "[probes] images.declined": {
+        "pass": 1
+      },
+      "[probes] images.named": {
+        "pass": 1
+      },
+      "[probes] inflight.park": {
+        "pass": 1
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[probes] inflight.resume": {
+        "pass": 1
+      },
+      "[probes] inflight.resume-twice": {
+        "pass": 1
+      },
+      "[probes] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[probes] resume.context": {
+        "pass": 1
+      },
+      "[probes] resume.load": {
+        "pass": 1
+      },
+      "[probes] resume.replay": {
+        "pass": 1
+      },
+      "[probes] seed.appended": {
+        "pass": 1
+      },
+      "[probes] seed.hand-built": {
+        "pass": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.history": {
+        "finding:summary-only": 1
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-reference": 1
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.image-only-result": {
+        "finding:image-not-kept": 1
+      },
+      "[probes] seedkinds.in-message-result": {
+        "finding:image-not-kept": 1
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "finding:dropped-user": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "finding:summary-only": 1
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-kept": 1
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 1
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "finding:not-kept": 1
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 1
+      },
+      "[probes] session.answer": {
+        "pass": 1
+      },
+      "[probes] session.completed": {
+        "pass": 1
+      },
+      "[probes] session.start": {
+        "pass": 1
+      },
+      "[probes] skills": {
+        "pass": 1
+      },
+      "[probes] transcript": {
+        "pass": 1
+      },
+      "[probes] turn": {
+        "pass": 8
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.context": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 1
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 1
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 1
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.pre-compact": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "skip:known-missing": 1
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[resume-kill] acp/model": {
+        "pass": 1
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 1
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 1
+      },
+      "[resume-kill] binary": {
+        "pass": 1
+      },
+      "[resume-kill] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[resume-kill] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[resume-kill] resume.context": {
+        "pass": 1
+      },
+      "[resume-kill] resume.load": {
+        "pass": 1
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 1
+      },
+      "[resume-kill] session.answer": {
+        "pass": 1
+      },
+      "[resume-kill] session.completed": {
+        "pass": 1
+      },
+      "[resume-kill] session.start": {
+        "pass": 1
+      },
+      "[resume-kill] skills": {
+        "pass": 1
+      },
+      "[surface] binary": {
+        "pass": 1
+      },
+      "[tools-headless] binary": {
+        "pass": 1
+      },
+      "[tools-headless] env.CURSOR_API_ENDPOINT": {
+        "pass": 1
+      },
+      "[tools-headless] env.CURSOR_API_KEY": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.agent_store_conflict_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.background_shell_spawn_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.canvas_diagnostics_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.computer_use_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.conversation_search_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.delete_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.diagnostics_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.execute_hook_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.fetch_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.force_background_shell_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.force_background_subagent_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.git_diff_request": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.grep_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.list_mcp_resources_exec_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.ls_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.mcp_allowlist_precheck_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.mcp_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.mcp_state_exec_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.mini_swe_agent_bash_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.read_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.read_mcp_resource_exec_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.record_screen_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.redacted_read_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.request_context_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.shell_allowlist_precheck_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.shell_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.shell_stream_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.smart_mode_classifier_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.subagent_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.subagent_await_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.web_fetch_allowlist_precheck_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.write_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.exec.write_shell_stdin_args": {
+        "pass": 1
+      },
+      "[tools-headless] headless/cursor.flag.*": {
+        "pass": 25
+      },
+      "[tools-headless] headless/cursor.snapshot": {
+        "pass": 1
+      },
+      "[tools-headless] headless/hook-injection": {
+        "pass": 1
+      },
+      "[tools-headless] headless/hook.post-tool": {
+        "pass": 1
+      },
+      "[tools-headless] headless/hook.pre-compact": {
+        "pass": 1
+      },
+      "[tools-headless] headless/hook.pre-tool": {
+        "pass": 1
+      },
+      "[tools-headless] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[tools-headless] headless/hook.session-start": {
+        "pass": 1
+      },
+      "[tools-headless] headless/hook.stop": {
+        "pass": 1
+      },
+      "[tools-headless] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[tools-headless] headless/model": {
+        "pass": 1
+      },
+      "[tools-headless] headless/requests": {
+        "pass": 1
+      },
+      "[tools-headless] headless/streaming": {
+        "pass": 1
+      },
+      "[tools-headless] hooks.install": {
+        "pass": 1
+      },
+      "[tools-headless] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 1
+      },
+      "[tools-headless] skills": {
+        "pass": 1
+      },
+      "[tools-headless] turn": {
+        "pass": 1
+      }
+    },
+    "2026.11.11": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-compact": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "skip:known-missing": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 2
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 2
+      },
+      "[acp, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.pre-compact": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "skip:known-missing": 2
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 2
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 2
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[direct] acp/hook.pre-compact": {
+        "pass": 2
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[direct] acp/hook.session-start": {
+        "skip:known-missing": 2
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 2
+      },
+      "[direct] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[direct] acp/model": {
+        "pass": 2
+      },
+      "[direct] acp/requests": {
+        "pass": 2
+      },
+      "[direct] acp/streaming": {
+        "pass": 2
+      },
+      "[direct] binary": {
+        "pass": 2
+      },
+      "[direct] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[direct] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[direct] hooks.install": {
+        "pass": 2
+      },
+      "[direct] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[direct] session.answer": {
+        "pass": 2
+      },
+      "[direct] session.completed": {
+        "pass": 2
+      },
+      "[direct] session.start": {
+        "pass": 2
+      },
+      "[direct] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 2
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-compact": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 2
+      },
+      "[headless, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 2
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.pre-compact": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 2
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/hook.pre-compact": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "skip:known-missing": 2
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 2
+      },
+      "[inflight-cancel] binary": {
+        "pass": 2
+      },
+      "[inflight-cancel] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[inflight-cancel] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 2
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 2
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 2
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass": 2
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass": 2
+      },
+      "[inflight-cancel] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 2
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 2
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 2
+      },
+      "[inflight-cancel] skills": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/hook.pre-compact": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "skip:known-missing": 2
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 2
+      },
+      "[inflight-hold] binary": {
+        "pass": 2
+      },
+      "[inflight-hold] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[inflight-hold] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 2
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 2
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 2
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass": 2
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass": 2
+      },
+      "[inflight-hold] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 2
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 2
+      },
+      "[inflight-hold] session.start": {
+        "pass": 2
+      },
+      "[inflight-hold] skills": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.pre-compact": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.agent_store_conflict_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.background_shell_spawn_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.canvas_diagnostics_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.computer_use_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.conversation_search_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.delete_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.diagnostics_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.execute_hook_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.fetch_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.force_background_shell_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.force_background_subagent_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.git_diff_request": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.grep_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.list_mcp_resources_exec_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.ls_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.mcp_allowlist_precheck_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.mcp_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.mcp_state_exec_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.mini_swe_agent_bash_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.read_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.read_mcp_resource_exec_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.record_screen_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.redacted_read_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.request_context_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.shell_allowlist_precheck_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.shell_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.shell_stream_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.smart_mode_classifier_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.subagent_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.subagent_await_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.web_fetch_allowlist_precheck_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.write_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.exec.write_shell_stdin_args": {
+        "pass": 2
+      },
+      "[probes] acp/cursor.flag.*": {
+        "pass": 50
+      },
+      "[probes] acp/cursor.snapshot": {
+        "pass": 2
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 2
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[probes] acp/hook.pre-compact": {
+        "pass": 2
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[probes] acp/hook.session-start": {
+        "skip:known-missing": 2
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 2
+      },
+      "[probes] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[probes] acp/model": {
+        "pass": 2
+      },
+      "[probes] acp/requests": {
+        "pass": 2
+      },
+      "[probes] acp/streaming": {
+        "pass": 2
+      },
+      "[probes] binary": {
+        "pass": 2
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 2
+      },
+      "[probes] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[probes] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[probes] hidden.*": {
+        "pass:acp": 2,
+        "pass:help": 24
+      },
+      "[probes] hooks.install": {
+        "pass": 2
+      },
+      "[probes] images.declined": {
+        "pass": 2
+      },
+      "[probes] images.named": {
+        "pass": 2
+      },
+      "[probes] inflight.park": {
+        "pass": 2
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 2
+      },
+      "[probes] inflight.resume": {
+        "pass": 2
+      },
+      "[probes] inflight.resume-twice": {
+        "pass": 2
+      },
+      "[probes] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[probes] resume.context": {
+        "pass": 2
+      },
+      "[probes] resume.load": {
+        "pass": 2
+      },
+      "[probes] resume.replay": {
+        "pass": 2
+      },
+      "[probes] seed.appended": {
+        "pass": 2
+      },
+      "[probes] seed.hand-built": {
+        "pass": 2
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.history": {
+        "finding:summary-only": 2
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 2
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-reference": 2
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.image-only-result": {
+        "finding:image-not-kept": 2
+      },
+      "[probes] seedkinds.in-message-result": {
+        "finding:image-not-kept": 2
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "finding:dropped-user": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "finding:summary-only": 2
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 2
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 2
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-kept": 2
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 2
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "finding:not-kept": 2
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 2
+      },
+      "[probes] session.answer": {
+        "pass": 2
+      },
+      "[probes] session.completed": {
+        "pass": 2
+      },
+      "[probes] session.start": {
+        "pass": 2
+      },
+      "[probes] skills": {
+        "pass": 2
+      },
+      "[probes] transcript": {
+        "pass": 2
+      },
+      "[probes] turn": {
+        "pass": 16
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.context": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 2
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 2
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 2
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.pre-compact": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "skip:known-missing": 2
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 2
+      },
+      "[resume-kill] acp/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[resume-kill] acp/model": {
+        "pass": 2
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 2
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 2
+      },
+      "[resume-kill] binary": {
+        "pass": 2
+      },
+      "[resume-kill] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[resume-kill] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 2
+      },
+      "[resume-kill] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[resume-kill] resume.context": {
+        "pass": 2
+      },
+      "[resume-kill] resume.load": {
+        "pass": 2
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 2
+      },
+      "[resume-kill] session.answer": {
+        "pass": 2
+      },
+      "[resume-kill] session.completed": {
+        "pass": 2
+      },
+      "[resume-kill] session.start": {
+        "pass": 2
+      },
+      "[resume-kill] skills": {
+        "pass": 2
+      },
+      "[surface] binary": {
+        "pass": 2
+      },
+      "[tools-headless] binary": {
+        "pass": 2
+      },
+      "[tools-headless] env.CURSOR_API_ENDPOINT": {
+        "pass": 2
+      },
+      "[tools-headless] env.CURSOR_API_KEY": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.agent_store_conflict_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.background_shell_spawn_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.canvas_diagnostics_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.computer_use_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.conversation_search_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.delete_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.diagnostics_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.execute_hook_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.fetch_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.force_background_shell_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.force_background_subagent_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.git_diff_request": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.grep_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.list_mcp_resources_exec_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.ls_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.mcp_allowlist_precheck_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.mcp_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.mcp_state_exec_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.mini_swe_agent_bash_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.read_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.read_mcp_resource_exec_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.record_screen_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.redacted_read_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.request_context_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.shell_allowlist_precheck_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.shell_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.shell_stream_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.smart_mode_classifier_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.subagent_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.subagent_await_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.web_fetch_allowlist_precheck_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.write_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.exec.write_shell_stdin_args": {
+        "pass": 2
+      },
+      "[tools-headless] headless/cursor.flag.*": {
+        "pass": 50
+      },
+      "[tools-headless] headless/cursor.snapshot": {
+        "pass": 2
+      },
+      "[tools-headless] headless/hook-injection": {
+        "pass": 2
+      },
+      "[tools-headless] headless/hook.post-tool": {
+        "pass": 2
+      },
+      "[tools-headless] headless/hook.pre-compact": {
+        "pass": 2
+      },
+      "[tools-headless] headless/hook.pre-tool": {
+        "pass": 2
+      },
+      "[tools-headless] headless/hook.prompt": {
+        "pass": 2
+      },
+      "[tools-headless] headless/hook.session-start": {
+        "pass": 2
+      },
+      "[tools-headless] headless/hook.stop": {
+        "pass": 2
+      },
+      "[tools-headless] headless/instructions../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[tools-headless] headless/model": {
+        "pass": 2
+      },
+      "[tools-headless] headless/requests": {
+        "pass": 2
+      },
+      "[tools-headless] headless/streaming": {
+        "pass": 2
+      },
+      "[tools-headless] hooks.install": {
+        "pass": 2
+      },
+      "[tools-headless] instructions.written../.cursor/rules/belt.mdc": {
+        "pass": 2
+      },
+      "[tools-headless] skills": {
+        "pass": 2
+      },
+      "[tools-headless] turn": {
+        "pass": 2
+      }
+    }
+  }
+}

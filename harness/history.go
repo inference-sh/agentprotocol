@@ -35,6 +35,9 @@ type HistoryVersion struct {
 	// the suite commits of those runs.
 	Sources []string `json:"sources"`
 	Suites  []string `json:"suites,omitempty"`
+	// Green: at least one run with this version installed finished every
+	// check as expected (its CI job succeeded).
+	Green bool `json:"green,omitempty"`
 }
 
 // HistoryPoint is a stretch of versions with one outcome: from From to

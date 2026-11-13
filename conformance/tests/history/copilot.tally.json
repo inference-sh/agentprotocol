@@ -1,0 +1,4134 @@
+{
+  "ingested": {
+    "agentprotocol Nightly 41041818652": "2026-10-30",
+    "agentprotocol Nightly 41299499743": "2026-11-01",
+    "agentprotocol Nightly 41439920602": "2026-11-02",
+    "agentprotocol Nightly 41575845638": "2026-11-03",
+    "agentprotocol Nightly 41770888503": "2026-11-04",
+    "agentprotocol Nightly 42201531930": "2026-11-06",
+    "agentprotocol Nightly 42479125985": "2026-11-08",
+    "agentprotocol Nightly 42589195324": "2026-11-09",
+    "agentprotocol Nightly 42753368328": "2026-11-10",
+    "agentprotocol Nightly 42956725835": "2026-11-11",
+    "agentprotocol Nightly 43152242605": "2026-11-12",
+    "agentprotocol Nightly 43454788852": "2026-11-13"
+  },
+  "versions": {
+    "1.0.105": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 7
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 7
+      },
+      "[acp, belt hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[acp, belt hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 7
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 7
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 7
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 7
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 7
+      },
+      "[acp, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 7
+      },
+      "[acp, belt hooks] env.COPILOT_MODEL": {
+        "pass": 7
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 7
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 7
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 7
+      },
+      "[acp, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[acp, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 7
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 7
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 7
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 7
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 7
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 7
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 7
+      },
+      "[acp, mock hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[acp, mock hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 7
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 7
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 7
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 7
+      },
+      "[acp, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 7
+      },
+      "[acp, mock hooks] env.COPILOT_MODEL": {
+        "pass": 7
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 7
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 7
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 7
+      },
+      "[acp, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[acp, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 7
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 7
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 7
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 7
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 7
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 7
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 7
+      },
+      "[direct] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[direct] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[direct] acp/model": {
+        "pass": 7
+      },
+      "[direct] acp/requests": {
+        "pass": 7
+      },
+      "[direct] acp/streaming": {
+        "pass": 7
+      },
+      "[direct] binary": {
+        "pass": 7
+      },
+      "[direct] direct.call": {
+        "pass": 7
+      },
+      "[direct] direct.messages": {
+        "finding:added": 7
+      },
+      "[direct] direct.restart": {
+        "pass": 7
+      },
+      "[direct] direct.result": {
+        "pass": 7
+      },
+      "[direct] direct.system": {
+        "finding:added": 7
+      },
+      "[direct] direct.tools": {
+        "finding:more": 7
+      },
+      "[direct] env.COPILOT_ALLOW_ALL": {
+        "pass": 7
+      },
+      "[direct] env.COPILOT_MODEL": {
+        "pass": 7
+      },
+      "[direct] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 7
+      },
+      "[direct] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 7
+      },
+      "[direct] hooks.install": {
+        "pass": 7
+      },
+      "[direct] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[direct] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[direct] session.answer": {
+        "pass": 7
+      },
+      "[direct] session.completed": {
+        "pass": 7
+      },
+      "[direct] session.start": {
+        "pass": 7
+      },
+      "[direct] skills": {
+        "pass": 7
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 7
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 7
+      },
+      "[headless, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 7
+      },
+      "[headless, belt hooks] env.COPILOT_MODEL": {
+        "pass": 7
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 7
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 7
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 7
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 7
+      },
+      "[headless, belt hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[headless, belt hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 7
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 7
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 7
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 7
+      },
+      "[headless, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[headless, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 7
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 7
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 7
+      },
+      "[headless, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 7
+      },
+      "[headless, mock hooks] env.COPILOT_MODEL": {
+        "pass": 7
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 7
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 7
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 7
+      },
+      "[headless, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[headless, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 7
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] env.COPILOT_MODEL": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] env.COPILOT_MODEL": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 7
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 7
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 7
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 7
+      },
+      "[probes] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[probes] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[probes] acp/model": {
+        "pass": 7
+      },
+      "[probes] acp/requests": {
+        "pass": 7
+      },
+      "[probes] acp/streaming": {
+        "pass": 7
+      },
+      "[probes] binary": {
+        "pass": 7
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 7
+      },
+      "[probes] env.COPILOT_ALLOW_ALL": {
+        "pass": 7
+      },
+      "[probes] env.COPILOT_MODEL": {
+        "pass": 7
+      },
+      "[probes] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 7
+      },
+      "[probes] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 7
+      },
+      "[probes] hooks.install": {
+        "pass": 7
+      },
+      "[probes] images.sent": {
+        "pass": 7
+      },
+      "[probes] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[probes] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[probes] resume.context": {
+        "pass": 7
+      },
+      "[probes] resume.load": {
+        "pass": 7
+      },
+      "[probes] resume.replay": {
+        "pass": 7
+      },
+      "[probes] seed.appended": {
+        "pass": 7
+      },
+      "[probes] seed.hand-built": {
+        "pass": 7
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 7
+      },
+      "[probes] seedkinds.compaction.context": {
+        "finding:retired-kept": 7
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.compaction.request": {
+        "finding:retired-sent": 7
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 7
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 7
+      },
+      "[probes] seedkinds.image-only-result": {
+        "finding:image-dropped": 7
+      },
+      "[probes] seedkinds.in-message-result": {
+        "finding:image-dropped": 7
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-kept": 7
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "finding:retired-kept": 7
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "finding:retired-sent": 7
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "finding:retired-kept-*": 7
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "finding:retired-sent-*": 7
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 7
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 7
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 7
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 7
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 7
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 7
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-given": 7
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 7
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 7
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 7
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 7
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "pass:as-reference": 7
+      },
+      "[probes] session.answer": {
+        "pass": 7
+      },
+      "[probes] session.completed": {
+        "pass": 7
+      },
+      "[probes] session.start": {
+        "pass": 7
+      },
+      "[probes] skills": {
+        "pass": 7
+      },
+      "[probes] transcript": {
+        "pass": 7
+      },
+      "[probes] turn": {
+        "pass": 56
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 7
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 7
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 7
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 7
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 7
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 7
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 7
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 7
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 7
+      },
+      "[resume-kill] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[resume-kill] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[resume-kill] acp/model": {
+        "pass": 7
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 7
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 7
+      },
+      "[resume-kill] binary": {
+        "pass": 7
+      },
+      "[resume-kill] env.COPILOT_ALLOW_ALL": {
+        "pass": 7
+      },
+      "[resume-kill] env.COPILOT_MODEL": {
+        "pass": 7
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 7
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 7
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 7
+      },
+      "[resume-kill] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[resume-kill] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 7
+      },
+      "[resume-kill] resume.context": {
+        "pass": 7
+      },
+      "[resume-kill] resume.load": {
+        "pass": 7
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 7
+      },
+      "[resume-kill] session.answer": {
+        "pass": 7
+      },
+      "[resume-kill] session.completed": {
+        "pass": 7
+      },
+      "[resume-kill] session.start": {
+        "pass": 7
+      },
+      "[resume-kill] skills": {
+        "pass": 7
+      },
+      "[surface] binary": {
+        "pass": 7
+      }
+    },
+    "1.0.106": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] direct.call": {
+        "pass": 1
+      },
+      "[direct] direct.messages": {
+        "finding:added": 1
+      },
+      "[direct] direct.restart": {
+        "pass": 1
+      },
+      "[direct] direct.result": {
+        "pass": 1
+      },
+      "[direct] direct.system": {
+        "finding:added": 1
+      },
+      "[direct] direct.tools": {
+        "finding:more": 1
+      },
+      "[direct] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[direct] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[direct] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[direct] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 1
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 1
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 1
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 1
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 1
+      },
+      "[probes] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] acp/model": {
+        "pass": 1
+      },
+      "[probes] acp/requests": {
+        "pass": 1
+      },
+      "[probes] acp/streaming": {
+        "pass": 1
+      },
+      "[probes] binary": {
+        "pass": 1
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 1
+      },
+      "[probes] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[probes] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[probes] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[probes] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[probes] hooks.install": {
+        "pass": 1
+      },
+      "[probes] images.sent": {
+        "pass": 1
+      },
+      "[probes] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] resume.context": {
+        "pass": 1
+      },
+      "[probes] resume.load": {
+        "pass": 1
+      },
+      "[probes] resume.replay": {
+        "pass": 1
+      },
+      "[probes] seed.appended": {
+        "pass": 1
+      },
+      "[probes] seed.hand-built": {
+        "pass": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.context": {
+        "finding:retired-kept": 1
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.request": {
+        "finding:retired-sent": 1
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.image-only-result": {
+        "finding:image-dropped": 1
+      },
+      "[probes] seedkinds.in-message-result": {
+        "finding:image-dropped": 1
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-kept": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "finding:retired-kept": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "finding:retired-sent": 1
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "finding:retired-kept-*": 1
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "finding:retired-sent-*": 1
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-given": 1
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 1
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "pass:as-reference": 1
+      },
+      "[probes] session.answer": {
+        "pass": 1
+      },
+      "[probes] session.completed": {
+        "pass": 1
+      },
+      "[probes] session.start": {
+        "pass": 1
+      },
+      "[probes] skills": {
+        "pass": 1
+      },
+      "[probes] transcript": {
+        "pass": 1
+      },
+      "[probes] turn": {
+        "pass": 8
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 1
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 1
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 1
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 1
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/model": {
+        "pass": 1
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 1
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 1
+      },
+      "[resume-kill] binary": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] resume.context": {
+        "pass": 1
+      },
+      "[resume-kill] resume.load": {
+        "pass": 1
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 1
+      },
+      "[resume-kill] session.answer": {
+        "pass": 1
+      },
+      "[resume-kill] session.completed": {
+        "pass": 1
+      },
+      "[resume-kill] session.start": {
+        "pass": 1
+      },
+      "[resume-kill] skills": {
+        "pass": 1
+      },
+      "[surface] binary": {
+        "pass": 1
+      }
+    },
+    "1.0.107": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 2
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 2
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 2
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 2
+      },
+      "[direct] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[direct] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[direct] acp/model": {
+        "pass": 2
+      },
+      "[direct] acp/requests": {
+        "pass": 2
+      },
+      "[direct] acp/streaming": {
+        "pass": 2
+      },
+      "[direct] binary": {
+        "pass": 2
+      },
+      "[direct] direct.call": {
+        "pass": 2
+      },
+      "[direct] direct.messages": {
+        "finding:added": 2
+      },
+      "[direct] direct.restart": {
+        "pass": 2
+      },
+      "[direct] direct.result": {
+        "pass": 2
+      },
+      "[direct] direct.system": {
+        "finding:added": 2
+      },
+      "[direct] direct.tools": {
+        "finding:more": 2
+      },
+      "[direct] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[direct] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[direct] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[direct] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] hooks.install": {
+        "pass": 2
+      },
+      "[direct] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[direct] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[direct] session.answer": {
+        "pass": 2
+      },
+      "[direct] session.completed": {
+        "pass": 2
+      },
+      "[direct] session.start": {
+        "pass": 2
+      },
+      "[direct] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 2
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 2
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 2
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 2
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 2
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 2
+      },
+      "[probes] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[probes] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[probes] acp/model": {
+        "pass": 2
+      },
+      "[probes] acp/requests": {
+        "pass": 2
+      },
+      "[probes] acp/streaming": {
+        "pass": 2
+      },
+      "[probes] binary": {
+        "pass": 2
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 2
+      },
+      "[probes] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[probes] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[probes] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[probes] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] hooks.install": {
+        "pass": 2
+      },
+      "[probes] images.sent": {
+        "pass": 2
+      },
+      "[probes] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[probes] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[probes] resume.context": {
+        "pass": 2
+      },
+      "[probes] resume.load": {
+        "pass": 2
+      },
+      "[probes] resume.replay": {
+        "pass": 2
+      },
+      "[probes] seed.appended": {
+        "pass": 2
+      },
+      "[probes] seed.hand-built": {
+        "pass": 2
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.context": {
+        "finding:retired-kept": 2
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.request": {
+        "finding:retired-sent": 2
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.image-only-result": {
+        "finding:image-dropped": 2
+      },
+      "[probes] seedkinds.in-message-result": {
+        "finding:image-dropped": 2
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-kept": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "finding:retired-kept": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "finding:retired-sent": 2
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "finding:retired-kept-*": 2
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "finding:retired-sent-*": 2
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 2
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-given": 2
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 2
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "pass:as-reference": 2
+      },
+      "[probes] session.answer": {
+        "pass": 2
+      },
+      "[probes] session.completed": {
+        "pass": 2
+      },
+      "[probes] session.start": {
+        "pass": 2
+      },
+      "[probes] skills": {
+        "pass": 2
+      },
+      "[probes] transcript": {
+        "pass": 2
+      },
+      "[probes] turn": {
+        "pass": 16
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 2
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 2
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 2
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 2
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 2
+      },
+      "[resume-kill] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[resume-kill] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[resume-kill] acp/model": {
+        "pass": 2
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 2
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 2
+      },
+      "[resume-kill] binary": {
+        "pass": 2
+      },
+      "[resume-kill] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[resume-kill] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 2
+      },
+      "[resume-kill] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[resume-kill] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[resume-kill] resume.context": {
+        "pass": 2
+      },
+      "[resume-kill] resume.load": {
+        "pass": 2
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 2
+      },
+      "[resume-kill] session.answer": {
+        "pass": 2
+      },
+      "[resume-kill] session.completed": {
+        "pass": 2
+      },
+      "[resume-kill] session.start": {
+        "pass": 2
+      },
+      "[resume-kill] skills": {
+        "pass": 2
+      },
+      "[surface] binary": {
+        "pass": 2
+      }
+    },
+    "1.0.108": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] direct.call": {
+        "pass": 1
+      },
+      "[direct] direct.messages": {
+        "finding:added": 1
+      },
+      "[direct] direct.restart": {
+        "pass": 1
+      },
+      "[direct] direct.result": {
+        "pass": 1
+      },
+      "[direct] direct.system": {
+        "finding:added": 1
+      },
+      "[direct] direct.tools": {
+        "finding:more": 1
+      },
+      "[direct] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[direct] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[direct] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[direct] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 1
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 1
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 1
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 1
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 1
+      },
+      "[probes] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] acp/model": {
+        "pass": 1
+      },
+      "[probes] acp/requests": {
+        "pass": 1
+      },
+      "[probes] acp/streaming": {
+        "pass": 1
+      },
+      "[probes] binary": {
+        "pass": 1
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 1
+      },
+      "[probes] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[probes] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[probes] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[probes] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[probes] hooks.install": {
+        "pass": 1
+      },
+      "[probes] images.sent": {
+        "pass": 1
+      },
+      "[probes] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] resume.context": {
+        "pass": 1
+      },
+      "[probes] resume.load": {
+        "pass": 1
+      },
+      "[probes] resume.replay": {
+        "pass": 1
+      },
+      "[probes] seed.appended": {
+        "pass": 1
+      },
+      "[probes] seed.hand-built": {
+        "pass": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.context": {
+        "finding:retired-kept": 1
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.request": {
+        "finding:retired-sent": 1
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.image-only-result": {
+        "finding:image-dropped": 1
+      },
+      "[probes] seedkinds.in-message-result": {
+        "finding:image-dropped": 1
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-kept": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "finding:retired-kept": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "finding:retired-sent": 1
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "finding:retired-kept-*": 1
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "finding:retired-sent-*": 1
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-given": 1
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 1
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "pass:as-reference": 1
+      },
+      "[probes] session.answer": {
+        "pass": 1
+      },
+      "[probes] session.completed": {
+        "pass": 1
+      },
+      "[probes] session.start": {
+        "pass": 1
+      },
+      "[probes] skills": {
+        "pass": 1
+      },
+      "[probes] transcript": {
+        "pass": 1
+      },
+      "[probes] turn": {
+        "pass": 8
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 1
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 1
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 1
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 1
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/model": {
+        "pass": 1
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 1
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 1
+      },
+      "[resume-kill] binary": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] resume.context": {
+        "pass": 1
+      },
+      "[resume-kill] resume.load": {
+        "pass": 1
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 1
+      },
+      "[resume-kill] session.answer": {
+        "pass": 1
+      },
+      "[resume-kill] session.completed": {
+        "pass": 1
+      },
+      "[resume-kill] session.start": {
+        "pass": 1
+      },
+      "[resume-kill] skills": {
+        "pass": 1
+      },
+      "[surface] binary": {
+        "pass": 1
+      }
+    },
+    "1.0.109": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 2
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 2
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 2
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 2
+      },
+      "[direct] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[direct] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[direct] acp/model": {
+        "pass": 2
+      },
+      "[direct] acp/requests": {
+        "pass": 2
+      },
+      "[direct] acp/streaming": {
+        "pass": 2
+      },
+      "[direct] binary": {
+        "pass": 2
+      },
+      "[direct] direct.call": {
+        "pass": 2
+      },
+      "[direct] direct.messages": {
+        "finding:added": 2
+      },
+      "[direct] direct.restart": {
+        "pass": 2
+      },
+      "[direct] direct.result": {
+        "pass": 2
+      },
+      "[direct] direct.system": {
+        "finding:added": 2
+      },
+      "[direct] direct.tools": {
+        "finding:more": 2
+      },
+      "[direct] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[direct] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[direct] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[direct] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] hooks.install": {
+        "pass": 2
+      },
+      "[direct] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[direct] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[direct] session.answer": {
+        "pass": 2
+      },
+      "[direct] session.completed": {
+        "pass": 2
+      },
+      "[direct] session.start": {
+        "pass": 2
+      },
+      "[direct] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 2
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 2
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 2
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 2
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 2
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 2
+      },
+      "[probes] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[probes] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[probes] acp/model": {
+        "pass": 2
+      },
+      "[probes] acp/requests": {
+        "pass": 2
+      },
+      "[probes] acp/streaming": {
+        "pass": 2
+      },
+      "[probes] binary": {
+        "pass": 2
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 2
+      },
+      "[probes] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[probes] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[probes] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[probes] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] hooks.install": {
+        "pass": 2
+      },
+      "[probes] images.sent": {
+        "pass": 2
+      },
+      "[probes] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[probes] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[probes] resume.context": {
+        "pass": 2
+      },
+      "[probes] resume.load": {
+        "pass": 2
+      },
+      "[probes] resume.replay": {
+        "pass": 2
+      },
+      "[probes] seed.appended": {
+        "pass": 2
+      },
+      "[probes] seed.hand-built": {
+        "pass": 2
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.context": {
+        "finding:retired-kept": 2
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.request": {
+        "finding:retired-sent": 2
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.image-only-result": {
+        "finding:image-dropped": 2
+      },
+      "[probes] seedkinds.in-message-result": {
+        "finding:image-dropped": 2
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-kept": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "finding:retired-kept": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "finding:retired-sent": 2
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "finding:retired-kept-*": 2
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "finding:retired-sent-*": 2
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 2
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-given": 2
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 2
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "pass:as-reference": 2
+      },
+      "[probes] session.answer": {
+        "pass": 2
+      },
+      "[probes] session.completed": {
+        "pass": 2
+      },
+      "[probes] session.start": {
+        "pass": 2
+      },
+      "[probes] skills": {
+        "pass": 2
+      },
+      "[probes] transcript": {
+        "pass": 2
+      },
+      "[probes] turn": {
+        "pass": 16
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 2
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 2
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 2
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 2
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 2
+      },
+      "[resume-kill] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[resume-kill] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[resume-kill] acp/model": {
+        "pass": 2
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 2
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 2
+      },
+      "[resume-kill] binary": {
+        "pass": 2
+      },
+      "[resume-kill] env.COPILOT_ALLOW_ALL": {
+        "pass": 2
+      },
+      "[resume-kill] env.COPILOT_MODEL": {
+        "pass": 2
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 2
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 2
+      },
+      "[resume-kill] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[resume-kill] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 2
+      },
+      "[resume-kill] resume.context": {
+        "pass": 2
+      },
+      "[resume-kill] resume.load": {
+        "pass": 2
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 2
+      },
+      "[resume-kill] session.answer": {
+        "pass": 2
+      },
+      "[resume-kill] session.completed": {
+        "pass": 2
+      },
+      "[resume-kill] session.start": {
+        "pass": 2
+      },
+      "[resume-kill] skills": {
+        "pass": 2
+      },
+      "[surface] binary": {
+        "pass": 2
+      }
+    },
+    "1.0.111": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] direct.call": {
+        "pass": 1
+      },
+      "[direct] direct.messages": {
+        "finding:added": 1
+      },
+      "[direct] direct.restart": {
+        "pass": 1
+      },
+      "[direct] direct.result": {
+        "pass": 1
+      },
+      "[direct] direct.system": {
+        "finding:added": 1
+      },
+      "[direct] direct.tools": {
+        "finding:more": 1
+      },
+      "[direct] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[direct] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[direct] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[direct] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 1
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 1
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 1
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 1
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 1
+      },
+      "[probes] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] acp/model": {
+        "pass": 1
+      },
+      "[probes] acp/requests": {
+        "pass": 1
+      },
+      "[probes] acp/streaming": {
+        "pass": 1
+      },
+      "[probes] binary": {
+        "pass": 1
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 1
+      },
+      "[probes] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[probes] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[probes] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[probes] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[probes] hooks.install": {
+        "pass": 1
+      },
+      "[probes] images.sent": {
+        "pass": 1
+      },
+      "[probes] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[probes] resume.context": {
+        "pass": 1
+      },
+      "[probes] resume.load": {
+        "pass": 1
+      },
+      "[probes] resume.replay": {
+        "pass": 1
+      },
+      "[probes] seed.appended": {
+        "pass": 1
+      },
+      "[probes] seed.hand-built": {
+        "pass": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.context": {
+        "finding:retired-kept": 1
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.request": {
+        "finding:retired-sent": 1
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-kept": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "finding:retired-kept": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "finding:retired-sent": 1
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "finding:retired-kept-*": 1
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "finding:retired-sent-*": 1
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 1
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "pass:as-reference": 1
+      },
+      "[probes] session.answer": {
+        "pass": 1
+      },
+      "[probes] session.completed": {
+        "pass": 1
+      },
+      "[probes] session.start": {
+        "pass": 1
+      },
+      "[probes] skills": {
+        "pass": 1
+      },
+      "[probes] transcript": {
+        "pass": 1
+      },
+      "[probes] turn": {
+        "pass": 8
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 1
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 1
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 1
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 1
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/model": {
+        "pass": 1
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 1
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 1
+      },
+      "[resume-kill] binary": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_ALLOW_ALL": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_MODEL": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_API_KEY": {
+        "pass": 1
+      },
+      "[resume-kill] env.COPILOT_PROVIDER_BASE_URL": {
+        "pass": 1
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written../.github/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written.~/.copilot/instructions/belt.instructions.md": {
+        "pass": 1
+      },
+      "[resume-kill] resume.context": {
+        "pass": 1
+      },
+      "[resume-kill] resume.load": {
+        "pass": 1
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 1
+      },
+      "[resume-kill] session.answer": {
+        "pass": 1
+      },
+      "[resume-kill] session.completed": {
+        "pass": 1
+      },
+      "[resume-kill] session.start": {
+        "pass": 1
+      },
+      "[resume-kill] skills": {
+        "pass": 1
+      },
+      "[surface] binary": {
+        "pass": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,863 @@
+{
+  "ingested": {
+    "agentprotocol Nightly 41041818652": "2026-10-30",
+    "agentprotocol Nightly 41299499743": "2026-11-01",
+    "agentprotocol Nightly 41439920602": "2026-11-02",
+    "agentprotocol Nightly 41575845638": "2026-11-03",
+    "agentprotocol Nightly 41770888503": "2026-11-04",
+    "agentprotocol Nightly 42201531930": "2026-11-06",
+    "agentprotocol Nightly 42479125985": "2026-11-08",
+    "agentprotocol Nightly 42589195324": "2026-11-09",
+    "agentprotocol Nightly 42753368328": "2026-11-10",
+    "agentprotocol Nightly 42956725835": "2026-11-11",
+    "agentprotocol Nightly 43152242605": "2026-11-12",
+    "agentprotocol Nightly 43454788852": "2026-11-13"
+  },
+  "versions": {
+    "1.19.5": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 14
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 14
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 14
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 14
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[acp, belt hooks] acp/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 14
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 14
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 14
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 14
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 14
+      },
+      "[acp, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[acp, belt hooks] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 14
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[acp, belt hooks] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 14
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 14
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 14
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 14
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 14
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 14
+      },
+      "[acp, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[acp, mock hooks] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 14
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[acp, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 14
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 14
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 14
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 14
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 14
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 14
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 14
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 14
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 14
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[direct] acp/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[direct] acp/model": {
+        "pass": 14
+      },
+      "[direct] acp/requests": {
+        "pass": 14
+      },
+      "[direct] acp/streaming": {
+        "pass": 14
+      },
+      "[direct] binary": {
+        "pass": 14
+      },
+      "[direct] direct.call": {
+        "pass": 14
+      },
+      "[direct] direct.messages": {
+        "pass:exact": 14
+      },
+      "[direct] direct.restart": {
+        "pass": 14
+      },
+      "[direct] direct.result": {
+        "pass": 14
+      },
+      "[direct] direct.system": {
+        "pass:exact": 14
+      },
+      "[direct] direct.tools": {
+        "pass:only": 14
+      },
+      "[direct] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[direct] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[direct] hooks.install": {
+        "pass": 14
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[direct] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[direct] session.answer": {
+        "pass": 14
+      },
+      "[direct] session.completed": {
+        "pass": 14
+      },
+      "[direct] session.start": {
+        "pass": 14
+      },
+      "[direct] skills": {
+        "pass": 14
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 14
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 14
+      },
+      "[headless, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[headless, belt hooks] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 14
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 14
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 14
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 14
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[headless, belt hooks] headless/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 14
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 14
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 14
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 14
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[headless, belt hooks] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 14
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 14
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 14
+      },
+      "[headless, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[headless, mock hooks] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 14
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 14
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 14
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[headless, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 14
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 14
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 14
+      },
+      "[inflight-cancel] binary": {
+        "pass": 14
+      },
+      "[inflight-cancel] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[inflight-cancel] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 14
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 14
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 14
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass": 14
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass": 14
+      },
+      "[inflight-cancel] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[inflight-cancel] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 14
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 14
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 14
+      },
+      "[inflight-cancel] skills": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 14
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 14
+      },
+      "[inflight-hold] binary": {
+        "pass": 14
+      },
+      "[inflight-hold] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[inflight-hold] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 14
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 14
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 14
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass": 14
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass": 14
+      },
+      "[inflight-hold] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[inflight-hold] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 14
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 14
+      },
+      "[inflight-hold] session.start": {
+        "pass": 14
+      },
+      "[inflight-hold] skills": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 14
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 14
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 14
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 14
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 14
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 14
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 14
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 14
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[probes] acp/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[probes] acp/model": {
+        "pass": 14
+      },
+      "[probes] acp/requests": {
+        "pass": 14
+      },
+      "[probes] acp/streaming": {
+        "pass": 14
+      },
+      "[probes] binary": {
+        "pass": 14
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 14
+      },
+      "[probes] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[probes] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[probes] hidden.*": {
+        "pass:help": 28
+      },
+      "[probes] hooks.install": {
+        "pass": 14
+      },
+      "[probes] images.sent": {
+        "pass": 14
+      },
+      "[probes] inflight.park": {
+        "pass": 14
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 14
+      },
+      "[probes] inflight.resume": {
+        "pass": 14
+      },
+      "[probes] inflight.resume-twice": {
+        "pass": 14
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[probes] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[probes] resume.context": {
+        "pass": 14
+      },
+      "[probes] resume.load": {
+        "pass": 14
+      },
+      "[probes] resume.replay": {
+        "pass": 14
+      },
+      "[probes] seed.appended": {
+        "pass": 14
+      },
+      "[probes] seed.hand-built": {
+        "pass": 14
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 14
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 14
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 14
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 14
+      },
+      "[probes] seedkinds.file-uri": {
+        "finding:dropped": 14
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 14
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 14
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 14
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-kept": 14
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 14
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 14
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 14
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 14
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 14
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 14
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 14
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 14
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 14
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 14
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 14
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 14
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 14
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 14
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 14
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 14
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 14
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 14
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "finding:dropped": 14
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "pass:as-reference": 14
+      },
+      "[probes] session.answer": {
+        "pass": 14
+      },
+      "[probes] session.completed": {
+        "pass": 14
+      },
+      "[probes] session.start": {
+        "pass": 14
+      },
+      "[probes] skills": {
+        "pass": 14
+      },
+      "[probes] transcript": {
+        "pass": 14
+      },
+      "[probes] turn": {
+        "pass": 112
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 14
+      },
+      "[probes] usage.context": {
+        "finding:not-reported": 14
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 14
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 14
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 14
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 14
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 14
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 14
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 14
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 14
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 14
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 14
+      },
+      "[resume-kill] acp/instructions.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[resume-kill] acp/model": {
+        "pass": 14
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 14
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 14
+      },
+      "[resume-kill] binary": {
+        "pass": 14
+      },
+      "[resume-kill] env.OPENAI_API_KEY": {
+        "pass": 14
+      },
+      "[resume-kill] env.OPENAI_BASE_URL": {
+        "pass": 14
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 14
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 14
+      },
+      "[resume-kill] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 14
+      },
+      "[resume-kill] resume.context": {
+        "pass": 14
+      },
+      "[resume-kill] resume.load": {
+        "pass": 14
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 14
+      },
+      "[resume-kill] session.answer": {
+        "pass": 14
+      },
+      "[resume-kill] session.completed": {
+        "pass": 14
+      },
+      "[resume-kill] session.start": {
+        "pass": 14
+      },
+      "[resume-kill] skills": {
+        "pass": 14
+      },
+      "[surface] binary": {
+        "pass": 14
+      }
+    }
+  }
+}

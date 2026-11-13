@@ -1,0 +1,2726 @@
+{
+  "ingested": {
+    "agentprotocol Nightly 41041818652": "2026-10-30",
+    "agentprotocol Nightly 41299499743": "2026-11-01",
+    "agentprotocol Nightly 41439920602": "2026-11-02",
+    "agentprotocol Nightly 41575845638": "2026-11-03",
+    "agentprotocol Nightly 41770888503": "2026-11-04",
+    "agentprotocol Nightly 42201531930": "2026-11-06",
+    "agentprotocol Nightly 42479125985": "2026-11-08",
+    "agentprotocol Nightly 42589195324": "2026-11-09",
+    "agentprotocol Nightly 42753368328": "2026-11-10",
+    "agentprotocol Nightly 42956725835": "2026-11-11",
+    "agentprotocol Nightly 43152242605": "2026-11-12",
+    "agentprotocol Nightly 43454788852": "2026-11-13"
+  },
+  "versions": {
+    "1.4.0": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 10
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 10
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[acp, belt hooks] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 10
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 10
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 10
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 10
+      },
+      "[acp, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 10
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[acp, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 10
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 10
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 10
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 10
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 10
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 10
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 10
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[acp, mock hooks] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 10
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 10
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 10
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 10
+      },
+      "[acp, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 10
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[acp, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 10
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 10
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 10
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 10
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 7
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 7
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 7
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 7
+      },
+      "[direct] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 7
+      },
+      "[direct] acp/model": {
+        "pass": 7
+      },
+      "[direct] acp/requests": {
+        "pass": 7
+      },
+      "[direct] acp/streaming": {
+        "pass": 7
+      },
+      "[direct] binary": {
+        "pass": 7
+      },
+      "[direct] direct.call": {
+        "pass": 7
+      },
+      "[direct] direct.messages": {
+        "pass:exact": 7
+      },
+      "[direct] direct.restart": {
+        "pass": 7
+      },
+      "[direct] direct.result": {
+        "pass": 7
+      },
+      "[direct] direct.system": {
+        "pass:exact": 7
+      },
+      "[direct] direct.tools": {
+        "pass:only": 7
+      },
+      "[direct] env.OPENROUTER_API_KEY": {
+        "pass": 7
+      },
+      "[direct] hooks.install": {
+        "pass": 7
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 7
+      },
+      "[direct] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 7
+      },
+      "[direct] session.answer": {
+        "pass": 7
+      },
+      "[direct] session.completed": {
+        "pass": 7
+      },
+      "[direct] session.start": {
+        "pass": 7
+      },
+      "[direct] skills": {
+        "pass": 7
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 10
+      },
+      "[headless, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 10
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 10
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[headless, belt hooks] headless/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 10
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 10
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 10
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 10
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[headless, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 10
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 10
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 10
+      },
+      "[headless, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 10
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 10
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 10
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[headless, mock hooks] headless/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 10
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 10
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 10
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 10
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[headless, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 10
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 10
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 10
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 10
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 10
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 10
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 10
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[probes] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[probes] acp/model": {
+        "pass": 10
+      },
+      "[probes] acp/requests": {
+        "pass": 10
+      },
+      "[probes] acp/streaming": {
+        "pass": 10
+      },
+      "[probes] binary": {
+        "pass": 10
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 10
+      },
+      "[probes] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[probes] hooks.install": {
+        "pass": 10
+      },
+      "[probes] images.sent": {
+        "pass": 10
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[probes] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[probes] resume.context": {
+        "pass": 10
+      },
+      "[probes] resume.load": {
+        "pass:by-id": 10
+      },
+      "[probes] seed.appended": {
+        "pass": 10
+      },
+      "[probes] seed.hand-built": {
+        "pass": 10
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 10
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 10
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 10
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 10
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 10
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 10
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 10
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 10
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-given": 10
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 10
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 10
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 10
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 10
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 10
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 10
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 10
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 10
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 10
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 10
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 10
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 10
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 10
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 10
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 10
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 10
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 10
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 10
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 10
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 10
+      },
+      "[probes] session.answer": {
+        "pass": 10
+      },
+      "[probes] session.completed": {
+        "pass": 10
+      },
+      "[probes] session.start": {
+        "pass": 10
+      },
+      "[probes] skills": {
+        "pass": 10
+      },
+      "[probes] transcript": {
+        "pass": 10
+      },
+      "[probes] turn": {
+        "pass": 79
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 10
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 10
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 10
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 9
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 9
+      },
+      "[probes] usage.turn": {
+        "pass": 10
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 10
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 10
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 10
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[resume-kill] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[resume-kill] acp/model": {
+        "pass": 10
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 10
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 10
+      },
+      "[resume-kill] binary": {
+        "pass": 10
+      },
+      "[resume-kill] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 10
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[resume-kill] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[resume-kill] resume.context": {
+        "pass": 10
+      },
+      "[resume-kill] resume.load": {
+        "pass:by-id": 10
+      },
+      "[resume-kill] session.answer": {
+        "pass": 10
+      },
+      "[resume-kill] session.completed": {
+        "pass": 10
+      },
+      "[resume-kill] session.start": {
+        "pass": 10
+      },
+      "[resume-kill] skills": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] binary": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] hooks.install": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] sdk/belt-hook.prompt": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] sdk/belt-hook.stop": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] sdk/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] sdk/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] sdk/model": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] sdk/requests": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] sdk/streaming": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] skills": {
+        "pass": 10
+      },
+      "[sdk, belt hooks] turn": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] binary": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] hooks.install": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] sdk/hook-injection": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] sdk/hook.prompt": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] sdk/hook.stop": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] sdk/instructions../AGENTS.md": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] sdk/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] sdk/model": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] sdk/requests": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] sdk/streaming": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] skills": {
+        "pass": 10
+      },
+      "[sdk, mock hooks] turn": {
+        "pass": 10
+      },
+      "[surface] binary": {
+        "pass": 10
+      }
+    },
+    "1.5.0": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 6
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 6
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[acp, belt hooks] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 6
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 6
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 6
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 6
+      },
+      "[acp, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 6
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[acp, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 6
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 6
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 6
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 6
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 6
+      },
+      "[acp, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 6
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[acp, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 6
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 6
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 6
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 6
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 6
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 6
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 6
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[direct] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[direct] acp/model": {
+        "pass": 6
+      },
+      "[direct] acp/requests": {
+        "pass": 6
+      },
+      "[direct] acp/streaming": {
+        "pass": 6
+      },
+      "[direct] binary": {
+        "pass": 6
+      },
+      "[direct] direct.call": {
+        "pass": 6
+      },
+      "[direct] direct.messages": {
+        "pass:exact": 6
+      },
+      "[direct] direct.restart": {
+        "pass": 6
+      },
+      "[direct] direct.result": {
+        "pass": 6
+      },
+      "[direct] direct.system": {
+        "pass:exact": 6
+      },
+      "[direct] direct.tools": {
+        "pass:only": 6
+      },
+      "[direct] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[direct] hooks.install": {
+        "pass": 6
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[direct] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[direct] session.answer": {
+        "pass": 6
+      },
+      "[direct] session.completed": {
+        "pass": 6
+      },
+      "[direct] session.start": {
+        "pass": 6
+      },
+      "[direct] skills": {
+        "pass": 6
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 6
+      },
+      "[headless, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 6
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 6
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[headless, belt hooks] headless/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 6
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 6
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 6
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 6
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[headless, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 6
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 6
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 6
+      },
+      "[headless, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 6
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 6
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 6
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[headless, mock hooks] headless/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 6
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 6
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 6
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 6
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[headless, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 6
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 6
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 6
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 6
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 6
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 6
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 6
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[probes] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[probes] acp/model": {
+        "pass": 6
+      },
+      "[probes] acp/requests": {
+        "pass": 6
+      },
+      "[probes] acp/streaming": {
+        "pass": 6
+      },
+      "[probes] binary": {
+        "pass": 6
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 6
+      },
+      "[probes] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[probes] hooks.install": {
+        "pass": 6
+      },
+      "[probes] images.sent": {
+        "pass": 6
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[probes] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[probes] resume.context": {
+        "pass": 6
+      },
+      "[probes] resume.load": {
+        "pass:by-id": 6
+      },
+      "[probes] seed.appended": {
+        "pass": 6
+      },
+      "[probes] seed.hand-built": {
+        "pass": 6
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 6
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 6
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 6
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 6
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 6
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 6
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 6
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 6
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-given": 6
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 6
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 6
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 6
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 6
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 6
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 6
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 6
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 6
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 6
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 6
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 6
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 6
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 6
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 6
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 6
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 6
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 6
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 6
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 6
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 6
+      },
+      "[probes] session.answer": {
+        "pass": 6
+      },
+      "[probes] session.completed": {
+        "pass": 6
+      },
+      "[probes] session.start": {
+        "pass": 6
+      },
+      "[probes] skills": {
+        "pass": 6
+      },
+      "[probes] transcript": {
+        "pass": 6
+      },
+      "[probes] turn": {
+        "pass": 48
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 6
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 6
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 6
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 6
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 6
+      },
+      "[probes] usage.turn": {
+        "pass": 6
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 6
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 6
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 6
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[resume-kill] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[resume-kill] acp/model": {
+        "pass": 6
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 6
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 6
+      },
+      "[resume-kill] binary": {
+        "pass": 6
+      },
+      "[resume-kill] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 6
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[resume-kill] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[resume-kill] resume.context": {
+        "pass": 6
+      },
+      "[resume-kill] resume.load": {
+        "pass:by-id": 6
+      },
+      "[resume-kill] session.answer": {
+        "pass": 6
+      },
+      "[resume-kill] session.completed": {
+        "pass": 6
+      },
+      "[resume-kill] session.start": {
+        "pass": 6
+      },
+      "[resume-kill] skills": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] binary": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] hooks.install": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] sdk/belt-hook.prompt": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] sdk/belt-hook.stop": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] sdk/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] sdk/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] sdk/model": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] sdk/requests": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] sdk/streaming": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] skills": {
+        "pass": 6
+      },
+      "[sdk, belt hooks] turn": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] binary": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] hooks.install": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] sdk/hook-injection": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] sdk/hook.prompt": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] sdk/hook.stop": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] sdk/instructions../AGENTS.md": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] sdk/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] sdk/model": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] sdk/requests": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] sdk/streaming": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] skills": {
+        "pass": 6
+      },
+      "[sdk, mock hooks] turn": {
+        "pass": 6
+      },
+      "[surface] binary": {
+        "pass": 6
+      }
+    },
+    "1.5.1": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] direct.call": {
+        "pass": 1
+      },
+      "[direct] direct.messages": {
+        "pass:exact": 1
+      },
+      "[direct] direct.restart": {
+        "pass": 1
+      },
+      "[direct] direct.result": {
+        "pass": 1
+      },
+      "[direct] direct.system": {
+        "pass:exact": 1
+      },
+      "[direct] direct.tools": {
+        "pass:only": 1
+      },
+      "[direct] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 1
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 1
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 1
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 1
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 1
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] acp/model": {
+        "pass": 1
+      },
+      "[probes] acp/requests": {
+        "pass": 1
+      },
+      "[probes] acp/streaming": {
+        "pass": 1
+      },
+      "[probes] binary": {
+        "pass": 1
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 1
+      },
+      "[probes] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[probes] hooks.install": {
+        "pass": 1
+      },
+      "[probes] images.sent": {
+        "pass": 1
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] resume.context": {
+        "pass": 1
+      },
+      "[probes] resume.load": {
+        "pass:by-id": 1
+      },
+      "[probes] seed.appended": {
+        "pass": 1
+      },
+      "[probes] seed.hand-built": {
+        "pass": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-given": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 1
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 1
+      },
+      "[probes] session.answer": {
+        "pass": 1
+      },
+      "[probes] session.completed": {
+        "pass": 1
+      },
+      "[probes] session.start": {
+        "pass": 1
+      },
+      "[probes] skills": {
+        "pass": 1
+      },
+      "[probes] transcript": {
+        "pass": 1
+      },
+      "[probes] turn": {
+        "pass": 8
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 1
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 1
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 1
+      },
+      "[probes] usage.turn": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/model": {
+        "pass": 1
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 1
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 1
+      },
+      "[resume-kill] binary": {
+        "pass": 1
+      },
+      "[resume-kill] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] resume.context": {
+        "pass": 1
+      },
+      "[resume-kill] resume.load": {
+        "pass:by-id": 1
+      },
+      "[resume-kill] session.answer": {
+        "pass": 1
+      },
+      "[resume-kill] session.completed": {
+        "pass": 1
+      },
+      "[resume-kill] session.start": {
+        "pass": 1
+      },
+      "[resume-kill] skills": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] binary": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.stop": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/model": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/requests": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/streaming": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] skills": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] turn": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] binary": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook-injection": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.prompt": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.stop": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/model": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/requests": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/streaming": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] skills": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] turn": {
+        "pass": 1
+      },
+      "[surface] binary": {
+        "pass": 1
+      }
+    },
+    "1.5.2": {
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 3
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 3
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[acp, belt hooks] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 3
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 3
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 3
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 3
+      },
+      "[acp, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 3
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[acp, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 3
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 3
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 3
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 3
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 3
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 3
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 3
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[acp, mock hooks] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 3
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 3
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 3
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 3
+      },
+      "[acp, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 3
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[acp, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 3
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 3
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 3
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 3
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 3
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 3
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 3
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[direct] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[direct] acp/model": {
+        "pass": 3
+      },
+      "[direct] acp/requests": {
+        "pass": 3
+      },
+      "[direct] acp/streaming": {
+        "pass": 3
+      },
+      "[direct] binary": {
+        "pass": 3
+      },
+      "[direct] direct.call": {
+        "pass": 3
+      },
+      "[direct] direct.messages": {
+        "pass:exact": 3
+      },
+      "[direct] direct.restart": {
+        "pass": 3
+      },
+      "[direct] direct.result": {
+        "pass": 3
+      },
+      "[direct] direct.system": {
+        "pass:exact": 3
+      },
+      "[direct] direct.tools": {
+        "pass:only": 3
+      },
+      "[direct] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[direct] hooks.install": {
+        "pass": 3
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[direct] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[direct] session.answer": {
+        "pass": 3
+      },
+      "[direct] session.completed": {
+        "pass": 3
+      },
+      "[direct] session.start": {
+        "pass": 3
+      },
+      "[direct] skills": {
+        "pass": 3
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 3
+      },
+      "[headless, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 3
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 3
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[headless, belt hooks] headless/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 3
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 3
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 3
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 3
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[headless, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 3
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 3
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 3
+      },
+      "[headless, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 3
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 3
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[headless, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 3
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 3
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 3
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 3
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 3
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[probes] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[probes] acp/model": {
+        "pass": 3
+      },
+      "[probes] acp/requests": {
+        "pass": 3
+      },
+      "[probes] acp/streaming": {
+        "pass": 3
+      },
+      "[probes] binary": {
+        "pass": 3
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 3
+      },
+      "[probes] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[probes] hooks.install": {
+        "pass": 3
+      },
+      "[probes] images.sent": {
+        "pass": 3
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[probes] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[probes] resume.context": {
+        "pass": 3
+      },
+      "[probes] resume.load": {
+        "pass:by-id": 3
+      },
+      "[probes] seed.appended": {
+        "pass": 3
+      },
+      "[probes] seed.hand-built": {
+        "pass": 3
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 3
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 3
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 3
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 3
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 3
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 3
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 3
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 3
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-given": 3
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 3
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 3
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 3
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 3
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 3
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 3
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 3
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 3
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 3
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 3
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 3
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 3
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 3
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 3
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 3
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 3
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 3
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 3
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 3
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 3
+      },
+      "[probes] session.answer": {
+        "pass": 3
+      },
+      "[probes] session.completed": {
+        "pass": 3
+      },
+      "[probes] session.start": {
+        "pass": 3
+      },
+      "[probes] skills": {
+        "pass": 3
+      },
+      "[probes] transcript": {
+        "pass": 3
+      },
+      "[probes] turn": {
+        "pass": 24
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 3
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 3
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 3
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 3
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 3
+      },
+      "[probes] usage.turn": {
+        "pass": 3
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 3
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 3
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 3
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[resume-kill] acp/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[resume-kill] acp/model": {
+        "pass": 3
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 3
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 3
+      },
+      "[resume-kill] binary": {
+        "pass": 3
+      },
+      "[resume-kill] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 3
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[resume-kill] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[resume-kill] resume.context": {
+        "pass": 3
+      },
+      "[resume-kill] resume.load": {
+        "pass:by-id": 3
+      },
+      "[resume-kill] session.answer": {
+        "pass": 3
+      },
+      "[resume-kill] session.completed": {
+        "pass": 3
+      },
+      "[resume-kill] session.start": {
+        "pass": 3
+      },
+      "[resume-kill] skills": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] binary": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] hooks.install": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] sdk/belt-hook.prompt": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] sdk/belt-hook.stop": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] sdk/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] sdk/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] sdk/model": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] sdk/requests": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] sdk/streaming": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] skills": {
+        "pass": 3
+      },
+      "[sdk, belt hooks] turn": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] binary": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] env.OPENROUTER_API_KEY": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] hooks.install": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] instructions.written.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] sdk/hook-injection": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] sdk/hook.prompt": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] sdk/hook.stop": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] sdk/instructions../AGENTS.md": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] sdk/instructions.~/.pi/agent/AGENTS.md": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] sdk/model": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] sdk/requests": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] sdk/streaming": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] skills": {
+        "pass": 3
+      },
+      "[sdk, mock hooks] turn": {
+        "pass": 3
+      },
+      "[surface] binary": {
+        "pass": 3
+      }
+    }
+  }
+}

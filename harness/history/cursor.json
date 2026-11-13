@@ -13,7 +13,8 @@
       "suites": [
         "855064be4f99253339d09f4f7d6bfb110d49b9e8",
         "855064be4f99253339d09f4f7d6bfb110d49b9e8"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.09.08",
@@ -27,7 +28,8 @@
       "suites": [
         "740fa298dce134e64f5d7d28554c28330e13e715",
         "0c24a7c62380500409bff4bef04565904cb76386"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.09.10",
@@ -41,7 +43,8 @@
       "suites": [
         "df794c70277adc500372cbb51d7d6fb015049d68",
         "b3ac6bb2f58cf3007bcf7855ebecc9e98880e36b"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.09.15",
@@ -55,7 +58,8 @@
       "suites": [
         "581e638b56223aa0c643ba0688f09c57394261ae",
         "581e638b56223aa0c643ba0688f09c57394261ae"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.09.18",
@@ -69,7 +73,8 @@
       "suites": [
         "72735ff2b78db6d8fdf4896ccb955c57ccc3fb9c",
         "2c4e019a24aeeb80ae95c9487720f091ac8c6e70"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.09.23",
@@ -83,7 +88,8 @@
       "suites": [
         "67105fc788dc41d8a18b4bb0dfad53ca12d61214",
         "00d21b3321a659f770b86595fd9defcf9f938eef"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.09.26",
@@ -97,7 +103,8 @@
       "suites": [
         "746c36ea652b76d8daf1417b55a7019607bb1a35",
         "746c36ea652b76d8daf1417b55a7019607bb1a35"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.09.28",
@@ -111,7 +118,8 @@
       "suites": [
         "746c36ea652b76d8daf1417b55a7019607bb1a35",
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.10.01",
@@ -125,7 +133,8 @@
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
         "295bc031b1ec1fd0e465b51eb47ca11ffe52d41f"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.10.14",
@@ -139,7 +148,8 @@
       "suites": [
         "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
         "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.10.16",
@@ -153,7 +163,8 @@
       "suites": [
         "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
         "230e1aebc696f60caa141d1c4f246768c9987ce5"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.10.19",
@@ -167,7 +178,8 @@
       "suites": [
         "230e1aebc696f60caa141d1c4f246768c9987ce5",
         "182188f8a44ea2cb12b8ea6fdcedd2409c692294"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.10.22",
@@ -181,7 +193,8 @@
       "suites": [
         "4cb72ef646116332b2edab1aed37bbe14afe15d9",
         "c8c3051cfbcb9a885afa3a1be4dcf805dfac9a8b"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.11.05",
@@ -195,7 +208,8 @@
       "suites": [
         "e25b88d8ccb4be54d0d39209b55e7cf4f774b00c",
         "bd11f9f9dfa332e150f80ef01929d282c8365a86"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.11.10",
@@ -207,7 +221,8 @@
       ],
       "suites": [
         "bd11f9f9dfa332e150f80ef01929d282c8365a86"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "2026.11.11",
@@ -221,7 +236,8 @@
       "suites": [
         "bd11f9f9dfa332e150f80ef01929d282c8365a86",
         "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
-      ]
+      ],
+      "green": true
     }
   ],
   "checks": {

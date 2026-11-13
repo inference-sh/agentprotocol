@@ -163,7 +163,9 @@ type Run struct {
 	Source string // "agentprotocol nightly 43152242605"
 	// Suite is the commit of the suite that ran, which tells a change in
 	// the agent from a change in the suite.
-	Suite    string
+	Suite string
+	// Green: the job finished successfully.
+	Green    bool
 	Sections []Section
 }
 
@@ -173,93 +175,6 @@ type (
 	Version = harness.HistoryVersion
 	Point   = harness.HistoryPoint
 )
-
-// Fold builds each agent's record from runs. A version's outcome for a
-// check is the one at least two thirds of its runs printed, else Mixed.
-func Fold(runs []Run) map[string]*Agent {
-	type tally struct {
-		n   map[Outcome]int
-		msg map[Outcome]string
-	}
-	type perVersion struct {
-		v      Version
-		checks map[string]*tally
-	}
-	agents := map[string]map[string]*perVersion{}
-	sort.SliceStable(runs, func(i, j int) bool { return runs[i].Date < runs[j].Date })
-	for _, run := range runs {
-		for _, s := range run.Sections {
-			if s.Version == "" || len(s.Checks) == 0 {
-				continue
-			}
-			vs := agents[s.Agent]
-			if vs == nil {
-				vs = map[string]*perVersion{}
-				agents[s.Agent] = vs
-			}
-			pv := vs[s.Version]
-			if pv == nil {
-				pv = &perVersion{v: Version{Version: s.Version, First: run.Date}, checks: map[string]*tally{}}
-				vs[s.Version] = pv
-			}
-			if src := run.Source; len(pv.v.Sources) == 0 || pv.v.Sources[len(pv.v.Sources)-1] != src {
-				pv.v.Runs++
-				if len(pv.v.Sources) < 2 {
-					pv.v.Sources = append(pv.v.Sources, src)
-					pv.v.Suites = append(pv.v.Suites, run.Suite)
-				} else {
-					pv.v.Sources[1], pv.v.Suites[1] = src, run.Suite
-				}
-			}
-			pv.v.Last = run.Date
-			for _, c := range s.Checks {
-				if !c.Measured() {
-					continue
-				}
-				t := pv.checks[c.Key]
-				if t == nil {
-					t = &tally{n: map[Outcome]int{}, msg: map[Outcome]string{}}
-					pv.checks[c.Key] = t
-				}
-				o := c.Outcome
-				if c.Answer != "" {
-					o += Outcome(":" + c.Answer)
-				}
-				t.n[o]++
-				t.msg[o] = c.Message
-			}
-		}
-	}
-	out := map[string]*Agent{}
-	for name, vs := range agents {
-		a := &Agent{Agent: name, Checks: map[string][]Point{}}
-		for _, pv := range vs {
-			a.Versions = append(a.Versions, pv.v)
-		}
-		sort.Slice(a.Versions, func(i, j int) bool { return less(a.Versions[i].Version, a.Versions[j].Version) })
-		for _, v := range a.Versions {
-			for key, t := range vs[v.Version].checks {
-				o, msg := settle(t.n), ""
-				// A pass needs no line; anything else keeps the last one
-				// printed, which says why.
-				if o != Mixed && o != Pass {
-					msg = t.msg[o]
-				}
-				pts := a.Checks[key]
-				if len(pts) > 0 && pts[len(pts)-1].Outcome == string(o) {
-					pts[len(pts)-1].Last = v.Version
-					if msg != "" {
-						pts[len(pts)-1].Message = msg
-					}
-					continue
-				}
-				a.Checks[key] = append(pts, Point{From: v.Version, Last: v.Version, Outcome: string(o), Message: msg})
-			}
-		}
-		out[name] = a
-	}
-	return out
-}
 
 func settle(n map[Outcome]int) Outcome {
 	total, best, bestN := 0, Mixed, 0

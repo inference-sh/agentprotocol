@@ -1,6 +1,7 @@
 package history
 
 import (
+	"encoding/json"
 	"strings"
 	"sync"
 	"testing"
@@ -64,7 +65,8 @@ func TestFoldAndChanges(t *testing.T) {
 		run("2026-11-12", "2.6.0", skipped),
 		run("2026-11-13", "2.6.1", skipped),
 	}
-	a := Fold(runs)["kimi"]
+	agents, _ := Fold(runs)
+	a := agents["kimi"]
 	if len(a.Versions) != 4 || a.Versions[1].Version != "2.5.3" || a.Versions[1].Runs != 3 {
 		t.Fatalf("versions = %+v", a.Versions)
 	}
@@ -104,4 +106,54 @@ func TestMeasuredAndProbeRuns(t *testing.T) {
 	if c := s[0].Checks[2]; !c.Measured() || c.Answer != "known-missing" {
 		t.Errorf("known-missing skip = %+v, measured %v", c, c.Measured())
 	}
+}
+
+func TestMergeMatchesFold(t *testing.T) {
+	const fired, skipped = "✓ acp: stop hook fired", "○ acp: stop hook not fired — known"
+	runs := []Run{
+		run("2026-10-01", "2.5.0", fired),
+		run("2026-10-02", "2.5.3", fired),
+		run("2026-10-03", "2.5.3", fired),
+		run("2026-10-04", "2.5.3", "✗ acp: stop hook fired"),
+		run("2026-11-12", "2.6.0", skipped),
+		run("2026-11-13", "2.6.1", skipped),
+	}
+	all, _ := Fold(runs)
+	agents, tallies := Fold(runs[:2])
+	MergeAll(agents, tallies, runs[2:4])
+	MergeAll(agents, tallies, runs[4:])
+	// The same runs again change nothing.
+	MergeAll(agents, tallies, runs[3:])
+	got, want := mustJSON(t, agents["kimi"]), mustJSON(t, all["kimi"])
+	if got != want {
+		t.Errorf("merged:\n%s\nfolded:\n%s", got, want)
+	}
+	// 2.5.3 is older than the window before 2026-11-13: its tallies are gone.
+	if _, ok := tallies["kimi"].Versions["2.5.3"]; ok {
+		t.Error("2.5.3 tallies kept past the window")
+	}
+	if _, ok := tallies["kimi"].Versions["2.6.1"]; !ok {
+		t.Error("2.6.1 tallies dropped")
+	}
+}
+
+func TestMergeFlake(t *testing.T) {
+	agents, tallies := Fold([]Run{run("2026-11-01", "2.5.3", "✓ acp: stop hook fired"), run("2026-11-02", "2.5.3", "✓ acp: stop hook fired")})
+	MergeAll(agents, tallies, []Run{run("2026-11-03", "2.5.3", "✗ acp: stop hook did not fire")})
+	if pts := agents["kimi"].Checks["[acp, mock hooks] acp/hook.stop"]; len(pts) != 1 || pts[0].Outcome != "pass" {
+		t.Errorf("one failure in three flipped the outcome: %+v", pts)
+	}
+	MergeAll(agents, tallies, []Run{run("2026-11-04", "2.5.3", "✗ acp: stop hook did not fire")})
+	if pts := agents["kimi"].Checks["[acp, mock hooks] acp/hook.stop"]; len(pts) != 1 || pts[0].Outcome != "mixed" {
+		t.Errorf("two of four = %+v, want mixed", pts)
+	}
+}
+
+func mustJSON(t *testing.T, v any) string {
+	t.Helper()
+	b, err := json.MarshalIndent(v, "", " ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
 }

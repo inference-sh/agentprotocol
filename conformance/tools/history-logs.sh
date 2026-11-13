@@ -1,15 +1,18 @@
 #!/bin/bash
-# history-logs.sh OUT: download the CI job logs cmd/history reads into OUT
+# history-logs.sh OUT [RUN]: download the CI job logs cmd/history reads into OUT
 # (OUT/index.tsv and OUT/raw/<owner>_<repo>/<job>.log.gz): every job of the
 # Nightly and per-agent workflows of agentprotocol and belt-sh/harness-test,
 # pull request runs left out, one run per workflow per day. Logs already in
-# OUT are kept, so a rerun fetches only what is new.
+# OUT are kept, so a rerun fetches only what is new. With RUN, only that
+# run of REPO (default inference-sh/agentprotocol): what the History workflow
+# fetches after a nightly.
 #
 # GitHub's API budget (5000 calls an hour) is the account's, shared with
 # every other session using gh. The first version of this script spent all
 # of it in ten minutes; this one stops while fewer than KEEP calls remain.
 set -u
-OUT=${1:?usage: history-logs.sh OUT}
+OUT=${1:?usage: history-logs.sh OUT [RUN]}
+RUN=${2:-}
 KEEP=${KEEP:-2000}
 REPOS=${REPOS:-"belt-sh/harness-test inference-sh/agentprotocol"}
 WORKFLOWS="Nightly claude codex copilot cursor droid gemini goose grok hermes kilo kimi kiro omp opencode pi qwen"
@@ -25,6 +28,13 @@ budget() {
 }
 
 : > "$OUT/runs.tsv"
+if [ -n "$RUN" ]; then
+  repo=${REPO:-inference-sh/agentprotocol}
+  mkdir -p "$OUT/raw/${repo//\//_}"
+  gh run view "$RUN" -R "$repo" --json databaseId,createdAt,event,headBranch,headSha,workflowName \
+    -q "[\"$repo\",.workflowName,.databaseId,.createdAt,.event,.headBranch,.headSha]|@tsv" > "$OUT/runs.tsv"
+  REPOS=""
+fi
 for repo in $REPOS; do
   mkdir -p "$OUT/raw/${repo//\//_}"
   for wf in $WORKFLOWS; do

@@ -13,7 +13,8 @@
       "suites": [
         "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
         "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.49.0",
@@ -27,7 +28,8 @@
       "suites": [
         "26bf2cd027bbf0f1cd959c38874f59816509dc0e",
         "855064be4f99253339d09f4f7d6bfb110d49b9e8"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.50.0",
@@ -41,7 +43,8 @@
       "suites": [
         "740fa298dce134e64f5d7d28554c28330e13e715",
         "2ee8cc237fc9fdee19f1f721e1f498a9f6056bdb"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.50.1",
@@ -55,7 +58,8 @@
       "suites": [
         "441ec02f5dfa2ea4d2a2f2ddeeff82d2d0e8d59a",
         "581e638b56223aa0c643ba0688f09c57394261ae"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.51.0",
@@ -69,7 +73,8 @@
       "suites": [
         "581e638b56223aa0c643ba0688f09c57394261ae",
         "2c4e019a24aeeb80ae95c9487720f091ac8c6e70"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.52.0",
@@ -83,7 +88,8 @@
       "suites": [
         "67105fc788dc41d8a18b4bb0dfad53ca12d61214",
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.53.0",
@@ -97,7 +103,8 @@
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.54.0",
@@ -111,7 +118,8 @@
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
         "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.55.0",
@@ -125,7 +133,8 @@
       "suites": [
         "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
         "4cb72ef646116332b2edab1aed37bbe14afe15d9"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.56.0",
@@ -139,7 +148,8 @@
       "suites": [
         "a336c97eb0c942be66bac8dc3fbbd95ba4caa9c0",
         "790173f6c302548ca8b83fe508f108d9599c158f"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.57.0",
@@ -153,7 +163,8 @@
       "suites": [
         "790173f6c302548ca8b83fe508f108d9599c158f",
         "bd11f9f9dfa332e150f80ef01929d282c8365a86"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.58.0",
@@ -165,7 +176,8 @@
       ],
       "suites": [
         "bd11f9f9dfa332e150f80ef01929d282c8365a86"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.59.0",
@@ -179,7 +191,8 @@
       "suites": [
         "bd11f9f9dfa332e150f80ef01929d282c8365a86",
         "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
-      ]
+      ],
+      "green": true
     }
   ],
   "checks": {

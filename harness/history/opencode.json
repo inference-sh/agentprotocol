@@ -13,7 +13,8 @@
       "suites": [
         "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
         "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.18.26",
@@ -25,7 +26,8 @@
       ],
       "suites": [
         "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.18.27",
@@ -39,7 +41,8 @@
       "suites": [
         "26bf2cd027bbf0f1cd959c38874f59816509dc0e",
         "26bf2cd027bbf0f1cd959c38874f59816509dc0e"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.18.29",
@@ -53,7 +56,8 @@
       "suites": [
         "26bf2cd027bbf0f1cd959c38874f59816509dc0e",
         "855064be4f99253339d09f4f7d6bfb110d49b9e8"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.18.30",
@@ -67,7 +71,8 @@
       "suites": [
         "740fa298dce134e64f5d7d28554c28330e13e715",
         "2ee8cc237fc9fdee19f1f721e1f498a9f6056bdb"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.18.31",
@@ -81,7 +86,8 @@
       "suites": [
         "441ec02f5dfa2ea4d2a2f2ddeeff82d2d0e8d59a",
         "a4b32f8c51124c2be30021f0e015c539e9f26ff1"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.18.32",
@@ -95,7 +101,8 @@
       "suites": [
         "61eeafe7a2b83b34f1f5d455e2e614be2f61744a",
         "746c36ea652b76d8daf1417b55a7019607bb1a35"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.18.33",
@@ -109,7 +116,8 @@
       "suites": [
         "746c36ea652b76d8daf1417b55a7019607bb1a35",
         "746c36ea652b76d8daf1417b55a7019607bb1a35"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.18.34",
@@ -123,7 +131,8 @@
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.18.35",
@@ -137,7 +146,8 @@
       "suites": [
         "dc7770bb0b0e967a9aa4c58934001b4d9628e356",
         "7f4f77f2b68b80e5cca233a768342fcabfaf159d"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.19.0",
@@ -151,7 +161,8 @@
       "suites": [
         "295bc031b1ec1fd0e465b51eb47ca11ffe52d41f",
         "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.19.2",
@@ -163,7 +174,8 @@
       ],
       "suites": [
         "ec48ce5de27c30ff7dca8d78fca640bb2840d17f"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.19.3",
@@ -177,7 +189,8 @@
       "suites": [
         "ec48ce5de27c30ff7dca8d78fca640bb2840d17f",
         "182188f8a44ea2cb12b8ea6fdcedd2409c692294"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.19.4",
@@ -191,7 +204,8 @@
       "suites": [
         "4cb72ef646116332b2edab1aed37bbe14afe15d9",
         "b0b99e5f3ee86accdc00d7a119b16237838bb2e4"
-      ]
+      ],
+      "green": true
     },
     {
       "version": "1.19.5",
@@ -205,7 +219,8 @@
       "suites": [
         "790173f6c302548ca8b83fe508f108d9599c158f",
         "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
-      ]
+      ],
+      "green": true
     }
   ],
   "checks": {

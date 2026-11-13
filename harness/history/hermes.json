@@ -13,7 +13,8 @@
       "suites": [
         "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
         "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
-      ]
+      ],
+      "green": true
     }
   ],
   "checks": {

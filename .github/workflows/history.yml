@@ -1,0 +1,85 @@
+name: History
+
+# After each Nightly on main, its job logs are added to the agents' history
+# (harness/history, which harness embeds, and the tallies behind it in
+# conformance/tests/history; conformance/tools/README.md). The update goes to
+# the branch history/auto, one commit on top of main, rebuilt each night
+# from the branch's own files so nights not yet merged are kept. main takes
+# changes only through a pull request. A check that changed outcome between
+# two versions run by the same suite commit is the agent's change: the job
+# lists it and fails, so the registry can be told.
+
+on:
+  workflow_run:
+    workflows: [Nightly]
+    types: [completed]
+    # Nightly has no pull_request trigger, and this job checks out main,
+    # never the triggering run's ref; it only reads that run's logs.
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run:
+        description: 'Nightly run id to add'
+        required: true
+
+concurrency:
+  group: history
+  cancel-in-progress: false
+
+permissions:
+  actions: read    # the run's jobs and logs
+  contents: write  # push history/auto
+
+defaults:
+  run:
+    working-directory: conformance
+
+jobs:
+  history:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUN: ${{ inputs.run || github.event.workflow_run.id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: conformance/go.mod
+      - name: Start from history/auto
+        run: |
+          # Nights already on history/auto and not yet merged are its files;
+          # once merged, main has them.
+          if git rev-parse -q --verify origin/history/auto >/dev/null; then
+            git checkout origin/history/auto -- ../harness/history tests/history
+          fi
+      - name: Add nightly ${{ env.RUN }}
+        id: merge
+        run: |
+          case "$RUN" in ''|*[!0-9]*) echo "::error::run id must be numeric"; exit 2;; esac
+          # GITHUB_TOKEN has its own hourly budget; one run is ~50 calls.
+          KEEP=50 tools/history-logs.sh "$RUNNER_TEMP/logs" "$RUN"
+          status=0
+          go run ./cmd/history -merge -index "$RUNNER_TEMP/logs/index.tsv" -logs "$RUNNER_TEMP/logs/raw" \
+            -summary "$RUNNER_TEMP/history.md" || status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          { echo "## Nightly $RUN"; echo; cat "$RUNNER_TEMP/history.md"; } >> "$GITHUB_STEP_SUMMARY"
+          [ "$status" = 0 ] || [ "$status" = 3 ] || exit "$status"
+      - name: Push history/auto
+        run: |
+          git add ../harness/history tests/history
+          git diff --cached --quiet && { echo "nothing new"; exit 0; }
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898283+github-actions[bot]@users.noreply.github.com'
+          git commit -q -m "history: nightlies up to $RUN" -m "go run ./cmd/history -merge (.github/workflows/history.yml)"
+          git push -f origin HEAD:refs/heads/history/auto
+          echo "history/auto: https://github.com/$GITHUB_REPOSITORY/compare/main...history/auto" >> "$GITHUB_STEP_SUMMARY"
+      - name: Agent changed
+        if: steps.merge.outputs.status == '3'
+        run: |
+          echo "::error title=Nightly $RUN: an agent changed::a check changed outcome between two versions run by the same suite commit; see the summary, then record it in the registry (IssueVersions, PartialVersions)"
+          exit 1

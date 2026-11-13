@@ -1,0 +1,5076 @@
+{
+  "ingested": {
+    "agentprotocol Nightly 41041818652": "2026-10-30",
+    "agentprotocol Nightly 41299499743": "2026-11-01",
+    "agentprotocol Nightly 41439920602": "2026-11-02",
+    "agentprotocol Nightly 41575845638": "2026-11-03",
+    "agentprotocol Nightly 41770888503": "2026-11-04",
+    "agentprotocol Nightly 42201531930": "2026-11-06",
+    "agentprotocol Nightly 42479125985": "2026-11-08",
+    "agentprotocol Nightly 42589195324": "2026-11-09",
+    "agentprotocol Nightly 42753368328": "2026-11-10",
+    "agentprotocol Nightly 42956725835": "2026-11-11",
+    "agentprotocol Nightly 43152242605": "2026-11-12",
+    "agentprotocol Nightly 43454788852": "2026-11-13"
+  },
+  "versions": {
+    "0.166.0": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 5
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 5
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 5
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "pass": 5
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 5
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[acp, belt hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 5
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 5
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 5
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 5
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 5
+      },
+      "[acp, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 5
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 5
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[acp, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 5
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 5
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 5
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 5
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 5
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 5
+      },
+      "[acp, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 5
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[acp, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 5
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 5
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 5
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 5
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 5
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 5
+      },
+      "[direct] acp/hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 5
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 5
+      },
+      "[direct] acp/hook.session-start": {
+        "pass": 5
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 5
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[direct] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[direct] acp/model": {
+        "pass": 5
+      },
+      "[direct] acp/requests": {
+        "pass": 5
+      },
+      "[direct] acp/streaming": {
+        "pass": 5
+      },
+      "[direct] binary": {
+        "pass": 5
+      },
+      "[direct] direct.call": {
+        "pass": 5
+      },
+      "[direct] direct.messages": {
+        "finding:added": 5
+      },
+      "[direct] direct.restart": {
+        "fail": 1,
+        "pass": 4
+      },
+      "[direct] direct.result": {
+        "pass": 5
+      },
+      "[direct] direct.system": {
+        "pass:exact": 5
+      },
+      "[direct] direct.tools": {
+        "finding:more": 5
+      },
+      "[direct] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[direct] hooks.install": {
+        "pass": 5
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[direct] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[direct] session.answer": {
+        "pass": 5
+      },
+      "[direct] session.completed": {
+        "pass": 5
+      },
+      "[direct] session.start": {
+        "pass": 5
+      },
+      "[direct] skills": {
+        "pass": 5
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 4
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 5
+      },
+      "[headless, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 5
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 5
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 5
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[headless, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 5
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 5
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 5
+      },
+      "[headless, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 5
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 5
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[headless, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 5
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 5
+      },
+      "[inflight-cancel] binary": {
+        "pass": 5
+      },
+      "[inflight-cancel] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 5
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 5
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 5
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass:by-id": 5
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass:by-id": 5
+      },
+      "[inflight-cancel] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[inflight-cancel] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 5
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 5
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 5
+      },
+      "[inflight-cancel] skills": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 5
+      },
+      "[inflight-hold] binary": {
+        "pass": 5
+      },
+      "[inflight-hold] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 5
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 5
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 5
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass:by-id": 5
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass:by-id": 5
+      },
+      "[inflight-hold] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[inflight-hold] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 5
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 5
+      },
+      "[inflight-hold] session.start": {
+        "pass": 5
+      },
+      "[inflight-hold] skills": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.pre-compact": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 5
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 5
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 5
+      },
+      "[probes] acp/hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 5
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 5
+      },
+      "[probes] acp/hook.session-start": {
+        "pass": 5
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 5
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[probes] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[probes] acp/model": {
+        "pass": 5
+      },
+      "[probes] acp/requests": {
+        "pass": 5
+      },
+      "[probes] acp/streaming": {
+        "pass": 5
+      },
+      "[probes] binary": {
+        "pass": 5
+      },
+      "[probes] compact.run": {
+        "finding:as-prompt": 5
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 5
+      },
+      "[probes] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[probes] hooks.install": {
+        "pass": 5
+      },
+      "[probes] images.sent": {
+        "pass": 5
+      },
+      "[probes] inflight.park": {
+        "pass": 5
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 5
+      },
+      "[probes] inflight.resume": {
+        "pass:by-id": 5
+      },
+      "[probes] inflight.resume-twice": {
+        "pass:by-id": 5
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[probes] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[probes] resume.context": {
+        "pass": 5
+      },
+      "[probes] resume.load": {
+        "pass:by-id": 5
+      },
+      "[probes] seed shapes (file-uri).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (image-only-result).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (in-message-result).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (parallel-same-id).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (retired-answer-as-summary).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (retired-tool).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (tool-after-text).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (trailing-prompt).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (trailing-tool-result).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (untyped-file-path).prompt": {
+        "finding": 1
+      },
+      "[probes] seed shapes (user-attachments).prompt": {
+        "finding": 2
+      },
+      "[probes] seed.appended": {
+        "pass": 5
+      },
+      "[probes] seed.hand-built": {
+        "finding:load-rejected": 1,
+        "pass": 4
+      },
+      "[probes] seed.kinds": {
+        "finding:load-rejected": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 4
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 5
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 5
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 4
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 4
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 5
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 5
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 5
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 5
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 4
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 4
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 4
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 5
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 4
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 5
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 4
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 4
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 4
+      },
+      "[probes] session.answer": {
+        "pass": 5
+      },
+      "[probes] session.completed": {
+        "pass": 5
+      },
+      "[probes] session.start": {
+        "pass": 5
+      },
+      "[probes] skills": {
+        "pass": 5
+      },
+      "[probes] subagents.completed": {
+        "pass:idle": 5
+      },
+      "[probes] subagents.output": {
+        "pass": 5
+      },
+      "[probes] subagents.started": {
+        "pass:linked": 5
+      },
+      "[probes] transcript": {
+        "pass": 5
+      },
+      "[probes] turn": {
+        "pass": 38
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 5
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 5
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 5
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 5
+      },
+      "[probes] usage.turn": {
+        "pass": 5
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 5
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 5
+      },
+      "[resume-kill] acp/hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 5
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 5
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "pass": 5
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 5
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[resume-kill] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[resume-kill] acp/model": {
+        "pass": 5
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 5
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 5
+      },
+      "[resume-kill] binary": {
+        "pass": 5
+      },
+      "[resume-kill] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 5
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[resume-kill] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[resume-kill] resume.context": {
+        "pass": 5
+      },
+      "[resume-kill] resume.load": {
+        "pass:by-id": 5
+      },
+      "[resume-kill] session.answer": {
+        "pass": 5
+      },
+      "[resume-kill] session.completed": {
+        "pass": 5
+      },
+      "[resume-kill] session.start": {
+        "pass": 5
+      },
+      "[resume-kill] skills": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] belt-hook-shape": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] binary": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] hooks.install": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] hooks.project-copy": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/belt-hook.post-tool": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-tool": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/belt-hook.prompt": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/belt-hook.session-start": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/belt-hook.stop": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/model": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/requests": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] sdk/streaming": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] skills": {
+        "pass": 5
+      },
+      "[sdk, belt hooks] turn": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] binary": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] hooks.install": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/hook-injection": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/hook.post-tool": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/hook.pre-compact": {
+        "skip:known-missing": 5
+      },
+      "[sdk, mock hooks] sdk/hook.pre-tool": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/hook.prompt": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/hook.session-start": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/hook.stop": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/model": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/requests": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] sdk/streaming": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] skills": {
+        "pass": 5
+      },
+      "[sdk, mock hooks] turn": {
+        "pass": 5
+      },
+      "[surface] binary": {
+        "pass": 5
+      }
+    },
+    "0.167.0": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 4
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 4
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 4
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 4
+      },
+      "[acp, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 4
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 4
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[acp, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 4
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 4
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 4
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 4
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 4
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 4
+      },
+      "[acp, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 4
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[acp, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 4
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 4
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 4
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 4
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 4
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[direct] acp/hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[direct] acp/hook.session-start": {
+        "pass": 4
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 4
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[direct] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[direct] acp/model": {
+        "pass": 4
+      },
+      "[direct] acp/requests": {
+        "pass": 4
+      },
+      "[direct] acp/streaming": {
+        "pass": 4
+      },
+      "[direct] binary": {
+        "pass": 4
+      },
+      "[direct] direct.call": {
+        "pass": 4
+      },
+      "[direct] direct.messages": {
+        "finding:added": 4
+      },
+      "[direct] direct.restart": {
+        "pass": 4
+      },
+      "[direct] direct.result": {
+        "pass": 4
+      },
+      "[direct] direct.system": {
+        "pass:exact": 4
+      },
+      "[direct] direct.tools": {
+        "finding:more": 4
+      },
+      "[direct] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[direct] hooks.install": {
+        "pass": 4
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[direct] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[direct] session.answer": {
+        "pass": 4
+      },
+      "[direct] session.completed": {
+        "pass": 4
+      },
+      "[direct] session.start": {
+        "pass": 4
+      },
+      "[direct] skills": {
+        "pass": 4
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 4
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 4
+      },
+      "[headless, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 4
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 4
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 4
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 4
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[headless, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 4
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 4
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 4
+      },
+      "[headless, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 4
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 4
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[headless, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 4
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 4
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 4
+      },
+      "[inflight-cancel] binary": {
+        "pass": 4
+      },
+      "[inflight-cancel] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 4
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 4
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 4
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass:by-id": 4
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass:by-id": 4
+      },
+      "[inflight-cancel] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[inflight-cancel] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 4
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 4
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 4
+      },
+      "[inflight-cancel] skills": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 4
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 4
+      },
+      "[inflight-hold] binary": {
+        "pass": 4
+      },
+      "[inflight-hold] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 4
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 4
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 4
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass:by-id": 4
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass:by-id": 4
+      },
+      "[inflight-hold] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[inflight-hold] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 4
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 4
+      },
+      "[inflight-hold] session.start": {
+        "pass": 4
+      },
+      "[inflight-hold] skills": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 4
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.pre-compact": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 4
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 4
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[probes] acp/hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[probes] acp/hook.session-start": {
+        "pass": 4
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 4
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[probes] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[probes] acp/model": {
+        "pass": 4
+      },
+      "[probes] acp/requests": {
+        "pass": 4
+      },
+      "[probes] acp/streaming": {
+        "pass": 4
+      },
+      "[probes] binary": {
+        "pass": 4
+      },
+      "[probes] compact.run": {
+        "finding:as-prompt": 4
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 4
+      },
+      "[probes] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[probes] hooks.install": {
+        "pass": 4
+      },
+      "[probes] images.sent": {
+        "pass": 4
+      },
+      "[probes] inflight.park": {
+        "pass": 4
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 4
+      },
+      "[probes] inflight.resume": {
+        "pass:by-id": 4
+      },
+      "[probes] inflight.resume-twice": {
+        "pass:by-id": 4
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[probes] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[probes] resume.context": {
+        "pass": 4
+      },
+      "[probes] resume.load": {
+        "pass:by-id": 4
+      },
+      "[probes] seed.appended": {
+        "pass": 4
+      },
+      "[probes] seed.hand-built": {
+        "pass": 4
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 4
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 4
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 4
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 4
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 4
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 4
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 4
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 4
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 4
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 4
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 4
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 4
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 4
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 4
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 4
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 4
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 4
+      },
+      "[probes] session.answer": {
+        "pass": 4
+      },
+      "[probes] session.completed": {
+        "pass": 4
+      },
+      "[probes] session.start": {
+        "pass": 4
+      },
+      "[probes] skills": {
+        "pass": 4
+      },
+      "[probes] subagents.completed": {
+        "pass:idle": 4
+      },
+      "[probes] subagents.output": {
+        "pass": 4
+      },
+      "[probes] subagents.started": {
+        "pass:linked": 4
+      },
+      "[probes] transcript": {
+        "pass": 4
+      },
+      "[probes] turn": {
+        "pass": 36
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 4
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 4
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 4
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 4
+      },
+      "[probes] usage.turn": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "pass": 4
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 4
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[resume-kill] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[resume-kill] acp/model": {
+        "pass": 4
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 4
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 4
+      },
+      "[resume-kill] binary": {
+        "pass": 4
+      },
+      "[resume-kill] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 4
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[resume-kill] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[resume-kill] resume.context": {
+        "pass": 4
+      },
+      "[resume-kill] resume.load": {
+        "pass:by-id": 4
+      },
+      "[resume-kill] session.answer": {
+        "pass": 4
+      },
+      "[resume-kill] session.completed": {
+        "pass": 4
+      },
+      "[resume-kill] session.start": {
+        "pass": 4
+      },
+      "[resume-kill] skills": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] belt-hook-shape": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] binary": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] hooks.install": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] hooks.project-copy": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/belt-hook.post-tool": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-tool": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/belt-hook.prompt": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/belt-hook.session-start": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/belt-hook.stop": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/model": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/requests": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] sdk/streaming": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] skills": {
+        "pass": 4
+      },
+      "[sdk, belt hooks] turn": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] binary": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] hooks.install": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/hook-injection": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/hook.post-tool": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/hook.pre-compact": {
+        "skip:known-missing": 4
+      },
+      "[sdk, mock hooks] sdk/hook.pre-tool": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/hook.prompt": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/hook.session-start": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/hook.stop": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/instructions../AGENTS.md": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/model": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/requests": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] sdk/streaming": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] skills": {
+        "pass": 4
+      },
+      "[sdk, mock hooks] turn": {
+        "pass": 4
+      },
+      "[surface] binary": {
+        "pass": 4
+      }
+    },
+    "0.167.1": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] direct.call": {
+        "pass": 1
+      },
+      "[direct] direct.messages": {
+        "finding:added": 1
+      },
+      "[direct] direct.restart": {
+        "pass": 1
+      },
+      "[direct] direct.result": {
+        "pass": 1
+      },
+      "[direct] direct.system": {
+        "pass:exact": 1
+      },
+      "[direct] direct.tools": {
+        "finding:more": 1
+      },
+      "[direct] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 1
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 1
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-cancel] binary": {
+        "pass": 1
+      },
+      "[inflight-cancel] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass:by-id": 1
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass:by-id": 1
+      },
+      "[inflight-cancel] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 1
+      },
+      "[inflight-cancel] skills": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-hold] binary": {
+        "pass": 1
+      },
+      "[inflight-hold] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass:by-id": 1
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass:by-id": 1
+      },
+      "[inflight-hold] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 1
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 1
+      },
+      "[inflight-hold] session.start": {
+        "pass": 1
+      },
+      "[inflight-hold] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.pre-compact": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 1
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 1
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[probes] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 1
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] acp/model": {
+        "pass": 1
+      },
+      "[probes] acp/requests": {
+        "pass": 1
+      },
+      "[probes] acp/streaming": {
+        "pass": 1
+      },
+      "[probes] binary": {
+        "pass": 1
+      },
+      "[probes] compact.run": {
+        "finding:as-prompt": 1
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 1
+      },
+      "[probes] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[probes] hooks.install": {
+        "pass": 1
+      },
+      "[probes] images.sent": {
+        "pass": 1
+      },
+      "[probes] inflight.park": {
+        "pass": 1
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[probes] inflight.resume": {
+        "pass:by-id": 1
+      },
+      "[probes] inflight.resume-twice": {
+        "pass:by-id": 1
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] resume.context": {
+        "pass": 1
+      },
+      "[probes] resume.load": {
+        "pass:by-id": 1
+      },
+      "[probes] seed.appended": {
+        "pass": 1
+      },
+      "[probes] seed.hand-built": {
+        "pass": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 1
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 1
+      },
+      "[probes] session.answer": {
+        "pass": 1
+      },
+      "[probes] session.completed": {
+        "pass": 1
+      },
+      "[probes] session.start": {
+        "pass": 1
+      },
+      "[probes] skills": {
+        "pass": 1
+      },
+      "[probes] subagents.completed": {
+        "pass:idle": 1
+      },
+      "[probes] subagents.output": {
+        "pass": 1
+      },
+      "[probes] subagents.started": {
+        "pass:linked": 1
+      },
+      "[probes] transcript": {
+        "pass": 1
+      },
+      "[probes] turn": {
+        "pass": 9
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 1
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 1
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 1
+      },
+      "[probes] usage.turn": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/model": {
+        "pass": 1
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 1
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 1
+      },
+      "[resume-kill] binary": {
+        "pass": 1
+      },
+      "[resume-kill] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] resume.context": {
+        "pass": 1
+      },
+      "[resume-kill] resume.load": {
+        "pass:by-id": 1
+      },
+      "[resume-kill] session.answer": {
+        "pass": 1
+      },
+      "[resume-kill] session.completed": {
+        "pass": 1
+      },
+      "[resume-kill] session.start": {
+        "pass": 1
+      },
+      "[resume-kill] skills": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] binary": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.stop": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/model": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/requests": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/streaming": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] skills": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] turn": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] binary": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook-injection": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.post-tool": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[sdk, mock hooks] sdk/hook.pre-tool": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.prompt": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.session-start": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.stop": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/model": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/requests": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/streaming": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] skills": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] turn": {
+        "pass": 1
+      },
+      "[surface] binary": {
+        "pass": 1
+      }
+    },
+    "0.167.2": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] direct.call": {
+        "pass": 1
+      },
+      "[direct] direct.messages": {
+        "finding:added": 1
+      },
+      "[direct] direct.restart": {
+        "pass": 1
+      },
+      "[direct] direct.result": {
+        "pass": 1
+      },
+      "[direct] direct.system": {
+        "pass:exact": 1
+      },
+      "[direct] direct.tools": {
+        "finding:more": 1
+      },
+      "[direct] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 1
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 1
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-cancel] binary": {
+        "pass": 1
+      },
+      "[inflight-cancel] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass:by-id": 1
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass:by-id": 1
+      },
+      "[inflight-cancel] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 1
+      },
+      "[inflight-cancel] skills": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-hold] binary": {
+        "pass": 1
+      },
+      "[inflight-hold] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass:by-id": 1
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass:by-id": 1
+      },
+      "[inflight-hold] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 1
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 1
+      },
+      "[inflight-hold] session.start": {
+        "pass": 1
+      },
+      "[inflight-hold] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.pre-compact": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 1
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 1
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[probes] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 1
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] acp/model": {
+        "pass": 1
+      },
+      "[probes] acp/requests": {
+        "pass": 1
+      },
+      "[probes] acp/streaming": {
+        "pass": 1
+      },
+      "[probes] binary": {
+        "pass": 1
+      },
+      "[probes] compact.run": {
+        "finding:as-prompt": 1
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 1
+      },
+      "[probes] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[probes] hooks.install": {
+        "pass": 1
+      },
+      "[probes] images.sent": {
+        "pass": 1
+      },
+      "[probes] inflight.park": {
+        "pass": 1
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[probes] inflight.resume": {
+        "pass:by-id": 1
+      },
+      "[probes] inflight.resume-twice": {
+        "pass:by-id": 1
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] resume.context": {
+        "pass": 1
+      },
+      "[probes] resume.load": {
+        "pass:by-id": 1
+      },
+      "[probes] seed.appended": {
+        "pass": 1
+      },
+      "[probes] seed.hand-built": {
+        "pass": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 1
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 1
+      },
+      "[probes] session.answer": {
+        "pass": 1
+      },
+      "[probes] session.completed": {
+        "pass": 1
+      },
+      "[probes] session.start": {
+        "pass": 1
+      },
+      "[probes] skills": {
+        "pass": 1
+      },
+      "[probes] subagents.completed": {
+        "pass:idle": 1
+      },
+      "[probes] subagents.output": {
+        "pass": 1
+      },
+      "[probes] subagents.started": {
+        "pass:linked": 1
+      },
+      "[probes] transcript": {
+        "pass": 1
+      },
+      "[probes] turn": {
+        "pass": 9
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 1
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 1
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 1
+      },
+      "[probes] usage.turn": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/model": {
+        "pass": 1
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 1
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 1
+      },
+      "[resume-kill] binary": {
+        "pass": 1
+      },
+      "[resume-kill] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] resume.context": {
+        "pass": 1
+      },
+      "[resume-kill] resume.load": {
+        "pass:by-id": 1
+      },
+      "[resume-kill] session.answer": {
+        "pass": 1
+      },
+      "[resume-kill] session.completed": {
+        "pass": 1
+      },
+      "[resume-kill] session.start": {
+        "pass": 1
+      },
+      "[resume-kill] skills": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] binary": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.stop": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/model": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/requests": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/streaming": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] skills": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] turn": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] binary": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook-injection": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.post-tool": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[sdk, mock hooks] sdk/hook.pre-tool": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.prompt": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.session-start": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.stop": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/model": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/requests": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/streaming": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] skills": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] turn": {
+        "pass": 1
+      },
+      "[surface] binary": {
+        "pass": 1
+      }
+    },
+    "0.169.0": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] direct.call": {
+        "pass": 1
+      },
+      "[direct] direct.messages": {
+        "finding:added": 1
+      },
+      "[direct] direct.restart": {
+        "pass": 1
+      },
+      "[direct] direct.result": {
+        "pass": 1
+      },
+      "[direct] direct.system": {
+        "pass:exact": 1
+      },
+      "[direct] direct.tools": {
+        "finding:more": 1
+      },
+      "[direct] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 1
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 1
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-cancel] binary": {
+        "pass": 1
+      },
+      "[inflight-cancel] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass:by-id": 1
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass:by-id": 1
+      },
+      "[inflight-cancel] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 1
+      },
+      "[inflight-cancel] skills": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-hold] binary": {
+        "pass": 1
+      },
+      "[inflight-hold] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass:by-id": 1
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass:by-id": 1
+      },
+      "[inflight-hold] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 1
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 1
+      },
+      "[inflight-hold] session.start": {
+        "pass": 1
+      },
+      "[inflight-hold] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.pre-compact": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 1
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 1
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[probes] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 1
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] acp/model": {
+        "pass": 1
+      },
+      "[probes] acp/requests": {
+        "pass": 1
+      },
+      "[probes] acp/streaming": {
+        "pass": 1
+      },
+      "[probes] binary": {
+        "pass": 1
+      },
+      "[probes] compact.run": {
+        "finding:as-prompt": 1
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 1
+      },
+      "[probes] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[probes] hooks.install": {
+        "pass": 1
+      },
+      "[probes] images.sent": {
+        "pass": 1
+      },
+      "[probes] inflight.park": {
+        "pass": 1
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[probes] inflight.resume": {
+        "pass:by-id": 1
+      },
+      "[probes] inflight.resume-twice": {
+        "pass:by-id": 1
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[probes] resume.context": {
+        "pass": 1
+      },
+      "[probes] resume.load": {
+        "pass:by-id": 1
+      },
+      "[probes] seed.appended": {
+        "pass": 1
+      },
+      "[probes] seed.hand-built": {
+        "pass": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 1
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 1
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 1
+      },
+      "[probes] session.answer": {
+        "pass": 1
+      },
+      "[probes] session.completed": {
+        "pass": 1
+      },
+      "[probes] session.start": {
+        "pass": 1
+      },
+      "[probes] skills": {
+        "pass": 1
+      },
+      "[probes] subagents.completed": {
+        "pass:idle": 1
+      },
+      "[probes] subagents.output": {
+        "pass": 1
+      },
+      "[probes] subagents.started": {
+        "pass:linked": 1
+      },
+      "[probes] transcript": {
+        "pass": 1
+      },
+      "[probes] turn": {
+        "pass": 9
+      },
+      "[probes] usage.context": {
+        "pass:with-window": 1
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 1
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 1
+      },
+      "[probes] usage.turn": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/model": {
+        "pass": 1
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 1
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 1
+      },
+      "[resume-kill] binary": {
+        "pass": 1
+      },
+      "[resume-kill] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[resume-kill] resume.context": {
+        "pass": 1
+      },
+      "[resume-kill] resume.load": {
+        "pass:by-id": 1
+      },
+      "[resume-kill] session.answer": {
+        "pass": 1
+      },
+      "[resume-kill] session.completed": {
+        "pass": 1
+      },
+      "[resume-kill] session.start": {
+        "pass": 1
+      },
+      "[resume-kill] skills": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] binary": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/belt-hook.stop": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/model": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/requests": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] sdk/streaming": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] skills": {
+        "pass": 1
+      },
+      "[sdk, belt hooks] turn": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] binary": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] instructions.written.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook-injection": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.post-tool": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.pre-compact": {
+        "skip:known-missing": 1
+      },
+      "[sdk, mock hooks] sdk/hook.pre-tool": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.prompt": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.session-start": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/hook.stop": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/instructions.~/.codex/AGENTS.md": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/model": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/requests": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] sdk/streaming": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] skills": {
+        "pass": 1
+      },
+      "[sdk, mock hooks] turn": {
+        "pass": 1
+      },
+      "[surface] binary": {
+        "pass": 1
+      }
+    }
+  }
+}

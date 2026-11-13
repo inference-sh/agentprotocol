@@ -157,3 +157,24 @@ func TestDroidHeadlessPrompt(t *testing.T) {
 		t.Errorf("droid 1.9.0 headless prompt hook = %+v", s)
 	}
 }
+
+func TestRaiseTested(t *testing.T) {
+	h, _ := AgentHistory("kimi")
+	newest := ""
+	for _, v := range h.Versions {
+		if v.Green {
+			newest = v.Version
+		}
+	}
+	got := raiseTested("kimi", TestedVersions{Min: "2.0.2", Max: "2.1.1", Evidence: "table"})
+	if got.Max != newest || got.Min != "2.0.2" || got.Evidence == "table" {
+		t.Errorf("raiseTested = %+v, want Max %s", got, newest)
+	}
+	// A table Max past the history stays.
+	if got := raiseTested("kimi", TestedVersions{Min: "2.0.2", Max: "99.0.0", Evidence: "table"}); got.Max != "99.0.0" || got.Evidence != "table" {
+		t.Errorf("raiseTested lowered Max: %+v", got)
+	}
+	if got := raiseTested("windsurf", TestedVersions{}); got != (TestedVersions{}) {
+		t.Errorf("windsurf = %+v", got)
+	}
+}

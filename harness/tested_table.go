@@ -24,7 +24,8 @@ const nightlyGreen = "agentprotocol nightly 43427768277 green, 2026-11-13"
 
 // testedTable is Tested per agent. Min is the oldest version with evidence,
 // Max the newest; nothing between is claimed beyond what the Evidence says.
-// Raise Max when agentprotocol's nightly is green on a newer release;
+// Max is raised past the table by the agent's history (raiseTested); raise
+// it here only for a release the history does not have green;
 // extend Min only with a green run pinned to the older version (README,
 // "Supported versions").
 var testedTable = map[string]TestedVersions{
@@ -125,7 +126,7 @@ const FeatureSessionID = "session-id"
 
 func init() {
 	for name, t := range testedTable {
-		decorate("testedTable", name, func(h *Harness) { h.Tested = t })
+		decorate("testedTable", name, func(h *Harness) { h.Tested = raiseTested(name, t) })
 	}
 	for name, r := range requiresTable {
 		decorate("requiresTable", name, func(h *Harness) { h.Requires = r })
@@ -136,4 +137,34 @@ func init() {
 	for name, f := range features {
 		decorate("features", name, func(h *Harness) { h.Features = f })
 	}
+}
+
+// raiseTested is t with Max raised to the newest version the agent's
+// history has a green run of, when that is newer: the History workflow
+// records each nightly, so a release the nightly passed on counts as tested
+// without an edit here.
+func raiseTested(name string, t TestedVersions) TestedVersions {
+	h, ok := AgentHistory(name)
+	if !ok {
+		return t
+	}
+	for i := len(h.Versions) - 1; i >= 0; i-- {
+		v := h.Versions[i]
+		if !v.Green {
+			continue
+		}
+		if t.Max == "" || !versionAtLeast(t.Max, v.Version) {
+			if t.Min == "" {
+				t.Min = v.Version
+			}
+			t.Max = v.Version
+			src := v.Last
+			if len(v.Sources) > 0 {
+				src = v.Sources[len(v.Sources)-1] + ", " + v.Last
+			}
+			t.Evidence += "; green in the conformance history (" + v.Version + ": " + src + ")"
+		}
+		break
+	}
+	return t
 }

@@ -514,6 +514,38 @@ func TestPortableInlinesLocalFiles(t *testing.T) {
 	}
 }
 
+// A path a tool or the model named is not read: only a user's attachment
+// is. A tool result that points at a local file stays a reference.
+func TestPortableReadsOnlyUserAttachments(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "secret.txt")
+	if err := os.WriteFile(path, []byte("SECRET"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	s := &Session{Entries: []Entry{
+		{ID: "1", Role: RoleUser, Content: []Block{{Kind: BlockText, Text: "go"}}},
+		{ID: "2", Role: RoleAssistant, Content: []Block{
+			{Kind: BlockToolUse, ToolID: "t", Name: "fetch"},
+			{Kind: BlockFile, URI: "file://" + path},
+		}},
+		{ID: "3", Role: RoleTool, Content: []Block{
+			{Kind: BlockToolResult, ToolID: "t", Text: "done"},
+			{Kind: BlockFile, ToolID: "t", URI: path},
+		}},
+		{ID: "4", Role: RoleUser, Content: []Block{
+			{Kind: BlockToolResult, ToolID: "t", Text: "done"},
+			{Kind: BlockFile, ToolID: "t", URI: "file://" + path},
+		}},
+		{ID: "5", Role: RoleTool, Content: []Block{{Kind: BlockFile, URI: path}}},
+	}}
+	for _, e := range s.Portable().Entries {
+		for _, b := range e.Content {
+			if b.IsMedia() && (b.Data != nil || b.URI == "") {
+				t.Errorf("entry %s read a local file: %+v", e.ID, b)
+			}
+		}
+	}
+}
+
 // A text file moves as text, named, to a writer that records no files; an
 // image and a PDF stay what they are.
 func TestPortableTextFileAsText(t *testing.T) {

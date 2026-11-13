@@ -1,6 +1,6 @@
 module github.com/inference-sh/agentprotocol/transcript/sqlite
 
-go 1.26.7
+go 1.26.11
 
 require (
 	github.com/inference-sh/agentprotocol v0.26.0

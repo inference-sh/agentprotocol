@@ -35,16 +35,19 @@ jobs:
         with:
           go-version-file: conformance/go.mod
       - id: modes
+        # The agent name reaches the shell as a variable, never as workflow text.
+        env:
+          HARNESS: ${{ inputs.harness }}
         run: |
-          modes=$(go run . --modes-for ${{ inputs.harness }})
+          modes=$(go run . --modes-for "$HARNESS")
           echo "modes=$modes" >> "$GITHUB_OUTPUT"
           # An agent with no BYOK endpoint (kiro) only works through the MITM
           # intercept, which rewrites /etc/hosts and installs a CA: root.
-          if go run . --list --json | jq -e '.[] | select(.name == "${{ inputs.harness }}") | .needs_intercept == true' > /dev/null; then
+          if go run . --list --json | jq -e --arg name "$HARNESS" '.[] | select(.name == $name) | .needs_intercept == true' > /dev/null; then
             echo "docker=--user root" >> "$GITHUB_OUTPUT"
             echo "flags=--intercept" >> "$GITHUB_OUTPUT"
           fi
-          echo "${{ inputs.harness }}: $modes"
+          echo "$HARNESS: $modes"
 
   test:
     needs: plan
@@ -64,15 +67,29 @@ jobs:
           tests/fetch-belt.sh
           docker build -f tests/Dockerfile -t harness-test ..
       - name: Test ${{ matrix.mode }} (mock hooks)
-        # The version reaches the shell as a variable, never as workflow text.
+        # Every value reaches the shell as a variable, never as workflow text.
         env:
+          HARNESS: ${{ inputs.harness }}
+          MODE: ${{ matrix.mode }}
+          DOCKER_ARGS: ${{ needs.plan.outputs.docker }}
+          FLAGS: ${{ needs.plan.outputs.flags }}
           AGENT_VERSION: ${{ inputs.agent_version }}
-        run: docker run --rm ${{ needs.plan.outputs.docker }} harness-test --harness ${{ inputs.harness }} --mode ${{ matrix.mode }} ${{ needs.plan.outputs.flags }} ${AGENT_VERSION:+--agent-version "$AGENT_VERSION"}
+        run: |
+          read -ra docker_args <<< "$DOCKER_ARGS"
+          read -ra flags <<< "$FLAGS"
+          docker run --rm "${docker_args[@]}" harness-test --harness "$HARNESS" --mode "$MODE" "${flags[@]}" ${AGENT_VERSION:+--agent-version "$AGENT_VERSION"}
         timeout-minutes: 8
       - name: Test ${{ matrix.mode }} (belt hooks)
         # Runs when the mock-hooks step failed too, not when there is no image.
         if: (success() || failure()) && steps.build.outcome == 'success'
         env:
+          HARNESS: ${{ inputs.harness }}
+          MODE: ${{ matrix.mode }}
+          DOCKER_ARGS: ${{ needs.plan.outputs.docker }}
+          FLAGS: ${{ needs.plan.outputs.flags }}
           AGENT_VERSION: ${{ inputs.agent_version }}
-        run: docker run --rm ${{ needs.plan.outputs.docker }} harness-test --harness ${{ inputs.harness }} --mode ${{ matrix.mode }} --hooks belt ${{ needs.plan.outputs.flags }} ${AGENT_VERSION:+--agent-version "$AGENT_VERSION"}
+        run: |
+          read -ra docker_args <<< "$DOCKER_ARGS"
+          read -ra flags <<< "$FLAGS"
+          docker run --rm "${docker_args[@]}" harness-test --harness "$HARNESS" --mode "$MODE" --hooks belt "${flags[@]}" ${AGENT_VERSION:+--agent-version "$AGENT_VERSION"}
         timeout-minutes: 8

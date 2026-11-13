@@ -11,6 +11,10 @@ on:
     workflows: [Nightly]
     types: [completed]
     # A confirming nightly on a triage branch reports on that branch.
+    # Nightly has no pull_request trigger (schedule and workflow_dispatch
+    # only), so a run that reaches this workflow was started by the schedule
+    # or by a person with write access, on code already in this repository.
+    # This job checks out main, never the triggering run's ref.
     branches: [main]
   workflow_dispatch:
     inputs:
@@ -49,12 +53,16 @@ jobs:
       - name: Triage nightly ${{ env.RUN }}
         id: triage
         run: |
+          # The run id names a branch and a commit below: digits only.
+          case "$RUN" in ''|*[!0-9]*) echo "::error::run id must be numeric"; exit 2;; esac
           status=0
           OUT=$RUNNER_TEMP/triage tests/triage.sh "$RUN" --apply || status=$?
           cat $RUNNER_TEMP/triage/triage.md >> $GITHUB_STEP_SUMMARY
           echo "status=$status" >> $GITHUB_OUTPUT
           [ "$status" -le 1 ] || exit "$status"
       - name: Commit accepted drift
+        env:
+          STATUS: ${{ steps.triage.outputs.status }}
         run: |
           git diff --quiet tests/expected && { echo "nothing to commit"; exit 0; }
           git config user.name 'github-actions[bot]'
@@ -67,10 +75,10 @@ jobs:
           # ruleset), so the accepted drift goes to a branch for a person to
           # merge. With nothing to review, a nightly for the changed agents
           # runs on that branch to confirm it.
-          git push -f origin HEAD:refs/heads/triage/$RUN
-          echo "accepted drift on branch triage/$RUN: https://github.com/${{ github.repository }}/compare/main...triage/$RUN" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.triage.outputs.status }}" = 0 ]; then
-            gh workflow run nightly.yml --ref triage/$RUN -f agents="$agents"
+          git push -f origin "HEAD:refs/heads/triage/$RUN"
+          echo "accepted drift on branch triage/$RUN: https://github.com/$GITHUB_REPOSITORY/compare/main...triage/$RUN" >> $GITHUB_STEP_SUMMARY
+          if [ "$STATUS" = 0 ]; then
+            gh workflow run nightly.yml --ref "triage/$RUN" -f agents="$agents"
             echo "confirming nightly dispatched on triage/$RUN for $agents" >> $GITHUB_STEP_SUMMARY
           fi
       - name: Review needed

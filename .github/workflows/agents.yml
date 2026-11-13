@@ -62,8 +62,10 @@ jobs:
           node-version: 22
 
       - name: Install agents (${{ matrix.agents }})
+        env:
+          AGENTS: ${{ matrix.agents }}
         run: |
-          if [ "${{ matrix.agents }}" = latest ]; then
+          if [ "$AGENTS" = latest ]; then
             CLAUDE_VERSION=latest CODEX_VERSION=latest PI_VERSION=latest
           fi
           prefix="$RUNNER_TEMP/agents"

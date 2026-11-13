@@ -49,6 +49,7 @@ sort -t$'\t' -k1,1 -k2,2 -k4,4r "$OUT/runs.tsv" |
 
 touch "$OUT/index.tsv"
 n=0
+failed=0
 while IFS=$'\t' read -r repo wf run created event branch sha; do
   d=$OUT/raw/${repo//\//_}
   if [ ! -s "$d/$run.jobs" ]; then
@@ -64,9 +65,19 @@ while IFS=$'\t' read -r repo wf run created event branch sha; do
     [ -s "$d/$job.log.gz" ] && continue
     [ $((n++ % 50)) = 0 ] && budget
     # A failed call (expired log, rate limit) leaves nothing behind.
-    gh api "repos/$repo/actions/jobs/$job/logs" > "$d/$job.log" 2>/dev/null && gzip -f "$d/$job.log"
+    if gh api "repos/$repo/actions/jobs/$job/logs" > "$d/$job.log" 2> "$OUT/last-error"; then
+      gzip -f "$d/$job.log"
+    else
+      failed=$((failed + 1))
+    fi
     rm -f "$d/$job.log"
   done < "$d/$run.jobs"
 done < "$OUT/picked.tsv"
 sort -u "$OUT/index.tsv" -o "$OUT/index.tsv"
-echo "$(wc -l < "$OUT/index.tsv") jobs, $(find "$OUT/raw" -name '*.log.gz' | wc -l) logs in $OUT"
+echo "$(wc -l < "$OUT/index.tsv") jobs, $(find "$OUT/raw" -name '*.log.gz' | wc -l) logs in $OUT, $failed downloads failed"
+if [ "$failed" -gt 0 ]; then
+  echo "last failure: $(head -c 500 "$OUT/last-error")" >&2
+  # One run that yields no log at all is a broken fetch, not an expired log.
+  [ -n "$RUN" ] && [ -z "$(find "$OUT/raw" -name '*.log.gz' -print -quit)" ] && exit 1
+fi
+exit 0

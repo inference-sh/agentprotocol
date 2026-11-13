@@ -78,6 +78,9 @@ const gatedEditArgs = `{"file_path":"/tmp/gated-probe-does-not-exist/probe.txt",
 // known-safe set.
 const gatedExecArgs = `{"cmd":"rm -rf /tmp/gated-probe-does-not-exist"}`
 
+// kimiStopIssue is why kimi 2.6 fires no Stop hook in any mode.
+const kimiStopIssue = "kimi-code 2.6.0 ported the agent loop (#4630): hasPendingRequests() now counts a loop whose status is not idle, and the Stop hook skips when it is set, which it always is while onDidFinishStep runs (2.6.0 source: loopService.ts, agentExternalHooksService.ts). 2.5.0 fired it; 2.6.0 and 2.6.1 do not (harness-test, 2026-11-13)"
+
 // withGatedTool names the tool this agent is expected to ask permission for,
 // for harnesses built by a helper rather than written out as a literal.
 // withACPImages sets ACPImages, for an entry built from helpers.
@@ -815,6 +818,10 @@ export const Direct = async () => ({
 			PostToolUse:  "PostToolUse",
 			Stop:         "Stop",
 		},
+		KnownIssues: map[string]string{
+			"acp:event:STOP":      kimiStopIssue,
+			"headless:event:STOP": kimiStopIssue,
+		},
 		TokenHashInput: `{"oauthHost":"https://auth.kimi.com","baseUrl":"{{.BaseURL}}/coding/v1"}`,
 		ConfigFiles: []ConfigFile{
 			{Path: ".kimi-code/config.toml", Content: "default_model = \"mock\"\n\n[providers.mock]\ntype = \"openai\"\napi_key = \"mock-key\"\nbase_url = \"{{.BaseURL}}/v1\"\n\n[models.mock]\nprovider = \"mock\"\nmodel = \"{{.Model}}\"\nmax_context_size = 128000\nmax_output_size = 4096\n"},
@@ -845,7 +852,11 @@ export const Direct = async () => ({
 				"{{.WorkDir}}/.kimi-code/agents/agent.md": "---\nname: agent\ndescription: Direct mode\noverride: true\ntools: [\"mcp__tools__*\"]\n---\n{{.SystemPrompt}}\n",
 			},
 			ToolName: "mcp__{{.Server}}__{{.Tool}}",
-			Measured: "2.2.0 2026-10-17",
+			Measured: "2.6.1 2026-11-13",
+			// 2.2.0 through 2.5.0 offered the profile's tools alone. 2.6.0
+			// rewrote profile and tool selection, and an exact tool name in
+			// the list does no better than the glob.
+			Partial: "kimi 2.6 keeps the profile's system prompt but ignores its tools list, so its 25 built-in tools (Bash, Edit, Write among them) stay with the caller's",
 		},
 	},
 	"goose": {

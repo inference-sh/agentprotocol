@@ -79,11 +79,12 @@ jobs:
           results=""
           for mode in $(echo "${{ matrix.modes }}" | tr ',' ' '); do
             # Each mode runs twice: the runner's mock hooks, then the released
-            # belt CLI's real hook commands (--hooks belt).
+            # belt CLI's real hook commands (--hooks belt). --agent-min-age
+            # skips a release still publishing its binaries (tests/nightly.sh).
             for hooks in mock belt; do
               echo "=== ${{ matrix.name }} ($mode, $hooks hooks) ==="
               hookflag=""; [ "$hooks" = belt ] && hookflag="--hooks belt"
-              if timeout 480 docker run --rm ${{ matrix.docker }} harness-test --harness ${{ matrix.name }} --mode $mode $hookflag ${{ matrix.flags }} 2>&1 | tee /tmp/out.log; then
+              if timeout 480 docker run --rm ${{ matrix.docker }} harness-test --harness ${{ matrix.name }} --mode $mode $hookflag --agent-min-age 1h ${{ matrix.flags }} 2>&1 | tee /tmp/out.log; then
                 results="${results}${mode}/${hooks}:pass,"
               else
                 results="${results}${mode}/${hooks}:fail,"

@@ -3,6 +3,7 @@ package runner
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/inference-sh/agentprotocol/harness"
 )
@@ -77,6 +78,37 @@ func TestPinnableVersion(t *testing.T) {
 		got, ok := PinnableVersion(harness.All[c.agent], c.printed)
 		if got != c.want || ok != (c.want != "") {
 			t.Errorf("%s %q: got %q %v, want %q", c.agent, c.printed, got, ok, c.want)
+		}
+	}
+}
+
+func TestSettledVersion(t *testing.T) {
+	now := time.Date(2026, 11, 13, 4, 3, 0, 0, time.UTC)
+	at := func(hm string) time.Time {
+		t, _ := time.Parse("2006-01-02 15:04", hm)
+		return t
+	}
+	times := map[string]time.Time{
+		"0.167.0":           at("2026-11-08 10:00"),
+		"0.167.0-linux-x64": at("2026-11-08 10:04"),
+		"0.168.0-alpha.2":   at("2026-11-12 20:00"),
+		"0.168.0":           at("2026-11-13 04:00"),
+	}
+	for _, c := range []struct {
+		name   string
+		latest string
+		now    time.Time
+		want   string
+		ok     bool
+	}{
+		{"latest too new", "0.168.0", now, "0.167.0", true},
+		{"latest settled", "0.168.0", now.Add(2 * time.Hour), "0.168.0", true},
+		{"unknown latest", "9.9.9", now, "0.167.0", true},
+		{"nothing old enough", "0.168.0", at("2026-11-08 10:30"), "", false},
+	} {
+		got, ok := SettledVersion(times, c.latest, c.now, time.Hour)
+		if got != c.want || ok != c.ok {
+			t.Errorf("%s: got %q %v, want %q %v", c.name, got, ok, c.want, c.ok)
 		}
 	}
 }

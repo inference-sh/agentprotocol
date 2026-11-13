@@ -75,7 +75,6 @@ workflow
 --no-experimental
 --no-mouse
 --output-format
---plain-diff
 --plan
 --plugin-dir
 --prompt

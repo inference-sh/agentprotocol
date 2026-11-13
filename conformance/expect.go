@@ -355,8 +355,8 @@ func orDash(s string) string {
 
 // writeSurface installs the agent, reads its --help and writes the snapshot,
 // the version and the raw help into dir.
-func writeSurface(h harness.Harness, dir string) error {
-	s, ok := runner.ReadSurface(h)
+func writeSurface(h harness.Harness, dir, version string) error {
+	s, ok := runner.ReadSurface(h, version)
 	if !ok {
 		return fmt.Errorf("%s: could not read the CLI surface", h.Name)
 	}

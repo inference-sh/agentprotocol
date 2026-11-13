@@ -17,6 +17,9 @@ agent=${2:?usage: tests/nightly.sh probes|surface <agent> [--update]}
 update=${3:-}
 IMAGE=${IMAGE:-harness-test}
 RUN_TIMEOUT=${RUN_TIMEOUT:-900}
+# A release younger than this is skipped for the one before it: npm can
+# publish an agent's package minutes before the binary it needs.
+MIN_AGE=${MIN_AGE:-1h}
 OUT=${OUT:-$(mktemp -d)}
 mkdir -p "$OUT"
 # The container runs as testuser, not as whoever owns the checkout.
@@ -54,14 +57,15 @@ run() {
 case "$what" in
 probes)
   docker run --rm -v "$expected:/expected:ro" "$IMAGE" --harness "$agent" --runs "/expected/$agent.json" > "$OUT/runs.txt"
-  # The first run installs the latest; the rest install the version it
-  # tested, so an agent publishing mid-job cannot split the job across
-  # versions or land a run between its package and its binary.
-  pin=""
+  # The first run installs the newest release at least $MIN_AGE old; the rest
+  # install the version it tested, so an agent publishing mid-job cannot
+  # split the job across versions or land a run between its package and its
+  # binary.
+  pin="--agent-min-age $MIN_AGE"
   while read -r name mode probes; do
     # shellcheck disable=SC2086
     run "$name" "$RUN_TIMEOUT" --harness "$agent" --mode "$mode" --probe "$probes" --report "/out/$name.json" $pin < /dev/null
-    [ -n "$pin" ] || pin="--agent-version-from /out/$name.json"
+    case "$pin" in --agent-min-age*) pin="--agent-version-from /out/$name.json" ;; esac
   done < "$OUT/runs.txt"
   if [ "$update" = --update ]; then
     docker run --rm -v "$expected:/expected:ro" -v "$OUT:/out" "$IMAGE" --harness "$agent" \
@@ -75,7 +79,7 @@ probes)
   fi
   ;;
 surface)
-  run surface 300 --harness "$agent" --surface /out
+  run surface 300 --harness "$agent" --surface /out --agent-min-age "$MIN_AGE"
   [ -s "$OUT/$agent.surface.txt" ] || { echo "no surface written for $agent (log: $OUT/surface.log)"; cat "$OUT/surface.log"; exit 1; }
   echo "version: $(cat "$OUT/$agent.version")"
   if [ "$update" = --update ]; then

@@ -44,10 +44,12 @@ func (s Surface) Text(name string) string {
 }
 
 // ReadSurface installs the agent the way a test run does and reads its
-// --help. ok is false when the agent could not be installed or run; the
-// reason has been printed.
-func ReadSurface(h harness.Harness) (s Surface, ok bool) {
+// --help. version, when set, is installed as --agent-version installs it.
+// ok is false when the agent could not be installed or run; the reason has
+// been printed.
+func ReadSurface(h harness.Harness, version string) (s Surface, ok bool) {
 	r := New(h, nil, "")
+	r.SetAgentVersion(version)
 	r.startTime = time.Now()
 	r.savedEnv = os.Environ()
 	defer r.finish()

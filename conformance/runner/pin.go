@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/inference-sh/agentprotocol/harness"
 )
@@ -197,4 +198,29 @@ func PinnableVersion(h harness.Harness, printed string) (string, bool) {
 		return "", false
 	}
 	return v, true
+}
+
+// stableRe is a release version with no prerelease or platform suffix, the
+// kind npm's latest tag names: codex also publishes 0.169.0-linux-x64.
+var stableRe = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+$`)
+
+// SettledVersion is the version to install instead of latest when releases
+// younger than minAge are not trusted yet: latest itself once it is that
+// old, otherwise the most recently published stable version that is. npm
+// publishes a package's main version before its platform binaries (codex
+// 0.168.0 on 2026-11-13: 04:00:31 and 04:04:46), and an install between the
+// two cannot run. times is npm's publish time per version; ok is false when
+// no stable version is old enough.
+func SettledVersion(times map[string]time.Time, latest string, now time.Time, minAge time.Duration) (string, bool) {
+	cutoff := now.Add(-minAge)
+	if t, ok := times[latest]; ok && !t.After(cutoff) {
+		return latest, true
+	}
+	best, bestT := "", time.Time{}
+	for v, t := range times {
+		if stableRe.MatchString(v) && !t.After(cutoff) && t.After(bestT) {
+			best, bestT = v, t
+		}
+	}
+	return best, best != ""
 }

@@ -105,7 +105,8 @@ func main() {
 			fmt.Fprintf(os.Stderr, "--surface needs --harness <name>, got %q\n", *harnessName)
 			os.Exit(2)
 		}
-		if err := writeSurface(h, *surfaceDir); err != nil {
+		settleAgentVersion([]string{h.Name})
+		if err := writeSurface(h, *surfaceDir, *agentVersion); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
@@ -293,6 +294,7 @@ func main() {
 	}
 
 	resolveAgentVersion(targets)
+	settleAgentVersion(targets)
 	checkAgentVersion(targets)
 
 	totalPassed, totalFailed, totalSkipped, totalFound := 0, 0, 0, 0

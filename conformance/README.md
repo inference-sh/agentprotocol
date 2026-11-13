@@ -34,28 +34,28 @@ Built for [belt.sh](https://belt.sh) — connect your agent to skills, knowledge
 
 ## Compatibility matrix
 
-<!-- Updated 2026-10-09 from nightly 37768023609. Versions read from the agents themselves in the latest
+<!-- Updated 2026-11-13 from nightly 43362989456 (codex from a 2026-11-13 harness-test run: the nightly installed 0.168.0 before its binary was published). Versions read from the agents themselves in the latest
      nightly (surface-<agent> artifacts, <agent>.version). Several move within a day — grok went 1.0.34 to 1.0.40 in an
      afternoon — so the minor is written as .x and only the shape is stable. -->
 
 | Agent | Version | Headless | Interactive | ACP | SDK | Hook Format | API |
 |-------|---------|:--------:|:-----------:|:---:|:---:|-------------|-----|
 | [Claude Code](https://github.com/anthropics/claude-code) | 2.1.x | ✅ | ✅ | — | ✅¹ | JSONNested | anthropic |
-| [Codex](https://github.com/openai/codex) | 0.161.x | ✅ | ✅ | — | ✅² | JSONNested | oai responses |
+| [Codex](https://github.com/openai/codex) | 0.169.x | ✅ | ✅ | — | ✅² | JSONNested | oai responses |
 | [Copilot](https://github.com/github/copilot) | 1.0.x | ✅ | ✅ | ✅ | — | JSONCopilot | oai completions |
-| [Cursor](https://cursor.com/docs/cli) | 2026.10.01 | ✅ | ✅ | ✅ | — | JSONFlat | cursor⁶ |
-| [Droid](https://docs.factory.ai/cli) | 0.236.x | ✅ | ✅ | ✅ | ✅⁵ | JSONNested | oai completions |
-| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | 0.63.x | ✅ | ✅ | ✅ | — | JSONNested | gemini |
-| [Goose](https://github.com/block/goose) | 1.53.x | ✅ | ✅ | ✅ | — | JSONNested | oai completions |
-| [Grok](https://x.ai/grok-build) | 1.0.4x | ✅ | ✅ | ✅ | — | JSONNested | oai responses |
+| [Cursor](https://cursor.com/docs/cli) | 2026.11.11 | ✅ | ✅ | ✅ | — | JSONFlat | cursor⁶ |
+| [Droid](https://docs.factory.ai/cli) | 1.10.x | ✅ | ✅ | ✅ | ✅⁵ | JSONNested | oai completions |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | 0.68.x | ✅ | ✅ | ✅ | — | JSONNested | gemini |
+| [Goose](https://github.com/block/goose) | 1.59.x | ✅ | ✅ | ✅ | — | JSONNested | oai completions |
+| [Grok](https://x.ai/grok-build) | 1.0.7x | ✅ | ✅ | ✅ | — | JSONNested | oai responses |
 | [Hermes](https://github.com/hermes-ai/hermes-agent) | 0.19.x | ✅ | ✅ | ✅ | — | YAML | oai completions |
 | [Kilo](https://github.com/nicepkg/kilo) | 7.8.x | ✅ | ✅ | ✅ | — | TSPlugin | oai responses |
-| [Kimi Code](https://github.com/nicepkg/gpt-runner) | 2.1.x | ✅ | ✅ | ✅ | — | TOML | oai completions |
-| [Kiro](https://kiro.dev) | 2.28.x | ✅ | ✅ | ✅ | — | JSONKiro | oai completions |
-| [Oh My Pi](https://omp.sh) | 18.8.x | ✅ | ✅ | ✅ | ✅⁴ | TSExtension | oai completions |
-| [OpenCode](https://github.com/nicepkg/opencode) | 1.18.x | ✅ | ✅ | ✅ | — | TSPlugin | oai responses |
-| [Pi](https://github.com/earendil-works/pi) | 1.1.x | ✅ | ✅ | — | ✅³ | TSExtension | oai completions |
-| [Qwen Code](https://github.com/nicepkg/qwen-code) | 0.25.x | ✅ | ✅ | ✅ | — | JSONNested | oai completions |
+| [Kimi Code](https://github.com/nicepkg/gpt-runner) | 2.6.x | ✅ | ✅ | ✅ | — | TOML | oai completions |
+| [Kiro](https://kiro.dev) | 3.3.x | ✅ | ✅ | ✅ | — | JSONKiro | oai completions |
+| [Oh My Pi](https://omp.sh) | 18.20.x | ✅ | ✅ | ✅ | ✅⁴ | TSExtension | oai completions |
+| [OpenCode](https://github.com/nicepkg/opencode) | 1.19.x | ✅ | ✅ | ✅ | — | TSPlugin | oai responses |
+| [Pi](https://github.com/earendil-works/pi) | 1.5.x | ✅ | ✅ | — | ✅³ | TSExtension | oai completions |
+| [Qwen Code](https://github.com/nicepkg/qwen-code) | 0.27.x | ✅ | ✅ | ✅ | — | JSONNested | oai completions |
 
 **16/16** headless · **12/16** ACP · **4/16** SDK · **33 mode-tests in CI**
 
@@ -993,7 +993,7 @@ v0.5.0:
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | claude | tool | tool | tool | tool | tool | tool | ✓ | ✓ | ✓ | ✓ | image |
 | codex | tool | tool | tool | tool | tool | tool | ✓ | ✓ | ✓ | ✓ | image |
-| copilot | tool | tool | tool | tool | tool | tool | **retired kept** | ✓ | **retired sent** | ✓ | **not sent** |
+| copilot | tool | tool | tool | tool | tool | tool | **retired kept** | ✓ | **retired sent** | ✓ | image (1.0.110; not sent before) |
 | cursor | tool | tool | tool | tool | tool | tool | ✓ | summary only | ✓ | ✓ | **not kept** |
 | droid | tool | tool | tool | tool | tool | tool | ✓ | ✓ | ✓ | ✓ | image |
 | gemini | tool | tool | tool | tool | tool | tool | ✓ | summary only | ✓ | ✓ | image |
@@ -1014,7 +1014,8 @@ v0.5.0:
 - **cursor** and **gemini** writers have no `Compaction` capability, so they
   write the summary in place of the history and the retired turn is gone
   from `Linearize()` too. cursor's writer keeps no image.
-- **copilot, grok, kilo** keep the image in the session and do not send it.
+- **grok, kilo** keep the image in the session and do not send it. copilot
+  did too until 1.0.110 (2026-11-13), which sends it as image data.
 - **kiro** sends a tool call it does not declare under the name `dummy`,
   arguments intact.
 - **qwen** drops codex's `apply_patch`, whose input is a string, and sends
@@ -1066,7 +1067,7 @@ prompt and the trailing tool result.
 |---|---|---|---|---|---|---|---|---|---|---|
 | claude | image | tool | image / document | ✓ | image | ✓ ✓ ✓ | image | ✓ ✓ ✓ | text | ✓ / sent |
 | codex | image | tool | image / not kept | ✓ | image | ✓ ✓ ✓ | image | ✓ ✓ ✓ | text | ✓ / sent |
-| copilot | **image dropped** | tool | image / reference | ✓ | image | ✓ / retired kept / retired sent | **image dropped** | ✓ / retired kept / retired sent | text | ✓ / sent |
+| copilot | image | tool | image / reference | ✓ | image | ✓ / retired kept / retired sent | image | ✓ / retired kept / retired sent | text | ✓ / sent |
 | cursor | image not kept | tool | not kept / not kept | ✓ | reference | summary only / ✓ / ✓ | image not kept | prompt not kept / ✓ / ✓ | text | ✓ / sent |
 | droid | image | tool | image / document | ✓ | image | ✓ ✓ ✓ | image | ✓ ✓ ✓ | text | ✓ / sent |
 | gemini | image | tool | image / document | ✓ | image | summary only / ✓ / ✓ | image | prompt not kept / ✓ / ✓ | text | ✓ / sent |
@@ -1089,7 +1090,8 @@ Every row that is not a pass is a trait or a known limit:
 - **opencode, kilo** drop user images (shapes 3 and 5) because of this suite's
   model config for them: the request says `ERROR: Cannot read image (this
   model does not support image input)`. Tool images reach the model.
-- **copilot** keeps a tool's image and does not send it; its compaction
+- **copilot** sends a tool's image as image data since 1.0.110 (2026-11-13;
+  before, it kept the image and did not send it); its compaction
   summary lists the earlier prompts, so the retired prompt is in its context
   and request (its own resume format).
 - **cursor** writes no images; **cursor** and **gemini** writers have no
@@ -1267,7 +1269,6 @@ for pure rows (`Direct.Pure`). Every row below passes `direct.call`,
 | goose 1.55.0 | added | more | exact | a `# Skills` list and its `load_skill` tool; an `# Extensions` section; the user's plugins load |
 | hermes 0.19.0 | exact | only | exact | plugins the user enabled still load; needs the `mcp` extra |
 | kilo 7.8.12 | exact | only | exact | the user's global plugins still load |
-| kimi 2.2.0 | exact | only | added | the user's hooks and a date reminder |
 | kiro 2.32.0 | added | only | exact | the prompt goes as a user turn with kiro's framing; the backend adds its own; a trailing tool result in a written session is not sent |
 | omp 18.11.3 | exact | only | added | a `<system-reminder>` with the date and working directory |
 | opencode 1.19.3 | exact | only | exact | the user's global plugins still load |
@@ -1280,6 +1281,7 @@ Partial rows, measured and not offered:
 |---|---|
 | copilot 1.0.98 | its own ~18k-character system prompt stays, with the caller's nested in it as subordinate agent instructions; its `sql` tool stays |
 | droid 0.244.0 | ACP keeps droid's own system prompt and its 15 built-in tools; only stream-jsonrpc sessions can replace them |
+| kimi 2.6.1 | the profile's system prompt is used but its tools list is not: its 25 built-in tools (Bash, Edit, Write among them) stay. 2.2.0 to 2.5.0 were pure (exact system, only the caller's tools, the user's hooks and a date reminder added); measured 2026-11-13 |
 
 No row:
 
@@ -1578,6 +1580,8 @@ codex, copilot, droid, gemini, goose, grok, hermes, kilo, kiro, omp and pi have 
 Without it every run installs the latest release through the registry's `InstallCmd`, and skips the install when the binary is already on PATH. `--agent-version <v>` (one `--harness` only) installs exactly `v`, whatever is on PATH, then fails the `binary` check unless the installed agent's `--version` reports that version. The report records the installed version as before.
 
 `--agent-version-from <report.json>` takes `v` from an earlier run's report, when the agent has a mechanism below and the report has a version; otherwise the run installs the latest. `tests/nightly.sh probes` passes the first run's report to every later run, so one job tests one version even when the agent publishes mid-job.
+
+`--agent-min-age <duration>` applies when neither flag chose a version and the agent installs with npm: the run installs the newest stable release published at least that long ago, which is the latest once the latest is that old. npm can publish an agent's package minutes before the platform binary it needs (codex 0.168.0 on 2026-11-13: 04:00:31 and 04:04:46), and an install between the two cannot start. The nightly passes `1h` to its first probe run, its surface run and its modes runs.
 
 | mechanism | agents | how `v` is installed |
 |---|---|---|

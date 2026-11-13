@@ -65,8 +65,11 @@ jobs:
           case "$RUN" in ''|*[!0-9]*) echo "::error::run id must be numeric"; exit 2;; esac
           # GITHUB_TOKEN has its own hourly budget; one run is ~50 calls.
           KEEP=50 tools/history-logs.sh "$RUNNER_TEMP/logs" "$RUN"
+          # Built, not go run: go run reports any failure as exit 1, and 3
+          # (an agent changed) must reach the steps below.
+          go build -o "$RUNNER_TEMP/history" ./cmd/history
           status=0
-          go run ./cmd/history -merge -index "$RUNNER_TEMP/logs/index.tsv" -logs "$RUNNER_TEMP/logs/raw" \
+          "$RUNNER_TEMP/history" -merge -index "$RUNNER_TEMP/logs/index.tsv" -logs "$RUNNER_TEMP/logs/raw" \
             -summary "$RUNNER_TEMP/history.md" || status=$?
           echo "status=$status" >> "$GITHUB_OUTPUT"
           { echo "## Nightly $RUN"; echo; cat "$RUNNER_TEMP/history.md"; } >> "$GITHUB_STEP_SUMMARY"

@@ -235,8 +235,19 @@ func (h Harness) SkipFor(mode string) (SkipReason, string) {
 }
 
 // EventKnownMissing returns the recorded reason why a hook event does not fire
-// for this harness in the given mode, and whether one is recorded.
-func (h Harness) EventKnownMissing(mode, tag string) (string, bool) {
-	reason, ok := h.KnownIssues[mode+":event:"+tag]
-	return reason, ok
+// for this harness in the given mode on version, and whether one is recorded.
+func (h Harness) EventKnownMissing(mode, tag, version string) (string, bool) {
+	return h.KnownIssue(mode+":event:"+tag, version)
+}
+
+// KnownIssue returns the KnownIssues entry key and whether it holds for
+// version, by IssueVersions. An entry with no range holds for every
+// version, an unreadable one included; a bounded one holds for none that
+// cannot be read.
+func (h Harness) KnownIssue(key, version string) (string, bool) {
+	reason, ok := h.KnownIssues[key]
+	if !ok || !h.IssueVersions[key].Contains(version) {
+		return "", false
+	}
+	return reason, true
 }

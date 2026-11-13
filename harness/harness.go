@@ -134,6 +134,11 @@ type Harness struct {
 	// fails the run. Every entry is a claim about the agent that was verified
 	// in Docker — never a way to quiet a flaky test.
 	KnownIssues map[string]string
+	// IssueVersions bounds a KnownIssues entry to the versions it holds
+	// for, by the same key: kimi's Stop hook stopped firing in 2.6.0, so
+	// "acp:event:STOP" is {From: "2.6.0"}. An entry with no range holds for
+	// every version. Read both through KnownIssue.
+	IssueVersions map[string]VersionRange
 
 	// ServerRequestedHooks lists, per mode, the hook events (runner tags such
 	// as "PROMPT", "STOP", "PRE_COMPACT") this agent runs only when its backend

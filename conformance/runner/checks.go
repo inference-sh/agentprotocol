@@ -78,7 +78,7 @@ func (r *TestRunner) checkHookInjection(phase string, entries []server.LogEntry)
 		r.skip("hook-injection:no-channel", fmt.Sprintf("%s: prompt hook context not seen (no stdout channel: %s)", phase, channel))
 		return
 	}
-	if note := r.harness.KnownIssues[phase+":prompt-context"]; note != "" {
+	if note, ok := r.harness.KnownIssue(phase+":prompt-context", r.result.Version); ok {
 		r.skip("hook-injection:known-issue", fmt.Sprintf("%s: prompt hook context not found in any request — known issue: %s", phase, note))
 		return
 	}
@@ -157,7 +157,7 @@ func (r *TestRunner) checkStreamingFormat(phase string, entries []server.LogEntr
 		r.skip("streaming:no-requests", fmt.Sprintf("%s: no requests to inspect for streaming", phase))
 		return
 	}
-	if reason, ok := r.harness.KnownIssues[phase+":streaming"]; ok {
+	if reason, ok := r.harness.KnownIssue(phase+":streaming", r.result.Version); ok {
 		r.skip("streaming:known-issue", fmt.Sprintf("%s: no streaming requests observed — %s", phase, reason))
 		return
 	}
@@ -189,7 +189,7 @@ func (r *TestRunner) checkModelSelection(phase string, entries []server.LogEntry
 	}
 	// The agent ignored the model this harness configures, so the run measured
 	// some other model: a gap in the harness, not a detail to wave through.
-	if reason, ok := r.harness.KnownIssues[phase+":model"]; ok {
+	if reason, ok := r.harness.KnownIssue(phase+":model", r.result.Version); ok {
 		r.skip("model:known-issue", fmt.Sprintf("%s: model %s not found in requests — %s", phase, r.harness.DefaultModel, reason))
 		return
 	}

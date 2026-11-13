@@ -176,6 +176,8 @@ KnownIssues: map[string]string{
 },
 ```
 
+An entry that holds only on some versions gets a range in `Harness.IssueVersions` under the same key (kimi's Stop hook, missing from 2.6.0, is `{From: "2.6.0"}`), and the runner applies it only when the installed version is in it.
+
 The same rule covers the rest of a phase: no requests reaching the mock is always a failure, and a missing stream or a model the agent never asked for fails unless `KnownIssues` records why, keyed `<mode>:streaming` and `<mode>:model`. That last one earned its keep immediately: pi in interactive and qwen over ACP were quietly running someone else's model, `moonshotai/kimi-k2.6` and `qwen3.7-max`, because this registry never passed `--model` in those two modes.
 
 Until 2026-09 every event was a skip, so hooks that stopped firing entirely still passed; that is how kiro sat broken for weeks. Each of the 14 entries was measured in Docker in both hook sources, mock and belt, which agreed on every one.

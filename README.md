@@ -158,30 +158,46 @@ Windsurf is IDE-only and has no entry.
 
 | agent | tested min | tested max | how verified | floor (`Requires`) | floor evidence |
 |---|---|---|---|---|---|
-| claude | 2.1.281 | 2.1.282 | harness-test CI; agentprotocol CI pins 2.1.281 | — | |
-| codex | 0.156.1 | 0.156.1 | harness-test CI; agentprotocol CI pins 0.156.1; codexapp generated from it | 0.56.0 | app-server `thread/start`, `thread/resume`, `turn/start`, `turn/interrupt`, `turn/completed`, `item/*` are in `app-server-protocol/src/protocol/common.rs` at `rust-v0.56.0` and absent at `rust-v0.55.0` |
-| copilot | 1.0.86 | 1.0.88 | harness-test CI | — | |
-| cursor | 2026.07.23 | 2026.09.23 | harness-test CI; `--agent-version` runs for 2026.07.23 | — | `cursor-agent acp` is in every bundle read, 2025.12.17 through 2026.09.23; no version without it found |
-| droid | 0.223.0 | 0.226.2 | harness-test CI | — | |
-| gemini | 0.60.0 | 0.61.0 | harness-test CI | — | |
-| goose | 1.51.0 | 1.52.0 | harness-test CI | — | |
-| grok | 1.0.34 | 1.0.41 | harness-test CI | — | |
+| claude | 2.1.281 | 2.1.323 | nightly; harness-test CI; agentprotocol CI pins 2.1.281 | — | |
+| codex | 0.156.1 | 0.169.0 | nightly; harness-test CI; agentprotocol CI pins 0.156.1; codexapp generated from it | 0.56.0 | app-server `thread/start`, `thread/resume`, `turn/start`, `turn/interrupt`, `turn/completed`, `item/*` are in `app-server-protocol/src/protocol/common.rs` at `rust-v0.56.0` and absent at `rust-v0.55.0` |
+| copilot | 1.0.86 | 1.0.110 | nightly; harness-test CI | — | |
+| cursor | 2026.07.23 | 2026.11.11 | nightly; harness-test CI; `--agent-version` runs for 2026.07.23 | — | `cursor-agent acp` is in every bundle read, 2025.12.17 through 2026.09.23; no version without it found |
+| droid | 0.223.0 | 1.10.0 | nightly; harness-test CI | — | |
+| gemini | 0.60.0 | 0.68.0 | nightly; harness-test CI | — | |
+| goose | 1.51.0 | 1.59.0 | nightly; harness-test CI | — | |
+| grok | 1.0.34 | 1.0.77 | nightly; harness-test CI | — | |
 | hermes | 0.13.0 | 0.19.0 | harness-test CI; `--agent-version` runs for 0.13.0 and 0.14.0 | — | |
-| kilo | 7.7.5 | 7.7.9 | harness-test CI | — | |
-| kimi | 2.0.2 | 2.1.1 | harness-test CI | — | |
-| kiro | 2.22.1 | 2.24.0 | harness-test CI | — | |
-| omp | 18.2.6 | 18.3.0 | harness-test CI | — | |
-| opencode | 1.18.31 | 1.18.32 | harness-test CI | — | |
-| pi | 0.87.1 | 0.87.1 | harness-test CI; agentprotocol CI pins 0.87.1 | 0.80.4 | CHANGELOG 0.80.4 adds the RPC `agent_settled` event; the pi driver closes a turn only on it |
-| qwen | 0.24.1 | 0.24.5 | harness-test CI | — | |
+| kilo | 7.7.5 | 7.8.27 | nightly; harness-test CI | — | |
+| kimi | 2.0.2 | 2.6.1 | nightly; harness-test CI | — | |
+| kiro | 2.22.1 | 3.3.0 | nightly; harness-test CI | — | |
+| omp | 18.2.6 | 18.20.0 | nightly; harness-test CI | — | |
+| opencode | 1.18.31 | 1.19.5 | nightly; harness-test CI | — | |
+| pi | 0.87.1 | 1.5.2 | nightly; harness-test CI; agentprotocol CI pins 0.87.1 | 0.80.4 | CHANGELOG 0.80.4 adds the RPC `agent_settled` event; the pi driver closes a turn only on it |
+| qwen | 0.24.1 | 0.27.3 | nightly; harness-test CI | — | |
 
-A floor of — refuses no version.
+A floor of — refuses no version. "nightly" means agentprotocol's nightly run 43427768277 (2026-11-13) passed with that version installed, a check the registry records as a known issue on that version counting as passed.
 
 "`--agent-version` runs" means every job of that workflow passed in harness-test's container with the version pinned (2026-09-25). Cursor before 2026.07.23 does not read `CURSOR_API_ENDPOINT` (its `--endpoint` defaults to api2.cursor.sh), so harness-test's mock cannot reach it; that is a limit of the test setup, not of the driver. "harness-test CI" means the agent's workflow in belt-sh/harness-test finished green, every job including the session job that drives the agent through its `DriverKind` backend, with that version installed; versions come from the runs' `→ version:` log lines, 2026-09-20 to 2026-09-24. Claude, codex, cursor and pi have had the session job only since 2026-09-24, so older versions that passed their other modes are not counted (`Tested.Evidence` lists them). Nothing between two tested versions is claimed beyond that.
 
-**Raising `Tested.Max`.** harness-test installs each agent with its `InstallCmd`, which takes the latest release, on every push and in the nightly; agentprotocol's `Agents` workflow runs a `latest` entry nightly next to its pins. When those are green on a newer release, set `Max` to it and add it to the evidence.
+**Raising `Tested.Max`.** agentprotocol's nightly installs each agent's latest release that is at least an hour old (`--agent-min-age`); when it is green on a newer release, set `Max` to it and add the run to the evidence. Before 2026-10-09 harness-test installed each agent with its `InstallCmd`, which takes the latest release, on every push and in the nightly; agentprotocol's `Agents` workflow runs a `latest` entry nightly next to its pins. When those are green on a newer release, set `Max` to it and add it to the evidence.
 
 **Extending `Tested.Min`.** It needs a green harness-test run with the older version installed: every CI job (each mode from `--modes-for`, mock and belt hooks) with `harness-test --agent-version <v>`, which installs that exact version (npm `pkg@v`, pip `pkg==v`, or the agent's pinned installer for cursor, grok, kiro and goose), or the `Pinned agent version` workflow in belt-sh/harness-test, which runs the same jobs. Add the version and the run to the evidence.
+
+#### What works on which version
+
+`harness.Compatibility(name, version)` answers for one installed version: the `Support` verdict, then every feature the registry records, each `works`, `missing` or `partial`, with the reason and the versions the same state holds for.
+
+```go
+c := harness.Compatibility("kimi", "2.6.1")
+s, _ := c.Feature("hook:stop", harness.ModeACP)
+// s.State == "missing", s.Versions == {From: "2.6.0"}, s.Reason says why
+s, _ = harness.Compatibility("kimi", "2.5.3").Feature("hook:stop", harness.ModeACP)
+// s.State == "works", s.Versions == {Before: "2.6.0"}
+```
+
+Features are `hook:<event>` per mode (`hook:stop`, `hook:user-prompt-submit`, …), the checks `KnownIssues` names per mode (`prompt-context`, `streaming`, `model`), `direct` (direct mode; `partial` when the harness keeps its own system prompt or tools), and each version-gated name in `Harness.Features` (`turn-steer`, `session-id`, `only-caller-tools`). A feature works unless something records otherwise, so `works` on a version outside the tested range is a default; read it with `Support`.
+
+When an agent release changes what works, the old versions keep their answer: the `KnownIssues` entry gets a range in `IssueVersions` under the same key, and a direct row that turns partial gets `PartialVersions`. kimi 2.6.0 stopped firing its Stop hook, so `"acp:event:STOP"` is `{From: "2.6.0"}`; droid's ACP prompt hook started firing in 0.236.0, so `"acp:event:PROMPT"` is `{Before: "0.236.0"}`. The conformance runner reads both with the version it installed, so a nightly on an older version still expects the older behaviour. `Direct.PureAt(version)` is `Pure` for one version.
 
 #### Version-specific behaviour
 

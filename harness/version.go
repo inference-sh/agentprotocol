@@ -90,3 +90,38 @@ func (h Harness) HasFeature(feature, version string) bool {
 	r, ok := h.Features[feature]
 	return !ok || r.Contains(version)
 }
+
+// String is the range for a reader: "2.6.0 and later", "before 0.236.0",
+// "0.99.0 to before 2.0.0", "every version".
+func (r VersionRange) String() string {
+	switch {
+	case r.From != "" && r.Before != "":
+		return r.From + " to before " + r.Before
+	case r.From != "":
+		return r.From + " and later"
+	case r.Before != "":
+		return "before " + r.Before
+	}
+	return "every version"
+}
+
+// outside is the part of the versions not in r that holds version: for
+// {From: "2.6.0"}, {Before: "2.6.0"}. With both bounds the side is the one
+// version is on, and an unreadable version gets the zero range.
+func (r VersionRange) outside(version string) VersionRange {
+	switch {
+	case r.From != "" && r.Before != "":
+		if ParseVersion(version) == "" {
+			return VersionRange{}
+		}
+		if versionAtLeast(version, r.Before) {
+			return VersionRange{From: r.Before}
+		}
+		return VersionRange{Before: r.From}
+	case r.From != "":
+		return VersionRange{Before: r.From}
+	case r.Before != "":
+		return VersionRange{From: r.Before}
+	}
+	return VersionRange{}
+}

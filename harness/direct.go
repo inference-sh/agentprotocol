@@ -74,11 +74,20 @@ type Direct struct {
 	// Empty is pure. A caller offering direct mode offers only pure rows;
 	// a partial row is kept as the measurement.
 	Partial string
+	// PartialVersions are the versions Partial holds for; zero is every
+	// version. Older versions measured pure stay pure: kimi is partial from
+	// 2.6.0 and was pure on 2.2.0.
+	PartialVersions VersionRange
 }
 
 // Pure reports whether the row runs the harness as a model with the
 // caller's system prompt and tools in place of its own.
 func (d *Direct) Pure() bool { return d != nil && d.Partial == "" }
+
+// PureAt is Pure for one installed version, with PartialVersions applied.
+func (d *Direct) PureAt(version string) bool {
+	return d != nil && (d.Partial == "" || !d.PartialVersions.Contains(version))
+}
 
 // DirectRequest is one request of Direct.Requests: a method and its params,
 // sent as a JSON object of strings.

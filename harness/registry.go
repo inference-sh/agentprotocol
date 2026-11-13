@@ -823,6 +823,11 @@ export const Direct = async () => ({
 			"headless:event:STOP":    kimiStopIssue,
 			"interactive:event:STOP": kimiStopIssue,
 		},
+		IssueVersions: map[string]VersionRange{
+			"acp:event:STOP":         {From: "2.6.0"},
+			"headless:event:STOP":    {From: "2.6.0"},
+			"interactive:event:STOP": {From: "2.6.0"},
+		},
 		TokenHashInput: `{"oauthHost":"https://auth.kimi.com","baseUrl":"{{.BaseURL}}/coding/v1"}`,
 		ConfigFiles: []ConfigFile{
 			{Path: ".kimi-code/config.toml", Content: "default_model = \"mock\"\n\n[providers.mock]\ntype = \"openai\"\napi_key = \"mock-key\"\nbase_url = \"{{.BaseURL}}/v1\"\n\n[models.mock]\nprovider = \"mock\"\nmodel = \"{{.Model}}\"\nmax_context_size = 128000\nmax_output_size = 4096\n"},
@@ -858,6 +863,8 @@ export const Direct = async () => ({
 			// rewrote profile and tool selection, and an exact tool name in
 			// the list does no better than the glob.
 			Partial: "kimi 2.6 keeps the profile's system prompt but ignores its tools list, so its 25 built-in tools (Bash, Edit, Write among them) stay with the caller's",
+			// 2.2.0 measured pure on 2026-10-17 (1928088).
+			PartialVersions: VersionRange{From: "2.6.0"},
 		},
 	},
 	"goose": {
@@ -1156,6 +1163,9 @@ export const Direct = async () => ({
 			"headless:event:PRE_COMPACT": "PreCompact fires only from the TUI's manual compaction; exec never compacts (droid 0.217 source)",
 			"sdk:event:PRE_COMPACT":      "SDK mode is droid exec -o stream-jsonrpc; PreCompact still fires only from the TUI's manual compaction (same investigation as headless)",
 			"headless:event:PROMPT":      "plain exec (-o text/json/stream-json) runs the turn through kDA, which never calls executeUserPromptSubmitHooks; only -o stream-jsonrpc goes through the JSON-RPC processUserMessage path (droid 0.217 source)",
+		},
+		IssueVersions: map[string]VersionRange{
+			"acp:event:PROMPT": {Before: "0.236.0"},
 		},
 		Events: standardEvents,
 		ConfigFiles: []ConfigFile{

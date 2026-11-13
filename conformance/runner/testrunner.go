@@ -364,7 +364,7 @@ func (r *TestRunner) checksPostTool(mode Mode) bool {
 	if r.harness.Events.PostToolUse == "" {
 		return false
 	}
-	_, missing := r.harness.EventKnownMissing(string(mode), TagPostTool)
+	_, missing := r.harness.EventKnownMissing(string(mode), TagPostTool, r.result.Version)
 	return !missing
 }
 
@@ -2355,7 +2355,7 @@ func (r *TestRunner) reportEvent(phase, label, tag string, fired bool, prefix st
 		r.skip(hookID(prefix, label)+":tool-not-offered", fmt.Sprintf("%s: %s%s hook not checked — the agent was never offered the tool call", phase, prefix, label))
 		return
 	}
-	if reason, ok := r.harness.EventKnownMissing(phase, tag); ok {
+	if reason, ok := r.harness.EventKnownMissing(phase, tag, r.result.Version); ok {
 		r.skip(hookID(prefix, label)+":known-missing", fmt.Sprintf("%s: %s%s hook not fired — %s", phase, prefix, label, reason))
 		return
 	}

@@ -11,7 +11,11 @@
 // version against both, runs nothing, and carries a user-facing reason and
 // the upgrade command. Only a version below Requires is refused. Behaviour that exists only on some versions is recorded once as a
 // VersionRange in Harness.Features and read with HasFeature, rather than by
-// forking the entry per version.
+// forking the entry per version. A KnownIssues entry that holds only on some
+// versions is bounded in Harness.IssueVersions, and a direct row partial only
+// on some in Direct.PartialVersions. Compatibility(name, version) reads all
+// of these for one installed version: the Support verdict and whether each
+// hook event, check, direct mode and Features entry works there.
 //
 // The package depends only on the standard library. The conformance suite
 // that exercises the registry against real agents is the conformance module

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"time"
 )
 
 // mcpVersions are the MCP revisions the server speaks, newest first. It
@@ -143,6 +144,10 @@ type httpToolServer struct {
 // debug logs every tool-server exchange and direct launch to stderr.
 var debug = os.Getenv("AGENTPROTOCOL_LLM_DEBUG") != ""
 
+// mcpHeaderTimeout is how long a client of the tool server has to send its
+// request headers (a test shortens it).
+var mcpHeaderTimeout = 5 * time.Second
+
 func serveHTTP(s *toolServer) (*httpToolServer, error) {
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
@@ -151,7 +156,10 @@ func serveHTTP(s *toolServer) (*httpToolServer, error) {
 	tok := make([]byte, 24)
 	_, _ = rand.Read(tok)
 	h := &httpToolServer{url: "http://" + ln.Addr().String() + "/mcp", token: hex.EncodeToString(tok)}
-	h.srv = &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// ReadHeaderTimeout: a local process that connects and never finishes
+	// its request headers is dropped. It ends with the headers, so a
+	// tools/call that stays open while the tool runs is not bound by it.
+	h.srv = &http.Server{ReadHeaderTimeout: mcpHeaderTimeout, Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if debug && r.Method != http.MethodPost {
 			fmt.Fprintf(os.Stderr, "llm mcp: %s %s accept=%q\n", r.Method, r.URL.Path, r.Header.Get("Accept"))
 		}

@@ -560,8 +560,15 @@ func (s *Session) Portable() *Session {
 			// The copy's blocks are its own: tool IDs change below.
 			e.ParentID, e.Raw, e.ModelContent = "", nil, nil
 			e.Content = append([]Block(nil), e.Content...)
-			for k := range e.Content {
-				e.Content[k] = inlineLocal(e.Content[k])
+			// Only what the user attached is read from disk. A tool names
+			// the path of what it returns, and a tool's output is not
+			// trusted to pick a local file to carry to another agent.
+			if e.Role == RoleUser {
+				for k := range e.Content {
+					if e.Content[k].ToolID == "" {
+						e.Content[k] = inlineLocal(e.Content[k])
+					}
+				}
 			}
 			carried[e.ID] = e.ID != ""
 			out.Entries = append(out.Entries, splitResults(e)...)
@@ -605,7 +612,8 @@ const maxInline = 20 << 20
 // (codex its images, copilot and droid their files) and send the file when
 // they build a request; another agent's format may hold only bytes, and a
 // session moved to another machine has no path to read. A file that is
-// gone, or too large, stays a reference.
+// gone, or too large, stays a reference. Portable calls it for a user's
+// attachments only, never for a path a tool or the model named.
 func inlineLocal(b Block) Block {
 	if !b.IsMedia() || len(b.Data) > 0 || b.URI == "" {
 		return b

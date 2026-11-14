@@ -619,9 +619,18 @@ export default function (pi: any) {
 			Measured: "18.11.3 2026-10-17",
 		},
 		ACPImages: true,
-		ACPArgs:   []string{"--model", "{{.Model}}"},
-		SDKCmd:    []string{"omp", "--mode", "json"},
-		SDKArgs:   []string{"--model", "{{.Model}}", "--approval-mode", "yolo"},
+		// omp waits OMP_MCP_STARTUP_TIMEOUT_MS (250 by default) for the
+		// session's MCP servers, then starts without the tools of one still
+		// connecting and adds them when it does (src/mcp/timeout.ts,
+		// manager.ts connectServers, 18.20.0). The caller's tools reach omp
+		// through an MCP server, so a slow start left the first turn with
+		// none: the direct probe saw an empty tools list in two of five runs
+		// of 18.20.0 on 2026-11-13. 0 waits for the connection, up to
+		// OMP_MCP_TIMEOUT_MS (30s).
+		ACPEnv:  map[string]string{"OMP_MCP_STARTUP_TIMEOUT_MS": "0"},
+		ACPArgs: []string{"--model", "{{.Model}}"},
+		SDKCmd:  []string{"omp", "--mode", "json"},
+		SDKArgs: []string{"--model", "{{.Model}}", "--approval-mode", "yolo"},
 	},
 	"hermes": {
 		Name: "hermes", Binary: "hermes",

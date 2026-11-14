@@ -1337,8 +1337,9 @@ func (r *TestRunner) sessionBackend(gated, emitReplay bool) BackendFactory {
 		if name := r.harness.ACPExtension; driver.ACPExtensionFor(name) != nil {
 			ext = func() driver.ACPExtension { return driver.ACPExtensionFor(name) }
 		}
+		acpEnv := r.harness.ACPEnviron(env)
 		return func(diagnose func(string)) driver.Backend {
-			return &driver.ACPBackend{Command: bin, Args: args, Env: env,
+			return &driver.ACPBackend{Command: bin, Args: args, Env: acpEnv,
 				ClientName: "harness-test", ClientVersion: "1.0.0",
 				Images:     r.harness.ACPImages || r.acpImages,
 				Extension:  ext,

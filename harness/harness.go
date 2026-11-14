@@ -201,6 +201,12 @@ type Harness struct {
 	// still follows the agent's own promptCapabilities.image.
 	ACPImages bool
 
+	// ACPEnv is set in the agent's environment wherever it is launched over
+	// ACP as a session (driver.ForHarness, direct mode, the conformance
+	// runner): a setting a driven session needs that the agent's default
+	// gets wrong. Read it with ACPEnviron.
+	ACPEnv map[string]string
+
 	// ACPExtension names the adapter of this agent's own extensions of ACP
 	// (driver.RegisterACPExtension): requests and notifications outside the
 	// protocol, and what it puts in _meta. Empty for an agent that speaks

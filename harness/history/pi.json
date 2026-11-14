@@ -268,15 +268,15 @@
     {
       "version": "1.5.2",
       "first": "2026-11-11",
-      "last": "2026-11-13",
-      "runs": 4,
+      "last": "2026-11-14",
+      "runs": 5,
       "sources": [
         "agentprotocol Nightly 42956725835",
-        "agentprotocol Nightly 43362989456"
+        "agentprotocol Nightly 43554710043"
       ],
       "suites": [
         "bd11f9f9dfa332e150f80ef01929d282c8365a86",
-        "bd11f9f9dfa332e150f80ef01929d282c8365a86"
+        "28ba8abe9d5a975249927d7c7af79fd8b759280d"
       ],
       "green": true
     }

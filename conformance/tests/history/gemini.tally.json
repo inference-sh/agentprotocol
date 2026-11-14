@@ -1,6 +1,5 @@
 {
   "ingested": {
-    "agentprotocol Nightly 41041818652": "2026-10-30",
     "agentprotocol Nightly 41299499743": "2026-11-01",
     "agentprotocol Nightly 41439920602": "2026-11-02",
     "agentprotocol Nightly 41575845638": "2026-11-03",
@@ -13,7 +12,8 @@
     "agentprotocol Nightly 42956725835": "2026-11-11",
     "agentprotocol Nightly 43152242605": "2026-11-12",
     "agentprotocol Nightly 43362989456": "2026-11-13",
-    "agentprotocol Nightly 43454788852": "2026-11-13"
+    "agentprotocol Nightly 43454788852": "2026-11-13",
+    "agentprotocol Nightly 43554710043": "2026-11-14"
   },
   "versions": {
     "0.66.0": {
@@ -1924,955 +1924,955 @@
     },
     "0.68.0": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[acp, belt hooks] acp/belt-hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] acp/belt-hook.session-start": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] acp/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] acp/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] acp/model": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] acp/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] acp/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] belt-hook-shape": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] hooks.project-copy": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] session.answer": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] session.completed": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] session.start": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, belt hooks] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] acp/hook-injection": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] acp/hook.post-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[acp, mock hooks] acp/hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] acp/hook.pre-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] acp/hook.session-start": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[acp, mock hooks] acp/hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] acp/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] acp/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] acp/model": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] acp/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] acp/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] session.answer": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] session.completed": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] session.start": {
-        "pass": 4
+        "pass": 5
       },
       "[acp, mock hooks] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] acp/hook-injection": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] acp/hook.post-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[direct] acp/hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] acp/hook.pre-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[direct] acp/hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] acp/hook.session-start": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[direct] acp/hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] acp/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] acp/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] acp/model": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] acp/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] acp/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] direct.call": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] direct.messages": {
-        "finding:added": 4
+        "finding:added": 5
       },
       "[direct] direct.restart": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] direct.result": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] direct.system": {
-        "finding:added": 4
+        "finding:added": 5
       },
       "[direct] direct.tools": {
-        "pass:only": 4
+        "pass:only": 5
       },
       "[direct] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] session.answer": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] session.completed": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] session.start": {
-        "pass": 4
+        "pass": 5
       },
       "[direct] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] belt-hook-shape": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/belt-hook.post-tool": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/belt-hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/belt-hook.pre-tool": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/belt-hook.session-start": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/model": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] headless/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] hooks.project-copy": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, belt hooks] turn": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/hook-injection": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/hook.post-tool": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/hook.pre-tool": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/hook.session-start": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/model": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] headless/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[headless, mock hooks] turn": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] acp/hook-injection": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] acp/hook.post-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[inflight-cancel] acp/hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] acp/hook.pre-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[inflight-cancel] acp/hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] acp/hook.session-start": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[inflight-cancel] acp/hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] acp/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] acp/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] acp/model": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] acp/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] acp/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] inflight.park": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] inflight.reraise": {
-        "finding:none": 4
+        "finding:none": 5
       },
       "[inflight-cancel] inflight.resume": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] inflight.resume-twice": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] session.answer": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] session.completed": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] session.start": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-cancel] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] acp/hook-injection": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] acp/hook.post-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[inflight-hold] acp/hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] acp/hook.pre-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[inflight-hold] acp/hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] acp/hook.session-start": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[inflight-hold] acp/hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] acp/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] acp/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] acp/model": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] acp/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] acp/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] inflight.park": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] inflight.reraise": {
-        "finding:none": 4
+        "finding:none": 5
       },
       "[inflight-hold] inflight.resume": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] inflight.resume-twice": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] session.answer": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] session.completed": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] session.start": {
-        "pass": 4
+        "pass": 5
       },
       "[inflight-hold] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] belt-hook-shape": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] hooks.project-copy": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/belt-hook.post-tool": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/belt-hook.session-start": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/model": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] interactive/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] tui.completed": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, belt hooks] tui.start": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/hook-injection": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/hook.post-tool": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/hook.pre-tool": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/hook.session-start": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/model": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] interactive/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] tui.completed": {
-        "pass": 4
+        "pass": 5
       },
       "[interactive, mock hooks] tui.start": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] acp/hook-injection": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] acp/hook.post-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[probes] acp/hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] acp/hook.pre-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[probes] acp/hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] acp/hook.session-start": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[probes] acp/hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] acp/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] acp/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] acp/model": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] acp/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] acp/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] compact.run": {
-        "finding:as-prompt": 4
+        "finding:as-prompt": 5
       },
       "[probes] deferred.armed": {
-        "pass:no-search-tool": 4
+        "pass:no-search-tool": 5
       },
       "[probes] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] images.sent": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] inflight.park": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] inflight.reraise": {
-        "finding:none": 4
+        "finding:none": 5
       },
       "[probes] inflight.resume": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] inflight.resume-twice": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] resume.context": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] resume.load": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] resume.replay": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seed.appended": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seed.hand-built": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.assistant text": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.compaction.context": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.compaction.history": {
-        "finding:summary-only": 4
+        "finding:summary-only": 5
       },
       "[probes] seedkinds.compaction.request": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.file-uri": {
-        "pass:as-image": 4
+        "pass:as-image": 5
       },
       "[probes] seedkinds.first user message": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 4
+        "pass:as-image": 5
       },
       "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 4
+        "pass:as-image": 5
       },
       "[probes] seedkinds.reasoning": {
-        "finding:not-kept": 4
+        "finding:not-kept": 5
       },
       "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.retired-answer-as-summary.history": {
-        "finding:dropped-user": 4
+        "finding:dropped-user": 5
       },
       "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.retired-tool.context": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.retired-tool.history": {
-        "finding:summary-only": 4
+        "finding:summary-only": 5
       },
       "[probes] seedkinds.retired-tool.request": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.second turn's answer": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.second turn's user message": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.shown-only": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.tool call arguments": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.tool result": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.tool-after-text": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.tool-image": {
-        "pass:as-image": 4
+        "pass:as-image": 5
       },
       "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.trailing-prompt.request": {
-        "pass:sent": 4
+        "pass:sent": 5
       },
       "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] seedkinds.trailing-tool result.request": {
-        "pass:sent": 4
+        "pass:sent": 5
       },
       "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 4
+        "pass:as-text": 5
       },
       "[probes] seedkinds.user-attachments.image": {
-        "pass:as-image": 4
+        "pass:as-image": 5
       },
       "[probes] seedkinds.user-attachments.pdf": {
-        "pass:as-document": 4
+        "pass:as-document": 5
       },
       "[probes] session.answer": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] session.completed": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] session.start": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] transcript": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] turn": {
-        "pass": 32
+        "pass": 40
       },
       "[probes] usage.account": {
-        "finding:not-reported": 4
+        "finding:not-reported": 5
       },
       "[probes] usage.context": {
-        "pass:with-window": 4
+        "pass:with-window": 5
       },
       "[probes] usage.limits": {
-        "finding:not-reported": 4
+        "finding:not-reported": 5
       },
       "[probes] usage.probe.limits": {
-        "pass:unsupported": 4
+        "pass:unsupported": 5
       },
       "[probes] usage.probe.no-model-call": {
-        "pass": 4
+        "pass": 5
       },
       "[probes] usage.turn": {
-        "finding:not-reported": 4
+        "finding:not-reported": 5
       },
       "[resume-kill] acp/hook-injection": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] acp/hook.post-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[resume-kill] acp/hook.pre-compact": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] acp/hook.pre-tool": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[resume-kill] acp/hook.prompt": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] acp/hook.session-start": {
-        "skip:known-missing": 4
+        "skip:known-missing": 5
       },
       "[resume-kill] acp/hook.stop": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] acp/instructions../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] acp/instructions.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] acp/model": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] acp/requests": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] acp/streaming": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] binary": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] env.GEMINI_API_KEY": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] env.GEMINI_CLI_TRUST_WORKSPACE": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] env.GOOGLE_GEMINI_BASE_URL": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] hooks.install": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] instructions.written../GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] instructions.written.~/.gemini/GEMINI.md": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] resume.context": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] resume.load": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] resume.replay": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] session.answer": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] session.completed": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] session.start": {
-        "pass": 4
+        "pass": 5
       },
       "[resume-kill] skills": {
-        "pass": 4
+        "pass": 5
       },
       "[surface] binary": {
-        "pass": 4
+        "pass": 5
       }
     }
   }

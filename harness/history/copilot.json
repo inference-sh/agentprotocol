@@ -382,286 +382,299 @@
         "77ff6ef09cb5bca7ed27d28a28b32172a38430de"
       ],
       "green": true
+    },
+    {
+      "version": "1.0.112",
+      "first": "2026-11-14",
+      "last": "2026-11-14",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 43554710043"
+      ],
+      "suites": [
+        "28ba8abe9d5a975249927d7c7af79fd8b759280d"
+      ],
+      "green": true
     }
   ],
   "checks": {
     "[acp, belt hooks] acp/belt-hook.prompt": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.stop": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/model": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/requests": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] belt-hook-shape": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] binary": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.COPILOT_ALLOW_ALL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.COPILOT_MODEL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.COPILOT_PROVIDER_API_KEY": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.COPILOT_PROVIDER_BASE_URL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.install": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.answer": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.completed": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.start": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] skills": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.prompt": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.stop": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/requests": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] binary": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.COPILOT_ALLOW_ALL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.COPILOT_MODEL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.COPILOT_PROVIDER_API_KEY": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.COPILOT_PROVIDER_BASE_URL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] hooks.install": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.answer": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.completed": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.start": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] skills": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
@@ -808,77 +821,77 @@
     "[direct] acp/hook-injection": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.prompt": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.stop": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] acp/model": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] acp/requests": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] acp/streaming": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] binary": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] direct.call": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] direct.messages": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:added",
         "message": "direct: copilot added 446 characters to the conversation: \"\u003csystem_reminder\u003e\\n\u003cenvironment_limitations\u003e\\nCurrent command-sandbox guidance, superseding earlier sandbox status:\\nYou are *not* operating in a sandboxed environment dedicated to this task. You may be sharing the environment with other users.\\n\u003c/environment_limitations\u003e\\n\u003c/system_reminder\u003e\\n\u003ccurrent_dat\""
       }
@@ -886,21 +899,21 @@
     "[direct] direct.restart": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] direct.result": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] direct.system": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:added",
         "message": "direct: copilot added 9988 characters to the probe's system prompt: \"You are GitHub Copilot, an AI coding agent built by GitHub. You are an interactive tool that helps users with software engineering tasks.\\n\\n# Tone and style\\n* When providing output or explanation to the user, try to limit your response to 100 words or less.\\n* Be concise in routine responses. For comp\""
       }
@@ -908,7 +921,7 @@
     "[direct] direct.tools": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:more",
         "message": "direct: copilot offered 1 tools of its own with the probe's: [sql]"
       }
@@ -916,329 +929,329 @@
     "[direct] env.COPILOT_ALLOW_ALL": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] env.COPILOT_MODEL": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] env.COPILOT_PROVIDER_API_KEY": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] env.COPILOT_PROVIDER_BASE_URL": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] hooks.install": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] session.answer": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] session.completed": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] session.start": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[direct] skills": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] belt-hook-shape": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] binary": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.COPILOT_ALLOW_ALL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.COPILOT_MODEL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.COPILOT_PROVIDER_API_KEY": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.COPILOT_PROVIDER_BASE_URL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.prompt": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.stop": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/model": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/requests": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.install": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] skills": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] turn": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] binary": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.COPILOT_ALLOW_ALL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.COPILOT_MODEL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.COPILOT_PROVIDER_API_KEY": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.COPILOT_PROVIDER_BASE_URL": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.prompt": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.stop": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/requests": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] hooks.install": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] skills": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] turn": [
       {
         "from": "1.0.83",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
@@ -1371,336 +1384,336 @@
     "[interactive, belt hooks] belt-hook-shape": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] binary": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.COPILOT_ALLOW_ALL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.COPILOT_MODEL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.COPILOT_PROVIDER_API_KEY": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.COPILOT_PROVIDER_BASE_URL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.install": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.prompt": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.stop": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/model": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/requests": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] skills": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.completed": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.start": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] binary": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.COPILOT_ALLOW_ALL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.COPILOT_MODEL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.COPILOT_PROVIDER_API_KEY": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.COPILOT_PROVIDER_BASE_URL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] hooks.install": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.prompt": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.stop": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/requests": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] skills": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.completed": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.start": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook-injection": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.prompt": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.stop": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] acp/model": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] acp/requests": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] acp/streaming": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] binary": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] deferred.armed": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:no-search-tool",
         "message": "deferred tools: copilot declares no tool-search tool, so its 0 declared tools are the whole surface it offers on a turn"
       }
@@ -1708,105 +1721,105 @@
     "[probes] env.COPILOT_ALLOW_ALL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] env.COPILOT_MODEL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] env.COPILOT_PROVIDER_API_KEY": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] env.COPILOT_PROVIDER_BASE_URL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] hooks.install": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] images.sent": [
       {
         "from": "1.0.97",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] resume.context": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] resume.load": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] resume.replay": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seed.appended": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seed.hand-built": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.assistant text": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.context": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:retired-kept",
         "message": "seed kinds: copilot's Context() after the write still holds the retired turn"
       }
@@ -1814,14 +1827,14 @@
     "[probes] seedkinds.compaction.history": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.request": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:retired-sent",
         "message": "seed kinds: copilot sent the model the retired turn"
       }
@@ -1829,7 +1842,7 @@
     "[probes] seedkinds.file-uri": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:as-image",
         "message": "seed shapes (file-uri): copilot sent the image's bytes (codec kept them inline: true)"
       }
@@ -1837,7 +1850,7 @@
     "[probes] seedkinds.first user message": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
@@ -1850,7 +1863,7 @@
       },
       {
         "from": "1.0.110",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:as-image",
         "message": "seed shapes (image-only-result): copilot sent the call and the image as image data"
       }
@@ -1864,7 +1877,7 @@
       },
       {
         "from": "1.0.110",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:as-image",
         "message": "seed shapes (in-message-result): copilot sent the result and the image as image data"
       }
@@ -1872,7 +1885,7 @@
     "[probes] seedkinds.reasoning": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:not-kept",
         "message": "seed kinds: copilot's codec kept no reasoning in the session's context, so the model could not get it"
       }
@@ -1880,7 +1893,7 @@
     "[probes] seedkinds.retired-answer-as-summary.context": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:retired-kept",
         "message": "seed shapes (retired-answer-as-summary): copilot's Context() holds the retired prompt"
       }
@@ -1888,14 +1901,14 @@
     "[probes] seedkinds.retired-answer-as-summary.history": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.request": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:retired-sent",
         "message": "seed shapes (retired-answer-as-summary): copilot sent the retired prompt"
       }
@@ -1903,7 +1916,7 @@
     "[probes] seedkinds.retired-tool.context": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:retired-kept-*",
         "message": "seed shapes (retired-tool): copilot's Context() holds the retired user"
       }
@@ -1911,14 +1924,14 @@
     "[probes] seedkinds.retired-tool.history": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.request": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:retired-sent-*",
         "message": "seed shapes (retired-tool): copilot sent the model the retired user"
       }
@@ -1926,42 +1939,42 @@
     "[probes] seedkinds.second turn's answer": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's user message": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.shown-only": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool call arguments": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool result": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-after-text": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
@@ -1974,7 +1987,7 @@
       },
       {
         "from": "1.0.110",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:as-image",
         "message": "seed kinds: copilot sent the tool's image as image data (result text sent: true)"
       }
@@ -1982,14 +1995,14 @@
     "[probes] seedkinds.trailing-prompt.history": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-prompt.request": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-prompt): copilot loaded the session and sent the last prompt"
       }
@@ -1997,14 +2010,14 @@
     "[probes] seedkinds.trailing-tool result.history": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-tool result.request": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-tool-result): copilot loaded the session and sent the last tool result"
       }
@@ -2012,7 +2025,7 @@
     "[probes] seedkinds.untyped-file-path": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:as-text",
         "message": "seed shapes (untyped-file-path): copilot sent the file's content"
       }
@@ -2020,7 +2033,7 @@
     "[probes] seedkinds.user-attachments.image": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:as-image",
         "message": "seed shapes (user-attachments): copilot sent the attached image as image data"
       }
@@ -2028,7 +2041,7 @@
     "[probes] seedkinds.user-attachments.pdf": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:as-reference",
         "message": "seed shapes (user-attachments): copilot sent the PDF's name and not its content"
       }
@@ -2036,49 +2049,49 @@
     "[probes] session.answer": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] session.completed": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] session.start": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] skills": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] transcript": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] turn": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] usage.account": [
       {
         "from": "1.0.95",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:not-reported",
         "message": "usage: copilot's driver reported no account"
       }
@@ -2086,15 +2099,15 @@
     "[probes] usage.context": [
       {
         "from": "1.0.95",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:with-window",
-        "message": "usage: copilot reported 12363 of 111616 tokens in context"
+        "message": "usage: copilot reported 12359 of 111616 tokens in context"
       }
     ],
     "[probes] usage.limits": [
       {
         "from": "1.0.95",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:not-reported",
         "message": "usage: copilot pushed no rate limits"
       }
@@ -2102,7 +2115,7 @@
     "[probes] usage.probe.limits": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass:unsupported",
         "message": "usage: copilot's limits do not apply: plan quotas apply only to a GitHub login"
       }
@@ -2110,14 +2123,14 @@
     "[probes] usage.probe.no-model-call": [
       {
         "from": "1.0.103",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[probes] usage.turn": [
       {
         "from": "1.0.95",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "finding:not-reported",
         "message": "usage: copilot's driver reported no usage for the turn"
       }
@@ -2125,168 +2138,168 @@
     "[resume-kill] acp/hook-injection": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.prompt": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.stop": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/model": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/requests": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/streaming": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] binary": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.COPILOT_ALLOW_ALL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.COPILOT_MODEL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.COPILOT_PROVIDER_API_KEY": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.COPILOT_PROVIDER_BASE_URL": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] hooks.install": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written../.github/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written.~/.copilot/instructions/belt.instructions.md": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.context": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.load": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.replay": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.answer": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.completed": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.start": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[resume-kill] skills": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ],
     "[surface] binary": [
       {
         "from": "1.0.88",
-        "last": "1.0.111",
+        "last": "1.0.112",
         "outcome": "pass"
       }
     ]

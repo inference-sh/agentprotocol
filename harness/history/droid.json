@@ -684,20 +684,32 @@
         "bd11f9f9dfa332e150f80ef01929d282c8365a86"
       ],
       "green": true
+    },
+    {
+      "version": "1.11.0",
+      "first": "2026-11-14",
+      "last": "2026-11-14",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 43554710043"
+      ],
+      "suites": [
+        "28ba8abe9d5a975249927d7c7af79fd8b759280d"
+      ]
     }
   ],
   "checks": {
     "[acp, belt hooks] acp/belt-hook.post-tool": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.pre-compact": [
       {
         "from": "0.216.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "skip:known-missing",
         "message": "acp: belt pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
       }
@@ -705,7 +717,7 @@
     "[acp, belt hooks] acp/belt-hook.pre-tool": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -723,168 +735,168 @@
       },
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.session-start": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.stop": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions../AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/model": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/requests": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] belt-hook-shape": [
       {
         "from": "0.218.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] binary": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.FACTORY_API_KEY": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.install": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.project-copy": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.answer": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.completed": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.start": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] skills": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "0.236.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.post-tool": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.pre-compact": [
       {
         "from": "0.216.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
       }
@@ -892,7 +904,7 @@
     "[acp, mock hooks] acp/hook.pre-tool": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -905,133 +917,133 @@
       },
       {
         "from": "0.236.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.session-start": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.stop": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions../AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/requests": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] binary": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.FACTORY_API_KEY": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] hooks.install": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.answer": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.completed": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.start": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] skills": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -1178,21 +1190,21 @@
     "[direct] acp/hook-injection": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.post-tool": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.pre-compact": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
       }
@@ -1200,70 +1212,70 @@
     "[direct] acp/hook.pre-tool": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.prompt": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.session-start": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.stop": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions../AGENTS.md": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/model": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/requests": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/streaming": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] binary": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -1276,36 +1288,36 @@
       },
       {
         "from": "1.1.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] direct.messages": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "finding:added",
-        "message": "direct: droid added 8648 characters to the conversation: \"\u003csystem-reminder\u003e\\nUnified tool catalog:\\nThe tools listed below are available in this environment, but their schemas may be omitted from the current tool list to save context. The list is unified (native tools, MCP server tools, and tools from third-party connectors the user has connected); load and \""
+        "message": "direct: droid added 8707 characters to the conversation: \"\u003csystem-reminder\u003e\\nUnified tool catalog:\\nThe tools listed below are available in this environment, but their schemas may be omitted from the current tool list to save context. The list is unified (native tools, MCP server tools, and tools from third-party connectors the user has connected); load and \""
       }
     ],
     "[direct] direct.restart": [
       {
         "from": "1.1.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] direct.result": [
       {
         "from": "1.1.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] direct.side-requests": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "finding",
         "message": "direct: droid made 4 model requests of its own beside the probe's"
       }
@@ -1313,15 +1325,15 @@
     "[direct] direct.system": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "finding:added",
-        "message": "direct: droid added 9360 characters to the probe's system prompt: \"You are Droid, an AI software engineering agent built by Factory.\\n\\nYou work in the user's environment. You are direct, plain-spoken, and precise.\\n\\n# Harness\\n- Text outside tool calls is shown to the user as GitHub-flavored Markdown.\\n- In user-facing Markdown, never leave TeX backslash commands in pl\""
+        "message": "direct: droid added 9451 characters to the probe's system prompt: \"You are Droid, an AI software engineering agent built by Factory.\\n\\nYou work in the user's environment. You are direct, plain-spoken, and precise.\\n\\n# Harness\\n- Text outside tool calls is shown to the user as GitHub-flavored Markdown.\\n- In user-facing Markdown, never leave TeX backslash commands in pl\""
       }
     ],
     "[direct] direct.tools": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "finding:more",
         "message": "direct: droid offered 15 tools of its own with the probe's: [AskUser Create Edit Execute ExitSpecMode Glob Grep LS Read Skill Task TaskOutput TaskStop TodoWrite ToolSearch]"
       }
@@ -1329,119 +1341,119 @@
     "[direct] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] env.FACTORY_API_KEY": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] hooks.install": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written../AGENTS.md": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] session.answer": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] session.completed": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] session.start": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[direct] skills": [
       {
         "from": "0.249.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] belt-hook-shape": [
       {
         "from": "0.218.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] binary": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.FACTORY_API_KEY": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.post-tool": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.pre-compact": [
       {
         "from": "0.216.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "skip:known-missing",
         "message": "headless: belt pre-compact hook not fired — PreCompact fires only from the TUI's manual compaction; exec never compacts (droid 0.217 source)"
       }
@@ -1449,7 +1461,7 @@
     "[headless, belt hooks] headless/belt-hook.pre-tool": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -1466,147 +1478,147 @@
       },
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.session-start": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.stop": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions../AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/model": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/requests": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.install": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.project-copy": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] skills": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] turn": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] binary": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.FACTORY_API_KEY": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.post-tool": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.pre-compact": [
       {
         "from": "0.216.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "skip:known-missing",
         "message": "headless: pre-compact hook not fired — PreCompact fires only from the TUI's manual compaction; exec never compacts (droid 0.217 source)"
       }
@@ -1614,7 +1626,7 @@
     "[headless, mock hooks] headless/hook.pre-tool": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -1632,91 +1644,91 @@
       },
       {
         "from": "1.9.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.session-start": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.stop": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions../AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/requests": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] hooks.install": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] skills": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] turn": [
       {
         "from": "0.215.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -1863,336 +1875,336 @@
     "[interactive, belt hooks] belt-hook-shape": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] binary": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.FACTORY_API_KEY": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.install": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.project-copy": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.post-tool": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-compact": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.prompt": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.session-start": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.stop": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/model": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/requests": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] skills": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.completed": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.start": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] binary": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.FACTORY_API_KEY": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] hooks.install": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.post-tool": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-compact": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-tool": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.prompt": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.session-start": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.stop": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/requests": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] skills": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.completed": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.start": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook-injection": [
       {
         "from": "0.236.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.post-tool": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.pre-compact": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
       }
@@ -2200,7 +2212,7 @@
     "[probes] acp/hook.pre-tool": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -2213,70 +2225,70 @@
       },
       {
         "from": "0.236.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.session-start": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.stop": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions../AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/model": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/requests": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/streaming": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] binary": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] compact.run": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "finding:as-prompt",
         "message": "compaction: droid sent /compress to the model as a user message, so over ACP it is a prompt, not a command, and nothing was compacted"
       }
@@ -2284,99 +2296,99 @@
     "[probes] deferred.armed": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] deferred.expanded": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:revealed",
-        "message": "deferred tools: droid revealed 3 tool(s) not visible on a plain turn: EditAutomation ListAutomationTemplates ListAutomations"
+        "message": "deferred tools: droid revealed 5 tool(s) not visible on a plain turn: automations_edit automations_list automations_read automations_run automations_templates_list"
       }
     ],
     "[probes] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] env.FACTORY_API_KEY": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] hooks.install": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] images.sent": [
       {
         "from": "0.241.1",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written../AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] resume.context": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] resume.load": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] resume.replay": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seed.appended": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seed.hand-built": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -2391,35 +2403,35 @@
     "[probes] seedkinds.assistant text": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.context": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.history": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.request": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.file-uri": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:as-image",
         "message": "seed shapes (file-uri): droid sent the image's bytes (codec kept them inline: true)"
       }
@@ -2427,14 +2439,14 @@
     "[probes] seedkinds.first user message": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.image-only-result": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:as-image",
         "message": "seed shapes (image-only-result): droid sent the call and the image as image data"
       }
@@ -2442,7 +2454,7 @@
     "[probes] seedkinds.in-message-result": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:as-image",
         "message": "seed shapes (in-message-result): droid sent the result and the image as image data"
       }
@@ -2450,7 +2462,7 @@
     "[probes] seedkinds.reasoning": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "finding:not-given",
         "message": "seed kinds: droid loaded the reasoning and did not give it to the model"
       }
@@ -2458,91 +2470,91 @@
     "[probes] seedkinds.retired-answer-as-summary.context": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.history": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.request": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.context": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.history": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.request": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's answer": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's user message": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.shown-only": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool call arguments": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool result": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-after-text": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-image": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:as-image",
         "message": "seed kinds: droid sent the tool's image as image data (result text sent: true)"
       }
@@ -2550,14 +2562,14 @@
     "[probes] seedkinds.trailing-prompt.history": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-prompt.request": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-prompt): droid loaded the session and sent the last prompt"
       }
@@ -2565,14 +2577,14 @@
     "[probes] seedkinds.trailing-tool result.history": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-tool result.request": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-tool-result): droid loaded the session and sent the last tool result"
       }
@@ -2580,7 +2592,7 @@
     "[probes] seedkinds.untyped-file-path": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:as-text",
         "message": "seed shapes (untyped-file-path): droid sent the file's content"
       }
@@ -2588,7 +2600,7 @@
     "[probes] seedkinds.user-attachments.image": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:as-image",
         "message": "seed shapes (user-attachments): droid sent the attached image as image data"
       }
@@ -2596,7 +2608,7 @@
     "[probes] seedkinds.user-attachments.pdf": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:as-document",
         "message": "seed shapes (user-attachments): droid sent the PDF's bytes (name sent: true)"
       }
@@ -2604,49 +2616,49 @@
     "[probes] session.answer": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] session.completed": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] session.start": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] skills": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] transcript": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] turn": [
       {
         "from": "0.227.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] usage.account": [
       {
         "from": "0.238.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "finding:not-reported",
         "message": "usage: droid's driver reported no account"
       }
@@ -2660,7 +2672,7 @@
       },
       {
         "from": "0.247.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:with-window",
         "message": "usage: droid reported 15 of 128000 tokens in context"
       }
@@ -2668,7 +2680,7 @@
     "[probes] usage.limits": [
       {
         "from": "0.238.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "finding:not-reported",
         "message": "usage: droid pushed no rate limits"
       }
@@ -2682,7 +2694,7 @@
       },
       {
         "from": "1.1.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass:windows",
         "message": "usage: droid's prober read 3 window(s)"
       }
@@ -2690,14 +2702,14 @@
     "[probes] usage.probe.no-model-call": [
       {
         "from": "0.248.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[probes] usage.turn": [
       {
         "from": "0.238.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "finding:not-reported",
         "message": "usage: droid's driver reported no usage for the turn"
       }
@@ -2705,21 +2717,21 @@
     "[resume-kill] acp/hook-injection": [
       {
         "from": "0.236.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.post-tool": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.pre-compact": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — ACP mode is droid exec; PreCompact fires only from the TUI's manual compaction (droid 0.217 source)"
       }
@@ -2727,7 +2739,7 @@
     "[resume-kill] acp/hook.pre-tool": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
@@ -2740,231 +2752,231 @@
       },
       {
         "from": "0.236.0",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.session-start": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.stop": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions../AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/model": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/requests": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/streaming": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] binary": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.FACTORY_API_KEY": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] hooks.install": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written../AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.context": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.load": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.replay": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.answer": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.completed": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.start": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] skills": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] belt-hook-shape": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] binary": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] env.FACTORY_API_KEY": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] hooks.install": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] hooks.project-copy": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.post-tool": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.pre-compact": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "skip:known-missing",
         "message": "sdk: belt pre-compact hook not fired — SDK mode is droid exec -o stream-jsonrpc; PreCompact still fires only from the TUI's manual compaction (same investigation as headless)"
       }
@@ -2972,147 +2984,147 @@
     "[sdk, belt hooks] sdk/belt-hook.pre-tool": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.prompt": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.session-start": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.stop": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/instructions../AGENTS.md": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/model": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/requests": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/streaming": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] skills": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] turn": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] binary": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] env.FACTORY_API_BASE_URL": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] env.FACTORY_API_KEY": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] env.FACTORY_DISABLE_KEYRING": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] hooks.install": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] instructions.written.~/.factory/AGENTS.md": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook-injection": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.post-tool": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.pre-compact": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "skip:known-missing",
         "message": "sdk: pre-compact hook not fired — SDK mode is droid exec -o stream-jsonrpc; PreCompact still fires only from the TUI's manual compaction (same investigation as headless)"
       }
@@ -3120,84 +3132,84 @@
     "[sdk, mock hooks] sdk/hook.pre-tool": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.prompt": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.session-start": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.stop": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/instructions../AGENTS.md": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/instructions.~/.factory/AGENTS.md": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/model": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/requests": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/streaming": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] skills": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] turn": [
       {
         "from": "0.218.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ],
     "[surface] binary": [
       {
         "from": "0.226.2",
-        "last": "1.10.0",
+        "last": "1.11.0",
         "outcome": "pass"
       }
     ]

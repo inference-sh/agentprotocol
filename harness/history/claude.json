@@ -663,454 +663,467 @@
         "bd11f9f9dfa332e150f80ef01929d282c8365a86"
       ],
       "green": true
+    },
+    {
+      "version": "2.1.325",
+      "first": "2026-11-14",
+      "last": "2026-11-14",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 43554710043"
+      ],
+      "suites": [
+        "28ba8abe9d5a975249927d7c7af79fd8b759280d"
+      ],
+      "green": true
     }
   ],
   "checks": {
     "[acp, belt hooks] acp/belt-hook.post-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.pre-compact": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.pre-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.prompt": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.session-start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.stop": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/model": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/requests": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] belt-hook-shape": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] binary": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.install": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.project-copy": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.answer": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.completed": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] skills": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.post-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.pre-compact": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.pre-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.prompt": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.session-start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.stop": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/requests": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] binary": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] hooks.install": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.answer": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.completed": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] skills": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook-injection": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.post-tool": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.pre-compact": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.pre-tool": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.prompt": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.session-start": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.stop": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions../CLAUDE.md": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/model": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/requests": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] acp/streaming": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] binary": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] direct.call": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] direct.messages": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:exact",
         "message": "direct: claude sent the probe's prompt and nothing else in the conversation"
       }
@@ -1118,21 +1131,21 @@
     "[direct] direct.restart": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] direct.result": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] direct.side-requests": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "finding",
         "message": "direct: claude made 1 model requests of its own beside the probe's"
       }
@@ -1140,15 +1153,15 @@
     "[direct] direct.system": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "finding:added",
-        "message": "direct: claude added 1008 characters to the probe's system prompt: \"x-anthropic-billing-header: cc_version=2.1.323.f78; cc_entrypoint=sdk-go;\\nYou are a Claude agent, built on Anthropic's Claude Agent SDK.\\n…\\n# Environment\\nYou have been invoked in the following environment: \\n - Primary working directory: /tmp/llm-claude-d15690f08a575024650b01ff\\n - Is a git repository:\""
+        "message": "direct: claude added 1008 characters to the probe's system prompt: \"x-anthropic-billing-header: cc_version=2.1.325.1fd; cc_entrypoint=sdk-go;\\nYou are a Claude agent, built on Anthropic's Claude Agent SDK.\\n…\\n# Environment\\nYou have been invoked in the following environment: \\n - Primary working directory: /tmp/llm-claude-d15690f08a575024650b01ff\\n - Is a git repository:\""
       }
     ],
     "[direct] direct.tools": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:only",
         "message": "direct: claude offered the probe's tool alone, as probe_echo"
       }
@@ -1156,392 +1169,392 @@
     "[direct] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] hooks.install": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] session.answer": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] session.completed": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] session.start": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[direct] skills": [
       {
         "from": "2.1.310",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] belt-hook-shape": [
       {
         "from": "2.1.270",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] binary": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.post-tool": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.pre-compact": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.pre-tool": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.prompt": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.session-start": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.stop": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions../CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/model": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/requests": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.install": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.project-copy": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] skills": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] turn": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] binary": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.post-tool": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.pre-compact": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.pre-tool": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.prompt": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.session-start": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.stop": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions../CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/requests": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] hooks.install": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] skills": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] turn": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
@@ -1702,777 +1715,777 @@
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.post-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.pre-compact": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.pre-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.prompt": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.session-start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.stop": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/model": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/requests": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/streaming": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] binary": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] hooks.install": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.park": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.answer": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.completed": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] skills": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.post-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.pre-compact": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.pre-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.prompt": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.session-start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.stop": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/model": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/requests": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/streaming": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] binary": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] hooks.install": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.park": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.answer": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.completed": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] skills": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] belt-hook-shape": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] binary": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.install": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.project-copy": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.post-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-compact": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.prompt": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.session-start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.stop": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/model": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/requests": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] skills": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.completed": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] binary": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] hooks.install": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.post-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-compact": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.prompt": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.session-start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.stop": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/requests": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] skills": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.completed": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook-injection": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.post-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.pre-compact": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.pre-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.prompt": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.session-start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.stop": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/model": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/requests": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] acp/streaming": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] binary": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] compact.context": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:summary",
         "message": "compaction: claude sent the model 10 message(s) but not the original wording, so the resume carries a summary"
       }
@@ -2480,7 +2493,7 @@
     "[probes] compact.run": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:reported",
         "message": "compaction: claude ran /compact and reported the compaction (3-message request, 9 before)"
       }
@@ -2494,14 +2507,14 @@
       },
       {
         "from": "2.1.304",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] deferred.expanded": [
       {
         "from": "2.1.304",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:revealed",
         "message": "deferred tools: claude revealed 5 tool(s) not visible on a plain turn: ArtifactData CronList NotebookEdit TaskList WebSearch"
       }
@@ -2509,85 +2522,85 @@
     "[probes] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] hidden.*": [
       {
         "from": "2.1.283",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:help",
-        "message": "hidden: claude workspace-trust works (help: its own help, 6 lines: \"Usage: claude workspace-trust [options]\") and --help does not list it (registered in the package)"
+        "message": "hidden: claude worktree-hook works (help: its own help, 11 lines: \"Usage: claude worktree-hook [options]\") and --help does not list it (registered in the package)"
       }
     ],
     "[probes] hooks.install": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] images.sent": [
       {
         "from": "2.1.299",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.park": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] resume.context": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] resume.load": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:by-id",
         "message": "resume after closed: claude reopened the session 0s after the process ended (resumes by id)"
       }
@@ -2595,49 +2608,49 @@
     "[probes] seed.appended": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seed.hand-built": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.assistant text": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.context": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.history": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.request": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.file-uri": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:as-image",
         "message": "seed shapes (file-uri): claude sent the image's bytes (codec kept them inline: true)"
       }
@@ -2645,14 +2658,14 @@
     "[probes] seedkinds.first user message": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.image-only-result": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:as-image",
         "message": "seed shapes (image-only-result): claude sent the call and the image as image data"
       }
@@ -2660,7 +2673,7 @@
     "[probes] seedkinds.in-message-result": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:as-image",
         "message": "seed shapes (in-message-result): claude sent the result and the image as image data"
       }
@@ -2668,7 +2681,7 @@
     "[probes] seedkinds.reasoning": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "finding:not-kept",
         "message": "seed kinds: claude's codec kept no reasoning in the session's context, so the model could not get it"
       }
@@ -2676,91 +2689,91 @@
     "[probes] seedkinds.retired-answer-as-summary.context": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.history": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.request": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.context": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.history": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.request": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's answer": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's user message": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.shown-only": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool call arguments": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool result": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-after-text": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-image": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:as-image",
         "message": "seed kinds: claude sent the tool's image as image data (result text sent: true)"
       }
@@ -2768,14 +2781,14 @@
     "[probes] seedkinds.trailing-prompt.history": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-prompt.request": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-prompt): claude loaded the session and sent the last prompt"
       }
@@ -2783,14 +2796,14 @@
     "[probes] seedkinds.trailing-tool result.history": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-tool result.request": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-tool-result): claude loaded the session and sent the last tool result"
       }
@@ -2798,7 +2811,7 @@
     "[probes] seedkinds.untyped-file-path": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:as-text",
         "message": "seed shapes (untyped-file-path): claude sent the file's content"
       }
@@ -2806,7 +2819,7 @@
     "[probes] seedkinds.user-attachments.image": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:as-image",
         "message": "seed shapes (user-attachments): claude sent the attached image as image data"
       }
@@ -2814,7 +2827,7 @@
     "[probes] seedkinds.user-attachments.pdf": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:as-document",
         "message": "seed shapes (user-attachments): claude sent the PDF's bytes (name sent: true)"
       }
@@ -2822,71 +2835,71 @@
     "[probes] session.answer": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] session.completed": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] session.start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] skills": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] subagents.completed": [
       {
         "from": "2.1.296",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] subagents.output": [
       {
         "from": "2.1.296",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] subagents.started": [
       {
         "from": "2.1.296",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:linked",
-        "message": "subagents: claude reported subagent aba6da214082db123, started by tool call toolu_mock_1"
+        "message": "subagents: claude reported subagent aae79515014585ced, started by tool call toolu_mock_1"
       }
     ],
     "[probes] transcript": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] turn": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] usage.context": [
       {
         "from": "2.1.296",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:with-window",
         "message": "usage: claude reported 11 of 200000 tokens in context"
       }
@@ -2894,7 +2907,7 @@
     "[probes] usage.limits": [
       {
         "from": "2.1.296",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "finding:not-reported",
         "message": "usage: claude pushed no rate limits"
       }
@@ -2902,7 +2915,7 @@
     "[probes] usage.probe.limits": [
       {
         "from": "2.1.296",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:unsupported",
         "message": "usage: claude's limits do not apply: plan rate limits apply only to a claude.ai login"
       }
@@ -2910,168 +2923,168 @@
     "[probes] usage.probe.no-model-call": [
       {
         "from": "2.1.296",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[probes] usage.turn": [
       {
         "from": "2.1.296",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook-injection": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.post-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.pre-compact": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.pre-tool": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.prompt": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.session-start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.stop": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/model": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/requests": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/streaming": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] binary": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] hooks.install": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.context": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.load": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass:by-id",
         "message": "resume after killed: claude reopened the session 0s after the process ended (resumes by id)"
       }
@@ -3079,105 +3092,105 @@
     "[resume-kill] session.answer": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.completed": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.start": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[resume-kill] skills": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] belt-hook-shape": [
       {
         "from": "2.1.270",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] binary": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] hooks.install": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] hooks.project-copy": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.post-tool": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
@@ -3190,154 +3203,154 @@
       },
       {
         "from": "2.1.268",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.pre-tool": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.prompt": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.session-start": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.stop": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/instructions../CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/model": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/requests": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/streaming": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] skills": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] turn": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] binary": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] env.ANTHROPIC_API_KEY": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] env.ANTHROPIC_AUTH_TOKEN": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] env.ANTHROPIC_BASE_URL": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] env.CLAUDE_CODE_OAUTH_TOKEN": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] hooks.install": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] instructions.written../CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook-injection": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.post-tool": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
@@ -3350,84 +3363,84 @@
       },
       {
         "from": "2.1.268",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.pre-tool": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.prompt": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.session-start": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.stop": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/instructions../CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/model": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/requests": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/streaming": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] skills": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] turn": [
       {
         "from": "2.1.266",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ],
@@ -3581,7 +3594,7 @@
     "[surface] binary": [
       {
         "from": "2.1.282",
-        "last": "2.1.323",
+        "last": "2.1.325",
         "outcome": "pass"
       }
     ]

@@ -1,6 +1,5 @@
 {
   "ingested": {
-    "agentprotocol Nightly 41041818652": "2026-10-30",
     "agentprotocol Nightly 41299499743": "2026-11-01",
     "agentprotocol Nightly 41439920602": "2026-11-02",
     "agentprotocol Nightly 41575845638": "2026-11-03",
@@ -12,942 +11,10 @@
     "agentprotocol Nightly 42956725835": "2026-11-11",
     "agentprotocol Nightly 43152242605": "2026-11-12",
     "agentprotocol Nightly 43362989456": "2026-11-13",
-    "agentprotocol Nightly 43454788852": "2026-11-13"
+    "agentprotocol Nightly 43454788852": "2026-11-13",
+    "agentprotocol Nightly 43554710043": "2026-11-14"
   },
   "versions": {
-    "0.26.4": {
-      "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/belt-hook.pre-compact": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/belt-hook.session-start": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/model": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/requests": {
-        "pass": 1
-      },
-      "[acp, belt hooks] acp/streaming": {
-        "pass": 1
-      },
-      "[acp, belt hooks] belt-hook-shape": {
-        "pass": 1
-      },
-      "[acp, belt hooks] binary": {
-        "pass": 1
-      },
-      "[acp, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[acp, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[acp, belt hooks] hooks.install": {
-        "pass": 1
-      },
-      "[acp, belt hooks] hooks.project-copy": {
-        "pass": 1
-      },
-      "[acp, belt hooks] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[acp, belt hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[acp, belt hooks] session.answer": {
-        "pass": 1
-      },
-      "[acp, belt hooks] session.completed": {
-        "pass": 1
-      },
-      "[acp, belt hooks] session.start": {
-        "pass": 1
-      },
-      "[acp, belt hooks] skills": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/hook-injection": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/hook.pre-compact": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/hook.pre-tool": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/hook.session-start": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/hook.stop": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/model": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/requests": {
-        "pass": 1
-      },
-      "[acp, mock hooks] acp/streaming": {
-        "pass": 1
-      },
-      "[acp, mock hooks] binary": {
-        "pass": 1
-      },
-      "[acp, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[acp, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[acp, mock hooks] hooks.install": {
-        "pass": 1
-      },
-      "[acp, mock hooks] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[acp, mock hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[acp, mock hooks] session.answer": {
-        "pass": 1
-      },
-      "[acp, mock hooks] session.completed": {
-        "pass": 1
-      },
-      "[acp, mock hooks] session.start": {
-        "pass": 1
-      },
-      "[acp, mock hooks] skills": {
-        "pass": 1
-      },
-      "[direct] acp/hook-injection": {
-        "pass": 1
-      },
-      "[direct] acp/hook.post-tool": {
-        "pass": 1
-      },
-      "[direct] acp/hook.pre-compact": {
-        "pass": 1
-      },
-      "[direct] acp/hook.pre-tool": {
-        "pass": 1
-      },
-      "[direct] acp/hook.prompt": {
-        "pass": 1
-      },
-      "[direct] acp/hook.session-start": {
-        "pass": 1
-      },
-      "[direct] acp/hook.stop": {
-        "pass": 1
-      },
-      "[direct] acp/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[direct] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[direct] acp/model": {
-        "pass": 1
-      },
-      "[direct] acp/requests": {
-        "pass": 1
-      },
-      "[direct] acp/streaming": {
-        "pass": 1
-      },
-      "[direct] binary": {
-        "pass": 1
-      },
-      "[direct] direct.call": {
-        "pass": 1
-      },
-      "[direct] direct.messages": {
-        "pass:exact": 1
-      },
-      "[direct] direct.restart": {
-        "pass": 1
-      },
-      "[direct] direct.result": {
-        "pass": 1
-      },
-      "[direct] direct.system": {
-        "pass:exact": 1
-      },
-      "[direct] direct.tools": {
-        "pass:only": 1
-      },
-      "[direct] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[direct] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[direct] hooks.install": {
-        "pass": 1
-      },
-      "[direct] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[direct] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[direct] session.answer": {
-        "pass": 1
-      },
-      "[direct] session.completed": {
-        "pass": 1
-      },
-      "[direct] session.start": {
-        "pass": 1
-      },
-      "[direct] skills": {
-        "pass": 1
-      },
-      "[headless, belt hooks] belt-hook-shape": {
-        "pass": 1
-      },
-      "[headless, belt hooks] binary": {
-        "pass": 1
-      },
-      "[headless, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[headless, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/belt-hook.post-tool": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/belt-hook.pre-compact": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/belt-hook.pre-tool": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/belt-hook.session-start": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/model": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/requests": {
-        "pass": 1
-      },
-      "[headless, belt hooks] headless/streaming": {
-        "pass": 1
-      },
-      "[headless, belt hooks] hooks.install": {
-        "pass": 1
-      },
-      "[headless, belt hooks] hooks.project-copy": {
-        "pass": 1
-      },
-      "[headless, belt hooks] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[headless, belt hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[headless, belt hooks] skills": {
-        "pass": 1
-      },
-      "[headless, belt hooks] turn": {
-        "pass": 1
-      },
-      "[headless, mock hooks] binary": {
-        "pass": 1
-      },
-      "[headless, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[headless, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/hook-injection": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/hook.post-tool": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/hook.pre-compact": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/hook.pre-tool": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/hook.prompt": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/hook.session-start": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/hook.stop": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/model": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/requests": {
-        "pass": 1
-      },
-      "[headless, mock hooks] headless/streaming": {
-        "pass": 1
-      },
-      "[headless, mock hooks] hooks.install": {
-        "pass": 1
-      },
-      "[headless, mock hooks] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[headless, mock hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[headless, mock hooks] skills": {
-        "pass": 1
-      },
-      "[headless, mock hooks] turn": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/hook-injection": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/hook.post-tool": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/hook.pre-compact": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/hook.pre-tool": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/hook.prompt": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/hook.session-start": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/hook.stop": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/model": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/requests": {
-        "pass": 1
-      },
-      "[inflight-cancel] acp/streaming": {
-        "pass": 1
-      },
-      "[inflight-cancel] binary": {
-        "pass": 1
-      },
-      "[inflight-cancel] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[inflight-cancel] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[inflight-cancel] hooks.install": {
-        "pass": 1
-      },
-      "[inflight-cancel] inflight.park": {
-        "pass": 1
-      },
-      "[inflight-cancel] inflight.reraise": {
-        "finding:none": 1
-      },
-      "[inflight-cancel] inflight.resume": {
-        "pass": 1
-      },
-      "[inflight-cancel] inflight.resume-twice": {
-        "pass": 1
-      },
-      "[inflight-cancel] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[inflight-cancel] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[inflight-cancel] session.answer": {
-        "pass": 1
-      },
-      "[inflight-cancel] session.completed": {
-        "pass": 1
-      },
-      "[inflight-cancel] session.start": {
-        "pass": 1
-      },
-      "[inflight-cancel] skills": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/hook-injection": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/hook.post-tool": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/hook.pre-compact": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/hook.pre-tool": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/hook.prompt": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/hook.session-start": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/hook.stop": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/model": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/requests": {
-        "pass": 1
-      },
-      "[inflight-hold] acp/streaming": {
-        "pass": 1
-      },
-      "[inflight-hold] binary": {
-        "pass": 1
-      },
-      "[inflight-hold] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[inflight-hold] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[inflight-hold] hooks.install": {
-        "pass": 1
-      },
-      "[inflight-hold] inflight.park": {
-        "pass": 1
-      },
-      "[inflight-hold] inflight.reraise": {
-        "finding:none": 1
-      },
-      "[inflight-hold] inflight.resume": {
-        "pass": 1
-      },
-      "[inflight-hold] inflight.resume-twice": {
-        "pass": 1
-      },
-      "[inflight-hold] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[inflight-hold] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[inflight-hold] session.answer": {
-        "pass": 1
-      },
-      "[inflight-hold] session.completed": {
-        "pass": 1
-      },
-      "[inflight-hold] session.start": {
-        "pass": 1
-      },
-      "[inflight-hold] skills": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] belt-hook-shape": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] binary": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] hooks.install": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] hooks.project-copy": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/belt-hook.session-start": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/model": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/requests": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] interactive/streaming": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] skills": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] tui.completed": {
-        "pass": 1
-      },
-      "[interactive, belt hooks] tui.start": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] binary": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] hooks.install": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/hook-injection": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/hook.post-tool": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/hook.pre-compact": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/hook.pre-tool": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/hook.prompt": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/hook.session-start": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/model": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/requests": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] interactive/streaming": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] skills": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] tui.completed": {
-        "pass": 1
-      },
-      "[interactive, mock hooks] tui.start": {
-        "pass": 1
-      },
-      "[probes] acp/hook-injection": {
-        "pass": 1
-      },
-      "[probes] acp/hook.post-tool": {
-        "pass": 1
-      },
-      "[probes] acp/hook.pre-compact": {
-        "pass": 1
-      },
-      "[probes] acp/hook.pre-tool": {
-        "pass": 1
-      },
-      "[probes] acp/hook.prompt": {
-        "pass": 1
-      },
-      "[probes] acp/hook.session-start": {
-        "pass": 1
-      },
-      "[probes] acp/hook.stop": {
-        "pass": 1
-      },
-      "[probes] acp/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[probes] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[probes] acp/model": {
-        "pass": 1
-      },
-      "[probes] acp/requests": {
-        "pass": 1
-      },
-      "[probes] acp/streaming": {
-        "pass": 1
-      },
-      "[probes] binary": {
-        "pass": 1
-      },
-      "[probes] compact.context": {
-        "pass:original": 1
-      },
-      "[probes] compact.run": {
-        "pass": 1
-      },
-      "[probes] deferred.armed": {
-        "pass": 1
-      },
-      "[probes] deferred.expanded": {
-        "pass:nothing-new": 1
-      },
-      "[probes] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[probes] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[probes] hidden.*": {
-        "pass:acp": 1
-      },
-      "[probes] hidden.*.registry": {
-        "finding:unused": 1
-      },
-      "[probes] hooks.install": {
-        "pass": 1
-      },
-      "[probes] images.sent": {
-        "pass": 1
-      },
-      "[probes] inflight.park": {
-        "pass": 1
-      },
-      "[probes] inflight.reraise": {
-        "finding:none": 1
-      },
-      "[probes] inflight.resume": {
-        "pass": 1
-      },
-      "[probes] inflight.resume-twice": {
-        "pass": 1
-      },
-      "[probes] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[probes] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[probes] resume.context": {
-        "pass": 1
-      },
-      "[probes] resume.load": {
-        "pass": 1
-      },
-      "[probes] resume.replay": {
-        "pass": 1
-      },
-      "[probes] seed.appended": {
-        "pass": 1
-      },
-      "[probes] seed.hand-built": {
-        "pass": 1
-      },
-      "[probes] seedkinds.assistant text": {
-        "pass": 1
-      },
-      "[probes] seedkinds.compaction.context": {
-        "pass": 1
-      },
-      "[probes] seedkinds.compaction.history": {
-        "pass": 1
-      },
-      "[probes] seedkinds.compaction.request": {
-        "pass": 1
-      },
-      "[probes] seedkinds.file-uri": {
-        "pass:as-image": 1
-      },
-      "[probes] seedkinds.first user message": {
-        "pass": 1
-      },
-      "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 1
-      },
-      "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 1
-      },
-      "[probes] seedkinds.reasoning": {
-        "pass": 1
-      },
-      "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 1
-      },
-      "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 1
-      },
-      "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 1
-      },
-      "[probes] seedkinds.retired-tool.context": {
-        "pass": 1
-      },
-      "[probes] seedkinds.retired-tool.history": {
-        "pass": 1
-      },
-      "[probes] seedkinds.retired-tool.request": {
-        "pass": 1
-      },
-      "[probes] seedkinds.second turn's answer": {
-        "pass": 1
-      },
-      "[probes] seedkinds.second turn's user message": {
-        "pass": 1
-      },
-      "[probes] seedkinds.shown-only": {
-        "pass": 1
-      },
-      "[probes] seedkinds.tool call arguments": {
-        "pass": 1
-      },
-      "[probes] seedkinds.tool result": {
-        "pass": 1
-      },
-      "[probes] seedkinds.tool-after-text": {
-        "pass": 1
-      },
-      "[probes] seedkinds.tool-image": {
-        "pass:as-image": 1
-      },
-      "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 1
-      },
-      "[probes] seedkinds.trailing-prompt.request": {
-        "pass:sent": 1
-      },
-      "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 1
-      },
-      "[probes] seedkinds.trailing-tool result.request": {
-        "pass:sent": 1
-      },
-      "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 1
-      },
-      "[probes] seedkinds.user-attachments.image": {
-        "pass:as-image": 1
-      },
-      "[probes] seedkinds.user-attachments.pdf": {
-        "finding:dropped": 1
-      },
-      "[probes] session.answer": {
-        "pass": 1
-      },
-      "[probes] session.completed": {
-        "pass": 1
-      },
-      "[probes] session.start": {
-        "pass": 1
-      },
-      "[probes] skills": {
-        "pass": 1
-      },
-      "[probes] transcript": {
-        "pass": 1
-      },
-      "[probes] turn": {
-        "finding": 1,
-        "pass": 7
-      },
-      "[probes] usage.account": {
-        "finding:not-reported": 1
-      },
-      "[probes] usage.context": {
-        "pass:with-window": 1
-      },
-      "[probes] usage.limits": {
-        "finding:not-reported": 1
-      },
-      "[probes] usage.probe.limits": {
-        "pass:unsupported": 1
-      },
-      "[probes] usage.probe.no-model-call": {
-        "pass": 1
-      },
-      "[probes] usage.turn": {
-        "finding:not-reported": 1
-      },
-      "[resume-kill] acp/hook-injection": {
-        "pass": 1
-      },
-      "[resume-kill] acp/hook.post-tool": {
-        "pass": 1
-      },
-      "[resume-kill] acp/hook.pre-compact": {
-        "pass": 1
-      },
-      "[resume-kill] acp/hook.pre-tool": {
-        "pass": 1
-      },
-      "[resume-kill] acp/hook.prompt": {
-        "pass": 1
-      },
-      "[resume-kill] acp/hook.session-start": {
-        "pass": 1
-      },
-      "[resume-kill] acp/hook.stop": {
-        "pass": 1
-      },
-      "[resume-kill] acp/instructions../QWEN.md": {
-        "pass": 1
-      },
-      "[resume-kill] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[resume-kill] acp/model": {
-        "pass": 1
-      },
-      "[resume-kill] acp/requests": {
-        "pass": 1
-      },
-      "[resume-kill] acp/streaming": {
-        "pass": 1
-      },
-      "[resume-kill] binary": {
-        "pass": 1
-      },
-      "[resume-kill] env.OPENAI_API_KEY": {
-        "pass": 1
-      },
-      "[resume-kill] env.OPENAI_BASE_URL": {
-        "pass": 1
-      },
-      "[resume-kill] hooks.install": {
-        "pass": 1
-      },
-      "[resume-kill] instructions.written../QWEN.md": {
-        "pass": 1
-      },
-      "[resume-kill] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 1
-      },
-      "[resume-kill] resume.context": {
-        "pass": 1
-      },
-      "[resume-kill] resume.load": {
-        "pass": 1
-      },
-      "[resume-kill] resume.replay": {
-        "pass": 1
-      },
-      "[resume-kill] session.answer": {
-        "pass": 1
-      },
-      "[resume-kill] session.completed": {
-        "pass": 1
-      },
-      "[resume-kill] session.start": {
-        "pass": 1
-      },
-      "[resume-kill] skills": {
-        "pass": 1
-      },
-      "[surface] binary": {
-        "pass": 1
-      }
-    },
     "0.26.5": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
         "pass": 2
@@ -6548,935 +5615,935 @@
     },
     "0.27.3": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/belt-hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/belt-hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/model": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] acp/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] belt-hook-shape": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] hooks.project-copy": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] session.answer": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] session.completed": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] session.start": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, belt hooks] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook-injection": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/model": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] acp/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] session.answer": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] session.completed": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] session.start": {
-        "pass": 2
+        "pass": 3
       },
       "[acp, mock hooks] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/hook-injection": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/model": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] acp/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] direct.call": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] direct.messages": {
-        "pass:exact": 2
+        "pass:exact": 3
       },
       "[direct] direct.restart": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] direct.result": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] direct.system": {
-        "pass:exact": 2
+        "pass:exact": 3
       },
       "[direct] direct.tools": {
-        "pass:only": 2
+        "pass:only": 3
       },
       "[direct] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] session.answer": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] session.completed": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] session.start": {
-        "pass": 2
+        "pass": 3
       },
       "[direct] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] belt-hook-shape": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/model": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] headless/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] hooks.project-copy": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, belt hooks] turn": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook-injection": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/model": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] headless/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[headless, mock hooks] turn": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/hook-injection": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/model": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] acp/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] inflight.park": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] inflight.reraise": {
-        "finding:none": 2
+        "finding:none": 3
       },
       "[inflight-cancel] inflight.resume": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] inflight.resume-twice": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] session.answer": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] session.completed": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] session.start": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-cancel] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/hook-injection": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/model": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] acp/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] inflight.park": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] inflight.reraise": {
-        "finding:none": 2
+        "finding:none": 3
       },
       "[inflight-hold] inflight.resume": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] inflight.resume-twice": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] session.answer": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] session.completed": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] session.start": {
-        "pass": 2
+        "pass": 3
       },
       "[inflight-hold] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] belt-hook-shape": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] hooks.project-copy": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/model": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] tui.completed": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, belt hooks] tui.start": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook-injection": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/model": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] tui.completed": {
-        "pass": 2
+        "pass": 3
       },
       "[interactive, mock hooks] tui.start": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/hook-injection": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/model": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] acp/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] compact.context": {
-        "pass:original": 2
+        "pass:original": 3
       },
       "[probes] compact.run": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] deferred.armed": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] deferred.expanded": {
-        "pass:nothing-new": 2
+        "pass:nothing-new": 3
       },
       "[probes] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] hidden.*": {
-        "pass:acp": 2
+        "pass:acp": 3
       },
       "[probes] hidden.*.registry": {
-        "finding:unused": 2
+        "finding:unused": 3
       },
       "[probes] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] images.sent": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] inflight.park": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] inflight.reraise": {
-        "finding:none": 2
+        "finding:none": 3
       },
       "[probes] inflight.resume": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] inflight.resume-twice": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] resume.context": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] resume.load": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] resume.replay": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seed.appended": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seed.hand-built": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.assistant text": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.compaction.context": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.compaction.history": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.compaction.request": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.file-uri": {
-        "pass:as-image": 2
+        "pass:as-image": 3
       },
       "[probes] seedkinds.first user message": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 2
+        "pass:as-image": 3
       },
       "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 2
+        "pass:as-image": 3
       },
       "[probes] seedkinds.reasoning": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.retired-tool.context": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.retired-tool.history": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.retired-tool.request": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.second turn's answer": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.second turn's user message": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.shown-only": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.tool call arguments": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.tool result": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.tool-after-text": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.tool-image": {
-        "pass:as-image": 2
+        "pass:as-image": 3
       },
       "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.trailing-prompt.request": {
-        "pass:sent": 2
+        "pass:sent": 3
       },
       "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] seedkinds.trailing-tool result.request": {
-        "pass:sent": 2
+        "pass:sent": 3
       },
       "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 2
+        "pass:as-text": 3
       },
       "[probes] seedkinds.user-attachments.image": {
-        "pass:as-image": 2
+        "pass:as-image": 3
       },
       "[probes] seedkinds.user-attachments.pdf": {
-        "finding:dropped": 2
+        "finding:dropped": 3
       },
       "[probes] session.answer": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] session.completed": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] session.start": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] transcript": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] turn": {
-        "finding": 2,
-        "pass": 14
+        "finding": 3,
+        "pass": 21
       },
       "[probes] usage.account": {
-        "finding:not-reported": 2
+        "finding:not-reported": 3
       },
       "[probes] usage.context": {
-        "pass:with-window": 2
+        "pass:with-window": 3
       },
       "[probes] usage.limits": {
-        "finding:not-reported": 2
+        "finding:not-reported": 3
       },
       "[probes] usage.probe.limits": {
-        "pass:unsupported": 2
+        "pass:unsupported": 3
       },
       "[probes] usage.probe.no-model-call": {
-        "pass": 2
+        "pass": 3
       },
       "[probes] usage.turn": {
-        "finding:not-reported": 2
+        "finding:not-reported": 3
       },
       "[resume-kill] acp/hook-injection": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/hook.post-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/hook.pre-compact": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/hook.pre-tool": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/hook.prompt": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/hook.session-start": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/hook.stop": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/instructions../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/instructions.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/model": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/requests": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] acp/streaming": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] binary": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] env.OPENAI_API_KEY": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] env.OPENAI_BASE_URL": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] hooks.install": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] instructions.written../QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] instructions.written.~/.qwen/QWEN.md": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] resume.context": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] resume.load": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] resume.replay": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] session.answer": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] session.completed": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] session.start": {
-        "pass": 2
+        "pass": 3
       },
       "[resume-kill] skills": {
-        "pass": 2
+        "pass": 3
       },
       "[surface] binary": {
-        "pass": 2
+        "pass": 3
       }
     }
   }

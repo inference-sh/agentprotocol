@@ -37,6 +37,8 @@ jobs:
       probes: ${{ steps.plan.outputs.probes }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-go@v5
         with:
           go-version-file: conformance/go.mod
@@ -70,6 +72,8 @@ jobs:
     name: modes (${{ matrix.name }})
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Build Docker image
         run: |
           tests/fetch-belt.sh
@@ -132,6 +136,8 @@ jobs:
     name: probes (${{ matrix.agent }})
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Build Docker image
         run: |
           tests/fetch-belt.sh
@@ -171,6 +177,8 @@ jobs:
     name: surface (${{ matrix.name }})
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Build Docker image
         run: |
           echo '#!/bin/sh' > tests/belt && chmod +x tests/belt

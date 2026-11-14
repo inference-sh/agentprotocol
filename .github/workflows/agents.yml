@@ -48,6 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          persist-credentials: false
           path: agentprotocol
 
       - uses: actions/setup-go@v6

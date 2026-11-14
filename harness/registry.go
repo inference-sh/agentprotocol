@@ -626,7 +626,9 @@ export default function (pi: any) {
 		// through an MCP server, so a slow start left the first turn with
 		// none: the direct probe saw an empty tools list in two of five runs
 		// of 18.20.0 on 2026-11-13. 0 waits for the connection, up to
-		// OMP_MCP_TIMEOUT_MS (30s).
+		// OMP_MCP_TIMEOUT_MS (30s). Reported upstream as
+		// https://github.com/can1357/oh-my-pi/issues/19253; once a release
+		// fixes it, keep this only for the versions before it.
 		ACPEnv:  map[string]string{"OMP_MCP_STARTUP_TIMEOUT_MS": "0"},
 		ACPArgs: []string{"--model", "{{.Model}}"},
 		SDKCmd:  []string{"omp", "--mode", "json"},

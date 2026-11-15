@@ -394,15 +394,15 @@
     {
       "version": "0.169.0",
       "first": "2026-11-13",
-      "last": "2026-11-14",
-      "runs": 2,
+      "last": "2026-11-15",
+      "runs": 3,
       "sources": [
         "agentprotocol Nightly 43454788852",
-        "agentprotocol Nightly 43554710043"
+        "agentprotocol Nightly 43675080572"
       ],
       "suites": [
         "77ff6ef09cb5bca7ed27d28a28b32172a38430de",
-        "28ba8abe9d5a975249927d7c7af79fd8b759280d"
+        "35c02dc7daeb435734bf2df06cdac8792d5f16ad"
       ],
       "green": true
     }
@@ -815,7 +815,7 @@
         "from": "0.164.0",
         "last": "0.169.0",
         "outcome": "finding:added",
-        "message": "direct: codex added 166 characters to the conversation: \"# AGENTS.md instructions\\n\\n\u003cINSTRUCTIONS\u003e\\n\u003c!-- harness-test:start --\u003e\\nThe project codename is INSTR-USER-CODEX-1794629236010.\\n\u003c!-- harness-test:end --\u003e\\n\u003c/INSTRUCTIONS\u003e\""
+        "message": "direct: codex added 166 characters to the conversation: \"# AGENTS.md instructions\\n\\n\u003cINSTRUCTIONS\u003e\\n\u003c!-- harness-test:start --\u003e\\nThe project codename is INSTR-USER-CODEX-1794715657886.\\n\u003c!-- harness-test:end --\u003e\\n\u003c/INSTRUCTIONS\u003e\""
       }
     ],
     "[direct] direct.restart": [
@@ -2494,7 +2494,7 @@
         "from": "0.162.1",
         "last": "0.169.0",
         "outcome": "pass:idle",
-        "message": "subagents: codex reported subagent 01a1d83b-c5de-7880-8994-5514386bac9f waiting with its answer; it stays open until the agent closes it"
+        "message": "subagents: codex reported subagent 01a1dd62-7aab-7591-a376-90b0e87aba4f waiting with its answer; it stays open until the agent closes it"
       }
     ],
     "[probes] subagents.output": [
@@ -2509,7 +2509,7 @@
         "from": "0.162.1",
         "last": "0.169.0",
         "outcome": "pass:linked",
-        "message": "subagents: codex reported subagent 01a1d83b-c5de-7880-8994-5514386bac9f, started by tool call call_mock_1"
+        "message": "subagents: codex reported subagent 01a1dd62-7aab-7591-a376-90b0e87aba4f, started by tool call call_mock_1"
       }
     ],
     "[probes] transcript": [

@@ -12,7 +12,8 @@
     "agentprotocol Nightly 43152242605": "2026-11-12",
     "agentprotocol Nightly 43362989456": "2026-11-13",
     "agentprotocol Nightly 43454788852": "2026-11-13",
-    "agentprotocol Nightly 43554710043": "2026-11-14"
+    "agentprotocol Nightly 43554710043": "2026-11-14",
+    "agentprotocol Nightly 43675080572": "2026-11-15"
   },
   "versions": {
     "1.57.0": {
@@ -1515,751 +1516,751 @@
     },
     "1.59.0": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] acp/belt-hook.session-start": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] acp/instructions../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] acp/instructions.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] acp/model": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] acp/requests": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] acp/streaming": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] binary": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] env.GOOSE_DISABLE_SESSION_NAMING": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] env.GOOSE_MODE": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] env.GOOSE_MODEL": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] env.GOOSE_PROVIDER": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] hooks.install": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] hooks.project-copy": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] instructions.written../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] instructions.written.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] session.answer": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] session.completed": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] session.start": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, belt hooks] skills": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] acp/hook.session-start": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] acp/hook.stop": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] acp/instructions../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] acp/instructions.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] acp/model": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] acp/requests": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] acp/streaming": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] binary": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] env.GOOSE_DISABLE_SESSION_NAMING": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] env.GOOSE_MODE": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] env.GOOSE_MODEL": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] env.GOOSE_PROVIDER": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] hooks.install": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] instructions.written../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] instructions.written.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] session.answer": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] session.completed": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] session.start": {
-        "pass": 5
+        "pass": 6
       },
       "[acp, mock hooks] skills": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] acp/hook.prompt": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] acp/hook.session-start": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] acp/hook.stop": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] acp/instructions../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] acp/instructions.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] acp/model": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] acp/requests": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] acp/streaming": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] binary": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] direct.call": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] direct.messages": {
-        "pass:exact": 5
+        "pass:exact": 6
       },
       "[direct] direct.restart": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] direct.result": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] direct.system": {
-        "finding:added": 5
+        "finding:added": 6
       },
       "[direct] direct.tools": {
-        "finding:more": 5
+        "finding:more": 6
       },
       "[direct] env.GOOSE_DISABLE_SESSION_NAMING": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] env.GOOSE_MODE": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] env.GOOSE_MODEL": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] env.GOOSE_PROVIDER": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] hooks.install": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] instructions.written../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] instructions.written.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] session.answer": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] session.completed": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] session.start": {
-        "pass": 5
+        "pass": 6
       },
       "[direct] skills": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] binary": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] env.GOOSE_DISABLE_SESSION_NAMING": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] env.GOOSE_MODE": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] env.GOOSE_MODEL": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] env.GOOSE_PROVIDER": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] headless/belt-hook.post-tool": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] headless/belt-hook.session-start": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] headless/instructions../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] headless/instructions.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] headless/model": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] headless/requests": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] headless/streaming": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] hooks.install": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] hooks.project-copy": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] instructions.written../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] instructions.written.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] skills": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, belt hooks] turn": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] binary": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] env.GOOSE_DISABLE_SESSION_NAMING": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] env.GOOSE_MODE": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] env.GOOSE_MODEL": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] env.GOOSE_PROVIDER": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] headless/hook.post-tool": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] headless/hook.prompt": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] headless/hook.session-start": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] headless/hook.stop": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] headless/instructions../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] headless/instructions.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] headless/model": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] headless/requests": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] headless/streaming": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] hooks.install": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] instructions.written../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] instructions.written.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] skills": {
-        "pass": 5
+        "pass": 6
       },
       "[headless, mock hooks] turn": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] binary": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] env.GOOSE_DISABLE_SESSION_NAMING": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] env.GOOSE_MODE": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] env.GOOSE_MODEL": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] env.GOOSE_PROVIDER": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] hooks.install": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] hooks.project-copy": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] instructions.written../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] instructions.written.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/belt-hook.post-tool": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/belt-hook.session-start": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/instructions../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/instructions.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/model": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/requests": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/streaming": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] skills": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] tui.completed": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, belt hooks] tui.start": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] binary": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] env.GOOSE_DISABLE_SESSION_NAMING": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] env.GOOSE_MODE": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] env.GOOSE_MODEL": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] env.GOOSE_PROVIDER": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] hooks.install": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] instructions.written../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] instructions.written.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/hook.post-tool": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/hook.prompt": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/hook.session-start": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/instructions../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/instructions.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/model": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/requests": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/streaming": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] skills": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] tui.completed": {
-        "pass": 5
+        "pass": 6
       },
       "[interactive, mock hooks] tui.start": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] acp/hook.prompt": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] acp/hook.session-start": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] acp/hook.stop": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] acp/instructions../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] acp/instructions.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] acp/model": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] acp/requests": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] acp/streaming": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] binary": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] deferred.armed": {
-        "pass:no-search-tool": 5
+        "pass:no-search-tool": 6
       },
       "[probes] env.GOOSE_DISABLE_SESSION_NAMING": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] env.GOOSE_MODE": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] env.GOOSE_MODEL": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] env.GOOSE_PROVIDER": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] hooks.install": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] images.sent": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] instructions.written../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] instructions.written.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] resume.context": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] resume.load": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] resume.replay": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seed.appended": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seed.hand-built": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.assistant text": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.compaction.context": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.compaction.history": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.compaction.request": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.file-uri": {
-        "pass:as-image": 5
+        "pass:as-image": 6
       },
       "[probes] seedkinds.first user message": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 5
+        "pass:as-image": 6
       },
       "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 5
+        "pass:as-image": 6
       },
       "[probes] seedkinds.reasoning": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.retired-tool.context": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.retired-tool.history": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.retired-tool.request": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.second turn's answer": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.second turn's user message": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.shown-only": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.tool call arguments": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.tool result": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.tool-after-text": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.tool-image": {
-        "pass:as-image": 5
+        "pass:as-image": 6
       },
       "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.trailing-prompt.request": {
-        "pass:sent": 5
+        "pass:sent": 6
       },
       "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] seedkinds.trailing-tool result.request": {
-        "pass:sent": 5
+        "pass:sent": 6
       },
       "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 5
+        "pass:as-text": 6
       },
       "[probes] seedkinds.user-attachments.image": {
-        "pass:as-image": 5
+        "pass:as-image": 6
       },
       "[probes] seedkinds.user-attachments.pdf": {
-        "pass:as-document": 5
+        "pass:as-document": 6
       },
       "[probes] session.answer": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] session.completed": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] session.start": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] skills": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] transcript": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] turn": {
-        "pass": 40
+        "pass": 48
       },
       "[probes] usage.account": {
-        "finding:not-reported": 5
+        "finding:not-reported": 6
       },
       "[probes] usage.context": {
-        "pass:with-window": 5
+        "pass:with-window": 6
       },
       "[probes] usage.limits": {
-        "finding:not-reported": 5
+        "finding:not-reported": 6
       },
       "[probes] usage.probe.limits": {
-        "pass:unsupported": 5
+        "pass:unsupported": 6
       },
       "[probes] usage.probe.no-model-call": {
-        "pass": 5
+        "pass": 6
       },
       "[probes] usage.turn": {
-        "finding:not-reported": 5
+        "finding:not-reported": 6
       },
       "[resume-kill] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] acp/hook.prompt": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] acp/hook.session-start": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] acp/hook.stop": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] acp/instructions../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] acp/instructions.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] acp/model": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] acp/requests": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] acp/streaming": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] binary": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] env.GOOSE_DISABLE_SESSION_NAMING": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] env.GOOSE_MODE": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] env.GOOSE_MODEL": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] env.GOOSE_PROVIDER": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] hooks.install": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] instructions.written../.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] instructions.written.~/.config/goose/.goosehints": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] resume.context": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] resume.load": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] resume.replay": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] session.answer": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] session.completed": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] session.start": {
-        "pass": 5
+        "pass": 6
       },
       "[resume-kill] skills": {
-        "pass": 5
+        "pass": 6
       },
       "[surface] binary": {
-        "pass": 5
+        "pass": 6
       }
     }
   }

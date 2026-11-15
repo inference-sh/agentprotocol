@@ -307,13 +307,15 @@
     {
       "version": "2.6.2",
       "first": "2026-11-14",
-      "last": "2026-11-14",
-      "runs": 1,
+      "last": "2026-11-15",
+      "runs": 2,
       "sources": [
-        "agentprotocol Nightly 43554710043"
+        "agentprotocol Nightly 43554710043",
+        "agentprotocol Nightly 43675080572"
       ],
       "suites": [
-        "28ba8abe9d5a975249927d7c7af79fd8b759280d"
+        "28ba8abe9d5a975249927d7c7af79fd8b759280d",
+        "35c02dc7daeb435734bf2df06cdac8792d5f16ad"
       ],
       "green": true
     }
@@ -843,7 +845,7 @@
         "from": "2.3.2",
         "last": "2.6.2",
         "outcome": "finding:added",
-        "message": "direct: kimi added 823 characters to the conversation: \"\u003chook_result hook_event=\\\"UserPromptSubmit\\\"\u003e\\nThe project codename is HOOK-KIMI-1794629398472.\\n\u003c/hook_result\u003e\\n\\n\u003csystem-reminder\u003e\\nThe active project context is now \\\"acp:session_0e9611e4-4996-4e76-9162-3e884f3916ac\\\" at working directory /tmp/llm-kimi-2997231062. Previous working directories, AGENTS.md i\""
+        "message": "direct: kimi added 823 characters to the conversation: \"\u003chook_result hook_event=\\\"UserPromptSubmit\\\"\u003e\\nThe project codename is HOOK-KIMI-1794715818438.\\n\u003c/hook_result\u003e\\n\\n\u003csystem-reminder\u003e\\nThe active project context is now \\\"acp:session_383da0bf-1558-4035-bf11-3d5d294d1cfb\\\" at working directory /tmp/llm-kimi-3226263552. Previous working directories, AGENTS.md i\""
       }
     ],
     "[direct] direct.restart": [
@@ -2414,7 +2416,7 @@
         "from": "2.1.1",
         "last": "2.6.2",
         "outcome": "pass:with-window",
-        "message": "usage: kimi reported 275 of 128000 tokens in context"
+        "message": "usage: kimi reported 276 of 128000 tokens in context"
       }
     ],
     "[probes] usage.limits": [

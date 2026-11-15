@@ -667,13 +667,15 @@
     {
       "version": "2.1.325",
       "first": "2026-11-14",
-      "last": "2026-11-14",
-      "runs": 1,
+      "last": "2026-11-15",
+      "runs": 2,
       "sources": [
-        "agentprotocol Nightly 43554710043"
+        "agentprotocol Nightly 43554710043",
+        "agentprotocol Nightly 43675080572"
       ],
       "suites": [
-        "28ba8abe9d5a975249927d7c7af79fd8b759280d"
+        "28ba8abe9d5a975249927d7c7af79fd8b759280d",
+        "35c02dc7daeb435734bf2df06cdac8792d5f16ad"
       ],
       "green": true
     }
@@ -2879,7 +2881,7 @@
         "from": "2.1.296",
         "last": "2.1.325",
         "outcome": "pass:linked",
-        "message": "subagents: claude reported subagent aae79515014585ced, started by tool call toolu_mock_1"
+        "message": "subagents: claude reported subagent a876369f57c994a2f, started by tool call toolu_mock_1"
       }
     ],
     "[probes] transcript": [

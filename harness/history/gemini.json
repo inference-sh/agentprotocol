@@ -169,15 +169,15 @@
     {
       "version": "0.68.0",
       "first": "2026-11-11",
-      "last": "2026-11-14",
-      "runs": 5,
+      "last": "2026-11-15",
+      "runs": 6,
       "sources": [
         "agentprotocol Nightly 42956725835",
-        "agentprotocol Nightly 43554710043"
+        "agentprotocol Nightly 43675080572"
       ],
       "suites": [
         "bd11f9f9dfa332e150f80ef01929d282c8365a86",
-        "28ba8abe9d5a975249927d7c7af79fd8b759280d"
+        "35c02dc7daeb435734bf2df06cdac8792d5f16ad"
       ],
       "green": true
     }
@@ -764,7 +764,7 @@
         "from": "0.65.0",
         "last": "0.68.0",
         "outcome": "finding:added",
-        "message": "direct: gemini added 540 characters to the conversation: \"\u003csession_context\u003e\\nThis is the Gemini CLI. We are setting up the context for our chat.\\nToday's date is Saturday, November 14, 2026 (formatted according to the user's locale).\\nMy operating system is: linux\\nThe project's temporary directory is: /tmp/harness-test-gemini-1822007995/.gemini/tmp/llm-gemini\""
+        "message": "direct: gemini added 540 characters to the conversation: \"\u003csession_context\u003e\\nThis is the Gemini CLI. We are setting up the context for our chat.\\nToday's date is Sunday, November 15, 2026 (formatted according to the user's locale).\\nMy operating system is: linux\\nThe project's temporary directory is: /tmp/harness-test-gemini-692520331/.gemini/tmp/llm-gemini-12\""
       }
     ],
     "[direct] direct.restart": [
@@ -786,7 +786,7 @@
         "from": "0.65.0",
         "last": "0.68.0",
         "outcome": "finding:added",
-        "message": "direct: gemini added 1197 characters to the probe's system prompt: \"…\\n\\n# Contextual Instructions (__direct_none__.md, GEMINI.md)\\nThe following content is loaded from local and global configuration files.\\n**Context Precedence:**\\n- **Global (~/.gemini/):** foundational user preferences. Apply these broadly.\\n- **Extensions:** supplementary knowledge and capabilities.\\n-\""
+        "message": "direct: gemini added 1195 characters to the probe's system prompt: \"…\\n\\n# Contextual Instructions (__direct_none__.md, GEMINI.md)\\nThe following content is loaded from local and global configuration files.\\n**Context Precedence:**\\n- **Global (~/.gemini/):** foundational user preferences. Apply these broadly.\\n- **Extensions:** supplementary knowledge and capabilities.\\n-\""
       }
     ],
     "[direct] direct.tools": [

@@ -49,6 +49,8 @@ jobs:
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || 'main' }}
           fetch-depth: 0
+          # The token reaches git only in the push below.
+          persist-credentials: false
       - uses: actions/setup-go@v5
         with:
           go-version-file: conformance/go.mod
@@ -82,7 +84,9 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898283+github-actions[bot]@users.noreply.github.com'
           git commit -q -m "history: nightlies up to $RUN" -m "go run ./cmd/history -merge (.github/workflows/history.yml)"
-          git push -f origin HEAD:refs/heads/history/auto
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          git -c http.https://github.com/.extraheader="AUTHORIZATION: basic $auth" \
+            push -f origin HEAD:refs/heads/history/auto
           echo "history/auto: https://github.com/$GITHUB_REPOSITORY/compare/main...history/auto" >> "$GITHUB_STEP_SUMMARY"
       - name: Agent changed
         if: steps.merge.outputs.status == '3'

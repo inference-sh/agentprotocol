@@ -47,6 +47,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          # The token reaches git only in the push below.
+          persist-credentials: false
       - uses: actions/setup-go@v5
         with:
           go-version-file: conformance/go.mod
@@ -75,7 +77,9 @@ jobs:
           # ruleset), so the accepted drift goes to a branch for a person to
           # merge. With nothing to review, a nightly for the changed agents
           # runs on that branch to confirm it.
-          git push -f origin "HEAD:refs/heads/triage/$RUN"
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          git -c http.https://github.com/.extraheader="AUTHORIZATION: basic $auth" \
+            push -f origin "HEAD:refs/heads/triage/$RUN"
           echo "accepted drift on branch triage/$RUN: https://github.com/$GITHUB_REPOSITORY/compare/main...triage/$RUN" >> $GITHUB_STEP_SUMMARY
           if [ "$STATUS" = 0 ]; then
             gh workflow run nightly.yml --ref "triage/$RUN" -f agents="$agents"

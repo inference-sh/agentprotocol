@@ -4,11 +4,11 @@
     {
       "version": "0.19.0",
       "first": "2026-08-29",
-      "last": "2026-11-15",
-      "runs": 74,
+      "last": "2026-11-17",
+      "runs": 76,
       "sources": [
         "harness-test Nightly 33239663195",
-        "agentprotocol Nightly 43675080572"
+        "agentprotocol Nightly 44014482364"
       ],
       "suites": [
         "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
@@ -1896,7 +1896,7 @@
         "from": "0.19.0",
         "last": "0.19.0",
         "outcome": "pass:with-window",
-        "message": "usage: hermes reported 11481 of 128000 tokens in context"
+        "message": "usage: hermes reported 11482 of 128000 tokens in context"
       }
     ],
     "[probes] usage.limits": [

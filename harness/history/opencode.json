@@ -210,11 +210,11 @@
     {
       "version": "1.19.5",
       "first": "2026-10-28",
-      "last": "2026-11-15",
-      "runs": 17,
+      "last": "2026-11-17",
+      "runs": 19,
       "sources": [
         "agentprotocol Nightly 40669860434",
-        "agentprotocol Nightly 43675080572"
+        "agentprotocol Nightly 44014482364"
       ],
       "suites": [
         "790173f6c302548ca8b83fe508f108d9599c158f",

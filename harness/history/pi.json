@@ -268,11 +268,11 @@
     {
       "version": "1.5.2",
       "first": "2026-11-11",
-      "last": "2026-11-15",
-      "runs": 6,
+      "last": "2026-11-17",
+      "runs": 8,
       "sources": [
         "agentprotocol Nightly 42956725835",
-        "agentprotocol Nightly 43675080572"
+        "agentprotocol Nightly 44014482364"
       ],
       "suites": [
         "bd11f9f9dfa332e150f80ef01929d282c8365a86",

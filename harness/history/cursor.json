@@ -241,11 +241,11 @@
     {
       "version": "2026.11.13",
       "first": "2026-11-14",
-      "last": "2026-11-15",
-      "runs": 2,
+      "last": "2026-11-17",
+      "runs": 4,
       "sources": [
         "agentprotocol Nightly 43554710043",
-        "agentprotocol Nightly 43675080572"
+        "agentprotocol Nightly 44014482364"
       ],
       "suites": [
         "28ba8abe9d5a975249927d7c7af79fd8b759280d",

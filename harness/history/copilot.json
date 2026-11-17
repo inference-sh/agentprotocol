@@ -386,11 +386,11 @@
     {
       "version": "1.0.112",
       "first": "2026-11-14",
-      "last": "2026-11-15",
-      "runs": 2,
+      "last": "2026-11-17",
+      "runs": 4,
       "sources": [
         "agentprotocol Nightly 43554710043",
-        "agentprotocol Nightly 43675080572"
+        "agentprotocol Nightly 44014482364"
       ],
       "suites": [
         "28ba8abe9d5a975249927d7c7af79fd8b759280d",
@@ -917,7 +917,7 @@
         "from": "1.0.103",
         "last": "1.0.112",
         "outcome": "finding:added",
-        "message": "direct: copilot added 9989 characters to the probe's system prompt: \"You are GitHub Copilot, an AI coding agent built by GitHub. You are an interactive tool that helps users with software engineering tasks.\\n\\n# Tone and style\\n* When providing output or explanation to the user, try to limit your response to 100 words or less.\\n* Be concise in routine responses. For comp\""
+        "message": "direct: copilot added 9987 characters to the probe's system prompt: \"You are GitHub Copilot, an AI coding agent built by GitHub. You are an interactive tool that helps users with software engineering tasks.\\n\\n# Tone and style\\n* When providing output or explanation to the user, try to limit your response to 100 words or less.\\n* Be concise in routine responses. For comp\""
       }
     ],
     "[direct] direct.tools": [
@@ -2103,7 +2103,7 @@
         "from": "1.0.95",
         "last": "1.0.112",
         "outcome": "pass:with-window",
-        "message": "usage: copilot reported 12361 of 111616 tokens in context"
+        "message": "usage: copilot reported 12365 of 111616 tokens in context"
       }
     ],
     "[probes] usage.limits": [

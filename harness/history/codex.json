@@ -394,11 +394,11 @@
     {
       "version": "0.169.0",
       "first": "2026-11-13",
-      "last": "2026-11-15",
-      "runs": 3,
+      "last": "2026-11-17",
+      "runs": 5,
       "sources": [
         "agentprotocol Nightly 43454788852",
-        "agentprotocol Nightly 43675080572"
+        "agentprotocol Nightly 44014482364"
       ],
       "suites": [
         "77ff6ef09cb5bca7ed27d28a28b32172a38430de",
@@ -815,7 +815,7 @@
         "from": "0.164.0",
         "last": "0.169.0",
         "outcome": "finding:added",
-        "message": "direct: codex added 166 characters to the conversation: \"# AGENTS.md instructions\\n\\n\u003cINSTRUCTIONS\u003e\\n\u003c!-- harness-test:start --\u003e\\nThe project codename is INSTR-USER-CODEX-1794715657886.\\n\u003c!-- harness-test:end --\u003e\\n\u003c/INSTRUCTIONS\u003e\""
+        "message": "direct: codex added 166 characters to the conversation: \"# AGENTS.md instructions\\n\\n\u003cINSTRUCTIONS\u003e\\n\u003c!-- harness-test:start --\u003e\\nThe project codename is INSTR-USER-CODEX-1794888428748.\\n\u003c!-- harness-test:end --\u003e\\n\u003c/INSTRUCTIONS\u003e\""
       }
     ],
     "[direct] direct.restart": [
@@ -2494,7 +2494,7 @@
         "from": "0.162.1",
         "last": "0.169.0",
         "outcome": "pass:idle",
-        "message": "subagents: codex reported subagent 01a1dd62-7aab-7591-a376-90b0e87aba4f waiting with its answer; it stays open until the agent closes it"
+        "message": "subagents: codex reported subagent 01a1e7ae-c7e8-7803-b061-30327c27f261 waiting with its answer; it stays open until the agent closes it"
       }
     ],
     "[probes] subagents.output": [
@@ -2509,7 +2509,7 @@
         "from": "0.162.1",
         "last": "0.169.0",
         "outcome": "pass:linked",
-        "message": "subagents: codex reported subagent 01a1dd62-7aab-7591-a376-90b0e87aba4f, started by tool call call_mock_1"
+        "message": "subagents: codex reported subagent 01a1e7ae-c7e8-7803-b061-30327c27f261, started by tool call call_mock_1"
       }
     ],
     "[probes] transcript": [

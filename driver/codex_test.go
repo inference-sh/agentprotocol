@@ -131,6 +131,11 @@ func TestCodexReportsUsage(t *testing.T) {
 	}
 	second := until(t, sess.Events(), ap.AgentEventTurnCompleted)
 	all := append(append([]ap.AgentEvent{}, first...), second...)
+	// The account and its limits are read beside the turns, and two mock
+	// turns can finish before either arrives.
+	if _, ok := findEvent(all, ap.AgentEventAccountUpdated); !ok {
+		all = append(all, until(t, sess.Events(), ap.AgentEventAccountUpdated)...)
+	}
 
 	for i, events := range [][]ap.AgentEvent{first, second} {
 		ev, ok := findEvent(events, ap.AgentEventUsageUpdated)
@@ -157,16 +162,25 @@ func TestCodexReportsUsage(t *testing.T) {
 		t.Errorf("account = %+v", a.Account)
 	}
 	// The read and the pushes race; whichever comes first, the pushed
-	// figure is the one that stands.
-	var st usage.State
-	n := 0
-	for _, ev := range all {
-		if l, ok := ap.PayloadAs[ap.LimitsUpdatedPayload](ev, ap.AgentEventLimitsUpdated); ok {
-			st.ApplyUpdate(l, time.Now())
-			n++
+	// figure is the one that stands. The mock pushes only the primary
+	// window, so the secondary comes from the read.
+	fold := func() (usage.State, int) {
+		var st usage.State
+		n := 0
+		for _, ev := range all {
+			if l, ok := ap.PayloadAs[ap.LimitsUpdatedPayload](ev, ap.AgentEventLimitsUpdated); ok {
+				st.ApplyUpdate(l, time.Now())
+				n++
+			}
 		}
+		return st, n
 	}
-	if n == 0 || st.Limits == nil || len(st.Limits.Windows) != 2 {
+	st, n := fold()
+	for st.Limits == nil || len(st.Limits.Windows) < 2 {
+		all = append(all, until(t, sess.Events(), ap.AgentEventLimitsUpdated)...)
+		st, n = fold()
+	}
+	if n == 0 || len(st.Limits.Windows) != 2 {
 		t.Fatalf("limits = %+v from %d updates", st.Limits, n)
 	}
 	if p, w := st.Limits.Windows[0], st.Limits.Windows[1]; p.ID != "primary" || p.UsedPercent != 38 || p.DurationMinutes != 300 || w.ID != "secondary" || w.UsedPercent != 8 {

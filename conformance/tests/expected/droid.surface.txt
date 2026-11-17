@@ -1,11 +1,12 @@
 # droid: top-level commands and long flags from --help (regenerate: see README, CI)
 [commands]
-automations
+analytics
 computer
 daemon
 doctor
 exec
 help
+loop
 mcp
 plugin
 resume

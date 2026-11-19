@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -78,6 +79,25 @@ func TestMessageCountSeparatesCompactionFromAnOrdinaryTurn(t *testing.T) {
 	}
 	if widestRequest([]server.LogEntry{ordinary}) >= before {
 		t.Error("a request carrying less than the preceding turn should not read as a compaction")
+	}
+}
+
+// qwen 0.28 summarizes the older history and keeps its latest exchange out of
+// the request, which is then narrower than the turn before. Its last user
+// message is qwen's own instruction, and that is what makes it a compaction.
+func TestSummarizeRequestReadsANarrowCompaction(t *testing.T) {
+	msgs := func(last string) server.LogEntry {
+		return server.LogEntry{Body: fmt.Appendf(nil, `{"messages":[{"role":"system","content":"s"},{"role":"user","content":%q},{"role":"assistant","content":"a"},{"role":"user","content":%q}]}`, promptText, last)}
+	}
+	if n, ok := summarizeRequest([]server.LogEntry{msgs("Summarize the conversation so far.")}); !ok || n != 4 {
+		t.Errorf("a request ending in the agent's own instruction = %d, %v; want a 4-message compaction", n, ok)
+	}
+	if _, ok := summarizeRequest([]server.LogEntry{msgs(compactionFillers[0])}); ok {
+		t.Error("a request ending in one of the probe's own prompts is an ordinary turn")
+	}
+	fresh := server.LogEntry{Body: []byte(`{"messages":[{"role":"system","content":"s"},{"role":"user","content":"Summarize."}]}`)}
+	if _, ok := summarizeRequest([]server.LogEntry{fresh}); ok {
+		t.Error("a request without the conversation summarizes nothing")
 	}
 }
 

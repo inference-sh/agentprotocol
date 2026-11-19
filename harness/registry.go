@@ -79,7 +79,7 @@ const gatedEditArgs = `{"file_path":"/tmp/gated-probe-does-not-exist/probe.txt",
 const gatedExecArgs = `{"cmd":"rm -rf /tmp/gated-probe-does-not-exist"}`
 
 // kimiStopIssue is why kimi 2.6 fires no Stop hook in any mode.
-const kimiStopIssue = "kimi-code 2.6.0 ported the agent loop (#4630): hasPendingRequests() now counts a loop whose status is not idle, and the Stop hook skips when it is set, which it always is while onDidFinishStep runs (2.6.0 source: loopService.ts, agentExternalHooksService.ts). 2.5.0 fired it; 2.6.0 and 2.6.1 do not (harness-test, 2026-11-13)"
+const kimiStopIssue = "kimi-code 2.6.0 ported the agent loop (#4630): hasPendingRequests() now counts a loop whose status is not idle, and the Stop hook skips when it is set, which it always is while onDidFinishStep runs (2.6.0 source: loopService.ts, agentExternalHooksService.ts). 2.5.0 fired it; 2.6.0 to 2.6.2 do not (harness-test, 2026-11-13). 2.6.3 fires it again in every mode, on the same suite commit as 2.6.2 (nightly 44234679823, 2026-11-18)"
 
 // withGatedTool names the tool this agent is expected to ask permission for,
 // for harnesses built by a helper rather than written out as a literal.
@@ -836,9 +836,9 @@ export const Direct = async () => ({
 			"interactive:event:STOP": kimiStopIssue,
 		},
 		IssueVersions: map[string]VersionRange{
-			"acp:event:STOP":         {From: "2.6.0"},
-			"headless:event:STOP":    {From: "2.6.0"},
-			"interactive:event:STOP": {From: "2.6.0"},
+			"acp:event:STOP":         {From: "2.6.0", Before: "2.6.3"},
+			"headless:event:STOP":    {From: "2.6.0", Before: "2.6.3"},
+			"interactive:event:STOP": {From: "2.6.0", Before: "2.6.3"},
 		},
 		TokenHashInput: `{"oauthHost":"https://auth.kimi.com","baseUrl":"{{.BaseURL}}/coding/v1"}`,
 		ConfigFiles: []ConfigFile{

@@ -9,8 +9,9 @@ func TestCompatibilityKimiStop(t *testing.T) {
 		within  VersionRange
 	}{
 		{"2.5.3", FeatureWorks, VersionRange{Before: "2.6.0"}},
-		{"2.6.0", FeatureMissing, VersionRange{From: "2.6.0"}},
-		{"kimi 2.6.1", FeatureMissing, VersionRange{From: "2.6.0"}},
+		{"2.6.0", FeatureMissing, VersionRange{From: "2.6.0", Before: "2.6.3"}},
+		{"kimi 2.6.1", FeatureMissing, VersionRange{From: "2.6.0", Before: "2.6.3"}},
+		{"2.6.3", FeatureWorks, VersionRange{From: "2.6.3"}},
 	} {
 		got := Compatibility("kimi", c.version)
 		for _, mode := range []Mode{ModeHeadless, ModeInteractive, ModeACP} {

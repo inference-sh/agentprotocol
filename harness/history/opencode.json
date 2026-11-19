@@ -221,286 +221,301 @@
         "35c02dc7daeb435734bf2df06cdac8792d5f16ad"
       ],
       "green": true
+    },
+    {
+      "version": "1.19.6",
+      "first": "2026-11-17",
+      "last": "2026-11-19",
+      "runs": 3,
+      "sources": [
+        "agentprotocol Nightly 44079124745",
+        "agentprotocol Nightly 44455677419"
+      ],
+      "suites": [
+        "011272d86a30b6b9907932b972aa98810e36cd17",
+        "011272d86a30b6b9907932b972aa98810e36cd17"
+      ],
+      "green": true
     }
   ],
   "checks": {
     "[acp, belt hooks] acp/belt-hook.post-tool": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.pre-tool": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.prompt": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.stop": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions../AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/model": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/requests": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] belt-hook-shape": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] binary": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.install": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.answer": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.completed": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.start": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] skills": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.post-tool": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.pre-tool": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.prompt": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.stop": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions../AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/requests": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] binary": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] hooks.install": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.answer": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.completed": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.start": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] skills": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
@@ -634,91 +649,91 @@
     "[direct] acp/hook-injection": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.post-tool": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.pre-tool": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.prompt": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.stop": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions../AGENTS.md": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] acp/model": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] acp/requests": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] acp/streaming": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] binary": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] direct.call": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] direct.messages": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:exact",
         "message": "direct: opencode sent the probe's prompt and nothing else in the conversation"
       }
@@ -726,21 +741,21 @@
     "[direct] direct.restart": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] direct.result": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] direct.system": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:exact",
         "message": "direct: opencode sent the probe's system prompt and nothing else"
       }
@@ -748,7 +763,7 @@
     "[direct] direct.tools": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:only",
         "message": "direct: opencode offered the probe's tool alone, as tools_probe_echo"
       }
@@ -756,315 +771,315 @@
     "[direct] env.OPENAI_API_KEY": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] env.OPENAI_BASE_URL": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] hooks.install": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written../AGENTS.md": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] session.answer": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] session.completed": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] session.start": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[direct] skills": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] belt-hook-shape": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] binary": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.post-tool": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.pre-tool": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.prompt": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.stop": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions../AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/model": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/requests": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.install": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] skills": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] turn": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] binary": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.post-tool": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.pre-tool": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.prompt": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.stop": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions../AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/requests": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] hooks.install": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] skills": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] turn": [
       {
         "from": "1.18.30",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
@@ -1205,112 +1220,112 @@
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.post-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.pre-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.prompt": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.stop": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/model": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/requests": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/streaming": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] binary": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.OPENAI_API_KEY": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] hooks.install": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.park": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.reraise": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:none",
         "message": "in-flight: opencode does not re-raise the parked approval on resume"
       }
@@ -1318,168 +1333,168 @@
     "[inflight-cancel] inflight.resume": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.resume-twice": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.answer": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.completed": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.start": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] skills": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.post-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.pre-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.prompt": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.stop": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/model": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/requests": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/streaming": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] binary": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.OPENAI_API_KEY": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] hooks.install": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.park": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.reraise": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:none",
         "message": "in-flight: opencode does not re-raise the parked approval on resume"
       }
@@ -1487,406 +1502,406 @@
     "[inflight-hold] inflight.resume": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.resume-twice": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.answer": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.completed": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.start": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] skills": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] belt-hook-shape": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] binary": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.install": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.post-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.prompt": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.stop": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/model": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/requests": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] skills": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.completed": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.start": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] binary": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] hooks.install": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.post-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.prompt": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.stop": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/requests": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] skills": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.completed": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.start": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook-injection": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.post-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.pre-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.prompt": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.stop": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/model": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/requests": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] acp/streaming": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] binary": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] deferred.armed": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:no-search-tool",
         "message": "deferred tools: opencode declares no tool-search tool, so its 0 declared tools are the whole surface it offers on a turn"
       }
@@ -1894,21 +1909,21 @@
     "[probes] env.OPENAI_API_KEY": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] hidden.*": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:help",
         "message": "hidden: opencode console works (help: its own help, 13 lines: \"opencode console\") and --help does not list it (registered in the package)"
       }
@@ -1916,28 +1931,28 @@
     "[probes] hooks.install": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] images.sent": [
       {
         "from": "1.19.0",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.park": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.reraise": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:none",
         "message": "in-flight: opencode does not re-raise the parked approval on resume"
       }
@@ -1945,98 +1960,98 @@
     "[probes] inflight.resume": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.resume-twice": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] resume.context": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] resume.load": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] resume.replay": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seed.appended": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seed.hand-built": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.assistant text": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.context": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.history": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.request": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.file-uri": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:dropped",
         "message": "seed shapes (file-uri): opencode accepted the session and did not send the image its codec kept"
       }
@@ -2044,14 +2059,14 @@
     "[probes] seedkinds.first user message": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.image-only-result": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:as-image",
         "message": "seed shapes (image-only-result): opencode sent the call and the image as image data"
       }
@@ -2059,7 +2074,7 @@
     "[probes] seedkinds.in-message-result": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:as-image",
         "message": "seed shapes (in-message-result): opencode sent the result and the image as image data"
       }
@@ -2067,7 +2082,7 @@
     "[probes] seedkinds.reasoning": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:not-kept",
         "message": "seed kinds: opencode's codec kept no reasoning in the session's context, so the model could not get it"
       }
@@ -2075,91 +2090,91 @@
     "[probes] seedkinds.retired-answer-as-summary.context": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.history": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.request": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.context": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.history": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.request": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's answer": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's user message": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.shown-only": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool call arguments": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool result": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-after-text": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-image": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:as-image",
         "message": "seed kinds: opencode sent the tool's image as image data (result text sent: true)"
       }
@@ -2167,14 +2182,14 @@
     "[probes] seedkinds.trailing-prompt.history": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-prompt.request": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-prompt): opencode loaded the session and sent the last prompt"
       }
@@ -2182,14 +2197,14 @@
     "[probes] seedkinds.trailing-tool result.history": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-tool result.request": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-tool-result): opencode loaded the session and sent the last tool result"
       }
@@ -2197,7 +2212,7 @@
     "[probes] seedkinds.untyped-file-path": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:as-text",
         "message": "seed shapes (untyped-file-path): opencode sent the file's content"
       }
@@ -2205,7 +2220,7 @@
     "[probes] seedkinds.user-attachments.image": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:dropped",
         "message": "seed shapes (user-attachments): opencode did not send the attached image its codec kept"
       }
@@ -2213,7 +2228,7 @@
     "[probes] seedkinds.user-attachments.pdf": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:as-reference",
         "message": "seed shapes (user-attachments): opencode sent the PDF's name and not its content"
       }
@@ -2221,49 +2236,49 @@
     "[probes] session.answer": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] session.completed": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] session.start": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] skills": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] transcript": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] turn": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] usage.account": [
       {
         "from": "1.19.0",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:not-reported",
         "message": "usage: opencode's driver reported no account"
       }
@@ -2271,7 +2286,7 @@
     "[probes] usage.context": [
       {
         "from": "1.19.0",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:not-reported",
         "message": "usage: opencode reported no context window fill"
       }
@@ -2279,7 +2294,7 @@
     "[probes] usage.limits": [
       {
         "from": "1.19.0",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:not-reported",
         "message": "usage: opencode pushed no rate limits"
       }
@@ -2287,7 +2302,7 @@
     "[probes] usage.probe.limits": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass:unsupported",
         "message": "usage: opencode's limits do not apply: plan limits are read only for an OpenCode Go key"
       }
@@ -2295,14 +2310,14 @@
     "[probes] usage.probe.no-model-call": [
       {
         "from": "1.19.4",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[probes] usage.turn": [
       {
         "from": "1.19.0",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "finding:not-reported",
         "message": "usage: opencode's driver reported no usage for the turn"
       }
@@ -2310,168 +2325,168 @@
     "[resume-kill] acp/hook-injection": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.post-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.pre-tool": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.prompt": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.stop": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/model": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/requests": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/streaming": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] binary": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.OPENAI_API_KEY": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] hooks.install": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written../AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.context": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.load": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.replay": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.answer": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.completed": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.start": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[resume-kill] skills": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ],
     "[surface] binary": [
       {
         "from": "1.18.32",
-        "last": "1.19.5",
+        "last": "1.19.6",
         "outcome": "pass"
       }
     ]

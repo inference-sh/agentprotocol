@@ -1783,6 +1783,12 @@ func (r *TestRunner) probeCompactedResume() {
 	if compacted {
 		r.pass("compact.run:reported", fmt.Sprintf("compaction: %s ran %s and reported the compaction (%d-message request, %d before)",
 			r.harness.Name, r.harness.CompactCommand, widestRequest(sent[before:]), widestBefore))
+	} else if n, ok := summarizeRequest(sent[before:]); ok {
+		// A summary request can be narrower than the turn before: qwen 0.28
+		// summarizes only the older history and keeps its latest exchange
+		// as it was (qwen-code #17141), and the turn before counts the
+		// agent's own side requests too.
+		r.pass("compact.run", fmt.Sprintf("compaction: %s ran %s, asking the model to summarize %d message(s)", r.harness.Name, r.harness.CompactCommand, n))
 	} else if widestRequest(sent[before:]) < widestBefore {
 		first.Close()
 		r.finding("compact.run:not-compacted", fmt.Sprintf("compaction: %s answered %s with a %d-message request where the turn before carried %d, so it did not compact",
@@ -1842,6 +1848,24 @@ var compactionFillers = []string{
 	"What files are in this repository?",
 	"Summarise what you have done so far.",
 	"What was the first thing I asked you?",
+}
+
+// summarizeRequest finds a compaction's request among those sent for the
+// command: one that carries the conversation and ends with a user message the
+// probe never sent, the agent's own instruction to condense it. It returns
+// that request's message count.
+func summarizeRequest(entries []server.LogEntry) (int, bool) {
+	own := map[string]bool{promptText: true}
+	for _, f := range compactionFillers {
+		own[f] = true
+	}
+	for _, e := range entries {
+		last := strings.TrimSpace(server.LastUserText(e.Body))
+		if last != "" && !own[last] && entriesContain([]server.LogEntry{e}, promptText) {
+			return messageCount(e), true
+		}
+	}
+	return 0, false
 }
 
 // messageCount is how many messages a request carried to the model. Every

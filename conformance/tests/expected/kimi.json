@@ -82,7 +82,8 @@
         "setup/instructions.written../AGENTS.md": "pass",
         "setup/instructions.written.~/.kimi-code/AGENTS.md": "pass",
         "setup/skills": "pass",
-        "surface/hidden.install-app": "pass:help"
+        "surface/hidden.install-app": "pass:help",
+        "surface/hidden.server": "pass:help"
       }
     },
     {

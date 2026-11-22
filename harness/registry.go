@@ -608,7 +608,9 @@ export default function (pi: any) {
 		// ACP session MCP servers are namespaced mcp__<server>_<tool>.
 		Direct: &Direct{
 			Args: []string{"--system-prompt", "{{.SystemPrompt}}", "--tools", "", "--no-rules", "--no-skills", "--no-extensions", "-e", "{{.Dir}}/direct.ts", "--no-lsp", "--no-title"},
-			Env:  map[string]string{"NO_PROXY": "127.0.0.1,localhost", "no_proxy": "127.0.0.1,localhost"},
+			// PI_AUTO_QA=0: 19.1.0 offers its own report_issue tool by default
+			// (setting dev.autoqa), which --tools "" does not remove.
+			Env: map[string]string{"NO_PROXY": "127.0.0.1,localhost", "no_proxy": "127.0.0.1,localhost", "PI_AUTO_QA": "0"},
 			Files: map[string]string{"direct.ts": `import { readFileSync } from "node:fs";
 export default function (pi: any) {
   const system = readFileSync("{{.SystemPromptFile}}", "utf8");

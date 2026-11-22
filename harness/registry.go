@@ -1104,6 +1104,11 @@ export const Direct = async () => ({
 			MCPInArgs: true,
 			ToolName:  "mcp__{{.Server}}__{{.Tool}}",
 			Measured:  "0.25.2 2026-10-17",
+			// 0.28.0 measured exact on the same suite commit (History,
+			// nightly 44864182434), though its bundle already has
+			// buildDateReminder; no setting turns the reminder off.
+			Partial:         "qwen 0.28.3 adds a <system-reminder> with today's date to the user's turn",
+			PartialVersions: VersionRange{From: "0.28.3"},
 		},
 		ACPImages:          true,
 		ACPArgs:            []string{"--auth-type", "openai", "--model", "{{.Model}}"},

@@ -195,7 +195,7 @@
       "probes": "direct",
       "checks": {
         "acp/direct.call": "pass",
-        "acp/direct.messages": "pass:exact",
+        "acp/direct.messages": "finding:added",
         "acp/direct.restart": "pass",
         "acp/direct.result": "pass",
         "acp/direct.system": "pass:exact",

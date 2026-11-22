@@ -49,9 +49,11 @@ wrap
 --json-schema
 --leader-socket
 --max-turns
+--memory-flush
 --minimal
 --model
 --no-alt-screen
+--no-memory
 --no-plan
 --no-subagents
 --oauth
@@ -68,6 +70,7 @@ wrap
 --session-id
 --single
 --system-prompt
+--system-prompt-file
 --system-prompt-override
 --tools
 --verbatim

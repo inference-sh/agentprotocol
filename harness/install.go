@@ -10,19 +10,7 @@ import (
 	"time"
 )
 
-// GoosePluginDir is belt's plugin directory under goose's shared plugin root.
-//
-// It was ".agents/plugins/belt-test/hooks" until 2026-09: this suite's name
-// had been copied into the shipped registry, so every belt user's goose hooks
-// went into a directory named after the test harness. Renaming it moves the
-// install, so Install removes the old one.
-const GoosePluginDir = ".agents/plugins/belt"
-
-// gooseLegacyPluginDir is where belt used to write goose's hooks. Removable
-// once no install predating 2026-09 is in use.
-const gooseLegacyPluginDir = ".agents/plugins/belt-test"
-
-// No plugin.json is written into GoosePluginDir, deliberately.
+// No plugin.json is written into goose's plugin directory, deliberately.
 //
 // The registry used to carry a PluginManifest field for goose, documented as
 // "write plugin.json here on install", and nothing ever wrote one — only
@@ -65,6 +53,10 @@ type InstallResult struct {
 	// install writes hooks the agent will not read. Discovered here, so
 	// doctor and the test suite report it rather than each re-deriving it.
 	Inactive string
+
+	// Notes is what the source asked for that the agent's hooks cannot
+	// carry, and what was written instead (RenderHooks).
+	Notes []HookNote
 }
 
 // These names are what go/cli imported before harness/ was extracted out of
@@ -86,6 +78,8 @@ func HookTemplate(name string) string {
 }
 
 // Install writes belt hook configs for a harness at the given scope.
+//
+// Deprecated: use InstallSource with the caller's own PluginSource.
 func Install(name string, scope InstallScope) InstallResult {
 	return InstallWithCommand(name, scope, beltCmd)
 }
@@ -94,280 +88,77 @@ func Install(name string, scope InstallScope) InstallResult {
 // suite uses it to install hooks that run its own scripts: the file shape,
 // the merge behaviour and every per-agent quirk then come from this code
 // rather than from a second implementation that can drift from it.
+//
+// Deprecated: use InstallSource with the caller's own PluginSource.
 func InstallWithCommand(name string, scope InstallScope, cmdFor HookCommand) InstallResult {
-	h, ok := All[name]
-	if !ok {
-		return InstallResult{Harness: name, Error: fmt.Errorf("unknown harness: %s", name)}
+	src := legacySource
+	src.HookCommand = cmdFor
+	root, _ := hookTarget(All[name], scope, src)
+	if name == "goose" {
+		// Migration, added 2026-09: belt wrote goose's hooks into a
+		// directory named after this test suite. Remove the old file so
+		// goose does not run both.
+		removeJSONHooks(filepath.Join(root, gooseLegacyPluginDir, "hooks", "hooks.json"), All[name], src.ownership(All[name]))
+		os.Remove(filepath.Join(root, gooseLegacyPluginDir, "hooks"))
+		os.Remove(filepath.Join(root, gooseLegacyPluginDir))
 	}
-
-	home, _ := os.UserHomeDir()
-	var hooksPath string
-	root := home
-
-	switch scope {
-	case ScopeUser:
-		target := HooksTarget(name)
-		if target == "" {
-			return InstallResult{Harness: name, Error: fmt.Errorf("no user hook path for %s", name)}
-		}
-		hooksPath = filepath.Join(home, target)
-	case ScopeProject:
-		root, _ = os.Getwd()
-		hooksPath = filepath.Join(root, h.HookConfigDir, hookFileName(h))
+	result := InstallSource(name, scope, src)
+	if result.Error == nil && All[name].HookFormat == JSONKiro {
+		// Migration, added 2026-09 in belt 1.18.32: earlier versions
+		// merged into a kiro_default.json override. Removable once no
+		// install predating that version is in use.
+		removeKiroHooks(filepath.Join(root, All[name].HookConfigDir, KiroDefaultAgentName+".json"), legacySourceName, src.ownership(All[name]))
 	}
-
-	content, err := generateHookConfig(name, h, defaultPlan(h), cmdFor)
-	if err != nil {
-		return InstallResult{Harness: name, Error: err}
-	}
-
-	result := InstallResult{Harness: name, Scope: scope, HooksPath: hooksPath}
-
-	// For formats that merge into existing files (settings.json, config.yaml, config.toml),
-	// we need to read-modify-write. For standalone files, just write.
-	switch h.HookFormat {
-	case JSONNested:
-		if name == "goose" {
-			// Migration, added 2026-09: belt wrote goose's hooks into a
-			// directory named after this test suite. Remove the old file so
-			// goose does not run both.
-			removeMergedHooks(filepath.Join(root, gooseLegacyPluginDir, "hooks", hookFileName(h)), JSONNested)
-			os.Remove(filepath.Join(root, gooseLegacyPluginDir, "hooks"))
-			os.Remove(filepath.Join(root, gooseLegacyPluginDir))
-		}
-		if needsMerge(h) {
-			result.Merged = true
-			err = mergeJSONHooks(hooksPath, content)
-		} else {
-			err = writeFile(hooksPath, content)
-			result.Created = true
-		}
-	case JSONFlat, JSONCopilot:
-		err = writeFile(hooksPath, content)
-		result.Created = true
-	case JSONKiro:
-		result.Merged = true
-		err = mergeKiroAgentHooks(hooksPath, content)
-		if err == nil {
-			// Migration, added 2026-09 in belt 1.18.32: earlier versions
-			// merged into a kiro_default.json override. Removable once no
-			// install predating that version is in use.
-			removeMergedHooks(filepath.Join(root, h.HookConfigDir, KiroDefaultAgentName+".json"), JSONKiro)
-			// A user-chosen default agent is left alone and reported.
-			result.Inactive, err = KiroSelectBeltAgent(root)
-		}
-	case TOML:
-		result.Merged = true
-		err = appendTOMLHooks(hooksPath, content)
-	case YAML:
-		result.Merged = true
-		err = mergeYAMLHooks(hooksPath, content)
-	case TSExtension, TSPlugin:
-		err = writeFile(hooksPath, content)
-		result.Created = true
-	default:
-		err = fmt.Errorf("hook format not supported for install: %d", h.HookFormat)
-	}
-
-	result.Error = err
 	return result
-}
-
-func hookFileName(h Harness) string {
-	if h.HookFileName != "" {
-		return h.HookFileName
-	}
-	switch h.HookFormat {
-	case TSExtension, TSPlugin:
-		return "belt.ts"
-	case TOML:
-		return "config.toml"
-	case YAML:
-		return "config.yaml"
-	default:
-		return "belt.json"
-	}
-}
-
-func needsMerge(h Harness) bool {
-	return h.HookWrapper != ""
 }
 
 // HookConfig returns the generated hook configuration for an agent.
+//
+// Deprecated: use RenderHooks with the caller's own PluginSource.
 func HookConfig(name string) (string, error) {
-	h, ok := All[name]
-	if !ok {
-		return "", fmt.Errorf("unknown harness: %s", name)
-	}
-	return generateHookConfig(name, h, defaultPlan(h), beltCmd)
+	return HookConfigFor(name, beltCmd)
 }
 
 // Uninstall removes belt hooks for a harness at the given scope.
+//
+// Deprecated: use UninstallSource with the caller's own PluginSource.
 func Uninstall(name string, scope InstallScope) InstallResult {
-	h, ok := All[name]
-	if !ok {
-		return InstallResult{Harness: name, Error: fmt.Errorf("unknown harness: %s", name)}
-	}
-
-	home, _ := os.UserHomeDir()
-	var hooksPath string
-	root := home
-	switch scope {
-	case ScopeUser:
-		target := HooksTarget(name)
-		if target == "" {
-			return InstallResult{Harness: name, Error: fmt.Errorf("no user hook path for %s", name)}
-		}
-		hooksPath = filepath.Join(home, target)
-	case ScopeProject:
-		root, _ = os.Getwd()
-		hooksPath = filepath.Join(root, h.HookConfigDir, hookFileName(h))
-	}
-
-	result := InstallResult{Harness: name, Scope: scope, HooksPath: hooksPath}
-	if h.HookFormat == JSONKiro {
-		result.Merged = true
-		result.Error = removeMergedHooks(hooksPath, JSONKiro)
-		removeMergedHooks(filepath.Join(root, h.HookConfigDir, KiroDefaultAgentName+".json"), JSONKiro)
-		if err := kiroDeselectBeltAgent(root); result.Error == nil {
-			result.Error = err
-		}
-	} else if needsMerge(h) {
-		result.Merged = true
-		result.Error = removeMergedHooks(hooksPath, h.HookFormat)
-	} else {
-		result.Error = os.Remove(hooksPath)
-		if os.IsNotExist(result.Error) {
-			result.Error = nil
-		}
+	result := UninstallSource(name, scope, legacySource)
+	if h := All[name]; result.Error == nil && h.HookFormat == JSONKiro {
+		root, _ := hookTarget(h, scope, legacySource)
+		removeKiroHooks(filepath.Join(root, h.HookConfigDir, KiroDefaultAgentName+".json"), legacySourceName, legacySource.ownership(h))
 	}
 	return result
 }
 
-func removeMergedHooks(path string, format HookFormat) error {
-	if format != JSONNested && format != JSONKiro {
-		return os.Remove(path)
-	}
-	// An unreadable or unparseable file is left exactly as it is: it is the
-	// user's, and belt did not write it.
-	obj, err := readJSONObject(path)
-	if err != nil {
-		return nil
-	}
-	switch format {
-	case JSONNested:
-		delete(obj, "hooks")
-		if len(obj) == 0 {
-			return os.Remove(path)
-		}
-		return writeJSONObject(path, obj, 0644)
-	case JSONKiro:
-		hooks, _ := obj["hooks"].(map[string]any)
-		for k, v := range hooks {
-			kept := withoutBeltHooks(v)
-			if len(kept) == 0 {
-				delete(hooks, k)
-			} else {
-				hooks[k] = kept
-			}
-		}
-		if len(hooks) == 0 {
-			delete(obj, "hooks")
-		}
-		// Only belt's own scaffold left: remove the file.
-		if obj["description"] == kiroAgentDescription && isKiroScaffold(obj) {
-			return os.Remove(path)
-		}
-		return writeJSONObject(path, obj, 0644)
-	}
-	return nil
-}
-
-// kiroAgentDescription marks a kiro agent file belt created; the legacy
-// kiro_default.json override carried the same description.
-const kiroAgentDescription = "Default agent with belt hooks"
-
-// isKiroScaffold reports whether obj holds nothing beyond what generateJSONKiro writes.
-func isKiroScaffold(obj map[string]any) bool {
-	for k := range obj {
-		switch k {
-		case "name", "description", "tools", "includeMcpJson":
-		default:
-			return false
-		}
-	}
-	return true
-}
-
-// withoutBeltHooks drops entries whose command is a belt hook from a kiro hook list.
-func withoutBeltHooks(list any) []any {
-	arr, _ := list.([]any)
-	var kept []any
-	for _, e := range arr {
-		m, _ := e.(map[string]any)
-		cmd, _ := m["command"].(string)
-		if strings.Contains(cmd, "belt plugin hook") {
-			continue
-		}
-		kept = append(kept, e)
-	}
-	return kept
-}
-
-// mergeKiroAgentHooks adds belt's hooks to a kiro agent config, keeping the
-// user's prompt, tools, and their own hooks; belt entries are replaced, not duplicated.
-func mergeKiroAgentHooks(path, newContent string) error {
-	obj, err := readJSONObject(path)
-	if err != nil {
-		return writeFile(path, newContent)
-	}
-	var newObj map[string]any
-	json.Unmarshal([]byte(newContent), &newObj)
-	newHooks, _ := newObj["hooks"].(map[string]any)
-
-	hooks, _ := obj["hooks"].(map[string]any)
-	if hooks == nil {
-		hooks = map[string]any{}
-	}
-	for k, v := range newHooks {
-		hooks[k] = append(withoutBeltHooks(hooks[k]), v.([]any)...)
-	}
-	obj["hooks"] = hooks
-	return writeJSONObject(path, obj, 0644)
-}
-
 // HooksInstalled checks if belt hooks exist for an agent at the given scope.
+//
+// Deprecated: use SourceHooksInstalled.
 func HooksInstalled(name string, scope InstallScope) bool {
 	h, ok := All[name]
 	if !ok {
 		return false
 	}
-	var root string
-	switch scope {
-	case ScopeProject:
-		root, _ = os.Getwd()
-	default:
-		root, _ = os.UserHomeDir()
-	}
+	root, path := hookTarget(h, scope, legacySource)
 	if root == "" {
 		return false
 	}
-	path := filepath.Join(root, h.HookConfigDir, hookFileName(h))
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return false
 	}
-	return strings.Contains(string(data), "belt plugin hook")
+	return legacyOwns(string(data))
 }
 
-func generateHookConfig(name string, h Harness, plan []plannedHook, cmdFor HookCommand) (string, error) {
+func generateHookConfig(name string, h Harness, plan []plannedHook, src PluginSource) (string, error) {
+	cmdFor := src.HookCommand
 	switch h.HookFormat {
 	case JSONNested:
 		return generateJSONNested(h, plan, cmdFor), nil
 	case JSONFlat:
 		return generateJSONFlat(h, plan, cmdFor), nil
 	case JSONKiro:
-		return generateJSONKiro(h, plan, cmdFor), nil
+		return generateJSONKiro(h, plan, src), nil
 	case JSONCopilot:
 		return generateJSONCopilot(h, plan, cmdFor), nil
 	case TOML:
@@ -395,10 +186,6 @@ func defaultPlan(h Harness) []plannedHook {
 // it tests is generated by this same code rather than a second copy of it.
 type HookCommand func(beltEvent HookEvent) string
 
-func beltCmd(event HookEvent) string {
-	return fmt.Sprintf("belt plugin hook %s", event)
-}
-
 // hookTimeout is a planned hook's timeout in the unit the agent counts in.
 func hookTimeout(h Harness, p plannedHook) int {
 	if h.HookTimeoutMs {
@@ -424,7 +211,8 @@ func generateJSONFlat(h Harness, plan []plannedHook, cmdFor HookCommand) string 
 	return `{"hooks":` + hooks + `}`
 }
 
-func generateJSONKiro(h Harness, plan []plannedHook, cmdFor HookCommand) string {
+func generateJSONKiro(h Harness, plan []plannedHook, src PluginSource) string {
+	cmdFor := src.HookCommand
 	var hooks []string
 	for _, p := range plan {
 		hooks = append(hooks, fmt.Sprintf(`"%s":[{"command":"%s","timeout_ms":%d}]`, p.Name, jsonEscape(cmdFor(p.Event)), hookTimeout(h, p)))
@@ -435,7 +223,7 @@ func generateJSONKiro(h Harness, plan []plannedHook, cmdFor HookCommand) string 
 	// carries no toolSpecification). tools ["*"] + includeMcpJson keep the
 	// built-in behaviour; steering, README and skill descriptions reach the
 	// model as they do with the built-in (compared in Docker on V1 and V2).
-	return fmt.Sprintf(`{"name":"%s","description":"%s","tools":["*"],"includeMcpJson":true,"hooks":{%s}}`, KiroBeltAgentName, kiroAgentDescription, strings.Join(hooks, ","))
+	return fmt.Sprintf(`{"name":"%s","description":"%s","tools":["*"],"includeMcpJson":true,"hooks":{%s}}`, src.Name, kiroAgentDescription(src.Name), strings.Join(hooks, ","))
 }
 
 // matchersFor is the matcher groups a planned hook is written as: one per
@@ -686,57 +474,6 @@ func writeFile(path, content string) error {
 	return os.WriteFile(path, []byte(content), 0644)
 }
 
-func mergeJSONHooks(path, newContent string) error {
-	os.MkdirAll(filepath.Dir(path), 0755)
-
-	var newObj map[string]any
-	json.Unmarshal([]byte(newContent), &newObj)
-
-	newHooks, _ := newObj["hooks"].(map[string]any)
-	if newHooks == nil {
-		return writeFile(path, newContent)
-	}
-
-	existingObj, err := readJSONObject(path)
-	if err != nil {
-		return writeFile(path, newContent)
-	}
-
-	existingHooks, _ := existingObj["hooks"].(map[string]any)
-	if existingHooks == nil {
-		existingObj["hooks"] = newHooks
-	} else {
-		for k, v := range newHooks {
-			existingHooks[k] = v
-		}
-	}
-
-	return writeJSONObject(path, existingObj, 0644)
-}
-
-func appendTOMLHooks(path, tomlContent string) error {
-	os.MkdirAll(filepath.Dir(path), 0755)
-
-	existing, _ := os.ReadFile(path)
-	combined := string(existing) + "\n# belt hooks\n" + tomlContent
-	return os.WriteFile(path, []byte(combined), 0644)
-}
-
-func mergeYAMLHooks(path, yamlContent string) error {
-	os.MkdirAll(filepath.Dir(path), 0755)
-
-	existing, err := os.ReadFile(path)
-	if err != nil {
-		return writeFile(path, yamlContent)
-	}
-
-	content := string(existing)
-	if strings.Contains(content, "hooks: {}") {
-		content = strings.Replace(content, "hooks: {}", "", 1)
-	}
-	return os.WriteFile(path, []byte(content+"\n"+yamlContent), 0644)
-}
-
 // readJSONObject reads a JSON object from path. A missing or unparseable file
 // yields an empty object and the error, so a caller can tell "nothing there"
 // from "do not touch this".
@@ -765,21 +502,27 @@ func writeJSONObject(path string, obj map[string]any, perm os.FileMode) error {
 // HookConfigFor generates an agent's hook configuration with a caller's own
 // command, so a test can install hooks that are shaped exactly like belt's but
 // run something it can observe.
+//
+// Deprecated: use RenderHooks with the caller's own PluginSource.
 func HookConfigFor(name string, cmdFor HookCommand) (string, error) {
 	h, ok := All[name]
 	if !ok {
 		return "", fmt.Errorf("unknown harness: %s", name)
 	}
-	return generateHookConfig(name, h, defaultPlan(h), cmdFor)
+	src := legacySource
+	src.HookCommand = cmdFor
+	return generateHookConfig(name, h, defaultPlan(h), src)
 }
 
 // HookFileName is the file an agent's hooks are written to.
+//
+// Deprecated: use Harness.HookPath with the source's name.
 func HookFileName(name string) string {
 	h, ok := All[name]
 	if !ok {
 		return ""
 	}
-	return hookFileName(h)
+	return filepath.Base(h.HookPath(legacySourceName))
 }
 
 // jsonEscape escapes a command for embedding inside a JSON or TOML string.

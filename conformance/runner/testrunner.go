@@ -706,7 +706,7 @@ func (r *TestRunner) writeConfigFiles() {
 func (r *TestRunner) writeHooks() {
 	fmt.Println("[phase 3] hooks")
 
-	os.MkdirAll(filepath.Join(r.home, r.harness.HookConfigDir), 0755)
+	os.MkdirAll(filepath.Join(r.home, r.hookDir()), 0755)
 	os.Remove(hookLogPath)
 	// Distinct prefix: instruction-file codes are INSTR-<scope>-<NAME>-<ts> and
 	// share the millisecond, so a bare <NAME>-<ts> matched them and the
@@ -780,13 +780,10 @@ func (r *TestRunner) writeBeltHooks() {
 
 	if r.harness.NeedsGitRepo {
 		repoDir := r.ensureGitRepo()
-		projHookDir := filepath.Join(repoDir, r.harness.HookConfigDir)
+		projHookDir := filepath.Join(repoDir, r.hookDir())
 		os.MkdirAll(projHookDir, 0755)
-		fname := r.harness.HookFileName
-		if fname == "" {
-			fname = "belt.json"
-		}
-		src := filepath.Join(r.home, r.harness.HookConfigDir, fname)
+		fname := filepath.Base(harness.HooksTarget(r.harness.Name))
+		src := filepath.Join(r.home, r.hookDir(), fname)
 		if data, err := os.ReadFile(src); err == nil {
 			dst := filepath.Join(projHookDir, fname)
 			os.WriteFile(dst, data, 0644)
@@ -803,9 +800,15 @@ func (r *TestRunner) seedWrapperConfig() {
 	// The wrapper is a format string like `{"permissions":...,"hooks":%s}`.
 	// Replace the %s with an empty hooks object to get the base config.
 	base := fmt.Sprintf(wrapper, "{}")
-	path := filepath.Join(r.home, r.harness.HookConfigDir, r.harness.HookFileName)
+	path := filepath.Join(r.home, harness.HooksTarget(r.harness.Name))
 	os.MkdirAll(filepath.Dir(path), 0755)
 	os.WriteFile(path, []byte(base), 0644)
+}
+
+// hookDir is where the suite's hooks go, relative to HOME or the project:
+// the directory of the file harness installs them into.
+func (r *TestRunner) hookDir() string {
+	return filepath.Dir(harness.HooksTarget(r.harness.Name))
 }
 
 func (r *TestRunner) setupSkills() {
@@ -1187,7 +1190,7 @@ func (r *TestRunner) writeACPConfig() {
 		// The user-scope artifacts written in earlier phases (hooks or belt
 		// plugin, skills, instruction file) must follow HOME, or the ACP run
 		// tests an empty home.
-		for _, rel := range []string{r.harness.HookConfigDir, r.harness.SkillsDir, r.harness.InstructionFile} {
+		for _, rel := range []string{r.hookDir(), r.harness.SkillsDir, r.harness.InstructionFile} {
 			if rel != "" {
 				copyTree(filepath.Join(r.home, rel), filepath.Join(tmpHome, rel))
 			}
@@ -2639,7 +2642,7 @@ func (r *TestRunner) copyHooksToProject(hooksPath string) {
 	if err != nil {
 		return
 	}
-	projDir := filepath.Join(r.ensureGitRepo(), r.harness.HookConfigDir)
+	projDir := filepath.Join(r.ensureGitRepo(), r.hookDir())
 	os.MkdirAll(projDir, 0755)
 	os.WriteFile(filepath.Join(projDir, filepath.Base(hooksPath)), data, 0644)
 }

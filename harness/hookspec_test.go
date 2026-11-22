@@ -111,7 +111,7 @@ func TestRenderHooksWritesOneTOMLEntryPerTool(t *testing.T) {
 	h := All["kimi"]
 	h.ToolNames = map[Tool]string{ToolShell: "Shell", ToolSkill: "Skill"}
 	plan, notes := planHooks(h, src)
-	got, _ := generateHookConfig("kimi", h, plan, src.HookCommand)
+	got, _ := generateHookConfig("kimi", h, plan, src)
 	if len(notes) != 0 || strings.Count(got, "[[hooks]]") != 2 || !strings.Contains(got, `matcher = "Shell"`) || !strings.Contains(got, "timeout = 2") {
 		t.Errorf("kimi config with two tools, notes %v:\n%s", notes, got)
 	}

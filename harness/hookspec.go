@@ -39,6 +39,10 @@ type PluginSource struct {
 	// Hooks names the events to install and how. Nil installs every event
 	// the agent has, as DefaultHooks does.
 	Hooks map[HookEvent]HookSpec
+
+	// owns widens which hook commands count as this source's, for the legacy
+	// source, whose older installs ran commands no exact list names.
+	owns func(cmd string) bool
 }
 
 // DefaultHooks is every event with no tool filter and each format's default
@@ -154,6 +158,6 @@ func RenderHooks(name string, src PluginSource) (string, []HookNote, error) {
 		return "", nil, fmt.Errorf("plugin source %q has no hook command", src.Name)
 	}
 	plan, notes := planHooks(h, src)
-	content, err := generateHookConfig(name, h, plan, src.HookCommand)
+	content, err := generateHookConfig(name, h, plan, src)
 	return content, notes, err
 }

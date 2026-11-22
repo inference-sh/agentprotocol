@@ -497,7 +497,7 @@ export default function (pi: any) {
 		// and runs the built-in agent, so hooks there never fired on V1.
 		HookFormat:    JSONKiro,
 		HookConfigDir: ".kiro/agents",
-		HookFileName:  "belt.json",
+		HookFileName:  sourceName + ".json",
 		HookTimeoutMs: true,
 		Events: Events{
 			SessionStart: "agentSpawn",
@@ -916,7 +916,7 @@ export const Direct = async () => ({
 			{Path: ".config/goose/config.yaml", Content: "GOOSE_PROVIDER: mock\nGOOSE_MODEL: {{.Model}}\nGOOSE_MODE: auto\n"},
 		},
 		HookFormat:    JSONNested,
-		HookConfigDir: GoosePluginDir + "/hooks",
+		HookConfigDir: ".agents/plugins/" + sourceName + "/hooks",
 		HookFileName:  "hooks.json",
 		Events: Events{
 			SessionStart: "SessionStart",

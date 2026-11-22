@@ -128,7 +128,7 @@ func HooksTarget(name string) string {
 	if !ok {
 		return ""
 	}
-	return filepath.Join(h.HookConfigDir, hookFileName(h))
+	return h.HookPath(legacySourceName)
 }
 
 var wellKnownBinDirs = []string{

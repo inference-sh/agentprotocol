@@ -1169,7 +1169,9 @@ func (r *TestRunner) runInteractive() {
 		})
 		r.step("compaction settled (requests %d)", r.server.LogCount())
 	}
-	if !r.harness.InteractivePromptInArgs && r.harness.ExitCommand != "" {
+	// An agent with a session-end hook is exited the way a user exits it:
+	// Ctrl-C and the kill after it end the process before the hook can run.
+	if r.harness.ExitCommand != "" && (!r.harness.InteractivePromptInArgs || r.harness.Events.SessionEnd != "") {
 		r.sendLine(session, r.harness.ExitCommand)
 		time.Sleep(3 * time.Second)
 	}

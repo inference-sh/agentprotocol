@@ -40,6 +40,13 @@ var standardEvents = Events{
 	PreCompact:   "PreCompact",
 }
 
+// codexSkillsUnlisted, measured 2026-11-22 on 0.171.0 in every mode: the
+// skills section codex sends names ~/.agents/skills as root r0 and lists
+// none of its skills, while `codex debug prompt-input` with the same HOME,
+// CODEX_HOME and mock provider lists a skill written there by hand
+// (codex-rs/ext/skills host_roots.rs reads that dir). Cause not found.
+const codexSkillsUnlisted = "codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
+
 // withSessionEnd is an event set plus the agent's session-end hook.
 func withSessionEnd(e Events, name string) Events {
 	e.SessionEnd = name
@@ -291,12 +298,10 @@ var All = map[string]Harness{
 		// not fire here. A reason marked "observed only" states what happened and
 		// not why; the others cite an investigation.
 		KnownIssues: map[string]string{
-			// Measured 2026-11-22 on 0.171.0: the app-server's skills section
-			// names ~/.agents/skills as root r0 and lists none of its skills,
-			// while `codex debug prompt-input` with the same HOME and
-			// CODEX_HOME lists the skill from it (codex-rs/ext/skills
-			// host_roots.rs reads that dir). Cause not found.
-			"acp:skills-listed":          "codex app-server lists ~/.agents/skills as a skill root but not the skills in it; `codex debug prompt-input` lists them",
+			"acp:skills-listed":          codexSkillsUnlisted,
+			"headless:skills-listed":     codexSkillsUnlisted,
+			"interactive:skills-listed":  codexSkillsUnlisted,
+			"sdk:skills-listed":          codexSkillsUnlisted,
 			"headless:event:PRE_COMPACT": "/compact is TUI-only (slash_dispatch.rs); codex exec never auto-compacts",
 			"sdk:event:PRE_COMPACT":      "SDK mode is codex exec, where /compact is only a user message and nothing auto-compacts (same investigation as headless)",
 			"acp:event:PRE_COMPACT":      "the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call",
@@ -1094,7 +1099,7 @@ export const Direct = async () => ({
 		HookFileName:      "settings.json",
 		HookWrapper:       `{"hooks":%s}`,
 		TestSettings:      `{"permissions":{"allow":["Bash(*)","Read(*)","Write(*)"]}}`,
-		Events:            withSessionEnd(standardEvents, "SessionEnd"),
+		Events:            standardEvents,
 		NeedsGitRepo:      true,
 		HeadlessCmd:       []string{"qwen", "-p"},
 		HeadlessModelArgs: []string{"--model", "{{.Model}}", "--yolo", "--auth-type", "openai"},

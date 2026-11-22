@@ -217,8 +217,8 @@ func TestKiroActiveAgent(t *testing.T) {
 // silently turns a skip back into a failure (or hides a real regression).
 func TestKnownIssueKeysAreWellFormed(t *testing.T) {
 	modes := map[string]bool{"headless": true, "interactive": true, "acp": true, "sdk": true}
-	tags := map[string]bool{"SESSION_START": true, "PROMPT": true, "PRE_TOOL": true, "POST_TOOL": true, "STOP": true, "PRE_COMPACT": true}
-	checks := map[string]bool{"prompt-context": true, "streaming": true, "model": true}
+	tags := map[string]bool{"SESSION_START": true, "PROMPT": true, "PRE_TOOL": true, "POST_TOOL": true, "STOP": true, "PRE_COMPACT": true, "SESSION_END": true}
+	checks := map[string]bool{"prompt-context": true, "streaming": true, "model": true, "skills-listed": true}
 	for name, h := range All {
 		for key, reason := range h.KnownIssues {
 			if reason == "" {

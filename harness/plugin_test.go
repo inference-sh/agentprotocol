@@ -154,6 +154,21 @@ func TestPluginStateReadsClaudesFiles(t *testing.T) {
 		t.Error("enabledPlugins false read as enabled")
 	}
 
+	// The project's files outrank the user's, and settings.local.json
+	// outranks settings.json.
+	project := t.TempDir()
+	t.Chdir(project)
+	os.MkdirAll(filepath.Join(project, ".claude"), 0755)
+	os.WriteFile(filepath.Join(project, ".claude/settings.json"), []byte(`{"enabledPlugins":{"acme@acme-plugins":true}}`), 0644)
+	if st := PluginState("claude", ScopeUser, pluginSource()); !st.Enabled {
+		t.Error("project settings.json true did not override user false")
+	}
+	os.WriteFile(filepath.Join(project, ".claude/settings.local.json"), []byte(`{"enabledPlugins":{"acme@acme-plugins":false}}`), 0644)
+	if st := PluginState("claude", ScopeUser, pluginSource()); st.Enabled {
+		t.Error("settings.local.json false did not override project true")
+	}
+	t.Chdir(home)
+
 	// CLAUDE_CONFIG_DIR moves all of it.
 	moved := t.TempDir()
 	t.Setenv("CLAUDE_CONFIG_DIR", moved)

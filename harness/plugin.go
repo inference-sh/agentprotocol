@@ -31,8 +31,11 @@ type PluginManager struct {
 	InstalledFile string
 	// SettingsFile holds enabledPlugins, {"<plugin>": true|false}, at user
 	// scope under ConfigDir and at project scope under the project's
-	// ConfigDir. A plugin listed false is disabled.
-	SettingsFile string
+	// ConfigDir. LocalSettingsFile is the project's uncommitted copy beside
+	// it. The most specific file that lists the plugin decides: local, then
+	// project, then user, so a project can turn off a plugin the user has on.
+	SettingsFile      string
+	LocalSettingsFile string
 	// ListJSON is a command that prints {"installed": [{"pluginId",
 	// "version", "installed", "enabled"}]}, for an agent whose installed
 	// state is read through the agent rather than from a file.
@@ -285,9 +288,18 @@ func marketplaceState(h Harness, src PluginSource) State {
 			}
 		}
 		if st.Installed && pm.SettingsFile != "" {
-			cwd, _ := os.Getwd()
-			st.Enabled = pluginEnabled(filepath.Join(dir, pm.SettingsFile), key) ||
-				cwd != "" && pluginEnabled(filepath.Join(cwd, pm.ConfigDir, pm.SettingsFile), key)
+			files := []string{filepath.Join(dir, pm.SettingsFile)}
+			if cwd, err := os.Getwd(); err == nil {
+				files = append(files, filepath.Join(cwd, pm.ConfigDir, pm.SettingsFile))
+				if pm.LocalSettingsFile != "" {
+					files = append(files, filepath.Join(cwd, pm.ConfigDir, pm.LocalSettingsFile))
+				}
+			}
+			for _, f := range files {
+				if on, listed := pluginEnabled(f, key); listed {
+					st.Enabled = on
+				}
+			}
 		}
 		return st
 	}
@@ -319,22 +331,23 @@ func marketplaceState(h Harness, src PluginSource) State {
 	return st
 }
 
-// pluginEnabled reads enabledPlugins in one settings file. A plugin listed
-// false is disabled; one not listed is not enabled by this file.
-func pluginEnabled(path, key string) bool {
+// pluginEnabled reads enabledPlugins in one settings file: whether the file
+// lists the plugin, and if so whether it is on. A value other than false
+// counts as on.
+func pluginEnabled(path, key string) (on, listed bool) {
 	var settings struct {
 		EnabledPlugins map[string]any `json:"enabledPlugins"`
 	}
 	data, err := os.ReadFile(path)
 	if err != nil || json.Unmarshal(data, &settings) != nil {
-		return false
+		return false, false
 	}
 	v, ok := settings.EnabledPlugins[key]
 	if !ok {
-		return false
+		return false, false
 	}
 	b, isBool := v.(bool)
-	return !isBool || b
+	return !isBool || b, true
 }
 
 // staleCopies lists the directories beside a plugin's installed copy.

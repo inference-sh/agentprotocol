@@ -718,7 +718,7 @@ func (r *TestRunner) writeHooks() {
 	// belt did not ship.
 	// Agents whose hooks live beside other config (base URL, auth,
 	// permissions) need that config present for the merge to add to.
-	if r.harness.HookWrapper != "" && r.harness.HookFileName != "" {
+	if r.harness.TestSettings != "" {
 		r.seedWrapperConfig()
 	}
 	res := harness.InstallWithCommand(r.harness.Name, harness.ScopeUser, r.mockHookCommand)
@@ -755,9 +755,9 @@ func (r *TestRunner) writeBeltHooks() {
 	os.MkdirAll(filepath.Join(r.home, ".inferencesh"), 0755)
 	os.WriteFile(filepath.Join(r.home, ".inferencesh", "hook-auth-cooldown"), []byte(time.Now().Format(time.RFC3339)), 0644)
 
-	// Harnesses with HookWrapper need the non-hook config (permissions, base URL, auth)
+	// Harnesses with TestSettings need the non-hook config (permissions, base URL, auth)
 	// pre-seeded so Install()'s merge adds hooks alongside them.
-	if r.harness.HookWrapper != "" && r.harness.HookFileName != "" {
+	if r.harness.TestSettings != "" {
 		r.seedWrapperConfig()
 	}
 
@@ -789,14 +789,11 @@ func (r *TestRunner) writeBeltHooks() {
 	}
 }
 
-// seedWrapperConfig writes the non-hook fields from HookWrapper so that
-// Install()'s merge adds hooks into a file that already has the correct
-// endpoint/permissions config.
+// seedWrapperConfig writes the agent's TestSettings so that Install()'s
+// merge adds hooks into a file that already has the mock's endpoint and the
+// suite's permissions.
 func (r *TestRunner) seedWrapperConfig() {
-	wrapper := r.expand(r.harness.HookWrapper)
-	// The wrapper is a format string like `{"permissions":...,"hooks":%s}`.
-	// Replace the %s with an empty hooks object to get the base config.
-	base := fmt.Sprintf(wrapper, "{}")
+	base := r.expand(r.harness.TestSettings)
 	path := filepath.Join(r.home, harness.HooksTarget(r.harness.Name))
 	os.MkdirAll(filepath.Dir(path), 0755)
 	os.WriteFile(path, []byte(base), 0644)

@@ -176,7 +176,8 @@ var All = map[string]Harness{
 		HookFormat:    JSONNested,
 		HookConfigDir: ".claude",
 		HookFileName:  "settings.json",
-		HookWrapper:   `{"permissions":{"allow":["Bash(*)","Read(*)","Write(*)"]},"skipDangerousModePermissionPrompt":true,"hooks":%s}`,
+		HookWrapper:   `{"hooks":%s}`,
+		TestSettings:  `{"permissions":{"allow":["Bash(*)","Read(*)","Write(*)"]},"skipDangerousModePermissionPrompt":true}`,
 		ConfigFiles: []ConfigFile{
 			{Path: ".claude.json", Content: `{"projects":{"{{.RepoDir}}":{"hasTrustDialogAccepted":true}}}`},
 			{Path: ".claude/settings.local.json", Content: `{"theme":"dark","hasCompletedOnboarding":true}`},
@@ -1002,7 +1003,8 @@ export const Direct = async () => ({
 		HookFormat:    JSONNested,
 		HookConfigDir: ".gemini",
 		HookFileName:  "settings.json",
-		HookWrapper:   `{"baseUrl":"{{.BaseURL}}","security":{"auth":{"selectedType":"gemini-api-key","useExternal":true}},"hooks":%s}`,
+		HookWrapper:   `{"hooks":%s}`,
+		TestSettings:  `{"baseUrl":"{{.BaseURL}}","security":{"auth":{"selectedType":"gemini-api-key","useExternal":true}}}`,
 		HookTimeoutMs: true,
 		// Measured in Docker 2026-09 (mock and belt hooks agreed): these events do
 		// not fire here. A reason marked "observed only" states what happened and
@@ -1083,7 +1085,8 @@ export const Direct = async () => ({
 		HookTimeoutMs:     true, // gemini-cli fork: "timeout" is milliseconds
 		HookConfigDir:     ".qwen",
 		HookFileName:      "settings.json",
-		HookWrapper:       `{"permissions":{"allow":["Bash(*)","Read(*)","Write(*)"]},"hooks":%s}`,
+		HookWrapper:       `{"hooks":%s}`,
+		TestSettings:      `{"permissions":{"allow":["Bash(*)","Read(*)","Write(*)"]}}`,
 		Events:            withSessionEnd(standardEvents, "SessionEnd"),
 		NeedsGitRepo:      true,
 		HeadlessCmd:       []string{"qwen", "-p"},

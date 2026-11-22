@@ -125,14 +125,19 @@ type Harness struct {
 	AcceptedModels []string // additional model names the agent may use instead of DefaultModel
 
 	// Hooks
-	HookFormat     HookFormat
-	HookConfigDir  string // where hook config goes (relative to $HOME)
-	HookFileName   string // override hook filename (default: format-dependent)
-	HookWrapper    string // JSON to wrap hooks in (e.g. Claude's permissions + hooks)
-	HookTimeoutMs  bool   // true = timeout field is milliseconds (gemini, qwen, kiro), false = seconds
-	HookNoEnvelope bool   // true = hooks file is raw hooks object, no {"hooks":...} wrapper (droid)
-	HookFlatBare   bool   // JSONFlat entries carry only "command" (windsurf rejects nothing but documents nothing else)
-	HookAsync      bool   // the hook entry takes "async": true and the agent goes on without waiting
+	HookFormat    HookFormat
+	HookConfigDir string // where hook config goes (relative to $HOME)
+	HookFileName  string // override hook filename (default: format-dependent)
+	HookWrapper   string // JSON to wrap hooks in when the file holds other settings too; hooks are merged into it
+	// TestSettings is what the test suite writes into the hook file before
+	// installing: permissions, the mock's base URL, auth. It used to be part
+	// of HookWrapper, so an install into a missing settings file wrote the
+	// suite's Bash(*) allow and skipped claude's permission prompt for users.
+	TestSettings   string
+	HookTimeoutMs  bool // true = timeout field is milliseconds (gemini, qwen, kiro), false = seconds
+	HookNoEnvelope bool // true = hooks file is raw hooks object, no {"hooks":...} wrapper (droid)
+	HookFlatBare   bool // JSONFlat entries carry only "command" (windsurf rejects nothing but documents nothing else)
+	HookAsync      bool // the hook entry takes "async": true and the agent goes on without waiting
 	// ToolNames is the agent's name for each Tool a hook can be matched on.
 	// A tool with no entry cannot be matched, and a hook asked to match it
 	// fires for every tool instead (RenderHooks notes it).

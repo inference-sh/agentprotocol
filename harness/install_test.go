@@ -2,6 +2,7 @@ package harness
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -88,6 +89,28 @@ func TestPluginContextHookIsGivenThePrompt(t *testing.T) {
 			// bug wearing a different hat.
 			if strings.Contains(content, "prompt: beltPrompt") && !strings.Contains(content, "beltPrompt = ") {
 				t.Errorf("%s: sends beltPrompt but nothing ever assigns it", name)
+			}
+		}
+	}
+}
+
+// What belt writes into a user's settings is hooks and nothing else. The
+// suite's permissions and mock endpoint once lived in HookWrapper, so an
+// install into a missing ~/.claude/settings.json allowed Bash(*) and skipped
+// claude's permission prompt.
+func TestHookWrapperCarriesOnlyHooks(t *testing.T) {
+	for name, h := range All {
+		if h.HookWrapper == "" {
+			continue
+		}
+		var obj map[string]any
+		if err := json.Unmarshal([]byte(fmt.Sprintf(h.HookWrapper, "{}")), &obj); err != nil {
+			t.Errorf("%s: wrapper is not JSON: %v", name, err)
+			continue
+		}
+		for k := range obj {
+			if k != "hooks" && k != "version" {
+				t.Errorf("%s: HookWrapper writes %q into the user's file", name, k)
 			}
 		}
 	}

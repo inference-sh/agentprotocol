@@ -12,7 +12,9 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -157,6 +159,7 @@ var (
 	TagPostTool     = harness.PostToolUse.Tag()
 	TagStop         = harness.Stop.Tag()
 	TagPreCompact   = harness.PreCompact.Tag()
+	TagSessionEnd   = harness.SessionEnd.Tag()
 )
 
 var originalHome = os.Getenv("HOME")
@@ -2181,6 +2184,7 @@ func (r *TestRunner) checkHookEvents(phase string) {
 			strings.Contains(ptyContent, "hook: "+e.Event)
 		r.reportEvent(phase, label, e.Tag, found, "")
 	}
+	r.checkHookStdinWait(phase, logContent)
 
 }
 
@@ -2587,6 +2591,13 @@ func (r *TestRunner) strippedOutput() string {
 func (r *TestRunner) mockHookCommand(beltEvent harness.HookEvent) string {
 	tag := beltEvent.Tag()
 	cmd := fmt.Sprintf("[ -t 0 ] || cat >> %s.stdin; echo %s >> %s", hookLogPath, tag, hookLogPath)
+	// How long stdin stays open after a tool hook starts. belt's pre-tool
+	// hook reads it for the tool name with a 2s bound, so an agent that
+	// holds the pipe open adds that to every tool call.
+	if beltEvent.IsToolEvent() {
+		cmd = fmt.Sprintf("s=$(date +%%s%%N); [ -t 0 ] || cat >> %[1]s.stdin; e=$(date +%%s%%N); echo %[2]s $(((e-s)/1000000)) >> %[1]s; echo %[3]s >> %[1]s",
+			hookLogPath, stdinWaitMarker(tag), tag)
+	}
 	if tag == TagPrompt {
 		cmd += r.promptEcho()
 	}
@@ -2631,4 +2642,45 @@ func (r *TestRunner) copyHooksToProject(hooksPath string) {
 	projDir := filepath.Join(r.ensureGitRepo(), r.harness.HookConfigDir)
 	os.MkdirAll(projDir, 0755)
 	os.WriteFile(filepath.Join(projDir, filepath.Base(hooksPath)), data, 0644)
+}
+
+// stdinWaitLimit is how long a tool hook may find stdin open before it reads
+// EOF. Agents that close it at once measure in single milliseconds.
+const stdinWaitLimit = 500 * time.Millisecond
+
+// stdinWaitMarker is the log line a tool hook writes with its stdin wait. It
+// must not contain the tag itself, which marks the event as fired.
+func stdinWaitMarker(tag string) string { return "STDIN_WAIT_MS:" + strings.ToLower(tag) }
+
+// stdinWaits reads every wait a tool hook logged for tag.
+func stdinWaits(log, tag string) []time.Duration {
+	var out []time.Duration
+	prefix := stdinWaitMarker(tag) + " "
+	for _, line := range strings.Split(log, "\n") {
+		if ms, ok := strings.CutPrefix(line, prefix); ok {
+			if n, err := strconv.Atoi(strings.TrimSpace(ms)); err == nil {
+				out = append(out, time.Duration(n)*time.Millisecond)
+			}
+		}
+	}
+	return out
+}
+
+// checkHookStdinWait fails a tool hook whose stdin stayed open past
+// stdinWaitLimit: the agent holds the pipe, and every hook that reads it
+// waits that long on every tool call.
+func (r *TestRunner) checkHookStdinWait(phase, log string) {
+	for _, tag := range []string{TagPreTool, TagPostTool} {
+		waits := stdinWaits(log, tag)
+		if len(waits) == 0 {
+			continue
+		}
+		label := strings.ToLower(strings.ReplaceAll(tag, "_", "-"))
+		longest := slices.Max(waits)
+		if longest > stdinWaitLimit {
+			r.fail(hookID("", label)+".stdin", fmt.Sprintf("%s: %s hook found stdin open for %s (limit %s)", phase, label, longest, stdinWaitLimit))
+			continue
+		}
+		r.pass(hookID("", label)+".stdin", fmt.Sprintf("%s: %s hook read stdin to its end in %s", phase, label, longest))
+	}
 }

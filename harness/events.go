@@ -14,6 +14,7 @@ const (
 	PostToolUse  HookEvent = "post-tool-use"
 	Stop         HookEvent = "stop"
 	PreCompact   HookEvent = "pre-compact"
+	SessionEnd   HookEvent = "session-end"
 )
 
 // hookEvents is the canonical order, used wherever hooks are generated or
@@ -31,6 +32,7 @@ var hookEvents = []struct {
 	{PostToolUse, "POST_TOOL", true, func(e Events) string { return e.PostToolUse }},
 	{Stop, "STOP", false, func(e Events) string { return e.Stop }},
 	{PreCompact, "PRE_COMPACT", false, func(e Events) string { return e.PreCompact }},
+	{SessionEnd, "SESSION_END", false, func(e Events) string { return e.SessionEnd }},
 }
 
 // HookEvents is belt's hook events in the order hooks are generated in.

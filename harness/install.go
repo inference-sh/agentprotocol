@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"time"
 )
 
 // GoosePluginDir is belt's plugin directory under goose's shared plugin root.
@@ -115,7 +116,7 @@ func InstallWithCommand(name string, scope InstallScope, cmdFor HookCommand) Ins
 		hooksPath = filepath.Join(root, h.HookConfigDir, hookFileName(h))
 	}
 
-	content, err := generateHookConfig(name, h, cmdFor)
+	content, err := generateHookConfig(name, h, defaultPlan(h), cmdFor)
 	if err != nil {
 		return InstallResult{Harness: name, Error: err}
 	}
@@ -198,7 +199,7 @@ func HookConfig(name string) (string, error) {
 	if !ok {
 		return "", fmt.Errorf("unknown harness: %s", name)
 	}
-	return generateHookConfig(name, h, beltCmd)
+	return generateHookConfig(name, h, defaultPlan(h), beltCmd)
 }
 
 // Uninstall removes belt hooks for a harness at the given scope.
@@ -359,27 +360,34 @@ func HooksInstalled(name string, scope InstallScope) bool {
 	return strings.Contains(string(data), "belt plugin hook")
 }
 
-func generateHookConfig(name string, h Harness, cmdFor HookCommand) (string, error) {
+func generateHookConfig(name string, h Harness, plan []plannedHook, cmdFor HookCommand) (string, error) {
 	switch h.HookFormat {
 	case JSONNested:
-		return generateJSONNested(name, h, cmdFor), nil
+		return generateJSONNested(h, plan, cmdFor), nil
 	case JSONFlat:
-		return generateJSONFlat(h, cmdFor), nil
+		return generateJSONFlat(h, plan, cmdFor), nil
 	case JSONKiro:
-		return generateJSONKiro(h, cmdFor), nil
+		return generateJSONKiro(h, plan, cmdFor), nil
 	case JSONCopilot:
-		return generateJSONCopilot(h, cmdFor), nil
+		return generateJSONCopilot(h, plan, cmdFor), nil
 	case TOML:
-		return generateTOML(h, cmdFor), nil
+		return generateTOML(h, plan, cmdFor), nil
 	case YAML:
-		return generateYAML(h, cmdFor), nil
+		return generateYAML(h, plan, cmdFor), nil
 	case TSExtension:
-		return generateTSExtension(h, cmdFor), nil
+		return generateTSExtension(h, plan, cmdFor), nil
 	case TSPlugin:
-		return generateTSPlugin(name, h, cmdFor), nil
+		return generateTSPlugin(name, h, plan, cmdFor), nil
 	default:
 		return "", fmt.Errorf("unsupported format")
 	}
+}
+
+// defaultPlan is every event the agent has with no filter, the config Install
+// wrote before sources could ask for more.
+func defaultPlan(h Harness) []plannedHook {
+	plan, _ := planHooks(h, PluginSource{})
+	return plan
 }
 
 // HookCommand builds the command a hook runs for a belt event. belt's own
@@ -391,30 +399,22 @@ func beltCmd(event HookEvent) string {
 	return fmt.Sprintf("belt plugin hook %s", event)
 }
 
-func hookTimeout(h Harness) int {
+// hookTimeout is a planned hook's timeout in the unit the agent counts in.
+func hookTimeout(h Harness, p plannedHook) int {
 	if h.HookTimeoutMs {
-		return 10000
+		return timeoutIn(p.Timeout, time.Millisecond, 10000)
 	}
-	return 10
+	return timeoutIn(p.Timeout, time.Second, 10)
 }
 
-func generateJSONFlat(h Harness, cmdFor HookCommand) string {
+func generateJSONFlat(h Harness, plan []plannedHook, cmdFor HookCommand) string {
 	parts := []string{}
-	timeout := hookTimeout(h)
-
-	add := func(event string, beltEvent HookEvent) {
-		if event == "" {
-			return
-		}
+	for _, p := range plan {
 		if h.HookFlatBare {
-			parts = append(parts, fmt.Sprintf(`"%s":[{"command":"%s"}]`, event, jsonEscape(cmdFor(beltEvent))))
-			return
+			parts = append(parts, fmt.Sprintf(`"%s":[{"command":"%s"}]`, p.Name, jsonEscape(cmdFor(p.Event))))
+			continue
 		}
-		parts = append(parts, fmt.Sprintf(`"%s":[{"type":"command","command":"%s","timeout":%d}]`, event, jsonEscape(cmdFor(beltEvent)), timeout))
-	}
-
-	for _, e := range h.Defined() {
-		add(e.AgentName(h), e)
+		parts = append(parts, fmt.Sprintf(`"%s":[{"type":"command","command":"%s","timeout":%d}]`, p.Name, jsonEscape(cmdFor(p.Event)), hookTimeout(h, p)))
 	}
 
 	hooks := "{" + strings.Join(parts, ",") + "}"
@@ -424,19 +424,10 @@ func generateJSONFlat(h Harness, cmdFor HookCommand) string {
 	return `{"hooks":` + hooks + `}`
 }
 
-func generateJSONKiro(h Harness, cmdFor HookCommand) string {
+func generateJSONKiro(h Harness, plan []plannedHook, cmdFor HookCommand) string {
 	var hooks []string
-	timeout := hookTimeout(h)
-
-	add := func(event string, beltEvent HookEvent) {
-		if event == "" {
-			return
-		}
-		hooks = append(hooks, fmt.Sprintf(`"%s":[{"command":"%s","timeout_ms":%d}]`, event, jsonEscape(cmdFor(beltEvent)), timeout))
-	}
-
-	for _, e := range h.Defined() {
-		add(e.AgentName(h), e)
+	for _, p := range plan {
+		hooks = append(hooks, fmt.Sprintf(`"%s":[{"command":"%s","timeout_ms":%d}]`, p.Name, jsonEscape(cmdFor(p.Event)), hookTimeout(h, p)))
 	}
 
 	// Selected as the default, belt's agent stands in for the built-in one: a
@@ -447,29 +438,36 @@ func generateJSONKiro(h Harness, cmdFor HookCommand) string {
 	return fmt.Sprintf(`{"name":"%s","description":"%s","tools":["*"],"includeMcpJson":true,"hooks":{%s}}`, KiroBeltAgentName, kiroAgentDescription, strings.Join(hooks, ","))
 }
 
-func generateJSONNested(name string, h Harness, cmdFor HookCommand) string {
-	parts := []string{}
-	timeout := hookTimeout(h)
-
-	add := func(event string, beltEvent HookEvent, matcher string) {
-		if event == "" {
-			return
-		}
-		cmd := jsonEscape(cmdFor(beltEvent))
-		hook := fmt.Sprintf(`{"type":"command","command":"%s","timeout":%d}`, cmd, timeout)
-		if matcher != "" {
-			parts = append(parts, fmt.Sprintf(`"%s":[{"matcher":"%s","hooks":[%s]}]`, event, matcher, hook))
-		} else {
-			parts = append(parts, fmt.Sprintf(`"%s":[{"hooks":[%s]}]`, event, hook))
-		}
+// matchersFor is the matcher groups a planned hook is written as: one per
+// tool asked for, or a single group matching every tool. PreToolUse needs an
+// explicit "*" for that; the other events match everything without one.
+func matchersFor(p plannedHook) []string {
+	if len(p.Matchers) > 0 {
+		return p.Matchers
 	}
+	if p.Event == PreToolUse {
+		return []string{"*"}
+	}
+	return []string{""}
+}
 
-	for _, e := range h.Defined() {
-		matcher := ""
-		if e == PreToolUse {
-			matcher = "*"
+func generateJSONNested(h Harness, plan []plannedHook, cmdFor HookCommand) string {
+	parts := []string{}
+	for _, p := range plan {
+		hook := fmt.Sprintf(`{"type":"command","command":"%s","timeout":%d`, jsonEscape(cmdFor(p.Event)), hookTimeout(h, p))
+		if p.Async {
+			hook += `,"async":true`
 		}
-		add(e.AgentName(h), e, matcher)
+		hook += "}"
+		var groups []string
+		for _, m := range matchersFor(p) {
+			if m != "" {
+				groups = append(groups, fmt.Sprintf(`{"matcher":"%s","hooks":[%s]}`, jsonEscape(m), hook))
+			} else {
+				groups = append(groups, fmt.Sprintf(`{"hooks":[%s]}`, hook))
+			}
+		}
+		parts = append(parts, fmt.Sprintf(`"%s":[%s]`, p.Name, strings.Join(groups, ",")))
 	}
 
 	hooks := "{" + strings.Join(parts, ",") + "}"
@@ -480,75 +478,49 @@ func generateJSONNested(name string, h Harness, cmdFor HookCommand) string {
 	return fmt.Sprintf(`{"hooks":%s}`, hooks)
 }
 
-func generateJSONCopilot(h Harness, cmdFor HookCommand) string {
+func generateJSONCopilot(h Harness, plan []plannedHook, cmdFor HookCommand) string {
 	parts := []string{}
-	timeout := hookTimeout(h)
-
-	add := func(event string, beltEvent HookEvent) {
-		if event == "" {
-			return
-		}
+	for _, p := range plan {
 		parts = append(parts, fmt.Sprintf(`"%s":[{"type":"command","bash":"%s","timeoutSec":%d}]`,
-			event, jsonEscape(cmdFor(beltEvent)), timeout))
-	}
-
-	for _, e := range h.Defined() {
-		add(e.AgentName(h), e)
+			p.Name, jsonEscape(cmdFor(p.Event)), hookTimeout(h, p)))
 	}
 
 	return fmt.Sprintf(`{"version":1,"hooks":{%s}}`, strings.Join(parts, ","))
 }
 
-func generateTOML(h Harness, cmdFor HookCommand) string {
+func generateTOML(h Harness, plan []plannedHook, cmdFor HookCommand) string {
 	var lines []string
-	timeout := hookTimeout(h)
-
-	add := func(event string, beltEvent HookEvent, matcher string) {
-		if event == "" {
-			return
+	for _, p := range plan {
+		for _, m := range matchersFor(p) {
+			lines = append(lines, fmt.Sprintf("\n[[hooks]]\nevent = \"%s\"", p.Name))
+			if m != "" {
+				lines = append(lines, fmt.Sprintf("matcher = \"%s\"", jsonEscape(m)))
+			}
+			lines = append(lines, fmt.Sprintf("command = \"%s\"\ntimeout = %d", jsonEscape(declare(h, cmdFor(p.Event))), hookTimeout(h, p)))
 		}
-		lines = append(lines, fmt.Sprintf("\n[[hooks]]\nevent = \"%s\"", event))
-		if matcher != "" {
-			lines = append(lines, fmt.Sprintf("matcher = \"%s\"", matcher))
-		}
-		lines = append(lines, fmt.Sprintf("command = \"%s\"\ntimeout = %d", jsonEscape(declare(h, cmdFor(beltEvent))), timeout))
-	}
-
-	for _, e := range h.Defined() {
-		matcher := ""
-		if e == PreToolUse {
-			matcher = "*"
-		}
-		add(e.AgentName(h), e, matcher)
 	}
 
 	return strings.Join(lines, "\n") + "\n"
 }
 
-func generateYAML(h Harness, cmdFor HookCommand) string {
+func generateYAML(h Harness, plan []plannedHook, cmdFor HookCommand) string {
 	var lines []string
 	lines = append(lines, "hooks:")
-	timeout := hookTimeout(h)
-
-	add := func(event string, beltEvent HookEvent) {
-		if event == "" {
-			return
-		}
-		lines = append(lines, fmt.Sprintf("  %s:\n    - command: %s\n      timeout: %d", event, cmdFor(beltEvent), timeout))
-	}
-
-	for _, e := range h.Defined() {
-		add(e.AgentName(h), e)
+	for _, p := range plan {
+		lines = append(lines, fmt.Sprintf("  %s:\n    - command: %s\n      timeout: %d", p.Name, cmdFor(p.Event), hookTimeout(h, p)))
 	}
 
 	return strings.Join(lines, "\n") + "\n"
 }
+
+// tsTimeout is how long the plugin file lets a hook command run, in ms.
+func tsTimeout(p plannedHook) int { return timeoutIn(p.Timeout, time.Millisecond, 5000) }
 
 // tsExecOpts keeps the hook command off the agent's own stdin. execSync
 // inherits it by default, and over ACP that is the JSON-RPC stream: a hook
 // that reads stdin eats the agent's input.
-func tsExecOpts(h Harness) string {
-	return "{ timeout: 5000, stdio: [\"ignore\", \"pipe\", \"ignore\"]" + tsEnvOpt(h) + " }"
+func tsExecOpts(h Harness, ms int) string {
+	return fmt.Sprintf("{ timeout: %d, ", ms) + "stdio: [\"ignore\", \"pipe\", \"ignore\"]" + tsEnvOpt(h) + " }"
 }
 
 // tsEnvOpt renders the env option that declares which agent belt is running
@@ -570,8 +542,8 @@ func tsEnvOpt(h Harness) string {
 // none (suggest.ParseHookInput). Handing the command /dev/null therefore
 // produced a hook that fired, printed nothing, and injected nothing — the
 // channel correct end to end with nothing flowing through it.
-func tsExecOptsInput(h Harness) string {
-	return "{ input: beltInput, timeout: 5000, stdio: [\"pipe\", \"pipe\", \"ignore\"]" + tsEnvOpt(h) + " }"
+func tsExecOptsInput(h Harness, ms int) string {
+	return fmt.Sprintf("{ input: beltInput, timeout: %d, ", ms) + "stdio: [\"pipe\", \"pipe\", \"ignore\"]" + tsEnvOpt(h) + " }"
 }
 
 // DeclaresAgent reports whether belt's generated hook config for this agent
@@ -599,9 +571,9 @@ func declare(h Harness, cmd string) string {
 
 // tsRun renders the execSync call for a hook that only needs to fire, with
 // its continuation lines indented to pad.
-func tsRun(h Harness, cmd, pad string) string {
+func tsRun(h Harness, cmd, pad string, ms int) string {
 	return fmt.Sprintf("const { execSync } = require(\"child_process\");\n%stry { execSync(\"%s\", %s); } catch {}",
-		pad, jsonEscape(cmd), tsExecOpts(h))
+		pad, jsonEscape(cmd), tsExecOpts(h, ms))
 }
 
 // tsRunCapture renders the execSync call for a hook whose stdout is context:
@@ -609,13 +581,13 @@ func tsRun(h Harness, cmd, pad string) string {
 // trimmed output to `out`, and runs sink only when it is non-empty.
 // ContextPlugin agents have no stdout channel of their own, so the plugin file
 // is the only place the command's output can reach the model.
-func tsRunCapture(h Harness, cmd, sink, pad string) string {
+func tsRunCapture(h Harness, cmd, sink, pad string, ms int) string {
 	return fmt.Sprintf("const { execSync } = require(\"child_process\");\n"+
 		"%[4]stry {\n"+
 		"%[4]s  const out = execSync(\"%[1]s\", %[2]s).toString().trim();\n"+
 		"%[4]s  if (out) %[3]s\n"+
 		"%[4]s} catch {}",
-		jsonEscape(cmd), tsExecOptsInput(h), sink, pad)
+		jsonEscape(cmd), tsExecOptsInput(h, ms), sink, pad)
 }
 
 // injectsContext reports whether the agent takes this event's hook output as
@@ -624,34 +596,35 @@ func injectsContext(h Harness, e HookEvent) bool {
 	return ContextChannelFor(h.Name, string(e)) == ContextPlugin
 }
 
-func generateTSExtension(h Harness, cmdFor HookCommand) string {
+func generateTSExtension(h Harness, plan []plannedHook, cmdFor HookCommand) string {
 	var handlers []string
 
-	for _, e := range h.Defined() {
-		event := e.AgentName(h)
-		if event == "" {
-			continue
-		}
+	for _, p := range plan {
+		e, event := p.Event, p.Name
 		if injectsContext(h, e) {
 			// before_agent_start carries the prompt (measured: the event has
 			// type, prompt and systemPrompt), so the payload is built here.
 			body := `const beltInput = JSON.stringify({ prompt: (event && event.prompt) || "" });` + "\n    " +
-				tsRunCapture(h, cmdFor(e), `return { systemPrompt: (event.systemPrompt || "") + "\n" + out };`, "    ")
+				tsRunCapture(h, cmdFor(e), `return { systemPrompt: (event.systemPrompt || "") + "\n" + out };`, "    ", tsTimeout(p))
 			handlers = append(handlers, fmt.Sprintf("  pi.on(\"%s\", async (event: any) => {\n    %s\n  });", event, body))
 			continue
 		}
-		handlers = append(handlers, fmt.Sprintf("  pi.on(\"%s\", async () => {\n    %s\n  });", event, tsRun(h, cmdFor(e), "    ")))
+		handlers = append(handlers, fmt.Sprintf("  pi.on(\"%s\", async () => {\n    %s\n  });", event, tsRun(h, cmdFor(e), "    ", tsTimeout(p))))
 	}
 
 	return fmt.Sprintf("export default function (pi: any) {\n%s\n}\n", strings.Join(handlers, "\n"))
 }
 
-func generateTSPlugin(name string, h Harness, cmdFor HookCommand) string {
+func generateTSPlugin(name string, h Harness, plan []plannedHook, cmdFor HookCommand) string {
 	var hooks []string
+	planned := map[HookEvent]plannedHook{}
+	for _, p := range plan {
+		planned[p.Event] = p
+	}
 
-	for _, e := range h.Defined() {
-		event := e.AgentName(h)
-		if event == "" || e == Stop {
+	for _, p := range plan {
+		e, event := p.Event, p.Name
+		if e == Stop {
 			// Stop is not a named hook in this format; it arrives through the
 			// generic event channel below.
 			continue
@@ -663,7 +636,7 @@ func generateTSPlugin(name string, h Harness, cmdFor HookCommand) string {
 			// text arrives, so it is captured there and used here. Measured
 			// order: chat.message once at the start of the turn, then the
 			// transform once per model request in it.
-			body := tsRunCapture(h, cmdFor(e), "output.system.push(out);", "      ")
+			body := tsRunCapture(h, cmdFor(e), "output.system.push(out);", "      ", tsTimeout(p))
 			hooks = append(hooks, fmt.Sprintf(`    "chat.message": async (input: any, output: any) => {
       beltSession = (input && input.sessionID) || "";
       beltPrompt = ((output && output.parts) || [])
@@ -679,22 +652,22 @@ func generateTSPlugin(name string, h Harness, cmdFor HookCommand) string {
 				"      %s\n    }", event, body))
 			continue
 		}
-		hooks = append(hooks, fmt.Sprintf("    \"%s\": async () => {\n      %s\n    }", event, tsRun(h, cmdFor(e), "      ")))
+		hooks = append(hooks, fmt.Sprintf("    \"%s\": async () => {\n      %s\n    }", event, tsRun(h, cmdFor(e), "      ", tsTimeout(p))))
 	}
 
-	if stop := Stop.AgentName(h); stop != "" {
+	if stop := Stop.AgentName(h); stop != "" && planned[Stop].Name != "" {
 		hooks = append(hooks, fmt.Sprintf(`    "event": async ({ event }: any) => {
       if (event && event.type === "%s") {
         %s
       }
-    }`, stop, tsRun(h, cmdFor(Stop), "        ")))
+    }`, stop, tsRun(h, cmdFor(Stop), "        ", tsTimeout(planned[Stop]))))
 	}
 
 	// The transform hook runs once per model request in a turn, so without a
 	// pending flag belt was invoked three times for one prompt and pushed
 	// three copies of the same suggestions into the system prompt.
 	state := ""
-	if injectsContext(h, PromptSubmit) {
+	if injectsContext(h, PromptSubmit) && planned[PromptSubmit].Name != "" {
 		state = "  let beltPrompt = \"\";\n  let beltSession = \"\";\n  let beltPending = false;\n"
 	}
 	body := fmt.Sprintf("export const BeltPlugin = async (_ctx: any) => {\n%s  return {\n%s,\n  };\n};\n",
@@ -797,7 +770,7 @@ func HookConfigFor(name string, cmdFor HookCommand) (string, error) {
 	if !ok {
 		return "", fmt.Errorf("unknown harness: %s", name)
 	}
-	return generateHookConfig(name, h, cmdFor)
+	return generateHookConfig(name, h, defaultPlan(h), cmdFor)
 }
 
 // HookFileName is the file an agent's hooks are written to.

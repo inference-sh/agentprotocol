@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/inference-sh/agentprotocol/conformance/server"
 	"github.com/inference-sh/agentprotocol/harness"
@@ -152,5 +154,27 @@ func TestEveryAgentWithToolHooksArmsAToolCall(t *testing.T) {
 		if got := r.toolMatcher(); got == "" {
 			t.Errorf("%s: tool hooks with an empty matcher", name)
 		}
+	}
+}
+
+// The wait line must not mark the event as fired on its own, and a hook that
+// found stdin held open past the limit fails.
+func TestHookStdinWaitIsReadFromTheLog(t *testing.T) {
+	if strings.Contains(stdinWaitMarker(TagPreTool), TagPreTool) {
+		t.Fatal("the wait marker contains the event tag, so it alone would read as the hook firing")
+	}
+	log := stdinWaitMarker(TagPreTool) + " 3\n" + TagPreTool + "\n" + stdinWaitMarker(TagPreTool) + " 1999\n" + TagPreTool + "\n"
+	if got := stdinWaits(log, TagPreTool); len(got) != 2 || got[1] != 1999*time.Millisecond {
+		t.Fatalf("stdinWaits = %v", got)
+	}
+	r := &TestRunner{harness: harness.All["claude"]}
+	r.checkHookStdinWait("headless", log)
+	if r.result.Failed != 1 || r.result.Passed != 0 {
+		t.Errorf("a 1999ms wait: failed=%d passed=%d, want one failure", r.result.Failed, r.result.Passed)
+	}
+	r = &TestRunner{harness: harness.All["claude"]}
+	r.checkHookStdinWait("headless", stdinWaitMarker(TagPostTool)+" 4\n")
+	if r.result.Failed != 0 || r.result.Passed != 1 {
+		t.Errorf("a 4ms wait: failed=%d passed=%d, want one pass", r.result.Failed, r.result.Passed)
 	}
 }

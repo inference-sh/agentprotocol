@@ -40,6 +40,12 @@ var standardEvents = Events{
 	PreCompact:   "PreCompact",
 }
 
+// withSessionEnd is an event set plus the agent's session-end hook.
+func withSessionEnd(e Events, name string) Events {
+	e.SessionEnd = name
+	return e
+}
+
 func withACP(h Harness, cmd []string, args []string) Harness {
 	h.ACPCmd = cmd
 	h.ACPArgs = args
@@ -175,7 +181,9 @@ var All = map[string]Harness{
 			{Path: ".claude.json", Content: `{"projects":{"{{.RepoDir}}":{"hasTrustDialogAccepted":true}}}`},
 			{Path: ".claude/settings.local.json", Content: `{"theme":"dark","hasCompletedOnboarding":true}`},
 		},
-		Events:                  standardEvents,
+		Events:                  withSessionEnd(standardEvents, "SessionEnd"),
+		HookAsync:               true,
+		ToolNames:               map[Tool]string{ToolShell: "Bash", ToolSkill: "Skill"},
 		SkillsDir:               ".claude/skills",
 		HeadlessCmd:             []string{"claude", "-p"},
 		HeadlessModelArgs:       []string{"--model", "{{.Model}}", "--dangerously-skip-permissions", "--max-turns", "2"},
@@ -256,6 +264,7 @@ var All = map[string]Harness{
 		ToolCallGated:    ToolCall{Name: "exec_command", Args: gatedExecArgs},
 		ToolCallSubagent: ToolCall{Namespace: "multi_agent_v1", Name: "spawn_agent", Args: `{"message":"Reply with the word done."}`},
 		HookToolMatcher:  "Bash",
+		ToolNames:        map[Tool]string{ToolShell: "Bash"},
 		HookFormat:       JSONNested,
 		HookConfigDir:    ".codex",
 		HookFileName:     "hooks.json",
@@ -1058,7 +1067,7 @@ export const Direct = async () => ({
 		HookConfigDir:     ".qwen",
 		HookFileName:      "settings.json",
 		HookWrapper:       `{"permissions":{"allow":["Bash(*)","Read(*)","Write(*)"]},"hooks":%s}`,
-		Events:            standardEvents,
+		Events:            withSessionEnd(standardEvents, "SessionEnd"),
 		NeedsGitRepo:      true,
 		HeadlessCmd:       []string{"qwen", "-p"},
 		HeadlessModelArgs: []string{"--model", "{{.Model}}", "--yolo", "--auth-type", "openai"},
@@ -1187,7 +1196,7 @@ export const Direct = async () => ({
 			"acp:event:PROMPT":      {Before: "0.236.0"},
 			"headless:event:PROMPT": {Before: "1.9.0"},
 		},
-		Events: standardEvents,
+		Events: withSessionEnd(standardEvents, "SessionEnd"),
 		ConfigFiles: []ConfigFile{
 			{Path: ".factory/settings.json", Content: `{"customModels":[{"model":"mock-model","displayName":"Mock","baseUrl":"{{.BaseURL}}/v1","apiKey":"mock-key","provider":"openai","maxOutputTokens":4096,"maxContextLimit":128000}],"sessionDefaultSettings":{"model":"custom:mock-model"}}`},
 		},

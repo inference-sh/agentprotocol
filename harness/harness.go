@@ -122,6 +122,11 @@ type Harness struct {
 	HookTimeoutMs  bool   // true = timeout field is milliseconds (gemini, qwen, kiro), false = seconds
 	HookNoEnvelope bool   // true = hooks file is raw hooks object, no {"hooks":...} wrapper (droid)
 	HookFlatBare   bool   // JSONFlat entries carry only "command" (windsurf rejects nothing but documents nothing else)
+	HookAsync      bool   // the hook entry takes "async": true and the agent goes on without waiting
+	// ToolNames is the agent's name for each Tool a hook can be matched on.
+	// A tool with no entry cannot be matched, and a hook asked to match it
+	// fires for every tool instead (RenderHooks notes it).
+	ToolNames map[Tool]string
 	// KnownIssues records what an agent genuinely cannot do, so the runner can
 	// tell "not supported here" apart from "broken". Keys:
 	//
@@ -356,6 +361,7 @@ type Events struct {
 	PostToolUse  string
 	Stop         string
 	PreCompact   string
+	SessionEnd   string
 }
 
 // DriverKind names a session driver, matching the Kind of the driver

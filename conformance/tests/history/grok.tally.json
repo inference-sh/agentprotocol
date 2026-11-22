@@ -1,8 +1,5 @@
 {
   "ingested": {
-    "agentprotocol Nightly 41575845638": "2026-11-03",
-    "agentprotocol Nightly 41770888503": "2026-11-04",
-    "agentprotocol Nightly 42201531930": "2026-11-06",
     "agentprotocol Nightly 42479125985": "2026-11-08",
     "agentprotocol Nightly 42589195324": "2026-11-09",
     "agentprotocol Nightly 42753368328": "2026-11-10",
@@ -13,826 +10,15 @@
     "agentprotocol Nightly 43554710043": "2026-11-14",
     "agentprotocol Nightly 43675080572": "2026-11-15",
     "agentprotocol Nightly 43801787154": "2026-11-16",
-    "agentprotocol Nightly 44014482364": "2026-11-17"
+    "agentprotocol Nightly 44014482364": "2026-11-17",
+    "agentprotocol Nightly 44079124745": "2026-11-17",
+    "agentprotocol Nightly 44234679823": "2026-11-18",
+    "agentprotocol Nightly 44455677419": "2026-11-19",
+    "agentprotocol Nightly 44671851715": "2026-11-20",
+    "agentprotocol Nightly 44864182434": "2026-11-21",
+    "agentprotocol Nightly 44983348684": "2026-11-22"
   },
   "versions": {
-    "1.0.70": {
-      "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 11
-      },
-      "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "pass": 11
-      },
-      "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 11
-      },
-      "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 11
-      },
-      "[acp, belt hooks] acp/instructions../AGENTS.md": {
-        "pass": 11
-      },
-      "[acp, belt hooks] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[acp, belt hooks] acp/model": {
-        "pass": 11
-      },
-      "[acp, belt hooks] acp/requests": {
-        "pass": 11
-      },
-      "[acp, belt hooks] acp/streaming": {
-        "pass": 11
-      },
-      "[acp, belt hooks] binary": {
-        "pass": 11
-      },
-      "[acp, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 11
-      },
-      "[acp, belt hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 11
-      },
-      "[acp, belt hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, belt hooks] env.XAI_API_KEY": {
-        "pass": 11
-      },
-      "[acp, belt hooks] hooks.install": {
-        "pass": 11
-      },
-      "[acp, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 11
-      },
-      "[acp, belt hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[acp, belt hooks] session.answer": {
-        "pass": 11
-      },
-      "[acp, belt hooks] session.completed": {
-        "pass": 11
-      },
-      "[acp, belt hooks] session.start": {
-        "pass": 11
-      },
-      "[acp, belt hooks] skills": {
-        "pass": 11
-      },
-      "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 11
-      },
-      "[acp, mock hooks] acp/hook.pre-tool": {
-        "pass": 11
-      },
-      "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 11
-      },
-      "[acp, mock hooks] acp/hook.stop": {
-        "pass": 11
-      },
-      "[acp, mock hooks] acp/instructions../AGENTS.md": {
-        "pass": 11
-      },
-      "[acp, mock hooks] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[acp, mock hooks] acp/model": {
-        "pass": 11
-      },
-      "[acp, mock hooks] acp/requests": {
-        "pass": 11
-      },
-      "[acp, mock hooks] acp/streaming": {
-        "pass": 11
-      },
-      "[acp, mock hooks] binary": {
-        "pass": 11
-      },
-      "[acp, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 11
-      },
-      "[acp, mock hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 11
-      },
-      "[acp, mock hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 11
-      },
-      "[acp, mock hooks] env.XAI_API_KEY": {
-        "pass": 11
-      },
-      "[acp, mock hooks] hooks.install": {
-        "pass": 11
-      },
-      "[acp, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 11
-      },
-      "[acp, mock hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[acp, mock hooks] session.answer": {
-        "pass": 11
-      },
-      "[acp, mock hooks] session.completed": {
-        "pass": 11
-      },
-      "[acp, mock hooks] session.start": {
-        "pass": 11
-      },
-      "[acp, mock hooks] skills": {
-        "pass": 11
-      },
-      "[direct] acp/hook.post-tool": {
-        "pass": 10
-      },
-      "[direct] acp/hook.pre-tool": {
-        "pass": 10
-      },
-      "[direct] acp/hook.prompt": {
-        "pass": 10
-      },
-      "[direct] acp/hook.stop": {
-        "pass": 10
-      },
-      "[direct] acp/instructions../AGENTS.md": {
-        "pass": 10
-      },
-      "[direct] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 10
-      },
-      "[direct] acp/model": {
-        "pass": 10
-      },
-      "[direct] acp/requests": {
-        "pass": 10
-      },
-      "[direct] acp/streaming": {
-        "pass": 10
-      },
-      "[direct] binary": {
-        "pass": 10
-      },
-      "[direct] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 10
-      },
-      "[direct] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 10
-      },
-      "[direct] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 10
-      },
-      "[direct] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 10
-      },
-      "[direct] env.GROK_MODELS_BASE_URL": {
-        "pass": 10
-      },
-      "[direct] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 10
-      },
-      "[direct] env.GROK_XAI_API_BASE_URL": {
-        "pass": 10
-      },
-      "[direct] env.XAI_API_KEY": {
-        "pass": 10
-      },
-      "[direct] hooks.install": {
-        "pass": 10
-      },
-      "[direct] instructions.written../AGENTS.md": {
-        "pass": 10
-      },
-      "[direct] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 10
-      },
-      "[direct] session.answer": {
-        "pass": 10
-      },
-      "[direct] session.completed": {
-        "pass": 10
-      },
-      "[direct] session.start": {
-        "pass": 10
-      },
-      "[direct] skills": {
-        "pass": 10
-      },
-      "[headless, belt hooks] binary": {
-        "pass": 11
-      },
-      "[headless, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 11
-      },
-      "[headless, belt hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 11
-      },
-      "[headless, belt hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, belt hooks] env.XAI_API_KEY": {
-        "pass": 11
-      },
-      "[headless, belt hooks] headless/belt-hook.post-tool": {
-        "pass": 11
-      },
-      "[headless, belt hooks] headless/belt-hook.pre-tool": {
-        "pass": 11
-      },
-      "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 11
-      },
-      "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 11
-      },
-      "[headless, belt hooks] headless/instructions../AGENTS.md": {
-        "pass": 11
-      },
-      "[headless, belt hooks] headless/instructions.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[headless, belt hooks] headless/model": {
-        "pass": 11
-      },
-      "[headless, belt hooks] headless/requests": {
-        "pass": 11
-      },
-      "[headless, belt hooks] headless/streaming": {
-        "pass": 11
-      },
-      "[headless, belt hooks] hooks.install": {
-        "pass": 11
-      },
-      "[headless, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 11
-      },
-      "[headless, belt hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[headless, belt hooks] skills": {
-        "pass": 11
-      },
-      "[headless, belt hooks] turn": {
-        "pass": 11
-      },
-      "[headless, mock hooks] binary": {
-        "pass": 11
-      },
-      "[headless, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 11
-      },
-      "[headless, mock hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 11
-      },
-      "[headless, mock hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 11
-      },
-      "[headless, mock hooks] env.XAI_API_KEY": {
-        "pass": 11
-      },
-      "[headless, mock hooks] headless/hook.post-tool": {
-        "pass": 11
-      },
-      "[headless, mock hooks] headless/hook.pre-tool": {
-        "pass": 11
-      },
-      "[headless, mock hooks] headless/hook.prompt": {
-        "pass": 11
-      },
-      "[headless, mock hooks] headless/hook.stop": {
-        "pass": 11
-      },
-      "[headless, mock hooks] headless/instructions../AGENTS.md": {
-        "pass": 11
-      },
-      "[headless, mock hooks] headless/instructions.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[headless, mock hooks] headless/model": {
-        "pass": 11
-      },
-      "[headless, mock hooks] headless/requests": {
-        "pass": 11
-      },
-      "[headless, mock hooks] headless/streaming": {
-        "pass": 11
-      },
-      "[headless, mock hooks] hooks.install": {
-        "pass": 11
-      },
-      "[headless, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 11
-      },
-      "[headless, mock hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[headless, mock hooks] skills": {
-        "pass": 11
-      },
-      "[headless, mock hooks] turn": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] binary": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] env.XAI_API_KEY": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] hooks.install": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] interactive/instructions.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] interactive/model": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] interactive/requests": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] interactive/streaming": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] skills": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] tui.completed": {
-        "pass": 11
-      },
-      "[interactive, belt hooks] tui.start": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] binary": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] env.XAI_API_KEY": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] hooks.install": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] interactive/hook.post-tool": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] interactive/hook.pre-tool": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] interactive/hook.prompt": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] interactive/instructions.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] interactive/model": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] interactive/requests": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] interactive/streaming": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] skills": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] tui.completed": {
-        "pass": 11
-      },
-      "[interactive, mock hooks] tui.start": {
-        "pass": 11
-      },
-      "[probes] acp/hook.post-tool": {
-        "pass": 11
-      },
-      "[probes] acp/hook.pre-tool": {
-        "pass": 11
-      },
-      "[probes] acp/hook.prompt": {
-        "pass": 11
-      },
-      "[probes] acp/hook.stop": {
-        "pass": 11
-      },
-      "[probes] acp/instructions../AGENTS.md": {
-        "pass": 11
-      },
-      "[probes] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[probes] acp/model": {
-        "pass": 11
-      },
-      "[probes] acp/requests": {
-        "pass": 11
-      },
-      "[probes] acp/streaming": {
-        "pass": 11
-      },
-      "[probes] binary": {
-        "pass": 11
-      },
-      "[probes] compact.context": {
-        "pass:summary": 11
-      },
-      "[probes] compact.run": {
-        "pass": 11
-      },
-      "[probes] deferred.armed": {
-        "pass": 11
-      },
-      "[probes] deferred.expanded": {
-        "pass:nothing-new": 11
-      },
-      "[probes] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 11
-      },
-      "[probes] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 11
-      },
-      "[probes] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 11
-      },
-      "[probes] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 11
-      },
-      "[probes] env.GROK_MODELS_BASE_URL": {
-        "pass": 11
-      },
-      "[probes] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 11
-      },
-      "[probes] env.GROK_XAI_API_BASE_URL": {
-        "pass": 11
-      },
-      "[probes] env.XAI_API_KEY": {
-        "pass": 11
-      },
-      "[probes] hooks.install": {
-        "pass": 11
-      },
-      "[probes] images.declined": {
-        "pass": 11
-      },
-      "[probes] images.named": {
-        "pass": 11
-      },
-      "[probes] instructions.written../AGENTS.md": {
-        "pass": 11
-      },
-      "[probes] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[probes] resume.context": {
-        "pass": 11
-      },
-      "[probes] resume.load": {
-        "pass": 11
-      },
-      "[probes] resume.replay": {
-        "pass": 11
-      },
-      "[probes] seed.appended": {
-        "pass": 11
-      },
-      "[probes] seed.hand-built": {
-        "pass": 11
-      },
-      "[probes] seedkinds.assistant text": {
-        "pass": 11
-      },
-      "[probes] seedkinds.compaction.context": {
-        "pass": 11
-      },
-      "[probes] seedkinds.compaction.history": {
-        "pass": 11
-      },
-      "[probes] seedkinds.compaction.request": {
-        "pass": 11
-      },
-      "[probes] seedkinds.file-uri": {
-        "pass:as-image": 11
-      },
-      "[probes] seedkinds.first user message": {
-        "pass": 11
-      },
-      "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 11
-      },
-      "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 11
-      },
-      "[probes] seedkinds.reasoning": {
-        "pass": 11
-      },
-      "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 11
-      },
-      "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 11
-      },
-      "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 11
-      },
-      "[probes] seedkinds.retired-tool.context": {
-        "pass": 11
-      },
-      "[probes] seedkinds.retired-tool.history": {
-        "pass": 11
-      },
-      "[probes] seedkinds.retired-tool.request": {
-        "pass": 11
-      },
-      "[probes] seedkinds.second turn's answer": {
-        "pass": 11
-      },
-      "[probes] seedkinds.second turn's user message": {
-        "pass": 11
-      },
-      "[probes] seedkinds.shown-only": {
-        "pass": 11
-      },
-      "[probes] seedkinds.tool call arguments": {
-        "pass": 11
-      },
-      "[probes] seedkinds.tool result": {
-        "pass": 11
-      },
-      "[probes] seedkinds.tool-after-text": {
-        "pass": 11
-      },
-      "[probes] seedkinds.tool-image": {
-        "finding:not-given": 11
-      },
-      "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 11
-      },
-      "[probes] seedkinds.trailing-prompt.request": {
-        "pass:sent": 11
-      },
-      "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 11
-      },
-      "[probes] seedkinds.trailing-tool result.request": {
-        "pass:sent": 11
-      },
-      "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 11
-      },
-      "[probes] seedkinds.user-attachments.image": {
-        "pass:as-image": 11
-      },
-      "[probes] seedkinds.user-attachments.pdf": {
-        "finding:not-kept": 11
-      },
-      "[probes] session.answer": {
-        "pass": 11
-      },
-      "[probes] session.completed": {
-        "pass": 11
-      },
-      "[probes] session.start": {
-        "pass": 11
-      },
-      "[probes] skills": {
-        "pass": 11
-      },
-      "[probes] transcript": {
-        "pass": 11
-      },
-      "[probes] turn": {
-        "pass": 88
-      },
-      "[probes] usage.account": {
-        "finding:not-reported": 11
-      },
-      "[probes] usage.context": {
-        "fail": 1,
-        "finding:not-reported": 6,
-        "finding:window-only": 4
-      },
-      "[probes] usage.limits": {
-        "finding:not-reported": 11
-      },
-      "[probes] usage.probe.limits": {
-        "pass:unsupported": 11
-      },
-      "[probes] usage.probe.no-model-call": {
-        "pass": 11
-      },
-      "[probes] usage.turn": {
-        "finding:not-reported": 11
-      },
-      "[resume-kill] acp/hook.post-tool": {
-        "pass": 11
-      },
-      "[resume-kill] acp/hook.pre-tool": {
-        "pass": 11
-      },
-      "[resume-kill] acp/hook.prompt": {
-        "pass": 11
-      },
-      "[resume-kill] acp/hook.stop": {
-        "pass": 11
-      },
-      "[resume-kill] acp/instructions../AGENTS.md": {
-        "pass": 11
-      },
-      "[resume-kill] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[resume-kill] acp/model": {
-        "pass": 11
-      },
-      "[resume-kill] acp/requests": {
-        "pass": 11
-      },
-      "[resume-kill] acp/streaming": {
-        "pass": 11
-      },
-      "[resume-kill] binary": {
-        "pass": 11
-      },
-      "[resume-kill] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 11
-      },
-      "[resume-kill] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 11
-      },
-      "[resume-kill] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 11
-      },
-      "[resume-kill] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 11
-      },
-      "[resume-kill] env.GROK_MODELS_BASE_URL": {
-        "pass": 11
-      },
-      "[resume-kill] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 11
-      },
-      "[resume-kill] env.GROK_XAI_API_BASE_URL": {
-        "pass": 11
-      },
-      "[resume-kill] env.XAI_API_KEY": {
-        "pass": 11
-      },
-      "[resume-kill] hooks.install": {
-        "pass": 11
-      },
-      "[resume-kill] instructions.written../AGENTS.md": {
-        "pass": 11
-      },
-      "[resume-kill] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 11
-      },
-      "[resume-kill] resume.context": {
-        "pass": 11
-      },
-      "[resume-kill] resume.load": {
-        "pass": 11
-      },
-      "[resume-kill] resume.replay": {
-        "pass": 11
-      },
-      "[resume-kill] session.answer": {
-        "pass": 11
-      },
-      "[resume-kill] session.completed": {
-        "pass": 11
-      },
-      "[resume-kill] session.start": {
-        "pass": 11
-      },
-      "[resume-kill] skills": {
-        "pass": 11
-      },
-      "[surface] binary": {
-        "pass": 11
-      }
-    },
     "1.0.77": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
         "pass": 11
@@ -1650,817 +836,2447 @@
     },
     "1.0.88": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] acp/instructions../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] acp/model": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] acp/requests": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] acp/streaming": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] binary": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] env.XAI_API_KEY": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] hooks.install": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] session.answer": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] session.completed": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] session.start": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, belt hooks] skills": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.pre-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook.stop": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] acp/instructions../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] acp/model": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] acp/requests": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] acp/streaming": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] binary": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] env.XAI_API_KEY": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] hooks.install": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] session.answer": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] session.completed": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] session.start": {
-        "pass": 1
+        "pass": 3
       },
       "[acp, mock hooks] skills": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] acp/hook.post-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] acp/hook.pre-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] acp/hook.prompt": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] acp/hook.stop": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] acp/instructions../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] acp/model": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] acp/requests": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] acp/streaming": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] binary": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] env.GROK_MODELS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] env.GROK_XAI_API_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] env.XAI_API_KEY": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] hooks.install": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] instructions.written../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] session.answer": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] session.completed": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] session.start": {
-        "pass": 1
+        "pass": 3
       },
       "[direct] skills": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] binary": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] env.XAI_API_KEY": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.post-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.pre-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] headless/instructions../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] headless/instructions.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] headless/model": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] headless/requests": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] headless/streaming": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] hooks.install": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] skills": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, belt hooks] turn": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] binary": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] env.XAI_API_KEY": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.post-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.pre-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.prompt": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook.stop": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] headless/instructions../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] headless/instructions.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] headless/model": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] headless/requests": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] headless/streaming": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] hooks.install": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] skills": {
-        "pass": 1
+        "pass": 3
       },
       "[headless, mock hooks] turn": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] binary": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] env.XAI_API_KEY": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] hooks.install": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.post-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/instructions.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/model": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/requests": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/streaming": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] skills": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] tui.completed": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, belt hooks] tui.start": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] binary": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] env.GROK_MODELS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] env.GROK_XAI_API_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] env.XAI_API_KEY": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] hooks.install": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.post-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.pre-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.prompt": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/instructions.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/model": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/requests": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/streaming": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] skills": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] tui.completed": {
-        "pass": 1
+        "pass": 3
       },
       "[interactive, mock hooks] tui.start": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] acp/hook.post-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] acp/hook.pre-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] acp/hook.prompt": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] acp/hook.stop": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] acp/instructions../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] acp/model": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] acp/requests": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] acp/streaming": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] binary": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] compact.context": {
-        "pass:summary": 1
+        "pass:summary": 3
       },
       "[probes] compact.run": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] deferred.armed": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] deferred.expanded": {
-        "pass:nothing-new": 1
+        "pass:nothing-new": 3
       },
       "[probes] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] env.GROK_MODELS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] env.GROK_XAI_API_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] env.XAI_API_KEY": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] hooks.install": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] images.declined": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] images.named": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] instructions.written../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] resume.context": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] resume.load": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] resume.replay": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seed.appended": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seed.hand-built": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.assistant text": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.compaction.context": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.compaction.history": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.compaction.request": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.file-uri": {
-        "pass:as-image": 1
+        "pass:as-image": 3
       },
       "[probes] seedkinds.first user message": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 1
+        "pass:as-image": 3
       },
       "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 1
+        "pass:as-image": 3
       },
       "[probes] seedkinds.reasoning": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.retired-tool.context": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.retired-tool.history": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.retired-tool.request": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.second turn's answer": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.second turn's user message": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.shown-only": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.tool call arguments": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.tool result": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.tool-after-text": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.tool-image": {
-        "finding:not-given": 1
+        "finding:not-given": 3
       },
       "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.trailing-prompt.request": {
-        "pass:sent": 1
+        "pass:sent": 3
       },
       "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] seedkinds.trailing-tool result.request": {
-        "pass:sent": 1
+        "pass:sent": 3
       },
       "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 1
+        "pass:as-text": 3
       },
       "[probes] seedkinds.user-attachments.image": {
-        "pass:as-image": 1
+        "pass:as-image": 3
       },
       "[probes] seedkinds.user-attachments.pdf": {
-        "finding:not-kept": 1
+        "finding:not-kept": 3
       },
       "[probes] session.answer": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] session.completed": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] session.start": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] skills": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] transcript": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] turn": {
-        "pass": 8
+        "pass": 24
       },
       "[probes] usage.account": {
-        "finding:not-reported": 1
+        "finding:not-reported": 3
       },
       "[probes] usage.context": {
-        "finding:window-only": 1
+        "finding:window-only": 3
       },
       "[probes] usage.limits": {
-        "finding:not-reported": 1
+        "finding:not-reported": 3
       },
       "[probes] usage.probe.limits": {
-        "pass:unsupported": 1
+        "pass:unsupported": 3
       },
       "[probes] usage.probe.no-model-call": {
-        "pass": 1
+        "pass": 3
       },
       "[probes] usage.turn": {
-        "finding:not-reported": 1
+        "finding:not-reported": 3
       },
       "[resume-kill] acp/hook.post-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] acp/hook.pre-tool": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] acp/hook.prompt": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] acp/hook.stop": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] acp/instructions../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] acp/instructions.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] acp/model": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] acp/requests": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] acp/streaming": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] binary": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] env.GROK_CONVERSATIONS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] env.GROK_FEEDBACK_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] env.GROK_MANAGED_CONFIG_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] env.GROK_MODELS_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] env.GROK_TRACE_UPLOAD_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] env.GROK_XAI_API_BASE_URL": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] env.XAI_API_KEY": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] hooks.install": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] instructions.written../AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] instructions.written.~/.grok/AGENTS.md": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] resume.context": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] resume.load": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] resume.replay": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] session.answer": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] session.completed": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] session.start": {
-        "pass": 1
+        "pass": 3
       },
       "[resume-kill] skills": {
-        "pass": 1
+        "pass": 3
       },
       "[surface] binary": {
-        "pass": 1
+        "pass": 3
+      }
+    },
+    "1.0.89": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 2
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 2
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[direct] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[direct] acp/model": {
+        "pass": 2
+      },
+      "[direct] acp/requests": {
+        "pass": 2
+      },
+      "[direct] acp/streaming": {
+        "pass": 2
+      },
+      "[direct] binary": {
+        "pass": 2
+      },
+      "[direct] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[direct] hooks.install": {
+        "pass": 2
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[direct] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[direct] session.answer": {
+        "pass": 2
+      },
+      "[direct] session.completed": {
+        "pass": 2
+      },
+      "[direct] session.start": {
+        "pass": 2
+      },
+      "[direct] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 2
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 2
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 2
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 2
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[probes] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[probes] acp/model": {
+        "pass": 2
+      },
+      "[probes] acp/requests": {
+        "pass": 2
+      },
+      "[probes] acp/streaming": {
+        "pass": 2
+      },
+      "[probes] binary": {
+        "pass": 2
+      },
+      "[probes] compact.context": {
+        "pass:summary": 2
+      },
+      "[probes] compact.run": {
+        "pass": 2
+      },
+      "[probes] deferred.armed": {
+        "pass": 2
+      },
+      "[probes] deferred.expanded": {
+        "pass:nothing-new": 2
+      },
+      "[probes] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[probes] hooks.install": {
+        "pass": 2
+      },
+      "[probes] images.declined": {
+        "pass": 2
+      },
+      "[probes] images.named": {
+        "pass": 2
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[probes] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[probes] resume.context": {
+        "pass": 2
+      },
+      "[probes] resume.load": {
+        "pass": 2
+      },
+      "[probes] resume.replay": {
+        "pass": 2
+      },
+      "[probes] seed.appended": {
+        "pass": 2
+      },
+      "[probes] seed.hand-built": {
+        "pass": 2
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 2
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 2
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 2
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-given": 2
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 2
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 2
+      },
+      "[probes] session.answer": {
+        "pass": 2
+      },
+      "[probes] session.completed": {
+        "pass": 2
+      },
+      "[probes] session.start": {
+        "pass": 2
+      },
+      "[probes] skills": {
+        "pass": 2
+      },
+      "[probes] transcript": {
+        "pass": 2
+      },
+      "[probes] turn": {
+        "pass": 16
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.context": {
+        "finding:window-only": 2
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 2
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 2
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 2
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 2
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[resume-kill] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[resume-kill] acp/model": {
+        "pass": 2
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 2
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 2
+      },
+      "[resume-kill] binary": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 2
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[resume-kill] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[resume-kill] resume.context": {
+        "pass": 2
+      },
+      "[resume-kill] resume.load": {
+        "pass": 2
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 2
+      },
+      "[resume-kill] session.answer": {
+        "pass": 2
+      },
+      "[resume-kill] session.completed": {
+        "pass": 2
+      },
+      "[resume-kill] session.start": {
+        "pass": 2
+      },
+      "[resume-kill] skills": {
+        "pass": 2
+      },
+      "[surface] binary": {
+        "pass": 2
+      }
+    },
+    "1.0.92": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, belt hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 2
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[acp, mock hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 2
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 2
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 2
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 2
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[direct] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[direct] acp/model": {
+        "pass": 2
+      },
+      "[direct] acp/requests": {
+        "pass": 2
+      },
+      "[direct] acp/streaming": {
+        "pass": 2
+      },
+      "[direct] binary": {
+        "pass": 2
+      },
+      "[direct] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[direct] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[direct] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[direct] hooks.install": {
+        "pass": 2
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[direct] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[direct] session.answer": {
+        "pass": 2
+      },
+      "[direct] session.completed": {
+        "pass": 2
+      },
+      "[direct] session.start": {
+        "pass": 2
+      },
+      "[direct] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, belt hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 2
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 2
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[headless, mock hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 2
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 2
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 2
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 2
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 2
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 2
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[probes] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[probes] acp/model": {
+        "pass": 2
+      },
+      "[probes] acp/requests": {
+        "pass": 2
+      },
+      "[probes] acp/streaming": {
+        "pass": 2
+      },
+      "[probes] binary": {
+        "pass": 2
+      },
+      "[probes] compact.context": {
+        "pass:summary": 2
+      },
+      "[probes] compact.run": {
+        "pass": 2
+      },
+      "[probes] deferred.armed": {
+        "pass": 2
+      },
+      "[probes] deferred.expanded": {
+        "pass:nothing-new": 2
+      },
+      "[probes] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[probes] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[probes] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[probes] hooks.install": {
+        "pass": 2
+      },
+      "[probes] images.declined": {
+        "pass": 2
+      },
+      "[probes] images.named": {
+        "pass": 2
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[probes] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[probes] resume.context": {
+        "pass": 2
+      },
+      "[probes] resume.load": {
+        "pass": 2
+      },
+      "[probes] resume.replay": {
+        "pass": 2
+      },
+      "[probes] seed.appended": {
+        "pass": 2
+      },
+      "[probes] seed.hand-built": {
+        "pass": 2
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 2
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.reasoning": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 2
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 2
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 2
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 2
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-given": 2
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 2
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 2
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 2
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 2
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 2
+      },
+      "[probes] session.answer": {
+        "pass": 2
+      },
+      "[probes] session.completed": {
+        "pass": 2
+      },
+      "[probes] session.start": {
+        "pass": 2
+      },
+      "[probes] skills": {
+        "pass": 2
+      },
+      "[probes] transcript": {
+        "pass": 2
+      },
+      "[probes] turn": {
+        "pass": 16
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.context": {
+        "finding:window-only": 2
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 2
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 2
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 2
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 2
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 2
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 2
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 2
+      },
+      "[resume-kill] acp/instructions.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[resume-kill] acp/model": {
+        "pass": 2
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 2
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 2
+      },
+      "[resume-kill] binary": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_CLI_CHAT_PROXY_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_CONVERSATIONS_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_FEEDBACK_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_MANAGED_CONFIG_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_MODELS_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_TRACE_UPLOAD_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.GROK_XAI_API_BASE_URL": {
+        "pass": 2
+      },
+      "[resume-kill] env.XAI_API_KEY": {
+        "pass": 2
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 2
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 2
+      },
+      "[resume-kill] instructions.written.~/.grok/AGENTS.md": {
+        "pass": 2
+      },
+      "[resume-kill] resume.context": {
+        "pass": 2
+      },
+      "[resume-kill] resume.load": {
+        "pass": 2
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 2
+      },
+      "[resume-kill] session.answer": {
+        "pass": 2
+      },
+      "[resume-kill] session.completed": {
+        "pass": 2
+      },
+      "[resume-kill] session.start": {
+        "pass": 2
+      },
+      "[resume-kill] skills": {
+        "pass": 2
+      },
+      "[surface] binary": {
+        "pass": 2
       }
     }
   }

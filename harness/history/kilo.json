@@ -292,15 +292,30 @@
     {
       "version": "7.8.27",
       "first": "2026-11-06",
-      "last": "2026-11-17",
-      "runs": 12,
+      "last": "2026-11-20",
+      "runs": 16,
       "sources": [
         "agentprotocol Nightly 42201531930",
-        "agentprotocol Nightly 44014482364"
+        "agentprotocol Nightly 44671851715"
       ],
       "suites": [
         "e25b88d8ccb4be54d0d39209b55e7cf4f774b00c",
-        "35c02dc7daeb435734bf2df06cdac8792d5f16ad"
+        "011272d86a30b6b9907932b972aa98810e36cd17"
+      ],
+      "green": true
+    },
+    {
+      "version": "7.8.32",
+      "first": "2026-11-21",
+      "last": "2026-11-22",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 44864182434",
+        "agentprotocol Nightly 44983348684"
+      ],
+      "suites": [
+        "011272d86a30b6b9907932b972aa98810e36cd17",
+        "011272d86a30b6b9907932b972aa98810e36cd17"
       ],
       "green": true
     }
@@ -309,280 +324,280 @@
     "[acp, belt hooks] acp/belt-hook.post-tool": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.pre-tool": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.prompt": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.stop": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions../AGENTS.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/model": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/requests": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] belt-hook-shape": [
       {
         "from": "7.6.2",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] binary": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.OPENAI_BASE_URL": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.install": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.answer": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.completed": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.start": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] skills": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.post-tool": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.pre-tool": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.prompt": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.stop": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions../AGENTS.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/requests": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] binary": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] hooks.install": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.answer": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.completed": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.start": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] skills": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
@@ -723,91 +738,91 @@
     "[direct] acp/hook-injection": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.post-tool": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.pre-tool": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.prompt": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.stop": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions../AGENTS.md": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] acp/model": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] acp/requests": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] acp/streaming": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] binary": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] direct.call": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] direct.messages": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:exact",
         "message": "direct: kilo sent the probe's prompt and nothing else in the conversation"
       }
@@ -815,21 +830,21 @@
     "[direct] direct.restart": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] direct.result": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] direct.system": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:exact",
         "message": "direct: kilo sent the probe's system prompt and nothing else"
       }
@@ -837,7 +852,7 @@
     "[direct] direct.tools": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:only",
         "message": "direct: kilo offered the probe's tool alone, as tools_probe_echo"
       }
@@ -845,315 +860,315 @@
     "[direct] env.OPENAI_API_KEY": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] env.OPENAI_BASE_URL": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] hooks.install": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written../AGENTS.md": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] session.answer": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] session.completed": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] session.start": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[direct] skills": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] belt-hook-shape": [
       {
         "from": "7.6.2",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] binary": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.OPENAI_BASE_URL": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.post-tool": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.pre-tool": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.prompt": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.stop": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions../AGENTS.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/model": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/requests": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.install": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] skills": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] turn": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] binary": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.post-tool": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.pre-tool": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.prompt": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.stop": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions../AGENTS.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/requests": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] hooks.install": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] skills": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] turn": [
       {
         "from": "7.5.16",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
@@ -1296,112 +1311,112 @@
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.post-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.pre-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.prompt": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.stop": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/model": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/requests": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/streaming": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] binary": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.OPENAI_API_KEY": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.OPENAI_BASE_URL": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] hooks.install": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.park": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.reraise": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:none",
         "message": "in-flight: kilo does not re-raise the parked approval on resume"
       }
@@ -1409,168 +1424,168 @@
     "[inflight-cancel] inflight.resume": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.resume-twice": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.answer": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.completed": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.start": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] skills": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.post-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.pre-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.prompt": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.stop": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/model": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/requests": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/streaming": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] binary": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.OPENAI_API_KEY": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.OPENAI_BASE_URL": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] hooks.install": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.park": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.reraise": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:none",
         "message": "in-flight: kilo does not re-raise the parked approval on resume"
       }
@@ -1578,406 +1593,406 @@
     "[inflight-hold] inflight.resume": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.resume-twice": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.answer": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.completed": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.start": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] skills": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] belt-hook-shape": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] binary": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.OPENAI_BASE_URL": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.install": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.post-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.prompt": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.stop": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/model": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/requests": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] skills": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.completed": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.start": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] binary": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] hooks.install": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.post-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.prompt": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.stop": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/requests": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] skills": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.completed": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.start": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook-injection": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.post-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.pre-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.prompt": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.stop": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/model": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/requests": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] acp/streaming": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] binary": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] deferred.armed": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:no-search-tool",
         "message": "deferred tools: kilo declares no tool-search tool, so its 0 declared tools are the whole surface it offers on a turn"
       }
@@ -1985,49 +2000,49 @@
     "[probes] env.OPENAI_API_KEY": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] env.OPENAI_BASE_URL": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] hooks.install": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] images.declined": [
       {
         "from": "7.8.8",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] images.named": [
       {
         "from": "7.8.8",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.park": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.reraise": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:none",
         "message": "in-flight: kilo does not re-raise the parked approval on resume"
       }
@@ -2035,98 +2050,98 @@
     "[probes] inflight.resume": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.resume-twice": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] resume.context": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] resume.load": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] resume.replay": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seed.appended": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seed.hand-built": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.assistant text": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.context": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.history": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.request": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.file-uri": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:dropped",
         "message": "seed shapes (file-uri): kilo accepted the session and did not send the image its codec kept"
       }
@@ -2134,14 +2149,14 @@
     "[probes] seedkinds.first user message": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.image-only-result": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:as-image",
         "message": "seed shapes (image-only-result): kilo sent the call and the image as image data"
       }
@@ -2149,7 +2164,7 @@
     "[probes] seedkinds.in-message-result": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:as-image",
         "message": "seed shapes (in-message-result): kilo sent the result and the image as image data"
       }
@@ -2157,7 +2172,7 @@
     "[probes] seedkinds.reasoning": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:not-kept",
         "message": "seed kinds: kilo's codec kept no reasoning in the session's context, so the model could not get it"
       }
@@ -2165,91 +2180,91 @@
     "[probes] seedkinds.retired-answer-as-summary.context": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.history": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.request": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.context": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.history": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.request": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's answer": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's user message": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.shown-only": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool call arguments": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool result": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-after-text": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-image": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:not-given",
         "message": "seed kinds: kilo's codec kept the image and the agent did not send it (result text sent: true)"
       }
@@ -2257,14 +2272,14 @@
     "[probes] seedkinds.trailing-prompt.history": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-prompt.request": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-prompt): kilo loaded the session and sent the last prompt"
       }
@@ -2272,14 +2287,14 @@
     "[probes] seedkinds.trailing-tool result.history": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-tool result.request": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-tool-result): kilo loaded the session and sent the last tool result"
       }
@@ -2287,7 +2302,7 @@
     "[probes] seedkinds.untyped-file-path": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:as-text",
         "message": "seed shapes (untyped-file-path): kilo sent the file's content"
       }
@@ -2295,7 +2310,7 @@
     "[probes] seedkinds.user-attachments.image": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:dropped",
         "message": "seed shapes (user-attachments): kilo did not send the attached image its codec kept"
       }
@@ -2303,7 +2318,7 @@
     "[probes] seedkinds.user-attachments.pdf": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:as-reference",
         "message": "seed shapes (user-attachments): kilo sent the PDF's name and not its content"
       }
@@ -2311,49 +2326,49 @@
     "[probes] session.answer": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] session.completed": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] session.start": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] skills": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] transcript": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] turn": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] usage.account": [
       {
         "from": "7.8.8",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:not-reported",
         "message": "usage: kilo's driver reported no account"
       }
@@ -2361,7 +2376,7 @@
     "[probes] usage.context": [
       {
         "from": "7.8.8",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:not-reported",
         "message": "usage: kilo reported no context window fill"
       }
@@ -2369,7 +2384,7 @@
     "[probes] usage.limits": [
       {
         "from": "7.8.8",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:not-reported",
         "message": "usage: kilo pushed no rate limits"
       }
@@ -2377,7 +2392,7 @@
     "[probes] usage.probe.limits": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass:unsupported",
         "message": "usage: kilo's limits do not apply: plan limits are read only for a Kilo login"
       }
@@ -2385,14 +2400,14 @@
     "[probes] usage.probe.no-model-call": [
       {
         "from": "7.8.17",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[probes] usage.turn": [
       {
         "from": "7.8.8",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "finding:not-reported",
         "message": "usage: kilo's driver reported no usage for the turn"
       }
@@ -2400,168 +2415,168 @@
     "[resume-kill] acp/hook-injection": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.post-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.pre-tool": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.prompt": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.stop": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/model": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/requests": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/streaming": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] binary": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.OPENAI_API_KEY": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.OPENAI_BASE_URL": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] hooks.install": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written../AGENTS.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written.~/.kilocode/rules/belt.md": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.context": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.load": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.replay": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.answer": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.completed": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.start": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[resume-kill] skills": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ],
     "[surface] binary": [
       {
         "from": "7.7.9",
-        "last": "7.8.27",
+        "last": "7.8.32",
         "outcome": "pass"
       }
     ]

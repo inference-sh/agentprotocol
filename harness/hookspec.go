@@ -19,10 +19,15 @@ const (
 // HookSpec is what a plugin wants from one hook event: which tools it fires
 // for (none: every tool), how long the agent may wait for it (zero: the
 // format's default), and whether the agent may run it without waiting.
+//
+// A hook whose Tools cannot be matched fires for every tool instead, unless
+// Strict: then it is not installed. Strict is for a handler that does
+// nothing for other tools, where firing on every call is only cost.
 type HookSpec struct {
 	Tools   []Tool
 	Timeout time.Duration
 	Async   bool
+	Strict  bool
 }
 
 // PluginSource is the caller's side of an install: the command each event
@@ -89,22 +94,31 @@ func planHooks(h Harness, src PluginSource) ([]plannedHook, []HookNote) {
 			continue
 		}
 		p := plannedHook{Event: e, Name: name, Timeout: spec.Timeout}
-		if len(spec.Tools) > 0 {
-			switch {
-			case !e.IsToolEvent():
-				notes = append(notes, HookNote{e, "not a tool event; tool filter ignored"})
-			case !supportsMatcher(h.HookFormat):
-				notes = append(notes, HookNote{e, fmt.Sprintf("%s hooks take no tool matcher; fires for every tool", h.HookFormat)})
-			default:
-				for _, t := range spec.Tools {
-					n, ok := h.ToolNames[t]
-					if !ok {
-						notes = append(notes, HookNote{e, fmt.Sprintf("no %s tool name known for %s; fires for every tool", t, h.Name)})
-						p.Matchers = nil
-						break
-					}
-					p.Matchers = append(p.Matchers, n)
+		if len(spec.Tools) > 0 && !e.IsToolEvent() {
+			notes = append(notes, HookNote{e, "not a tool event; tool filter ignored"})
+		} else if len(spec.Tools) > 0 {
+			unmatched := ""
+			if !supportsMatcher(h.HookFormat) {
+				unmatched = fmt.Sprintf("%s hooks take no tool matcher", h.HookFormat)
+			}
+			for _, t := range spec.Tools {
+				if unmatched != "" {
+					break
 				}
+				n, ok := h.ToolNames[t]
+				if !ok {
+					unmatched = fmt.Sprintf("no %s tool name known for %s", t, h.Name)
+					break
+				}
+				p.Matchers = append(p.Matchers, n)
+			}
+			if unmatched != "" {
+				p.Matchers = nil
+				if spec.Strict {
+					notes = append(notes, HookNote{e, unmatched + "; not installed"})
+					continue
+				}
+				notes = append(notes, HookNote{e, unmatched + "; fires for every tool"})
 			}
 		}
 		if spec.Async {

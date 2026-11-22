@@ -140,3 +140,28 @@ func TestRenderHooksNeedsACommand(t *testing.T) {
 		t.Error("a source without a hook command rendered")
 	}
 }
+
+// A strict hook the agent cannot match is left out, not widened.
+func TestRenderHooksLeavesOutAStrictHookItCannotMatch(t *testing.T) {
+	src := beltSource()
+	pre := src.Hooks[PreToolUse]
+	pre.Strict = true
+	src.Hooks[PreToolUse] = pre
+	for _, agent := range []string{"codex", "kiro"} {
+		got, notes, _ := RenderHooks(agent, src)
+		if strings.Contains(got, PreToolUse.AgentName(All[agent])) {
+			t.Errorf("%s: strict pre-tool hook installed:\n%s", agent, got)
+		}
+		found := false
+		for _, n := range notes {
+			found = found || n.Event == PreToolUse && strings.HasSuffix(n.Detail, "not installed")
+		}
+		if !found {
+			t.Errorf("%s: no not-installed note in %v", agent, notes)
+		}
+	}
+	got, _, _ := RenderHooks("claude", src)
+	if !strings.Contains(got, `"matcher":"Skill"`) {
+		t.Errorf("claude: strict hook it can match is missing:\n%s", got)
+	}
+}

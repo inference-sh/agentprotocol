@@ -107,6 +107,16 @@ type Harness struct {
 	InstallBinDirs []string   // dirs relative to $HOME to add to PATH after install
 	PostInstall    [][]string // commands to run after install (e.g. register plugin marketplace)
 
+	// Plugins is the agent's own plugin manager, when it has one; plugins
+	// for every other agent are installed as files (InstallPlugin).
+	Plugins *PluginManager
+	// PluginRegister is what a file-installed plugin needs beyond its hook
+	// file for the agent to load it.
+	PluginRegister *PluginRegister
+	// ProjectSkillsDir is where the agent loads a project's skills from,
+	// relative to the project root; empty where it is not known.
+	ProjectSkillsDir string
+
 	// API
 	APIFormat      APIFormat
 	EnvVars        map[string]string // env vars to set (supports {{.BaseURL}} and literal values)

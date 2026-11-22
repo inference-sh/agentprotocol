@@ -75,6 +75,7 @@ type TestRunner struct {
 	home             string
 	repoDir          string
 	injectCode       string
+	skillCode        string // in the probe skill's description; see setupSkills
 	stripped         string
 	strippedFor      int
 	beltProbe        chan beltProbeResult
@@ -552,11 +553,7 @@ func (r *TestRunner) checkBinary() {
 		r.pass("binary", r.harness.Binary+" installed")
 		r.detectVersion()
 		r.checkDetection()
-		for _, postCmd := range r.harness.PostInstall {
-			cmd := exec.Command(postCmd[0], postCmd[1:]...)
-			cmd.Env = os.Environ()
-			cmd.Run()
-		}
+		r.runPostInstall()
 		return
 	}
 	r.pass("binary", r.harness.Binary+" found")
@@ -811,13 +808,35 @@ func (r *TestRunner) hookDir() string {
 	return filepath.Dir(harness.HooksTarget(r.harness.Name))
 }
 
+// probeSkillName is the skill the suite installs to see whether the agent
+// lists the skills in its skills dir to the model.
+const probeSkillName = "harness-probe"
+
+// setupSkills installs a skill through harness.InstallSkill, as a plugin's
+// skills are installed, with a codename in its description. An agent that
+// loads its skills dir lists the skill, description and all, in what it
+// sends the model; checkSkills looks for the codename there. Creating the
+// directory and passing, as this used to, said nothing about the agent.
 func (r *TestRunner) setupSkills() {
 	if r.harness.SkillsDir == "" {
 		return
 	}
 	fmt.Println("[phase 4] skills")
-	os.MkdirAll(filepath.Join(r.home, r.harness.SkillsDir), 0755)
-	r.pass("skills", "skills directory created")
+	r.skillCode = fmt.Sprintf("SKILL-%s-%d", strings.ToUpper(r.harness.Name), time.Now().UnixMilli())
+	src, err := os.MkdirTemp("", "skill-")
+	if err != nil {
+		r.fail("skills", "skill source: "+err.Error())
+		return
+	}
+	defer os.RemoveAll(src)
+	body := fmt.Sprintf("---\nname: %s\ndescription: Look up the release codename %s. Use when asked for the release codename.\n---\n\nThe release codename is %s.\n", probeSkillName, r.skillCode, r.skillCode)
+	os.WriteFile(filepath.Join(src, "SKILL.md"), []byte(body), 0644)
+	if err := harness.InstallSkill(r.harness.Name, harness.ScopeUser, os.DirFS(src), probeSkillName); err != nil {
+		r.skillCode = ""
+		r.fail("skills", "skill install: "+err.Error())
+		return
+	}
+	r.pass("skills", "skill installed in "+harness.SkillsPath(r.harness.Name, harness.ScopeUser))
 }
 
 const (
@@ -2645,6 +2664,27 @@ func (r *TestRunner) copyHooksToProject(hooksPath string) {
 	projDir := filepath.Join(r.ensureGitRepo(), r.hookDir())
 	os.MkdirAll(projDir, 0755)
 	os.WriteFile(filepath.Join(projDir, filepath.Base(hooksPath)), data, 0644)
+}
+
+// beltPostInstall is the suite's belt install on top of an agent's own,
+// once harness's registry stopped naming belt: codex gets belt's plugin from
+// its marketplace, as it did when these were the registry's PostInstall.
+var beltPostInstall = map[string][][]string{
+	"codex": {
+		{"sh", "-c", "codex plugin marketplace add https://github.com/belt-sh/skills.git 2>/dev/null || true"},
+		{"sh", "-c", "codex plugin add belt@belt-sh-skills 2>/dev/null || true"},
+	},
+}
+
+// runPostInstall runs the agent's PostInstall commands and the suite's belt
+// install after them.
+func (r *TestRunner) runPostInstall() {
+	cmds := append(append([][]string{}, r.harness.PostInstall...), beltPostInstall[r.harness.Name]...)
+	for _, postCmd := range cmds {
+		cmd := exec.Command(postCmd[0], postCmd[1:]...)
+		cmd.Env = os.Environ()
+		cmd.Run()
+	}
 }
 
 // stdinWaitLimit is how long a tool hook may find stdin open before it reads

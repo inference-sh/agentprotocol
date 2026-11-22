@@ -148,11 +148,7 @@ func (r *TestRunner) installPinned() {
 	}
 	r.pass("binary", fmt.Sprintf("%s %s installed", r.harness.Binary, r.agentVersion))
 	r.checkDetection()
-	for _, postCmd := range r.harness.PostInstall {
-		cmd := exec.Command(postCmd[0], postCmd[1:]...)
-		cmd.Env = os.Environ()
-		cmd.Run()
-	}
+	r.runPostInstall()
 }
 
 var dottedRe = regexp.MustCompile(`\d+(?:\.\d+)+`)

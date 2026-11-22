@@ -181,10 +181,21 @@ var All = map[string]Harness{
 			{Path: ".claude.json", Content: `{"projects":{"{{.RepoDir}}":{"hasTrustDialogAccepted":true}}}`},
 			{Path: ".claude/settings.local.json", Content: `{"theme":"dark","hasCompletedOnboarding":true}`},
 		},
-		Events:                  withSessionEnd(standardEvents, "SessionEnd"),
-		HookAsync:               true,
-		ToolNames:               map[Tool]string{ToolShell: "Bash", ToolSkill: "Skill"},
-		SkillsDir:               ".claude/skills",
+		Events:           withSessionEnd(standardEvents, "SessionEnd"),
+		HookAsync:        true,
+		ToolNames:        map[Tool]string{ToolShell: "Bash", ToolSkill: "Skill"},
+		SkillsDir:        ".claude/skills",
+		ProjectSkillsDir: ".claude/skills",
+		// The commands go/cli has run since 2026-08 (cmd/plugin/install.go),
+		// and the files it reads for the installed state (internal/agents).
+		Plugins: &PluginManager{
+			AddMarketplace: []string{"claude", "plugin", "marketplace", "add", "{{.Marketplace}}"},
+			Install:        []string{"claude", "plugin", "install", "{{.Plugin}}"},
+			Uninstall:      []string{"claude", "plugin", "uninstall", "{{.Plugin}}"},
+			ConfigDir:      ".claude",
+			InstalledFile:  "plugins/installed_plugins.json",
+			SettingsFile:   "settings.json",
+		},
 		HeadlessCmd:             []string{"claude", "-p"},
 		HeadlessModelArgs:       []string{"--model", "{{.Model}}", "--dangerously-skip-permissions", "--max-turns", "2"},
 		PostHeadlessCmd:         [][]string{{"-p", "--continue", "--dangerously-skip-permissions", "/compact"}},
@@ -208,10 +219,16 @@ var All = map[string]Harness{
 		Driver:        DriverCodex,
 		InstallCmd:    []string{"npm", "install", "-g", "@openai/codex"},
 		DetectEnvVars: []string{"CODEX_SANDBOX", "CODEX_THREAD_ID", "CODEX_MANAGED_BY_NPM"},
-		PostInstall: [][]string{
-			{"sh", "-c", "codex plugin marketplace add https://github.com/belt-sh/skills.git 2>/dev/null || true"},
-			{"sh", "-c", "codex plugin add belt@belt-sh-skills 2>/dev/null || true"},
+		// codex-rs/cli/src/plugin_cmd.rs at cf3ff1530 (2026-11): plugin add,
+		// remove, and list --json for the installed state.
+		Plugins: &PluginManager{
+			AddMarketplace: []string{"codex", "plugin", "marketplace", "add", "{{.Marketplace}}"},
+			Install:        []string{"codex", "plugin", "add", "{{.Plugin}}"},
+			Uninstall:      []string{"codex", "plugin", "remove", "{{.Plugin}}"},
+			ConfigDir:      ".codex",
+			ListJSON:       []string{"codex", "plugin", "list", "--json"},
 		},
+		ProjectSkillsDir: ".agents/skills",
 		Direct: &Direct{
 			// Measured with the mock's request bodies: instructions are the
 			// prompt file alone (sent as the one developer message); no
@@ -817,7 +834,7 @@ export const Direct = async () => ({
 	}(withGatedTool(withACPProvider(withTSPluginExport(
 		withDetectEnvVars(tsPluginHarness("kilo", "kilo", "@kilocode/cli", ".kilo/plugins"),
 			"KILO_TREE_SITTER_WASM_DIR"),
-		`export default { id: "belt", server: BeltPlugin };`),
+		`export default { id: "`+sourceName+`", server: BeltPlugin };`),
 		[]string{"kilo", "acp"}, []string{"--cwd", "{{.RepoDir}}"}),
 		"bash", gatedShellArgs)),
 	"kimi": {
@@ -1389,10 +1406,40 @@ var instructionFiles = map[string]InstructionFiles{
 	"windsurf": {User: ".codeium/windsurf/memories/global_rules.md", Project: ".windsurf/rules/belt.md", MaxBytes: 6000, Note: "Windsurf caps global_rules.md at 6000 characters"},
 }
 
+// pluginRegisters is what a file-installed plugin needs beyond its hook file,
+// from go/cli's install (cmd/init/init.go, origin/dev 2f223112): opencode
+// loads a plugin directory as a package, so it gets a manifest, its one
+// dependency (installed without running anything the registry serves: the
+// package is TypeScript the plugin imports), and is registered globally; pi
+// registers its extension file.
+var pluginRegisters = map[string]*PluginRegister{
+	"opencode": {
+		PackageJSON: `{"name":"` + sourceName + `-opencode","version":"0.0.1","main":"index.ts","type":"module","dependencies":{"@opencode-ai/plugin":"*"}}` + "\n",
+		Cmds: [][]string{
+			{"npm", "install", "--ignore-scripts", "--prefix", "{{.HookDir}}"},
+			{"opencode", "plugin", "--global", "{{.HookDir}}"},
+		},
+	},
+	"pi": {Cmds: [][]string{{"pi", "install", "{{.HooksPath}}"}}},
+}
+
 // skillsDirs is the user-scope Agent Skills directory per harness (relative
 // to $HOME), from each agent's docs, 2026-09. Entries built by helper
 // functions (kilo, opencode) and IDE-only agents get theirs here; the rest
 // set SkillsDir inline above.
+//
+// Where vercel-labs/skills (src/agents.ts at 57217cf, 2026-11-17) disagrees,
+// unverified here; the skills.listed conformance check settles each:
+//   - kilo: .kilocode/skills here, ~/.kilo/skills there (kilo renamed the
+//     dir, their #1997).
+//   - kimi: .kimi-code/skills here, ~/.agents/skills there.
+//   - pi: .pi/agent/skills here, ~/.agents/skills there.
+//   - cursor: ~/.cursor/skills in both, and cursor also reads
+//     ~/.agents/skills (their #421, #1874).
+//   - droid: also reads ~/.agents/skills, and a skill in both dirs is a
+//     config error (their #1969).
+//   - codex: reads only ~/.agents/skills, no longer ~/.codex/skills (#1056).
+//   - claude: does not read .agents/skills (#693).
 var skillsDirs = map[string]string{
 	"cursor":   ".cursor/skills",
 	"gemini":   ".gemini/skills",
@@ -1465,6 +1512,9 @@ func init() {
 				h.SkillsDir = dir
 			}
 		})
+	}
+	for name, reg := range pluginRegisters {
+		decorate("pluginRegisters", name, func(h *Harness) { h.PluginRegister = reg })
 	}
 	for name, p := range usageProbers {
 		decorate("usageProbers", name, func(h *Harness) { h.Usage = p })

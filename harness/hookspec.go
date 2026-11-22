@@ -2,6 +2,7 @@ package harness
 
 import (
 	"fmt"
+	"io/fs"
 	"time"
 )
 
@@ -34,7 +35,15 @@ type HookSpec struct {
 // runs and what it wants from each event. The registry holds what each agent
 // can do; nothing about a particular plugin lives in this package.
 type PluginSource struct {
-	Name        string
+	Name string
+	// Marketplace is what an agent's plugin manager adds to find the plugin
+	// (a repository, "owner/repo" or a git URL); MarketplaceName is the name
+	// the agent then knows it by. The plugin's key is Name@MarketplaceName.
+	Marketplace     string
+	MarketplaceName string
+	// Skills holds the plugin's skills, one <skill>/SKILL.md directory each,
+	// for agents it is installed into as files.
+	Skills      fs.FS
 	HookCommand HookCommand
 	// Hooks names the events to install and how. Nil installs every event
 	// the agent has, as DefaultHooks does.

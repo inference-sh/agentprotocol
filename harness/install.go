@@ -57,6 +57,12 @@ type InstallResult struct {
 	// Notes is what the source asked for that the agent's hooks cannot
 	// carry, and what was written instead (RenderHooks).
 	Notes []HookNote
+
+	// Via is how InstallPlugin installed: "marketplace" through the agent's
+	// plugin manager, "files" by writing them. Steps is every command it
+	// ran, in order.
+	Via   string
+	Steps []Step
 }
 
 // These names are what go/cli imported before harness/ was extracted out of
@@ -168,7 +174,7 @@ func generateHookConfig(name string, h Harness, plan []plannedHook, src PluginSo
 	case TSExtension:
 		return generateTSExtension(h, plan, cmdFor), nil
 	case TSPlugin:
-		return generateTSPlugin(name, h, plan, cmdFor), nil
+		return generateTSPlugin(src.Name, h, plan, cmdFor), nil
 	default:
 		return "", fmt.Errorf("unsupported format")
 	}
@@ -403,7 +409,7 @@ func generateTSExtension(h Harness, plan []plannedHook, cmdFor HookCommand) stri
 	return fmt.Sprintf("export default function (pi: any) {\n%s\n}\n", strings.Join(handlers, "\n"))
 }
 
-func generateTSPlugin(name string, h Harness, plan []plannedHook, cmdFor HookCommand) string {
+func generateTSPlugin(source string, h Harness, plan []plannedHook, cmdFor HookCommand) string {
 	var hooks []string
 	planned := map[HookEvent]plannedHook{}
 	for _, p := range plan {
@@ -462,7 +468,7 @@ func generateTSPlugin(name string, h Harness, plan []plannedHook, cmdFor HookCom
 		state, strings.Join(hooks, ",\n"))
 
 	if h.TSPluginExport != "" {
-		return body + "\n" + h.TSPluginExport + "\n"
+		return body + "\n" + strings.ReplaceAll(h.TSPluginExport, sourceName, source) + "\n"
 	}
 	return body
 }

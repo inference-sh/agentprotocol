@@ -20,6 +20,7 @@ func (r *TestRunner) runChecks(phase string) {
 	r.checkStreamingFormat(phase, entries)
 	r.checkModelSelection(phase, entries)
 	r.checkInstructions(phase, entries)
+	r.checkSkills(phase, entries)
 	r.checkHookInjection(phase, entries)
 	// Belt runs only: reports once, on the first phase that reaches it.
 	r.checkBeltHookShape()
@@ -125,6 +126,28 @@ func (r *TestRunner) checkInstructions(phase string, entries []server.LogEntry) 
 			}
 		}
 	}
+}
+
+// checkSkills verifies that the probe skill's description reached the model,
+// i.e. the agent loads its skills dir and lists what is there. The
+// skills dirs in the registry come from each agent's docs; this is what
+// tells a dir the agent reads from one it ignores.
+func (r *TestRunner) checkSkills(phase string, entries []server.LogEntry) {
+	if r.skillCode == "" || len(entries) == 0 {
+		return
+	}
+	code := []byte(r.skillCode)
+	for _, e := range entries {
+		if bytes.Contains(e.Body, code) {
+			r.pass("skills.listed", fmt.Sprintf("%s: the skill installed in the skills dir was listed to the model", phase))
+			return
+		}
+	}
+	if note, ok := r.harness.KnownIssue(phase+":skills-listed", r.result.Version); ok {
+		r.skip("skills.listed:known-issue", fmt.Sprintf("%s: skill not listed to the model — known issue: %s", phase, note))
+		return
+	}
+	r.fail("skills.listed", fmt.Sprintf("%s: the skill installed in %s was not in any request", phase, r.harness.SkillsDir))
 }
 
 func (r *TestRunner) checkAPIRequests(phase string, entries []server.LogEntry) {

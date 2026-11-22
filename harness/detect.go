@@ -40,7 +40,6 @@ type DetectResult struct {
 	Binary    string  // resolved binary path
 	Version   string  // from --version
 	ConfigDir string  // detected config directory
-	HooksPath string  // where hooks should be written (user-level)
 	Probes    []Probe // which strategies matched, in order of detection
 }
 
@@ -122,15 +121,6 @@ var sharedConfigRoots = map[string]bool{
 	".cache":  true,
 }
 
-// HooksTarget returns the hook file path relative to HOME (derived from registry).
-func HooksTarget(name string) string {
-	h, ok := All[name]
-	if !ok {
-		return ""
-	}
-	return h.HookPath(legacySourceName)
-}
-
 var wellKnownBinDirs = []string{
 	".local/bin",
 	".npm-global/bin",
@@ -201,9 +191,6 @@ func runDetection(name, binary, home string) DetectResult {
 
 	if r.Binary != "" {
 		r.Version = getVersion(r.Binary)
-	}
-	if target := HooksTarget(name); target != "" && home != "" {
-		r.HooksPath = filepath.Join(home, target)
 	}
 
 	return r

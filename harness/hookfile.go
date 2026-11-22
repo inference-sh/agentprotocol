@@ -72,7 +72,7 @@ func (src PluginSource) ownership(h Harness) func(string) bool {
 		}
 	}
 	return func(cmd string) bool {
-		return cmds[cmd] || src.owns != nil && src.owns(cmd)
+		return cmds[cmd] || src.Owns != nil && src.Owns(cmd)
 	}
 }
 
@@ -105,6 +105,12 @@ func InstallSource(name string, scope InstallScope, src PluginSource) InstallRes
 	case JSONKiro:
 		result.Merged = true
 		err = mergeKiroAgentHooks(path, content, owned)
+		if err == nil {
+			// Older installs merged into a kiro_default.json override, which
+			// the V1 engine never ran. Removing the source's hooks from it
+			// keeps both engines from running them twice.
+			err = removeKiroHooks(filepath.Join(root, h.HookConfigDir, KiroDefaultAgentName+".json"), src.Name, owned)
+		}
 		if err == nil {
 			// A user-chosen default agent is left alone and reported.
 			result.Inactive, err = kiroSelectAgent(root, src.Name)
@@ -140,6 +146,9 @@ func UninstallSource(name string, scope InstallScope, src PluginSource) InstallR
 	case JSONKiro:
 		result.Merged = true
 		result.Error = removeKiroHooks(path, src.Name, owned)
+		if err := removeKiroHooks(filepath.Join(root, h.HookConfigDir, KiroDefaultAgentName+".json"), src.Name, owned); result.Error == nil {
+			result.Error = err
+		}
 		if err := kiroDeselectAgent(root, src.Name); result.Error == nil {
 			result.Error = err
 		}

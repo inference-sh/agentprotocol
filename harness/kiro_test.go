@@ -31,20 +31,20 @@ func TestKiroInstallSelectsBeltAgent(t *testing.T) {
 	os.MkdirAll(filepath.Dir(settings), 0755)
 	os.WriteFile(settings, []byte(`{"chat.agentEngine":"v2"}`), 0600)
 
-	res := Install("kiro", ScopeUser)
+	res := installBelt("kiro", ScopeUser)
 	agent := filepath.Join(home, ".kiro", "agents", "belt.json")
 	if res.Error != nil || res.HooksPath != agent {
 		t.Fatalf("install: %+v", res)
 	}
 	obj := readJSON(t, agent)
-	if obj["name"] != KiroBeltAgentName {
-		t.Errorf("agent name = %v, want %s (kiro selects agents by this name)", obj["name"], KiroBeltAgentName)
+	if obj["name"] != kiroBeltAgent {
+		t.Errorf("agent name = %v, want %s (kiro selects agents by this name)", obj["name"], kiroBeltAgent)
 	}
 	data, _ := os.ReadFile(agent)
 	if !strings.Contains(string(data), `"tools":["*"]`) || !strings.Contains(string(data), `"includeMcpJson":true`) {
 		t.Errorf("agent must keep the built-in tools and mcp.json:\n%s", data)
 	}
-	if got := KiroActiveAgent(home, t.TempDir()); got != KiroBeltAgentName {
+	if got := KiroActiveAgent(home, t.TempDir()); got != kiroBeltAgent {
 		t.Errorf("active agent after install = %q", got)
 	}
 	if s := readJSON(t, settings); s["chat.agentEngine"] != "v2" {
@@ -54,7 +54,7 @@ func TestKiroInstallSelectsBeltAgent(t *testing.T) {
 		t.Errorf("settings mode = %v, kiro writes 0600", fi.Mode().Perm())
 	}
 
-	if res := Uninstall("kiro", ScopeUser); res.Error != nil {
+	if res := uninstallBelt("kiro", ScopeUser); res.Error != nil {
 		t.Fatalf("uninstall: %v", res.Error)
 	}
 	if _, err := os.Stat(agent); !os.IsNotExist(err) {
@@ -75,7 +75,7 @@ func TestKiroAgentConfigMerge(t *testing.T) {
 	os.MkdirAll(filepath.Dir(path), 0755)
 	os.WriteFile(path, []byte(`{"name":"belt","prompt":"be terse","tools":["*"],"hooks":{"userPromptSubmit":[{"command":"echo mine"}]}}`), 0644)
 
-	if res := Install("kiro", ScopeUser); res.Error != nil || !res.Merged {
+	if res := installBelt("kiro", ScopeUser); res.Error != nil || !res.Merged {
 		t.Fatalf("install: %+v", res)
 	}
 	obj := readJSON(t, path)
@@ -90,17 +90,17 @@ func TestKiroAgentConfigMerge(t *testing.T) {
 	if _, ok := hooks["agentSpawn"]; !ok {
 		t.Errorf("agentSpawn missing: %v", hooks)
 	}
-	if !HooksInstalled("kiro", ScopeUser) {
+	if !beltHooksInstalled("kiro", ScopeUser) {
 		t.Error("HooksInstalled false after install")
 	}
 
-	Install("kiro", ScopeUser)
+	installBelt("kiro", ScopeUser)
 	data, _ := os.ReadFile(path)
 	if strings.Count(string(data), "belt plugin hook user-prompt-submit") != 1 {
 		t.Errorf("duplicate belt hooks after reinstall:\n%s", data)
 	}
 
-	if res := Uninstall("kiro", ScopeUser); res.Error != nil {
+	if res := uninstallBelt("kiro", ScopeUser); res.Error != nil {
 		t.Fatalf("uninstall: %v", res.Error)
 	}
 	data, _ = os.ReadFile(path)
@@ -131,7 +131,7 @@ func TestKiroInstallMigratesKiroDefaultOverride(t *testing.T) {
 			os.MkdirAll(filepath.Dir(legacy), 0755)
 			os.WriteFile(legacy, []byte(tc.legacy), 0644)
 
-			if res := Install("kiro", ScopeUser); res.Error != nil {
+			if res := installBelt("kiro", ScopeUser); res.Error != nil {
 				t.Fatal(res.Error)
 			}
 			_, err := os.Stat(legacy)
@@ -158,13 +158,13 @@ func TestKiroInstallKeepsUserDefaultAgent(t *testing.T) {
 	os.MkdirAll(filepath.Dir(settings), 0755)
 	os.WriteFile(settings, []byte(`{"chat.defaultAgent":"mine"}`), 0600)
 
-	if res := Install("kiro", ScopeUser); res.Error != nil {
+	if res := installBelt("kiro", ScopeUser); res.Error != nil {
 		t.Fatal(res.Error)
 	}
 	if got := KiroActiveAgent(home, t.TempDir()); got != "mine" {
 		t.Errorf("install replaced the user's default agent: %q", got)
 	}
-	Uninstall("kiro", ScopeUser)
+	uninstallBelt("kiro", ScopeUser)
 	if got := KiroActiveAgent(home, t.TempDir()); got != "mine" {
 		t.Errorf("uninstall touched the user's default agent: %q", got)
 	}
@@ -177,13 +177,13 @@ func TestKiroProjectInstall(t *testing.T) {
 	os.Chdir(cwd)
 	defer os.Chdir(wd)
 
-	if res := Install("kiro", ScopeProject); res.Error != nil {
+	if res := installBelt("kiro", ScopeProject); res.Error != nil {
 		t.Fatal(res.Error)
 	}
 	if _, err := os.Stat(filepath.Join(cwd, ".kiro", "agents", "belt.json")); err != nil {
 		t.Errorf("project agent: %v", err)
 	}
-	if got := KiroActiveAgent(home, cwd); got != KiroBeltAgentName {
+	if got := KiroActiveAgent(home, cwd); got != kiroBeltAgent {
 		t.Errorf("workspace chat.defaultAgent = %q", got)
 	}
 	if obj, _ := readKiroSettings(home); obj["chat.defaultAgent"] != nil {

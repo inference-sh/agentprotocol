@@ -11,6 +11,7 @@
         "acp/deferred.armed": "pass:no-search-tool",
         "acp/hook-injection": "skip:no-channel",
         "acp/hook.post-tool": "pass",
+        "acp/hook.post-tool.stdin": "pass",
         "acp/hook.prompt": "pass",
         "acp/hook.session-start": "pass",
         "acp/hook.stop": "pass",
@@ -93,6 +94,7 @@
       "checks": {
         "acp/hook-injection": "skip:no-channel",
         "acp/hook.post-tool": "pass",
+        "acp/hook.post-tool.stdin": "pass",
         "acp/hook.prompt": "pass",
         "acp/hook.session-start": "pass",
         "acp/hook.stop": "pass",
@@ -132,6 +134,7 @@
         "acp/direct.tools": "finding:more",
         "acp/hook-injection": "skip:no-channel",
         "acp/hook.post-tool": "pass",
+        "acp/hook.post-tool.stdin": "pass",
         "acp/hook.prompt": "pass",
         "acp/hook.session-start": "pass",
         "acp/hook.stop": "pass",

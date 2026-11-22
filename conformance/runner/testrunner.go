@@ -721,7 +721,7 @@ func (r *TestRunner) writeHooks() {
 	if r.harness.TestSettings != "" {
 		r.seedWrapperConfig()
 	}
-	res := harness.InstallWithCommand(r.harness.Name, harness.ScopeUser, r.mockHookCommand)
+	res := harness.InstallSource(r.harness.Name, harness.ScopeUser, r.mockSource())
 	if res.Error != nil {
 		r.fail("hooks.install", "hook install: "+res.Error.Error())
 		return
@@ -761,7 +761,7 @@ func (r *TestRunner) writeBeltHooks() {
 		r.seedWrapperConfig()
 	}
 
-	result := harness.Install(r.harness.Name, harness.ScopeUser)
+	result := harness.InstallSource(r.harness.Name, harness.ScopeUser, BeltSource)
 	if result.Error != nil {
 		r.fail("hooks.install", "belt hook install: "+result.Error.Error())
 		return
@@ -779,7 +779,7 @@ func (r *TestRunner) writeBeltHooks() {
 		repoDir := r.ensureGitRepo()
 		projHookDir := filepath.Join(repoDir, r.hookDir())
 		os.MkdirAll(projHookDir, 0755)
-		fname := filepath.Base(harness.HooksTarget(r.harness.Name))
+		fname := filepath.Base(r.hookPath())
 		src := filepath.Join(r.home, r.hookDir(), fname)
 		if data, err := os.ReadFile(src); err == nil {
 			dst := filepath.Join(projHookDir, fname)
@@ -794,7 +794,7 @@ func (r *TestRunner) writeBeltHooks() {
 // suite's permissions.
 func (r *TestRunner) seedWrapperConfig() {
 	base := r.expand(r.harness.TestSettings)
-	path := filepath.Join(r.home, harness.HooksTarget(r.harness.Name))
+	path := filepath.Join(r.home, r.hookPath())
 	os.MkdirAll(filepath.Dir(path), 0755)
 	os.WriteFile(path, []byte(base), 0644)
 }
@@ -802,7 +802,7 @@ func (r *TestRunner) seedWrapperConfig() {
 // hookDir is where the suite's hooks go, relative to HOME or the project:
 // the directory of the file harness installs them into.
 func (r *TestRunner) hookDir() string {
-	return filepath.Dir(harness.HooksTarget(r.harness.Name))
+	return filepath.Dir(r.hookPath())
 }
 
 // probeSkillName is the skill the suite installs to see whether the agent

@@ -49,9 +49,11 @@ type PluginSource struct {
 	// the agent has, as DefaultHooks does.
 	Hooks map[HookEvent]HookSpec
 
-	// owns widens which hook commands count as this source's, for the legacy
-	// source, whose older installs ran commands no exact list names.
-	owns func(cmd string) bool
+	// Owns widens which hook commands count as this source's beyond the
+	// ones HookCommand returns, for a source whose older versions installed
+	// commands no exact list names. Install replaces and uninstall removes
+	// every command it owns.
+	Owns func(cmd string) bool
 }
 
 // DefaultHooks is every event with no tool filter and each format's default

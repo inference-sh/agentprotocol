@@ -100,7 +100,7 @@ func TestEachProbeAnswersOneQuestion(t *testing.T) {
 // suite's name. goose's was .agents/plugins/belt-test/hooks until 2026-09.
 func TestShippedHookPathsAreNotNamedAfterThisSuite(t *testing.T) {
 	for _, name := range KnownNames() {
-		target := HooksTarget(name)
+		target := beltHookPath(name)
 		if strings.Contains(target, "belt-test") || strings.Contains(target, "harness-test") {
 			t.Errorf("%s installs to %s, which is named after this test suite", name, target)
 		}

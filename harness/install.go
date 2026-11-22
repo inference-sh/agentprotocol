@@ -65,96 +65,8 @@ type InstallResult struct {
 	Steps []Step
 }
 
-// These names are what go/cli imported before harness/ was extracted out of
-// it. They forward to the canonical names and go away once go/cli is off them.
-
 // Deprecated: use KnownNames.
 func KnownAgentNames() []string { return KnownNames() }
-
-// Deprecated: use Install.
-func InstallHooks(name string, scope InstallScope) InstallResult { return Install(name, scope) }
-
-// Deprecated: use Uninstall.
-func UninstallHooks(name string, scope InstallScope) InstallResult { return Uninstall(name, scope) }
-
-// Deprecated: use HookConfig, which reports why generation failed.
-func HookTemplate(name string) string {
-	s, _ := HookConfig(name)
-	return s
-}
-
-// Install writes belt hook configs for a harness at the given scope.
-//
-// Deprecated: use InstallSource with the caller's own PluginSource.
-func Install(name string, scope InstallScope) InstallResult {
-	return InstallWithCommand(name, scope, beltCmd)
-}
-
-// InstallWithCommand is Install with a caller's own hook command. The test
-// suite uses it to install hooks that run its own scripts: the file shape,
-// the merge behaviour and every per-agent quirk then come from this code
-// rather than from a second implementation that can drift from it.
-//
-// Deprecated: use InstallSource with the caller's own PluginSource.
-func InstallWithCommand(name string, scope InstallScope, cmdFor HookCommand) InstallResult {
-	src := legacySource
-	src.HookCommand = cmdFor
-	root, _ := hookTarget(All[name], scope, src)
-	if name == "goose" {
-		// Migration, added 2026-09: belt wrote goose's hooks into a
-		// directory named after this test suite. Remove the old file so
-		// goose does not run both.
-		removeJSONHooks(filepath.Join(root, gooseLegacyPluginDir, "hooks", "hooks.json"), All[name], src.ownership(All[name]))
-		os.Remove(filepath.Join(root, gooseLegacyPluginDir, "hooks"))
-		os.Remove(filepath.Join(root, gooseLegacyPluginDir))
-	}
-	result := InstallSource(name, scope, src)
-	if result.Error == nil && All[name].HookFormat == JSONKiro {
-		// Migration, added 2026-09 in belt 1.18.32: earlier versions
-		// merged into a kiro_default.json override. Removable once no
-		// install predating that version is in use.
-		removeKiroHooks(filepath.Join(root, All[name].HookConfigDir, KiroDefaultAgentName+".json"), legacySourceName, src.ownership(All[name]))
-	}
-	return result
-}
-
-// HookConfig returns the generated hook configuration for an agent.
-//
-// Deprecated: use RenderHooks with the caller's own PluginSource.
-func HookConfig(name string) (string, error) {
-	return HookConfigFor(name, beltCmd)
-}
-
-// Uninstall removes belt hooks for a harness at the given scope.
-//
-// Deprecated: use UninstallSource with the caller's own PluginSource.
-func Uninstall(name string, scope InstallScope) InstallResult {
-	result := UninstallSource(name, scope, legacySource)
-	if h := All[name]; result.Error == nil && h.HookFormat == JSONKiro {
-		root, _ := hookTarget(h, scope, legacySource)
-		removeKiroHooks(filepath.Join(root, h.HookConfigDir, KiroDefaultAgentName+".json"), legacySourceName, legacySource.ownership(h))
-	}
-	return result
-}
-
-// HooksInstalled checks if belt hooks exist for an agent at the given scope.
-//
-// Deprecated: use SourceHooksInstalled.
-func HooksInstalled(name string, scope InstallScope) bool {
-	h, ok := All[name]
-	if !ok {
-		return false
-	}
-	root, path := hookTarget(h, scope, legacySource)
-	if root == "" {
-		return false
-	}
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return false
-	}
-	return legacyOwns(string(data))
-}
 
 func generateHookConfig(name string, h Harness, plan []plannedHook, src PluginSource) (string, error) {
 	cmdFor := src.HookCommand
@@ -503,32 +415,6 @@ func writeJSONObject(path string, obj map[string]any, perm os.FileMode) error {
 	}
 	out, _ := json.MarshalIndent(obj, "", "  ")
 	return os.WriteFile(path, append(out, '\n'), perm)
-}
-
-// HookConfigFor generates an agent's hook configuration with a caller's own
-// command, so a test can install hooks that are shaped exactly like belt's but
-// run something it can observe.
-//
-// Deprecated: use RenderHooks with the caller's own PluginSource.
-func HookConfigFor(name string, cmdFor HookCommand) (string, error) {
-	h, ok := All[name]
-	if !ok {
-		return "", fmt.Errorf("unknown harness: %s", name)
-	}
-	src := legacySource
-	src.HookCommand = cmdFor
-	return generateHookConfig(name, h, defaultPlan(h), src)
-}
-
-// HookFileName is the file an agent's hooks are written to.
-//
-// Deprecated: use Harness.HookPath with the source's name.
-func HookFileName(name string) string {
-	h, ok := All[name]
-	if !ok {
-		return ""
-	}
-	return filepath.Base(h.HookPath(legacySourceName))
 }
 
 // jsonEscape escapes a command for embedding inside a JSON or TOML string.

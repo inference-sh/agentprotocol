@@ -165,7 +165,7 @@ func main() {
 		}
 		fmt.Printf("Installing belt hooks (%s scope)\n\n", scopeName)
 		for _, name := range targets {
-			result := harness.Install(name, scope)
+			result := harness.InstallSource(name, scope, runner.BeltSource)
 			if result.Error != nil {
 				fmt.Fprintf(os.Stderr, "  ✗ %s: %v\n", name, result.Error)
 			} else if result.Merged {

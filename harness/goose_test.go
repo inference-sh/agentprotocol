@@ -21,11 +21,11 @@ func TestGooseInstallWritesNoPluginManifest(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
 
-	if res := Install("goose", ScopeUser); res.Error != nil {
+	if res := installBelt("goose", ScopeUser); res.Error != nil {
 		t.Fatalf("install: %+v", res)
 	}
 
-	manifest := filepath.Join(home, GoosePluginDir, "plugin.json")
+	manifest := filepath.Join(home, gooseBeltDir, "plugin.json")
 	if _, err := os.Stat(manifest); err == nil {
 		t.Errorf("install wrote %s — a malformed manifest silently removes belt's skills from goose, and a correct one adds nothing convention does not already give", manifest)
 	}
@@ -38,15 +38,15 @@ func TestGooseUninstallLeavesAManifestItDidNotWrite(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
 
-	if res := Install("goose", ScopeUser); res.Error != nil {
+	if res := installBelt("goose", ScopeUser); res.Error != nil {
 		t.Fatalf("install: %+v", res)
 	}
-	manifest := filepath.Join(home, GoosePluginDir, "plugin.json")
+	manifest := filepath.Join(home, gooseBeltDir, "plugin.json")
 	os.MkdirAll(filepath.Dir(manifest), 0755)
 	mine := []byte(`{"name":"mine","skills":"./skills"}`)
 	os.WriteFile(manifest, mine, 0600)
 
-	Uninstall("goose", ScopeUser)
+	uninstallBelt("goose", ScopeUser)
 
 	got, err := os.ReadFile(manifest)
 	if err != nil {
@@ -63,11 +63,11 @@ func TestGooseHooksLandInThePluginDirectory(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
 
-	res := Install("goose", ScopeUser)
+	res := installBelt("goose", ScopeUser)
 	if res.Error != nil {
 		t.Fatalf("install: %+v", res)
 	}
-	want := filepath.Join(home, GoosePluginDir, "hooks")
+	want := filepath.Join(home, gooseBeltDir, "hooks")
 	if got := filepath.Dir(res.HooksPath); got != want {
 		t.Errorf("hooks at %s, want them under %s", got, want)
 	}

@@ -20,7 +20,7 @@ func TestGeneratedConfigSurvivesAQuotedCommand(t *testing.T) {
 		case TSExtension, TSPlugin, YAML, TOML:
 			continue // not JSON; covered by their own shapes
 		}
-		content, err := HookConfigFor(name, cmd)
+		content, err := hookConfigFor(name, cmd)
 		if err != nil {
 			t.Errorf("%s: %v", name, err)
 			continue
@@ -45,7 +45,7 @@ func TestPluginContextChannelIsWiredIntoTheGeneratedFile(t *testing.T) {
 			if ContextChannelFor(name, string(e)) != ContextPlugin {
 				continue
 			}
-			content, err := HookConfigFor(name, cmd)
+			content, err := hookConfigFor(name, cmd)
 			if err != nil {
 				t.Fatalf("%s: %v", name, err)
 			}
@@ -75,7 +75,7 @@ func TestPluginContextHookIsGivenThePrompt(t *testing.T) {
 			if ContextChannelFor(name, string(e)) != ContextPlugin {
 				continue
 			}
-			content, err := HookConfigFor(name, cmd)
+			content, err := hookConfigFor(name, cmd)
 			if err != nil {
 				t.Fatalf("%s: %v", name, err)
 			}

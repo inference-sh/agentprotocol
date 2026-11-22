@@ -169,7 +169,7 @@ func TestUndetectableAgentsDeclareThemselvesInTheirHookConfig(t *testing.T) {
 			t.Errorf("%s exports nothing identifying and does not declare itself either", name)
 			continue
 		}
-		cfg, err := HookConfig(name)
+		cfg, err := beltHookConfig(name)
 		if err != nil {
 			t.Fatalf("%s: %v", name, err)
 		}
@@ -190,7 +190,7 @@ func TestDetectableAgentsDoNotDeclare(t *testing.T) {
 		if DeclaresAgent(name) {
 			continue
 		}
-		cfg, err := HookConfig(name)
+		cfg, err := beltHookConfig(name)
 		if err != nil {
 			continue
 		}

@@ -1158,6 +1158,13 @@ export const Direct = async () => ({
 		ACPAutoApproveArgs: []string{"--yolo"},
 	},
 	"opencode": func(h Harness) Harness {
+		// The model is stated in full. Left to the models.dev catalog that
+		// opencode fetches at start, it lost image input on 2026-11-23, when
+		// models.dev marked gpt-4o-mini deprecated (sst/models.dev 1574669) and
+		// opencode 1.19.6 stopped sending the attached image (nightly
+		// 45323736354). Config fields win over the catalog's (provider.ts:
+		// model.attachment ?? existingModel?.capabilities.attachment).
+		h.ACPConfigFiles[0].Content = `{"model":"openai/{{.Model}}","provider":{"openai":{"apiKey":"mock-key","baseURL":"{{.BaseURL}}/v1","models":{"{{.Model}}":{"status":"active","attachment":true,"modalities":{"input":["text","image"],"output":["text"]}}}}}}`
 		// OPENCODE_CONFIG_CONTENT is merged last, over the user's config:
 		// a default agent whose permissions deny every tool but the
 		// caller's (MCP tools are <server>_<tool>), no instructions, no

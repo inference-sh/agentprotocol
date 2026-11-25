@@ -282,14 +282,17 @@
     {
       "version": "2026.11.22",
       "first": "2026-11-22",
-      "last": "2026-11-22",
-      "runs": 1,
+      "last": "2026-11-25",
+      "runs": 4,
       "sources": [
-        "agentprotocol Nightly 44983348684"
+        "agentprotocol Nightly 44983348684",
+        "agentprotocol Nightly 45544174960"
       ],
       "suites": [
-        "011272d86a30b6b9907932b972aa98810e36cd17"
-      ]
+        "011272d86a30b6b9907932b972aa98810e36cd17",
+        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
+      ],
+      "green": true
     }
   ],
   "checks": {
@@ -353,6 +356,13 @@
     "[acp, belt hooks] acp/requests": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -441,6 +451,20 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/-hook.post-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "2026.09.23",
@@ -508,6 +532,13 @@
     "[acp, mock hooks] acp/requests": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -582,6 +613,20 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/-hook.post-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/hook-injection": [
       {
         "from": "2026.10.22",
@@ -649,6 +694,13 @@
     "[direct] acp/requests": [
       {
         "from": "2026.10.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -832,6 +884,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, belt hooks] headless/skills.listed": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "2026.09.08",
@@ -891,6 +950,20 @@
     "[headless, mock hooks] env.CURSOR_API_KEY": [
       {
         "from": "2026.09.08",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/-hook.post-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/-hook.pre-tool.stdin": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -979,6 +1052,13 @@
     "[headless, mock hooks] headless/requests": [
       {
         "from": "2026.09.08",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -1116,6 +1196,20 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/-hook.post-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "2026.09.23",
@@ -1183,6 +1277,13 @@
     "[inflight-cancel] acp/requests": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -1286,6 +1387,20 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/-hook.post-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "2026.09.23",
@@ -1353,6 +1468,13 @@
     "[inflight-hold] acp/requests": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -1574,6 +1696,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, belt hooks] interactive/skills.listed": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "2026.09.08",
@@ -1633,6 +1762,20 @@
     "[interactive, mock hooks] instructions.written../.cursor/rules/belt.mdc": [
       {
         "from": "2026.09.08",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/-hook.post-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -1709,6 +1852,13 @@
     "[interactive, mock hooks] interactive/requests": [
       {
         "from": "2026.09.08",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -1864,6 +2014,20 @@
       {
         "from": "2026.09.02",
         "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/-hook.post-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
         "outcome": "pass"
       }
     ],
@@ -2242,6 +2406,13 @@
     "[probes] acp/requests": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -2686,6 +2857,20 @@
         "message": "usage: cursor's driver reported no usage for the turn"
       }
     ],
+    "[resume-kill] acp/-hook.post-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/hook-injection": [
       {
         "from": "2026.09.23",
@@ -2753,6 +2938,13 @@
     "[resume-kill] acp/requests": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -2872,6 +3064,20 @@
     "[tools-headless] env.CURSOR_API_KEY": [
       {
         "from": "2026.09.26",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/-hook.post-tool.stdin": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/-hook.pre-tool.stdin": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -3250,6 +3456,13 @@
     "[tools-headless] headless/requests": [
       {
         "from": "2026.09.26",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/skills.listed": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }

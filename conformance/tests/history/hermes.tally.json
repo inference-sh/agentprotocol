@@ -1,8 +1,5 @@
 {
   "ingested": {
-    "agentprotocol Nightly 42479125985": "2026-11-08",
-    "agentprotocol Nightly 42589195324": "2026-11-09",
-    "agentprotocol Nightly 42753368328": "2026-11-10",
     "agentprotocol Nightly 42956725835": "2026-11-11",
     "agentprotocol Nightly 43152242605": "2026-11-12",
     "agentprotocol Nightly 43362989456": "2026-11-13",
@@ -16,117 +13,132 @@
     "agentprotocol Nightly 44455677419": "2026-11-19",
     "agentprotocol Nightly 44671851715": "2026-11-20",
     "agentprotocol Nightly 44864182434": "2026-11-21",
-    "agentprotocol Nightly 44983348684": "2026-11-22"
+    "agentprotocol Nightly 44983348684": "2026-11-22",
+    "agentprotocol Nightly 45109542501": "2026-11-23",
+    "agentprotocol Nightly 45323736354": "2026-11-24",
+    "agentprotocol Nightly 45544174960": "2026-11-25"
   },
   "versions": {
     "0.19.0": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] acp/instructions../AGENTS.md": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] acp/model": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] acp/requests": {
-        "pass": 77
+        "pass": 80
+      },
+      "[acp, belt hooks] acp/skills.listed": {
+        "pass": 3
       },
       "[acp, belt hooks] acp/streaming": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] belt-hook-shape": {
-        "pass": 67
+        "pass": 70
       },
       "[acp, belt hooks] binary": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] env.OPENROUTER_API_KEY": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] env.OPENROUTER_BASE_URL": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] hooks.install": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] session.answer": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] session.completed": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] session.start": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, belt hooks] skills": {
-        "pass": 71
+        "pass": 74
+      },
+      "[acp, mock hooks] acp/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[acp, mock hooks] acp/-hook.pre-tool.stdin": {
+        "pass": 3
       },
       "[acp, mock hooks] acp/hook-injection": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] acp/hook.pre-tool": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] acp/hook.stop": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] acp/instructions../AGENTS.md": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] acp/model": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] acp/requests": {
-        "pass": 77
+        "pass": 80
+      },
+      "[acp, mock hooks] acp/skills.listed": {
+        "pass": 3
       },
       "[acp, mock hooks] acp/streaming": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] binary": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] env.OPENROUTER_API_KEY": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] env.OPENROUTER_BASE_URL": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] hooks.install": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] session.answer": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] session.completed": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] session.start": {
-        "pass": 71
+        "pass": 74
       },
       "[acp, mock hooks] skills": {
-        "pass": 71
+        "pass": 74
       },
       "[acp] acp/hook-injection": {
         "pass": 2
@@ -182,173 +194,194 @@
       "[acp] skills": {
         "pass": 2
       },
+      "[direct] acp/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[direct] acp/-hook.pre-tool.stdin": {
+        "pass": 3
+      },
       "[direct] acp/hook-injection": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] acp/hook.post-tool": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] acp/hook.pre-tool": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] acp/hook.prompt": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] acp/hook.stop": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] acp/instructions../AGENTS.md": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] acp/model": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] acp/requests": {
-        "pass": 28
+        "pass": 31
+      },
+      "[direct] acp/skills.listed": {
+        "pass": 3
       },
       "[direct] acp/streaming": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] binary": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] direct.call": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] direct.messages": {
-        "pass:exact": 28
+        "pass:exact": 31
       },
       "[direct] direct.restart": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] direct.result": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] direct.system": {
-        "pass:exact": 28
+        "pass:exact": 31
       },
       "[direct] direct.tools": {
-        "pass:only": 28
+        "pass:only": 31
       },
       "[direct] env.OPENROUTER_API_KEY": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] env.OPENROUTER_BASE_URL": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] hooks.install": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] instructions.written../AGENTS.md": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] session.answer": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] session.completed": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] session.start": {
-        "pass": 28
+        "pass": 31
       },
       "[direct] skills": {
-        "pass": 28
+        "pass": 31
       },
       "[headless, belt hooks] belt-hook-shape": {
-        "pass": 67
+        "pass": 70
       },
       "[headless, belt hooks] binary": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] env.OPENROUTER_API_KEY": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] env.OPENROUTER_BASE_URL": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] headless/belt-hook.post-tool": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] headless/belt-hook.pre-tool": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] headless/instructions../AGENTS.md": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] headless/model": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] headless/requests": {
-        "pass": 77
+        "pass": 80
+      },
+      "[headless, belt hooks] headless/skills.listed": {
+        "pass": 3
       },
       "[headless, belt hooks] headless/streaming": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] hooks.install": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] skills": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, belt hooks] turn": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] binary": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] env.OPENROUTER_API_KEY": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] env.OPENROUTER_BASE_URL": {
-        "pass": 71
+        "pass": 74
+      },
+      "[headless, mock hooks] headless/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/-hook.pre-tool.stdin": {
+        "pass": 3
       },
       "[headless, mock hooks] headless/hook-injection": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] headless/hook.post-tool": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] headless/hook.pre-tool": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] headless/hook.prompt": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] headless/hook.stop": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] headless/instructions../AGENTS.md": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] headless/model": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] headless/requests": {
-        "pass": 77
+        "pass": 80
+      },
+      "[headless, mock hooks] headless/skills.listed": {
+        "pass": 3
       },
       "[headless, mock hooks] headless/streaming": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] hooks.install": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] skills": {
-        "pass": 71
+        "pass": 74
       },
       "[headless, mock hooks] turn": {
-        "pass": 71
+        "pass": 74
       },
       "[headless] binary": {
         "pass": 11
@@ -398,503 +431,551 @@
       "[headless] turn": {
         "pass": 11
       },
+      "[inflight-cancel] acp/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[inflight-cancel] acp/-hook.pre-tool.stdin": {
+        "pass": 3
+      },
       "[inflight-cancel] acp/hook-injection": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] acp/hook.post-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] acp/hook.pre-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] acp/hook.prompt": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] acp/hook.stop": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] acp/instructions../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] acp/model": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] acp/requests": {
-        "pass": 56
+        "pass": 59
+      },
+      "[inflight-cancel] acp/skills.listed": {
+        "pass": 3
       },
       "[inflight-cancel] acp/streaming": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] binary": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] env.OPENROUTER_API_KEY": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] env.OPENROUTER_BASE_URL": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] hooks.install": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] inflight.park": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] inflight.reraise": {
-        "finding:none": 56
+        "finding:none": 59
       },
       "[inflight-cancel] inflight.resume": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] inflight.resume-twice": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] instructions.written../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] session.answer": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] session.completed": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] session.start": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-cancel] skills": {
-        "pass": 56
+        "pass": 59
+      },
+      "[inflight-hold] acp/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[inflight-hold] acp/-hook.pre-tool.stdin": {
+        "pass": 3
       },
       "[inflight-hold] acp/hook-injection": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] acp/hook.post-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] acp/hook.pre-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] acp/hook.prompt": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] acp/hook.stop": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] acp/instructions../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] acp/model": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] acp/requests": {
-        "pass": 56
+        "pass": 59
+      },
+      "[inflight-hold] acp/skills.listed": {
+        "pass": 3
       },
       "[inflight-hold] acp/streaming": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] binary": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] env.OPENROUTER_API_KEY": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] env.OPENROUTER_BASE_URL": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] hooks.install": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] inflight.park": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] inflight.reraise": {
-        "finding:none": 56
+        "finding:none": 59
       },
       "[inflight-hold] inflight.resume": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] inflight.resume-twice": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] instructions.written../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] session.answer": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] session.completed": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] session.start": {
-        "pass": 56
+        "pass": 59
       },
       "[inflight-hold] skills": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] belt-hook-shape": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] binary": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] env.OPENROUTER_API_KEY": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] env.OPENROUTER_BASE_URL": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] hooks.install": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] interactive/belt-hook.post-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] interactive/model": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] interactive/requests": {
-        "pass": 56
+        "pass": 59
+      },
+      "[interactive, belt hooks] interactive/skills.listed": {
+        "pass": 3
       },
       "[interactive, belt hooks] interactive/streaming": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] skills": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] tui.completed": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, belt hooks] tui.start": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] binary": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] env.OPENROUTER_API_KEY": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] env.OPENROUTER_BASE_URL": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] hooks.install": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 56
+        "pass": 59
+      },
+      "[interactive, mock hooks] interactive/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": {
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/hook-injection": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] interactive/hook.post-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] interactive/hook.pre-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] interactive/hook.prompt": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] interactive/model": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] interactive/requests": {
-        "pass": 56
+        "pass": 59
+      },
+      "[interactive, mock hooks] interactive/skills.listed": {
+        "pass": 3
       },
       "[interactive, mock hooks] interactive/streaming": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] skills": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] tui.completed": {
-        "pass": 56
+        "pass": 59
       },
       "[interactive, mock hooks] tui.start": {
-        "pass": 56
+        "pass": 59
+      },
+      "[probes] acp/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[probes] acp/-hook.pre-tool.stdin": {
+        "pass": 3
       },
       "[probes] acp/hook-injection": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] acp/hook.post-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] acp/hook.pre-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] acp/hook.prompt": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] acp/hook.stop": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] acp/instructions../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] acp/model": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] acp/requests": {
-        "pass": 56
+        "pass": 59
+      },
+      "[probes] acp/skills.listed": {
+        "pass": 3
       },
       "[probes] acp/streaming": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] binary": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] deferred.armed": {
-        "pass:no-search-tool": 56
+        "pass:no-search-tool": 59
       },
       "[probes] env.OPENROUTER_API_KEY": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] env.OPENROUTER_BASE_URL": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] hooks.install": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] images.sent": {
-        "pass": 39
+        "pass": 42
       },
       "[probes] inflight.park": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] inflight.reraise": {
-        "finding:none": 56
+        "finding:none": 59
       },
       "[probes] inflight.resume": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] inflight.resume-twice": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] instructions.written../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] resume.context": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] resume.load": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] resume.replay": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] seed.appended": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] seed.hand-built": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] seedkinds.assistant text": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] seedkinds.compaction.context": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.compaction.history": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.compaction.request": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.file-uri": {
-        "pass:as-image": 55
+        "pass:as-image": 58
       },
       "[probes] seedkinds.first user message": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 55
+        "pass:as-image": 58
       },
       "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 55
+        "pass:as-image": 58
       },
       "[probes] seedkinds.reasoning": {
-        "finding:not-kept": 56
+        "finding:not-kept": 59
       },
       "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.retired-tool.context": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.retired-tool.history": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.retired-tool.request": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.second turn's answer": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] seedkinds.second turn's user message": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] seedkinds.shown-only": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.tool call arguments": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] seedkinds.tool result": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] seedkinds.tool-after-text": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.tool-image": {
-        "pass:as-image": 55
+        "pass:as-image": 58
       },
       "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.trailing-prompt.request": {
-        "pass:sent": 55
+        "pass:sent": 58
       },
       "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 55
+        "pass": 58
       },
       "[probes] seedkinds.trailing-tool result.request": {
-        "pass:sent": 55
+        "pass:sent": 58
       },
       "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 55
+        "pass:as-text": 58
       },
       "[probes] seedkinds.user-attachments.image": {
-        "pass:as-image": 55
+        "pass:as-image": 58
       },
       "[probes] seedkinds.user-attachments.pdf": {
-        "finding:not-kept": 55
+        "finding:not-kept": 58
       },
       "[probes] session.answer": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] session.completed": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] session.start": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] skills": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] transcript": {
-        "pass": 56
+        "pass": 59
       },
       "[probes] turn": {
-        "pass": 415
+        "pass": 439
       },
       "[probes] usage.account": {
-        "finding:not-reported": 40
+        "finding:not-reported": 43
       },
       "[probes] usage.context": {
-        "pass:with-window": 40
+        "pass:with-window": 43
       },
       "[probes] usage.limits": {
-        "finding:not-reported": 40
+        "finding:not-reported": 43
       },
       "[probes] usage.probe.limits": {
-        "pass:unsupported": 30
+        "pass:unsupported": 33
       },
       "[probes] usage.probe.no-model-call": {
-        "pass": 30
+        "pass": 33
       },
       "[probes] usage.turn": {
-        "finding:not-reported": 40
+        "finding:not-reported": 43
+      },
+      "[resume-kill] acp/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[resume-kill] acp/-hook.pre-tool.stdin": {
+        "pass": 3
       },
       "[resume-kill] acp/hook-injection": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] acp/hook.post-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] acp/hook.pre-tool": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] acp/hook.prompt": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] acp/hook.stop": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] acp/instructions../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] acp/model": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] acp/requests": {
-        "pass": 56
+        "pass": 59
+      },
+      "[resume-kill] acp/skills.listed": {
+        "pass": 3
       },
       "[resume-kill] acp/streaming": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] binary": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] env.OPENROUTER_API_KEY": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] env.OPENROUTER_BASE_URL": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] hooks.install": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] instructions.written../AGENTS.md": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] resume.context": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] resume.load": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] resume.replay": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] session.answer": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] session.completed": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] session.start": {
-        "pass": 56
+        "pass": 59
       },
       "[resume-kill] skills": {
-        "pass": 56
+        "pass": 59
       },
       "[surface] binary": {
-        "pass": 56
+        "pass": 59
       }
     }
   }

@@ -4,15 +4,15 @@
     {
       "version": "0.19.0",
       "first": "2026-08-29",
-      "last": "2026-11-22",
-      "runs": 82,
+      "last": "2026-11-25",
+      "runs": 85,
       "sources": [
         "harness-test Nightly 33239663195",
-        "agentprotocol Nightly 44983348684"
+        "agentprotocol Nightly 45544174960"
       ],
       "suites": [
         "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
-        "011272d86a30b6b9907932b972aa98810e36cd17"
+        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
       ],
       "green": true
     }
@@ -61,6 +61,13 @@
       }
     ],
     "[acp, belt hooks] acp/requests": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/skills.listed": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -144,6 +151,20 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "0.19.0",
@@ -194,6 +215,13 @@
       }
     ],
     "[acp, mock hooks] acp/requests": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/skills.listed": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -396,6 +424,20 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/hook-injection": [
       {
         "from": "0.19.0",
@@ -446,6 +488,13 @@
       }
     ],
     "[direct] acp/requests": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/skills.listed": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -644,6 +693,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, belt hooks] headless/skills.listed": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "0.19.0",
@@ -700,6 +756,20 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/-hook.post-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/-hook.pre-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "0.19.0",
@@ -750,6 +820,13 @@
       }
     ],
     "[headless, mock hooks] headless/requests": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/skills.listed": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -903,6 +980,20 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "0.19.0",
@@ -953,6 +1044,13 @@
       }
     ],
     "[inflight-cancel] acp/requests": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/skills.listed": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1058,6 +1156,20 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "0.19.0",
@@ -1108,6 +1220,13 @@
       }
     ],
     "[inflight-hold] acp/requests": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/skills.listed": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1304,6 +1423,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, belt hooks] interactive/skills.listed": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "0.19.0",
@@ -1367,6 +1493,20 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/-hook.post-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "0.19.0",
@@ -1423,6 +1563,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/skills.listed": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "0.19.0",
@@ -1445,6 +1592,20 @@
       }
     ],
     "[interactive, mock hooks] tui.start": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/-hook.pre-tool.stdin": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1501,6 +1662,13 @@
       }
     ],
     "[probes] acp/requests": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/skills.listed": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1896,7 +2064,7 @@
         "from": "0.19.0",
         "last": "0.19.0",
         "outcome": "pass:with-window",
-        "message": "usage: hermes reported 11481 of 128000 tokens in context"
+        "message": "usage: hermes reported 11904 of 128000 tokens in context"
       }
     ],
     "[probes] usage.limits": [
@@ -1928,6 +2096,20 @@
         "last": "0.19.0",
         "outcome": "finding:not-reported",
         "message": "usage: hermes's driver reported no usage for the turn"
+      }
+    ],
+    "[resume-kill] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook-injection": [
@@ -1980,6 +2162,13 @@
       }
     ],
     "[resume-kill] acp/requests": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/skills.listed": [
       {
         "from": "0.19.0",
         "last": "0.19.0",

@@ -435,15 +435,30 @@
     {
       "version": "0.171.0",
       "first": "2026-11-20",
-      "last": "2026-11-22",
-      "runs": 3,
+      "last": "2026-11-23",
+      "runs": 4,
       "sources": [
         "agentprotocol Nightly 44671851715",
-        "agentprotocol Nightly 44983348684"
+        "agentprotocol Nightly 45109542501"
       ],
       "suites": [
         "011272d86a30b6b9907932b972aa98810e36cd17",
-        "011272d86a30b6b9907932b972aa98810e36cd17"
+        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
+      ],
+      "green": true
+    },
+    {
+      "version": "0.172.0",
+      "first": "2026-11-24",
+      "last": "2026-11-25",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 45323736354",
+        "agentprotocol Nightly 45544174960"
+      ],
+      "suites": [
+        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2",
+        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
       ],
       "green": true
     }
@@ -452,14 +467,14 @@
     "[acp, belt hooks] acp/belt-hook.post-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.pre-compact": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "acp: belt pre-compact hook not fired — the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call"
       }
@@ -467,161 +482,183 @@
     "[acp, belt hooks] acp/belt-hook.pre-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.prompt": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.session-start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.stop": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/model": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/requests": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "acp: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] belt-hook-shape": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] binary": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.install": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.project-copy": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.answer": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.completed": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] skills": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.post-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.pre-compact": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call"
       }
@@ -629,147 +666,169 @@
     "[acp, mock hooks] acp/hook.pre-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.prompt": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.session-start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.stop": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/requests": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "acp: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] binary": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] hooks.install": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.answer": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.completed": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] skills": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook-injection": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.post-tool": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.pre-compact": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call"
       }
@@ -777,106 +836,114 @@
     "[direct] acp/hook.pre-tool": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.prompt": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.session-start": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.stop": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions../AGENTS.md": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/model": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] acp/requests": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[direct] acp/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "acp: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[direct] acp/streaming": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] binary": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] direct.call": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] direct.messages": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "finding:added",
-        "message": "direct: codex added 166 characters to the conversation: \"# AGENTS.md instructions\\n\\n\u003cINSTRUCTIONS\u003e\\n\u003c!-- harness-test:start --\u003e\\nThe project codename is INSTR-USER-CODEX-1795320438219.\\n\u003c!-- harness-test:end --\u003e\\n\u003c/INSTRUCTIONS\u003e\""
+        "message": "direct: codex added 166 characters to the conversation: \"# AGENTS.md instructions\\n\\n\u003cINSTRUCTIONS\u003e\\n\u003c!-- harness-test:start --\u003e\\nThe project codename is INSTR-USER-CODEX-1795579662484.\\n\u003c!-- harness-test:end --\u003e\\n\u003c/INSTRUCTIONS\u003e\""
       }
     ],
     "[direct] direct.restart": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] direct.result": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] direct.system": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:exact",
         "message": "direct: codex sent the probe's system prompt and nothing else"
       }
@@ -884,7 +951,7 @@
     "[direct] direct.tools": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "finding:more",
         "message": "direct: codex offered 3 tools of its own with the probe's: [list_mcp_resource_templates list_mcp_resources read_mcp_resource]"
       }
@@ -892,91 +959,91 @@
     "[direct] env.OPENAI_API_KEY": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] hooks.install": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written../AGENTS.md": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] session.answer": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] session.completed": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] session.start": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[direct] skills": [
       {
         "from": "0.164.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] belt-hook-shape": [
       {
         "from": "0.154.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] binary": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.post-tool": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.pre-compact": [
       {
         "from": "0.154.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "headless: belt pre-compact hook not fired — /compact is TUI-only (slash_dispatch.rs); codex exec never auto-compacts"
       }
@@ -984,140 +1051,162 @@
     "[headless, belt hooks] headless/belt-hook.pre-tool": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.prompt": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.session-start": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.stop": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions../AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/model": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/requests": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "headless: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.install": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.project-copy": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] skills": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] turn": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] binary": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/-hook.post-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/-hook.pre-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.post-tool": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.pre-compact": [
       {
         "from": "0.154.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "headless: pre-compact hook not fired — /compact is TUI-only (slash_dispatch.rs); codex exec never auto-compacts"
       }
@@ -1125,98 +1214,106 @@
     "[headless, mock hooks] headless/hook.pre-tool": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.prompt": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.session-start": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.stop": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions../AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/requests": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "headless: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] hooks.install": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] skills": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] turn": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
@@ -1346,24 +1443,38 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.post-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.pre-compact": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call"
       }
@@ -1371,98 +1482,106 @@
     "[inflight-cancel] acp/hook.pre-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.prompt": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.session-start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.stop": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/model": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/requests": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "acp: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[inflight-cancel] acp/streaming": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] binary": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.OPENAI_API_KEY": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] hooks.install": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.park": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.reraise": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "finding:none",
         "message": "in-flight: codex does not re-raise the parked approval on resume"
       }
@@ -1470,7 +1589,7 @@
     "[inflight-cancel] inflight.resume": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:by-id",
         "message": "in-flight: codex resumed with a tool call parked (by id, nothing replayed to the client)"
       }
@@ -1478,7 +1597,7 @@
     "[inflight-cancel] inflight.resume-twice": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:by-id",
         "message": "in-flight: codex resumed the same session twice"
       }
@@ -1486,63 +1605,77 @@
     "[inflight-cancel] instructions.written../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.answer": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.completed": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] skills": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.post-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.pre-compact": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call"
       }
@@ -1550,98 +1683,106 @@
     "[inflight-hold] acp/hook.pre-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.prompt": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.session-start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.stop": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/model": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/requests": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "acp: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[inflight-hold] acp/streaming": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] binary": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.OPENAI_API_KEY": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] hooks.install": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.park": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.reraise": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "finding:none",
         "message": "in-flight: codex does not re-raise the parked approval on resume"
       }
@@ -1649,7 +1790,7 @@
     "[inflight-hold] inflight.resume": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:by-id",
         "message": "in-flight: codex resumed with a tool call parked (by id, nothing replayed to the client)"
       }
@@ -1657,7 +1798,7 @@
     "[inflight-hold] inflight.resume-twice": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:by-id",
         "message": "in-flight: codex resumed the same session twice"
       }
@@ -1665,350 +1806,394 @@
     "[inflight-hold] instructions.written../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.answer": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.completed": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] skills": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] belt-hook-shape": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] binary": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.install": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.project-copy": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.post-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-compact": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.prompt": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.session-start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.stop": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/model": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/requests": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "interactive: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] skills": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.completed": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] binary": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] hooks.install": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/-hook.post-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.post-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-compact": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.prompt": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.session-start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.stop": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/requests": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "interactive: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] skills": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.completed": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook-injection": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.post-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.pre-compact": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call"
       }
@@ -2016,77 +2201,85 @@
     "[probes] acp/hook.pre-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.prompt": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.session-start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.stop": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/model": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] acp/requests": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[probes] acp/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "acp: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[probes] acp/streaming": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] binary": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] compact.run": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "finding:as-prompt",
         "message": "compaction: codex sent /compact to the model as a user message, so over codex it is a prompt, not a command, and nothing was compacted"
       }
@@ -2094,7 +2287,7 @@
     "[probes] deferred.armed": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:no-search-tool",
         "message": "deferred tools: codex declares no tool-search tool, so its 13 declared tools are the whole surface it offers on a turn"
       }
@@ -2102,35 +2295,35 @@
     "[probes] env.OPENAI_API_KEY": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] hooks.install": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] images.sent": [
       {
         "from": "0.162.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.park": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.reraise": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "finding:none",
         "message": "in-flight: codex does not re-raise the parked approval on resume"
       }
@@ -2138,7 +2331,7 @@
     "[probes] inflight.resume": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:by-id",
         "message": "in-flight: codex resumed with a tool call parked (by id, nothing replayed to the client)"
       }
@@ -2146,7 +2339,7 @@
     "[probes] inflight.resume-twice": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:by-id",
         "message": "in-flight: codex resumed the same session twice"
       }
@@ -2154,28 +2347,28 @@
     "[probes] instructions.written../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] resume.context": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] resume.load": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:by-id",
         "message": "resume after closed: codex reopened the session 0s after the process ended (resumes by id)"
       }
@@ -2271,14 +2464,14 @@
     "[probes] seed.appended": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seed.hand-built": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
@@ -2293,35 +2486,35 @@
     "[probes] seedkinds.assistant text": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.context": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.history": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.request": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.file-uri": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:as-image",
         "message": "seed shapes (file-uri): codex sent the image's bytes (codec kept them inline: true)"
       }
@@ -2329,14 +2522,14 @@
     "[probes] seedkinds.first user message": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.image-only-result": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:as-image",
         "message": "seed shapes (image-only-result): codex sent the call and the image as image data"
       }
@@ -2344,7 +2537,7 @@
     "[probes] seedkinds.in-message-result": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:as-image",
         "message": "seed shapes (in-message-result): codex sent the result and the image as image data"
       }
@@ -2352,98 +2545,98 @@
     "[probes] seedkinds.reasoning": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.context": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.history": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.request": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.context": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.history": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.request": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's answer": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's user message": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.shown-only": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool call arguments": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool result": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-after-text": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-image": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:as-image",
         "message": "seed kinds: codex sent the tool's image as image data (result text sent: true)"
       }
@@ -2451,14 +2644,14 @@
     "[probes] seedkinds.trailing-prompt.history": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-prompt.request": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-prompt): codex loaded the session and sent the last prompt"
       }
@@ -2466,14 +2659,14 @@
     "[probes] seedkinds.trailing-tool result.history": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-tool result.request": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-tool-result): codex loaded the session and sent the last tool result"
       }
@@ -2481,7 +2674,7 @@
     "[probes] seedkinds.untyped-file-path": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:as-text",
         "message": "seed shapes (untyped-file-path): codex sent the file's content"
       }
@@ -2489,7 +2682,7 @@
     "[probes] seedkinds.user-attachments.image": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:as-image",
         "message": "seed shapes (user-attachments): codex sent the attached image as image data"
       }
@@ -2497,7 +2690,7 @@
     "[probes] seedkinds.user-attachments.pdf": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "finding:not-kept",
         "message": "seed shapes (user-attachments): codex's codec kept no attached PDF"
       }
@@ -2505,72 +2698,72 @@
     "[probes] session.answer": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] session.completed": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] session.start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] skills": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] subagents.completed": [
       {
         "from": "0.162.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:idle",
-        "message": "subagents: codex reported subagent 01a2016e-b708-75c3-90aa-e276be71ea9a waiting with its answer; it stays open until the agent closes it"
+        "message": "subagents: codex reported subagent 01a210e2-0ce7-7773-b0ef-7a5c3648d091 waiting with its answer; it stays open until the agent closes it"
       }
     ],
     "[probes] subagents.output": [
       {
         "from": "0.162.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] subagents.started": [
       {
         "from": "0.162.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:linked",
-        "message": "subagents: codex reported subagent 01a2016e-b708-75c3-90aa-e276be71ea9a, started by tool call call_mock_1"
+        "message": "subagents: codex reported subagent 01a210e2-0ce7-7773-b0ef-7a5c3648d091, started by tool call call_mock_1"
       }
     ],
     "[probes] transcript": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] turn": [
       {
         "from": "0.157.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] usage.context": [
       {
         "from": "0.162.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:with-window",
         "message": "usage: codex reported 15 of 1945 tokens in context"
       }
@@ -2578,7 +2771,7 @@
     "[probes] usage.limits": [
       {
         "from": "0.162.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "finding:not-reported",
         "message": "usage: codex pushed no rate limits"
       }
@@ -2586,7 +2779,7 @@
     "[probes] usage.probe.limits": [
       {
         "from": "0.162.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:unsupported",
         "message": "usage: codex's limits do not apply: plan rate limits apply only to a ChatGPT login"
       }
@@ -2594,35 +2787,49 @@
     "[probes] usage.probe.no-model-call": [
       {
         "from": "0.162.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[probes] usage.turn": [
       {
         "from": "0.162.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/-hook.post-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook-injection": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.post-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.pre-compact": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "acp: pre-compact hook not fired — the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call"
       }
@@ -2630,112 +2837,120 @@
     "[resume-kill] acp/hook.pre-tool": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.prompt": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.session-start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.stop": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/model": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/requests": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "acp: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[resume-kill] acp/streaming": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] binary": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.OPENAI_API_KEY": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] hooks.install": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written../AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.context": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.load": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass:by-id",
         "message": "resume after killed: codex reopened the session 0s after the process ended (resumes by id)"
       }
@@ -2743,91 +2958,91 @@
     "[resume-kill] session.answer": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.completed": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.start": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[resume-kill] skills": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] belt-hook-shape": [
       {
         "from": "0.154.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] binary": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] hooks.install": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] hooks.project-copy": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.post-tool": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.pre-compact": [
       {
         "from": "0.154.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "sdk: belt pre-compact hook not fired — SDK mode is codex exec, where /compact is only a user message and nothing auto-compacts (same investigation as headless)"
       }
@@ -2835,133 +3050,155 @@
     "[sdk, belt hooks] sdk/belt-hook.pre-tool": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.prompt": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.session-start": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/belt-hook.stop": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/instructions../AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/model": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] sdk/requests": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "sdk: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[sdk, belt hooks] sdk/streaming": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] skills": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, belt hooks] turn": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] binary": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] hooks.install": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] instructions.written.~/.codex/AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/-hook.post-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/-hook.pre-tool.stdin": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook-injection": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.post-tool": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.pre-compact": [
       {
         "from": "0.154.0",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "skip:known-missing",
         "message": "sdk: pre-compact hook not fired — SDK mode is codex exec, where /compact is only a user message and nothing auto-compacts (same investigation as headless)"
       }
@@ -2969,77 +3206,85 @@
     "[sdk, mock hooks] sdk/hook.pre-tool": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.prompt": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.session-start": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/hook.stop": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/instructions../AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/instructions.~/.codex/AGENTS.md": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/model": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] sdk/requests": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/skills.listed": [
+      {
+        "from": "0.171.0",
+        "last": "0.172.0",
+        "outcome": "skip:known-issue",
+        "message": "sdk: skill not listed to the model — known issue: codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
       }
     ],
     "[sdk, mock hooks] sdk/streaming": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] skills": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
     "[sdk, mock hooks] turn": [
       {
         "from": "0.153.4",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ],
@@ -3172,7 +3417,7 @@
     "[surface] binary": [
       {
         "from": "0.156.1",
-        "last": "0.171.0",
+        "last": "0.172.0",
         "outcome": "pass"
       }
     ]

@@ -225,15 +225,15 @@
     {
       "version": "1.19.6",
       "first": "2026-11-17",
-      "last": "2026-11-22",
-      "runs": 6,
+      "last": "2026-11-25",
+      "runs": 9,
       "sources": [
         "agentprotocol Nightly 44079124745",
-        "agentprotocol Nightly 44983348684"
+        "agentprotocol Nightly 45544174960"
       ],
       "suites": [
         "011272d86a30b6b9907932b972aa98810e36cd17",
-        "011272d86a30b6b9907932b972aa98810e36cd17"
+        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
       ],
       "green": true
     }
@@ -295,6 +295,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, belt hooks] acp/skills.listed": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "1.18.30",
@@ -337,6 +344,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, belt hooks] hooks.project-copy": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[acp, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "1.18.30",
@@ -375,6 +389,20 @@
     "[acp, belt hooks] skills": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/-hook.post-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -438,6 +466,13 @@
     "[acp, mock hooks] acp/requests": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/skills.listed": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -646,6 +681,20 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/-hook.post-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/hook-injection": [
       {
         "from": "1.19.4",
@@ -705,6 +754,13 @@
     "[direct] acp/requests": [
       {
         "from": "1.19.4",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/skills.listed": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -915,6 +971,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, belt hooks] headless/skills.listed": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "1.18.30",
@@ -925,6 +988,13 @@
     "[headless, belt hooks] hooks.install": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] hooks.project-copy": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -974,6 +1044,20 @@
     "[headless, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/-hook.post-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1037,6 +1121,13 @@
     "[headless, mock hooks] headless/requests": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/skills.listed": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1217,6 +1308,20 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/-hook.post-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "1.18.32",
@@ -1276,6 +1381,13 @@
     "[inflight-cancel] acp/requests": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/skills.listed": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1386,6 +1498,20 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/-hook.post-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "1.18.32",
@@ -1445,6 +1571,13 @@
     "[inflight-hold] acp/requests": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/skills.listed": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1590,6 +1723,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, belt hooks] hooks.project-copy": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "1.18.32",
@@ -1656,6 +1796,13 @@
     "[interactive, belt hooks] interactive/requests": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/skills.listed": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1730,6 +1877,20 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/-hook.post-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "1.18.32",
@@ -1793,6 +1954,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/skills.listed": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "1.18.32",
@@ -1817,6 +1985,20 @@
     "[interactive, mock hooks] tui.start": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/-hook.post-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1880,6 +2062,13 @@
     "[probes] acp/requests": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/skills.listed": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -2322,6 +2511,20 @@
         "message": "usage: opencode's driver reported no usage for the turn"
       }
     ],
+    "[resume-kill] acp/-hook.post-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/hook-injection": [
       {
         "from": "1.18.32",
@@ -2381,6 +2584,13 @@
     "[resume-kill] acp/requests": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/skills.listed": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }

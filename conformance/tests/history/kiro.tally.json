@@ -1,8 +1,5 @@
 {
   "ingested": {
-    "agentprotocol Nightly 42479125985": "2026-11-08",
-    "agentprotocol Nightly 42589195324": "2026-11-09",
-    "agentprotocol Nightly 42753368328": "2026-11-10",
     "agentprotocol Nightly 42956725835": "2026-11-11",
     "agentprotocol Nightly 43152242605": "2026-11-12",
     "agentprotocol Nightly 43362989456": "2026-11-13",
@@ -16,827 +13,12 @@
     "agentprotocol Nightly 44455677419": "2026-11-19",
     "agentprotocol Nightly 44671851715": "2026-11-20",
     "agentprotocol Nightly 44864182434": "2026-11-21",
-    "agentprotocol Nightly 44983348684": "2026-11-22"
+    "agentprotocol Nightly 44983348684": "2026-11-22",
+    "agentprotocol Nightly 45109542501": "2026-11-23",
+    "agentprotocol Nightly 45323736354": "2026-11-24",
+    "agentprotocol Nightly 45544174960": "2026-11-25"
   },
   "versions": {
-    "3.1.0": {
-      "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 4
-      },
-      "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "pass": 4
-      },
-      "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 4
-      },
-      "[acp, belt hooks] acp/belt-hook.session-start": {
-        "pass": 4
-      },
-      "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 4
-      },
-      "[acp, belt hooks] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[acp, belt hooks] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[acp, belt hooks] acp/model": {
-        "pass": 4
-      },
-      "[acp, belt hooks] acp/requests": {
-        "pass": 4
-      },
-      "[acp, belt hooks] acp/streaming": {
-        "pass": 4
-      },
-      "[acp, belt hooks] binary": {
-        "pass": 4
-      },
-      "[acp, belt hooks] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[acp, belt hooks] hooks.install": {
-        "pass": 4
-      },
-      "[acp, belt hooks] hooks.project-copy": {
-        "pass": 4
-      },
-      "[acp, belt hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[acp, belt hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[acp, belt hooks] session.answer": {
-        "pass": 4
-      },
-      "[acp, belt hooks] session.completed": {
-        "pass": 4
-      },
-      "[acp, belt hooks] session.start": {
-        "pass": 4
-      },
-      "[acp, belt hooks] skills": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/hook-injection": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/hook.pre-tool": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/hook.session-start": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/hook.stop": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/model": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/requests": {
-        "pass": 4
-      },
-      "[acp, mock hooks] acp/streaming": {
-        "pass": 4
-      },
-      "[acp, mock hooks] binary": {
-        "pass": 4
-      },
-      "[acp, mock hooks] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[acp, mock hooks] hooks.install": {
-        "pass": 4
-      },
-      "[acp, mock hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[acp, mock hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[acp, mock hooks] session.answer": {
-        "pass": 4
-      },
-      "[acp, mock hooks] session.completed": {
-        "pass": 4
-      },
-      "[acp, mock hooks] session.start": {
-        "pass": 4
-      },
-      "[acp, mock hooks] skills": {
-        "pass": 4
-      },
-      "[direct] acp/hook-injection": {
-        "pass": 4
-      },
-      "[direct] acp/hook.post-tool": {
-        "pass": 4
-      },
-      "[direct] acp/hook.pre-tool": {
-        "pass": 4
-      },
-      "[direct] acp/hook.prompt": {
-        "pass": 4
-      },
-      "[direct] acp/hook.session-start": {
-        "pass": 4
-      },
-      "[direct] acp/hook.stop": {
-        "pass": 4
-      },
-      "[direct] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[direct] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[direct] acp/model": {
-        "pass": 4
-      },
-      "[direct] acp/requests": {
-        "pass": 4
-      },
-      "[direct] acp/streaming": {
-        "pass": 4
-      },
-      "[direct] binary": {
-        "pass": 4
-      },
-      "[direct] direct.call": {
-        "pass": 4
-      },
-      "[direct] direct.messages": {
-        "pass:exact": 4
-      },
-      "[direct] direct.restart": {
-        "pass": 4
-      },
-      "[direct] direct.result": {
-        "pass": 4
-      },
-      "[direct] direct.system": {
-        "finding:added": 4
-      },
-      "[direct] direct.tools": {
-        "pass:only": 4
-      },
-      "[direct] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[direct] hooks.install": {
-        "pass": 4
-      },
-      "[direct] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[direct] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[direct] session.answer": {
-        "pass": 4
-      },
-      "[direct] session.completed": {
-        "pass": 4
-      },
-      "[direct] session.start": {
-        "pass": 4
-      },
-      "[direct] skills": {
-        "pass": 4
-      },
-      "[headless, belt hooks] binary": {
-        "pass": 4
-      },
-      "[headless, belt hooks] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 4
-      },
-      "[headless, belt hooks] headless/belt-hook.session-start": {
-        "pass": 4
-      },
-      "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 4
-      },
-      "[headless, belt hooks] headless/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[headless, belt hooks] headless/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[headless, belt hooks] headless/model": {
-        "pass": 4
-      },
-      "[headless, belt hooks] headless/requests": {
-        "pass": 4
-      },
-      "[headless, belt hooks] headless/streaming": {
-        "pass": 4
-      },
-      "[headless, belt hooks] hooks.install": {
-        "pass": 4
-      },
-      "[headless, belt hooks] hooks.project-copy": {
-        "pass": 4
-      },
-      "[headless, belt hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[headless, belt hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[headless, belt hooks] skills": {
-        "pass": 4
-      },
-      "[headless, belt hooks] turn": {
-        "pass": 4
-      },
-      "[headless, mock hooks] binary": {
-        "pass": 4
-      },
-      "[headless, mock hooks] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[headless, mock hooks] headless/hook-injection": {
-        "pass": 4
-      },
-      "[headless, mock hooks] headless/hook.prompt": {
-        "pass": 4
-      },
-      "[headless, mock hooks] headless/hook.session-start": {
-        "pass": 4
-      },
-      "[headless, mock hooks] headless/hook.stop": {
-        "pass": 4
-      },
-      "[headless, mock hooks] headless/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[headless, mock hooks] headless/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[headless, mock hooks] headless/model": {
-        "pass": 4
-      },
-      "[headless, mock hooks] headless/requests": {
-        "pass": 4
-      },
-      "[headless, mock hooks] headless/streaming": {
-        "pass": 4
-      },
-      "[headless, mock hooks] hooks.install": {
-        "pass": 4
-      },
-      "[headless, mock hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[headless, mock hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[headless, mock hooks] skills": {
-        "pass": 4
-      },
-      "[headless, mock hooks] turn": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/hook-injection": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/hook.post-tool": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/hook.pre-tool": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/hook.prompt": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/hook.session-start": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/hook.stop": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/model": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/requests": {
-        "pass": 4
-      },
-      "[inflight-cancel] acp/streaming": {
-        "pass": 4
-      },
-      "[inflight-cancel] binary": {
-        "pass": 4
-      },
-      "[inflight-cancel] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[inflight-cancel] hooks.install": {
-        "pass": 4
-      },
-      "[inflight-cancel] inflight.park": {
-        "pass": 4
-      },
-      "[inflight-cancel] inflight.reraise": {
-        "finding:none": 4
-      },
-      "[inflight-cancel] inflight.resume": {
-        "pass": 4
-      },
-      "[inflight-cancel] inflight.resume-twice": {
-        "pass": 4
-      },
-      "[inflight-cancel] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[inflight-cancel] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[inflight-cancel] session.answer": {
-        "pass": 4
-      },
-      "[inflight-cancel] session.completed": {
-        "pass": 4
-      },
-      "[inflight-cancel] session.start": {
-        "pass": 4
-      },
-      "[inflight-cancel] skills": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/hook-injection": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/hook.post-tool": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/hook.pre-tool": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/hook.prompt": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/hook.session-start": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/hook.stop": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/model": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/requests": {
-        "pass": 4
-      },
-      "[inflight-hold] acp/streaming": {
-        "pass": 4
-      },
-      "[inflight-hold] binary": {
-        "pass": 4
-      },
-      "[inflight-hold] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[inflight-hold] hooks.install": {
-        "pass": 4
-      },
-      "[inflight-hold] inflight.park": {
-        "pass": 4
-      },
-      "[inflight-hold] inflight.reraise": {
-        "finding:none": 4
-      },
-      "[inflight-hold] inflight.resume": {
-        "pass": 4
-      },
-      "[inflight-hold] inflight.resume-twice": {
-        "pass": 4
-      },
-      "[inflight-hold] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[inflight-hold] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[inflight-hold] session.answer": {
-        "pass": 4
-      },
-      "[inflight-hold] session.completed": {
-        "pass": 4
-      },
-      "[inflight-hold] session.start": {
-        "pass": 4
-      },
-      "[inflight-hold] skills": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] binary": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] hooks.install": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] hooks.project-copy": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] interactive/belt-hook.session-start": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] interactive/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] interactive/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] interactive/model": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] interactive/requests": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] interactive/streaming": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] skills": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] tui.completed": {
-        "pass": 4
-      },
-      "[interactive, belt hooks] tui.start": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] binary": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] hooks.install": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] interactive/hook-injection": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] interactive/hook.prompt": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] interactive/hook.session-start": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] interactive/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] interactive/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] interactive/model": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] interactive/requests": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] interactive/streaming": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] skills": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] tui.completed": {
-        "pass": 4
-      },
-      "[interactive, mock hooks] tui.start": {
-        "pass": 4
-      },
-      "[probes] acp/hook-injection": {
-        "pass": 4
-      },
-      "[probes] acp/hook.post-tool": {
-        "pass": 4
-      },
-      "[probes] acp/hook.pre-tool": {
-        "pass": 4
-      },
-      "[probes] acp/hook.prompt": {
-        "pass": 4
-      },
-      "[probes] acp/hook.session-start": {
-        "pass": 4
-      },
-      "[probes] acp/hook.stop": {
-        "pass": 4
-      },
-      "[probes] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[probes] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[probes] acp/model": {
-        "pass": 4
-      },
-      "[probes] acp/requests": {
-        "pass": 4
-      },
-      "[probes] acp/streaming": {
-        "pass": 4
-      },
-      "[probes] binary": {
-        "pass": 4
-      },
-      "[probes] deferred.armed": {
-        "pass:no-search-tool": 4
-      },
-      "[probes] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[probes] hooks.install": {
-        "pass": 4
-      },
-      "[probes] images.sent": {
-        "pass": 4
-      },
-      "[probes] inflight.park": {
-        "pass": 4
-      },
-      "[probes] inflight.reraise": {
-        "finding:none": 4
-      },
-      "[probes] inflight.resume": {
-        "pass": 4
-      },
-      "[probes] inflight.resume-twice": {
-        "pass": 4
-      },
-      "[probes] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[probes] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[probes] resume.context": {
-        "pass": 4
-      },
-      "[probes] resume.load": {
-        "pass": 4
-      },
-      "[probes] resume.replay": {
-        "pass": 4
-      },
-      "[probes] seed.appended": {
-        "pass": 4
-      },
-      "[probes] seed.hand-built": {
-        "pass": 4
-      },
-      "[probes] seedkinds.assistant text": {
-        "pass": 4
-      },
-      "[probes] seedkinds.compaction.context": {
-        "pass": 4
-      },
-      "[probes] seedkinds.compaction.history": {
-        "pass": 4
-      },
-      "[probes] seedkinds.compaction.request": {
-        "pass": 4
-      },
-      "[probes] seedkinds.file-uri": {
-        "pass:as-image": 4
-      },
-      "[probes] seedkinds.first user message": {
-        "pass": 4
-      },
-      "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 4
-      },
-      "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 4
-      },
-      "[probes] seedkinds.reasoning": {
-        "finding:not-kept": 4
-      },
-      "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 4
-      },
-      "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 4
-      },
-      "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 4
-      },
-      "[probes] seedkinds.retired-tool.context": {
-        "pass": 4
-      },
-      "[probes] seedkinds.retired-tool.history": {
-        "pass": 4
-      },
-      "[probes] seedkinds.retired-tool.request": {
-        "pass": 4
-      },
-      "[probes] seedkinds.second turn's answer": {
-        "pass": 4
-      },
-      "[probes] seedkinds.second turn's user message": {
-        "pass": 4
-      },
-      "[probes] seedkinds.shown-only": {
-        "pass": 4
-      },
-      "[probes] seedkinds.tool call arguments": {
-        "pass": 4
-      },
-      "[probes] seedkinds.tool result": {
-        "pass": 4
-      },
-      "[probes] seedkinds.tool-after-text": {
-        "pass": 4
-      },
-      "[probes] seedkinds.tool-image": {
-        "pass:as-image": 4
-      },
-      "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 4
-      },
-      "[probes] seedkinds.trailing-prompt.request": {
-        "pass:not-sent": 4
-      },
-      "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 4
-      },
-      "[probes] seedkinds.trailing-tool result.request": {
-        "pass:not-sent": 4
-      },
-      "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 4
-      },
-      "[probes] seedkinds.user-attachments.image": {
-        "pass:as-image": 4
-      },
-      "[probes] seedkinds.user-attachments.pdf": {
-        "finding:not-kept": 4
-      },
-      "[probes] session.answer": {
-        "pass": 4
-      },
-      "[probes] session.completed": {
-        "pass": 4
-      },
-      "[probes] session.start": {
-        "pass": 4
-      },
-      "[probes] skills": {
-        "pass": 4
-      },
-      "[probes] transcript": {
-        "pass": 4
-      },
-      "[probes] turn": {
-        "pass": 32
-      },
-      "[probes] usage.account": {
-        "finding:not-reported": 4
-      },
-      "[probes] usage.context": {
-        "finding:not-reported": 4
-      },
-      "[probes] usage.limits": {
-        "finding:not-reported": 4
-      },
-      "[probes] usage.probe.limits": {
-        "pass:unsupported": 4
-      },
-      "[probes] usage.probe.no-model-call": {
-        "pass": 4
-      },
-      "[probes] usage.turn": {
-        "finding:not-reported": 4
-      },
-      "[resume-kill] acp/hook-injection": {
-        "pass": 4
-      },
-      "[resume-kill] acp/hook.post-tool": {
-        "pass": 4
-      },
-      "[resume-kill] acp/hook.pre-tool": {
-        "pass": 4
-      },
-      "[resume-kill] acp/hook.prompt": {
-        "pass": 4
-      },
-      "[resume-kill] acp/hook.session-start": {
-        "pass": 4
-      },
-      "[resume-kill] acp/hook.stop": {
-        "pass": 4
-      },
-      "[resume-kill] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[resume-kill] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[resume-kill] acp/model": {
-        "pass": 4
-      },
-      "[resume-kill] acp/requests": {
-        "pass": 4
-      },
-      "[resume-kill] acp/streaming": {
-        "pass": 4
-      },
-      "[resume-kill] binary": {
-        "pass": 4
-      },
-      "[resume-kill] env.KIRO_API_KEY": {
-        "pass": 4
-      },
-      "[resume-kill] hooks.install": {
-        "pass": 4
-      },
-      "[resume-kill] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[resume-kill] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
-      },
-      "[resume-kill] resume.context": {
-        "pass": 4
-      },
-      "[resume-kill] resume.load": {
-        "pass": 4
-      },
-      "[resume-kill] resume.replay": {
-        "pass": 4
-      },
-      "[resume-kill] session.answer": {
-        "pass": 4
-      },
-      "[resume-kill] session.completed": {
-        "pass": 4
-      },
-      "[resume-kill] session.start": {
-        "pass": 4
-      },
-      "[resume-kill] skills": {
-        "pass": 4
-      },
-      "[surface] binary": {
-        "pass": 4
-      }
-    },
     "3.2.0": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
         "pass": 1
@@ -4111,820 +3293,1779 @@
     },
     "3.5.0": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] acp/belt-hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] acp/model": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] acp/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[acp, belt hooks] acp/skills.listed": {
+        "pass": 2
       },
       "[acp, belt hooks] acp/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] hooks.project-copy": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] session.answer": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] session.completed": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] session.start": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, belt hooks] skills": {
-        "pass": 4
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/-hook.post-tool.stdin": {
+        "pass": 2
+      },
+      "[acp, mock hooks] acp/-hook.pre-tool.stdin": {
+        "pass": 2
       },
       "[acp, mock hooks] acp/hook-injection": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] acp/hook.pre-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] acp/hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] acp/hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] acp/model": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] acp/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/skills.listed": {
+        "pass": 2
       },
       "[acp, mock hooks] acp/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] session.answer": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] session.completed": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] session.start": {
-        "pass": 4
+        "pass": 6
       },
       "[acp, mock hooks] skills": {
-        "pass": 4
+        "pass": 6
+      },
+      "[direct] acp/-hook.post-tool.stdin": {
+        "pass": 2
+      },
+      "[direct] acp/-hook.pre-tool.stdin": {
+        "pass": 2
       },
       "[direct] acp/hook-injection": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] acp/hook.post-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] acp/hook.pre-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] acp/hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] acp/hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] acp/hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] acp/model": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] acp/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[direct] acp/skills.listed": {
+        "pass": 2
       },
       "[direct] acp/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] direct.call": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] direct.messages": {
-        "pass:exact": 4
+        "pass:exact": 6
       },
       "[direct] direct.restart": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] direct.result": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] direct.system": {
-        "finding:added": 4
+        "finding:added": 6
       },
       "[direct] direct.tools": {
-        "pass:only": 4
+        "pass:only": 6
       },
       "[direct] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] session.answer": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] session.completed": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] session.start": {
-        "pass": 4
+        "pass": 6
       },
       "[direct] skills": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] headless/belt-hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] headless/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] headless/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] headless/model": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] headless/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[headless, belt hooks] headless/skills.listed": {
+        "pass": 2
       },
       "[headless, belt hooks] headless/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] hooks.project-copy": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] skills": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, belt hooks] turn": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] headless/hook-injection": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] headless/hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] headless/hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] headless/hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] headless/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] headless/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] headless/model": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] headless/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[headless, mock hooks] headless/skills.listed": {
+        "pass": 2
       },
       "[headless, mock hooks] headless/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] skills": {
-        "pass": 4
+        "pass": 6
       },
       "[headless, mock hooks] turn": {
-        "pass": 4
+        "pass": 6
+      },
+      "[inflight-cancel] acp/-hook.post-tool.stdin": {
+        "pass": 2
+      },
+      "[inflight-cancel] acp/-hook.pre-tool.stdin": {
+        "pass": 2
       },
       "[inflight-cancel] acp/hook-injection": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] acp/hook.post-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] acp/hook.pre-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] acp/hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] acp/hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] acp/hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] acp/model": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] acp/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[inflight-cancel] acp/skills.listed": {
+        "pass": 2
       },
       "[inflight-cancel] acp/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] inflight.park": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] inflight.reraise": {
-        "finding:none": 4
+        "finding:none": 6
       },
       "[inflight-cancel] inflight.resume": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] inflight.resume-twice": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] session.answer": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] session.completed": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] session.start": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-cancel] skills": {
-        "pass": 4
+        "pass": 6
+      },
+      "[inflight-hold] acp/-hook.post-tool.stdin": {
+        "pass": 2
+      },
+      "[inflight-hold] acp/-hook.pre-tool.stdin": {
+        "pass": 2
       },
       "[inflight-hold] acp/hook-injection": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] acp/hook.post-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] acp/hook.pre-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] acp/hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] acp/hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] acp/hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] acp/model": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] acp/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[inflight-hold] acp/skills.listed": {
+        "pass": 2
       },
       "[inflight-hold] acp/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] inflight.park": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] inflight.reraise": {
-        "finding:none": 4
+        "finding:none": 6
       },
       "[inflight-hold] inflight.resume": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] inflight.resume-twice": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] session.answer": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] session.completed": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] session.start": {
-        "pass": 4
+        "pass": 6
       },
       "[inflight-hold] skills": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] hooks.project-copy": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/belt-hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/model": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] interactive/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[interactive, belt hooks] interactive/skills.listed": {
+        "pass": 2
       },
       "[interactive, belt hooks] interactive/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] skills": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] tui.completed": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, belt hooks] tui.start": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/hook-injection": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/model": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] interactive/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[interactive, mock hooks] interactive/skills.listed": {
+        "pass": 2
       },
       "[interactive, mock hooks] interactive/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] skills": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] tui.completed": {
-        "pass": 4
+        "pass": 6
       },
       "[interactive, mock hooks] tui.start": {
-        "pass": 4
+        "pass": 6
+      },
+      "[probes] acp/-hook.post-tool.stdin": {
+        "pass": 2
+      },
+      "[probes] acp/-hook.pre-tool.stdin": {
+        "pass": 2
       },
       "[probes] acp/hook-injection": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] acp/hook.post-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] acp/hook.pre-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] acp/hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] acp/hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] acp/hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] acp/model": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] acp/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[probes] acp/skills.listed": {
+        "pass": 2
       },
       "[probes] acp/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] deferred.armed": {
-        "pass:no-search-tool": 4
+        "pass:no-search-tool": 6
       },
       "[probes] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] images.sent": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] inflight.park": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] inflight.reraise": {
-        "finding:none": 4
+        "finding:none": 6
       },
       "[probes] inflight.resume": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] inflight.resume-twice": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] resume.context": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] resume.load": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] resume.replay": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seed.appended": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seed.hand-built": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.assistant text": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.compaction.context": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.compaction.history": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.compaction.request": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.file-uri": {
-        "pass:as-image": 4
+        "pass:as-image": 6
       },
       "[probes] seedkinds.first user message": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 4
+        "pass:as-image": 6
       },
       "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 4
+        "pass:as-image": 6
       },
       "[probes] seedkinds.reasoning": {
-        "finding:not-kept": 4
+        "finding:not-kept": 6
       },
       "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.retired-tool.context": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.retired-tool.history": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.retired-tool.request": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.second turn's answer": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.second turn's user message": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.shown-only": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.tool call arguments": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.tool result": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.tool-after-text": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.tool-image": {
-        "pass:as-image": 4
+        "pass:as-image": 6
       },
       "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.trailing-prompt.request": {
-        "pass:not-sent": 4
+        "pass:not-sent": 6
       },
       "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] seedkinds.trailing-tool result.request": {
-        "pass:not-sent": 4
+        "pass:not-sent": 6
       },
       "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 4
+        "pass:as-text": 6
       },
       "[probes] seedkinds.user-attachments.image": {
-        "pass:as-image": 4
+        "pass:as-image": 6
       },
       "[probes] seedkinds.user-attachments.pdf": {
-        "finding:not-kept": 4
+        "finding:not-kept": 6
       },
       "[probes] session.answer": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] session.completed": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] session.start": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] skills": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] transcript": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] turn": {
-        "pass": 32
+        "pass": 48
       },
       "[probes] usage.account": {
-        "finding:not-reported": 4
+        "finding:not-reported": 6
       },
       "[probes] usage.context": {
-        "finding:not-reported": 4
+        "finding:not-reported": 6
       },
       "[probes] usage.limits": {
-        "finding:not-reported": 4
+        "finding:not-reported": 6
       },
       "[probes] usage.probe.limits": {
-        "pass:unsupported": 4
+        "pass:unsupported": 6
       },
       "[probes] usage.probe.no-model-call": {
-        "pass": 4
+        "pass": 6
       },
       "[probes] usage.turn": {
-        "finding:not-reported": 4
+        "finding:not-reported": 6
+      },
+      "[resume-kill] acp/-hook.post-tool.stdin": {
+        "pass": 2
+      },
+      "[resume-kill] acp/-hook.pre-tool.stdin": {
+        "pass": 2
       },
       "[resume-kill] acp/hook-injection": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] acp/hook.post-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] acp/hook.pre-tool": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] acp/hook.prompt": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] acp/hook.session-start": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] acp/hook.stop": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] acp/instructions../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] acp/instructions.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] acp/model": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] acp/requests": {
-        "pass": 4
+        "pass": 6
+      },
+      "[resume-kill] acp/skills.listed": {
+        "pass": 2
       },
       "[resume-kill] acp/streaming": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] binary": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] env.KIRO_API_KEY": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] hooks.install": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] instructions.written../.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] instructions.written.~/.kiro/steering/belt.md": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] resume.context": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] resume.load": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] resume.replay": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] session.answer": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] session.completed": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] session.start": {
-        "pass": 4
+        "pass": 6
       },
       "[resume-kill] skills": {
-        "pass": 4
+        "pass": 6
       },
       "[surface] binary": {
-        "pass": 4
+        "pass": 6
+      }
+    },
+    "3.6.0": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/skills.listed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/-hook.post-tool.stdin": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/-hook.pre-tool.stdin": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/skills.listed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/-hook.post-tool.stdin": {
+        "pass": 1
+      },
+      "[direct] acp/-hook.pre-tool.stdin": {
+        "pass": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[direct] acp/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/skills.listed": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] direct.call": {
+        "pass": 1
+      },
+      "[direct] direct.messages": {
+        "pass:exact": 1
+      },
+      "[direct] direct.restart": {
+        "pass": 1
+      },
+      "[direct] direct.result": {
+        "pass": 1
+      },
+      "[direct] direct.system": {
+        "finding:added": 1
+      },
+      "[direct] direct.tools": {
+        "pass:only": 1
+      },
+      "[direct] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[direct] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/skills.listed": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 1
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 1
+      },
+      "[headless, mock hooks] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.session-start": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/requests": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/skills.listed": {
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 1
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 1
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/-hook.post-tool.stdin": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/-hook.pre-tool.stdin": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/skills.listed": {
+        "pass": 1
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-cancel] binary": {
+        "pass": 1
+      },
+      "[inflight-cancel] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass": 1
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass": 1
+      },
+      "[inflight-cancel] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 1
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 1
+      },
+      "[inflight-cancel] skills": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/-hook.post-tool.stdin": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/-hook.pre-tool.stdin": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/skills.listed": {
+        "pass": 1
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 1
+      },
+      "[inflight-hold] binary": {
+        "pass": 1
+      },
+      "[inflight-hold] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass": 1
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass": 1
+      },
+      "[inflight-hold] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[inflight-hold] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 1
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 1
+      },
+      "[inflight-hold] session.start": {
+        "pass": 1
+      },
+      "[inflight-hold] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/skills.listed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.session-start": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/skills.listed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 1
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 1
+      },
+      "[probes] acp/-hook.post-tool.stdin": {
+        "pass": 1
+      },
+      "[probes] acp/-hook.pre-tool.stdin": {
+        "pass": 1
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 1
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[probes] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 1
+      },
+      "[probes] acp/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[probes] acp/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[probes] acp/model": {
+        "pass": 1
+      },
+      "[probes] acp/requests": {
+        "pass": 1
+      },
+      "[probes] acp/skills.listed": {
+        "pass": 1
+      },
+      "[probes] acp/streaming": {
+        "pass": 1
+      },
+      "[probes] binary": {
+        "pass": 1
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 1
+      },
+      "[probes] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[probes] hidden.*": {
+        "pass:help": 1
+      },
+      "[probes] hooks.install": {
+        "pass": 1
+      },
+      "[probes] images.sent": {
+        "pass": 1
+      },
+      "[probes] inflight.park": {
+        "pass": 1
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 1
+      },
+      "[probes] inflight.resume": {
+        "pass": 1
+      },
+      "[probes] inflight.resume-twice": {
+        "pass": 1
+      },
+      "[probes] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[probes] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[probes] resume.context": {
+        "pass": 1
+      },
+      "[probes] resume.load": {
+        "pass": 1
+      },
+      "[probes] resume.replay": {
+        "pass": 1
+      },
+      "[probes] seed.appended": {
+        "pass": 1
+      },
+      "[probes] seed.hand-built": {
+        "pass": 1
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.file-uri": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-kept": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 1
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 1
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 1
+      },
+      "[probes] seedkinds.tool-image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:not-sent": 1
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 1
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:not-sent": 1
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 1
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "pass:as-image": 1
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "finding:not-kept": 1
+      },
+      "[probes] session.answer": {
+        "pass": 1
+      },
+      "[probes] session.completed": {
+        "pass": 1
+      },
+      "[probes] session.start": {
+        "pass": 1
+      },
+      "[probes] skills": {
+        "pass": 1
+      },
+      "[probes] transcript": {
+        "pass": 1
+      },
+      "[probes] turn": {
+        "pass": 8
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.context": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 1
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 1
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 1
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 1
+      },
+      "[resume-kill] acp/-hook.post-tool.stdin": {
+        "pass": 1
+      },
+      "[resume-kill] acp/-hook.pre-tool.stdin": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.session-start": {
+        "pass": 1
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/instructions.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[resume-kill] acp/model": {
+        "pass": 1
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 1
+      },
+      "[resume-kill] acp/skills.listed": {
+        "pass": 1
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 1
+      },
+      "[resume-kill] binary": {
+        "pass": 1
+      },
+      "[resume-kill] env.KIRO_API_KEY": {
+        "pass": 1
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written../.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[resume-kill] instructions.written.~/.kiro/steering/belt.md": {
+        "pass": 1
+      },
+      "[resume-kill] resume.context": {
+        "pass": 1
+      },
+      "[resume-kill] resume.load": {
+        "pass": 1
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 1
+      },
+      "[resume-kill] session.answer": {
+        "pass": 1
+      },
+      "[resume-kill] session.completed": {
+        "pass": 1
+      },
+      "[resume-kill] session.start": {
+        "pass": 1
+      },
+      "[resume-kill] skills": {
+        "pass": 1
+      },
+      "[surface] binary": {
+        "pass": 1
       }
     }
   }

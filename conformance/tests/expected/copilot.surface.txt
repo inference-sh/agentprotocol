@@ -80,6 +80,7 @@ workflow
 --prompt
 --reasoning-effort
 --resume
+--sandbox
 --screen-reader
 --secret-env-vars
 --session-id

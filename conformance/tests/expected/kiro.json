@@ -85,7 +85,8 @@
         "setup/hooks.install": "pass",
         "setup/instructions.written../.kiro/steering/belt.md": "pass",
         "setup/instructions.written.~/.kiro/steering/belt.md": "pass",
-        "setup/skills": "pass"
+        "setup/skills": "pass",
+        "surface/hidden.daemon": "pass:help"
       }
     },
     {

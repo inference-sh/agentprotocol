@@ -119,11 +119,25 @@ func withACPProvider(h Harness, cmd []string, args []string) Harness {
 	return h
 }
 
+// mockModelSpec states the test model in an opencode-family config, so its
+// status and image input do not come from the models.dev catalog these agents
+// fetch at start. models.dev marked gpt-4o-mini deprecated on 2026-11-23
+// (sst/models.dev 1574669): opencode 1.19.6 then dropped attached images, and
+// kilo 7.8.32 stopped running it ("Model not found: openai/gpt-4o-mini"),
+// so neither reached the mock (nightly 45323736354, PR #35). Config fields
+// win over the catalog's (opencode provider.ts: model.status ??
+// existingModel?.status).
+const mockModelSpec = `{"status":"active","attachment":true,"modalities":{"input":["text","image"],"output":["text"]}}`
+
 func tsPluginHarness(name, binary, installPkg, hookDir string) Harness {
 	return Harness{
 		Name: name, Binary: binary,
 		InstallCmd: []string{"npm", "install", "-g", installPkg},
-		APIFormat:  Responses,
+		// The model the CLI is given (-m openai/gpt-4o-mini), as the catalog
+		// would have it.
+		ConfigFiles: []ConfigFile{{Path: ".config/" + name + "/" + name + ".json",
+			Content: `{"provider":{"openai":{"models":{"gpt-4o-mini":` + mockModelSpec + `}}}}`}},
+		APIFormat: Responses,
 		EnvVars: map[string]string{
 			"OPENAI_BASE_URL": "{{.BaseURL}}/v1",
 		},
@@ -1159,13 +1173,8 @@ export const Direct = async () => ({
 		ACPAutoApproveArgs: []string{"--yolo"},
 	},
 	"opencode": func(h Harness) Harness {
-		// The model is stated in full. Left to the models.dev catalog that
-		// opencode fetches at start, it lost image input on 2026-11-23, when
-		// models.dev marked gpt-4o-mini deprecated (sst/models.dev 1574669) and
-		// opencode 1.19.6 stopped sending the attached image (nightly
-		// 45323736354). Config fields win over the catalog's (provider.ts:
-		// model.attachment ?? existingModel?.capabilities.attachment).
-		h.ACPConfigFiles[0].Content = `{"model":"openai/{{.Model}}","provider":{"openai":{"apiKey":"mock-key","baseURL":"{{.BaseURL}}/v1","models":{"{{.Model}}":{"status":"active","attachment":true,"modalities":{"input":["text","image"],"output":["text"]}}}}}}`
+		// ACP names the model openai/{{.Model}}; state it too (mockModelSpec).
+		h.ACPConfigFiles[0].Content = `{"model":"openai/{{.Model}}","provider":{"openai":{"apiKey":"mock-key","baseURL":"{{.BaseURL}}/v1","models":{"{{.Model}}":` + mockModelSpec + `}}}}`
 		// OPENCODE_CONFIG_CONTENT is merged last, over the user's config:
 		// a default agent whose permissions deny every tool but the
 		// caller's (MCP tools are <server>_<tool>), no instructions, no

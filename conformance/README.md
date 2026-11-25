@@ -1283,7 +1283,7 @@ Partial rows, measured and not offered:
 |---|---|
 | copilot 1.0.98 | its own ~18k-character system prompt stays, with the caller's nested in it as subordinate agent instructions; its `sql` tool stays |
 | droid 0.244.0 | ACP keeps droid's own system prompt and its 15 built-in tools; only stream-jsonrpc sessions can replace them |
-| kimi 2.6.1 | the profile's system prompt is used but its tools list is not: its 25 built-in tools (Bash, Edit, Write among them) stay. 2.2.0 to 2.5.0 were pure (exact system, only the caller's tools, the user's hooks and a date reminder added); measured 2026-11-13 |
+| kimi 2.8.0 | pure: the profile's tools list is honored again (nightly 45707022062, 2026-11-25). 2.6.0 to 2.7.x used the profile's system prompt but not its tools list, so its 25 built-in tools (Bash, Edit, Write among them) stayed. 2.2.0 to 2.5.0 were pure (exact system, only the caller's tools, the user's hooks and a date reminder added) |
 
 No row:
 

@@ -38,9 +38,11 @@ workflow
 --available-tools
 --banner
 --bash-env
+--choice
 --connect
 --context
 --continue
+--decision
 --deny-tool
 --deny-url
 --disable-builtin-mcps

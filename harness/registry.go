@@ -911,13 +911,14 @@ export const Direct = async () => ({
 				"{{.WorkDir}}/.kimi-code/agents/agent.md": "---\nname: agent\ndescription: Direct mode\noverride: true\ntools: [\"mcp__tools__*\"]\n---\n{{.SystemPrompt}}\n",
 			},
 			ToolName: "mcp__{{.Server}}__{{.Tool}}",
-			Measured: "2.6.1 2026-11-13",
+			Measured: "2.8.0 2026-11-25",
 			// 2.2.0 through 2.5.0 offered the profile's tools alone. 2.6.0
 			// rewrote profile and tool selection, and an exact tool name in
 			// the list does no better than the glob.
 			Partial: "kimi 2.6 keeps the profile's system prompt but ignores its tools list, so its 25 built-in tools (Bash, Edit, Write among them) stay with the caller's",
-			// 2.2.0 measured pure on 2026-10-17 (1928088).
-			PartialVersions: VersionRange{From: "2.6.0"},
+			// 2.2.0 measured pure on 2026-10-17 (1928088), 2.8.0 on
+			// 2026-11-25 (nightly 45707022062).
+			PartialVersions: VersionRange{From: "2.6.0", Before: "2.8.0"},
 		},
 	},
 	"goose": {

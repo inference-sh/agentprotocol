@@ -12,7 +12,6 @@ logout
 mcp
 powers
 profile
-serve
 settings
 update
 whoami

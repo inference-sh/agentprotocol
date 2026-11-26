@@ -18,12 +18,13 @@ func stubCommands(t *testing.T, onPath []string, reply func(argv []string) (stri
 	var ran [][]string
 	oldRun, oldLook := runCommand, lookPath
 	t.Cleanup(func() { runCommand, lookPath = oldRun, oldLook })
-	runCommand = func(argv []string) (string, error) {
+	runCommand = func(argv []string) (string, string, error) {
 		ran = append(ran, argv)
 		if reply != nil {
-			return reply(argv)
+			out, err := reply(argv)
+			return out, "", err
 		}
-		return "", nil
+		return "", "", nil
 	}
 	lookPath = func(bin string) (string, error) {
 		for _, b := range onPath {
@@ -125,6 +126,24 @@ func TestInstallPluginAsFiles(t *testing.T) {
 	}
 }
 
+// Uninstall undoes the registration install ran: pi install wrote the
+// extension into ~/.pi/agent/settings.json packages, which outlived the file.
+func TestUninstallPluginUnregisters(t *testing.T) {
+	tempHome(t)
+	ran := stubCommands(t, []string{"pi"}, nil)
+	res := InstallPlugin("pi", ScopeUser, pluginSource())
+	if res.Error != nil {
+		t.Fatal(res.Error)
+	}
+	*ran = nil
+	if un := UninstallPlugin("pi", ScopeUser, pluginSource()); un.Error != nil {
+		t.Fatal(un.Error)
+	}
+	if want := [][]string{{"pi", "remove", res.HooksPath}}; !reflect.DeepEqual(*ran, want) {
+		t.Errorf("ran %v, want %v", *ran, want)
+	}
+}
+
 // Claude's installed state is read from its own files: installed_plugins.json
 // for the version and the cached copy, enabledPlugins for whether it loads.
 func TestPluginStateReadsClaudesFiles(t *testing.T) {
@@ -185,6 +204,22 @@ func TestPluginStateAsksCodex(t *testing.T) {
 	})
 	st := PluginState("codex", ScopeUser, pluginSource())
 	if !st.Installed || st.Enabled || st.Version != "0.3.0" {
+		t.Errorf("state = %+v", st)
+	}
+}
+
+// A warning on stderr does not hide the listing on stdout. Under a HOME in
+// /tmp, codex 0.137 warns that it refuses to create helper binaries there and
+// still prints the JSON; read together, the plugin looked uninstalled and
+// UninstallPlugin skipped `codex plugin remove`.
+func TestPluginStateReadsCodexStdoutOnly(t *testing.T) {
+	tempHome(t)
+	stubCommands(t, []string{"codex"}, nil)
+	runCommand = func(argv []string) (string, string, error) {
+		return `{"installed":[{"pluginId":"acme@acme-plugins","installed":true,"enabled":true}]}`,
+			`WARNING: proceeding, even though we could not update PATH: Refusing to create helper binaries under temporary dir "/tmp"` + "\n", nil
+	}
+	if st := PluginState("codex", ScopeUser, pluginSource()); !st.Installed || st.Via != "marketplace" {
 		t.Errorf("state = %+v", st)
 	}
 }

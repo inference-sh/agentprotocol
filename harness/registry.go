@@ -1452,7 +1452,11 @@ var pluginRegisters = map[string]*PluginRegister{
 			{"opencode", "plugin", "--global", "{{.HookDir}}"},
 		},
 	},
-	"pi": {Cmds: [][]string{{"pi", "install", "{{.HooksPath}}"}}},
+	// pi remove takes the path after the file is gone (1.5.2).
+	"pi": {
+		Cmds:          [][]string{{"pi", "install", "{{.HooksPath}}"}},
+		UninstallCmds: [][]string{{"pi", "remove", "{{.HooksPath}}"}},
+	},
 }
 
 // skillsDirs is the user-scope Agent Skills directory per harness (relative

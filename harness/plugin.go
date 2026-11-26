@@ -1,6 +1,7 @@
 package harness
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -46,9 +47,11 @@ type PluginManager struct {
 // plugin it reads from files: a package manifest written beside the hook
 // file ({{.Name}} is the source's name) and commands run after it, each only
 // when its program is on PATH. Templates take {{.HookDir}} and {{.HooksPath}}.
+// UninstallCmds undo Cmds, the same way.
 type PluginRegister struct {
-	PackageJSON string
-	Cmds        [][]string
+	PackageJSON   string
+	Cmds          [][]string
+	UninstallCmds [][]string
 }
 
 // Step is one command an install ran.
@@ -59,11 +62,16 @@ type Step struct {
 }
 
 // runCommand and lookPath are how this package runs an agent's own CLI;
-// tests replace them.
+// tests replace them. Stdout and stderr come back apart: codex prints
+// warnings on stderr (a HOME under /tmp: "Refusing to create helper
+// binaries under temporary dir") next to the JSON a caller parses.
 var (
-	runCommand = func(argv []string) (string, error) {
-		out, err := exec.Command(argv[0], argv[1:]...).CombinedOutput()
-		return string(out), err
+	runCommand = func(argv []string) (stdout, stderr string, err error) {
+		var o, e bytes.Buffer
+		cmd := exec.Command(argv[0], argv[1:]...)
+		cmd.Stdout, cmd.Stderr = &o, &e
+		err = cmd.Run()
+		return o.String(), e.String(), err
 	}
 	lookPath = exec.LookPath
 )
@@ -85,8 +93,8 @@ func (src PluginSource) expand(argv []string, vars map[string]string) []string {
 }
 
 func (r *InstallResult) run(argv []string) error {
-	out, err := runCommand(argv)
-	r.Steps = append(r.Steps, Step{Argv: argv, Output: out, Err: err})
+	out, errOut, err := runCommand(argv)
+	r.Steps = append(r.Steps, Step{Argv: argv, Output: out + errOut, Err: err})
 	return err
 }
 
@@ -158,14 +166,19 @@ func InstallPlugin(name string, scope InstallScope, src PluginSource) InstallRes
 func registerPlugin(result *InstallResult, h Harness, src PluginSource) []error {
 	reg := h.PluginRegister
 	dir := filepath.Dir(result.HooksPath)
-	vars := map[string]string{"HookDir": dir, "HooksPath": result.HooksPath}
-	var errs []error
 	if reg.PackageJSON != "" {
 		if err := writeFile(filepath.Join(dir, "package.json"), strings.ReplaceAll(reg.PackageJSON, sourceName, src.Name)); err != nil {
 			return []error{err}
 		}
 	}
-	for _, argv := range reg.Cmds {
+	return runRegisterCmds(result, reg.Cmds, src)
+}
+
+// runRegisterCmds runs a PluginRegister's commands whose program is on PATH.
+func runRegisterCmds(result *InstallResult, cmds [][]string, src PluginSource) []error {
+	vars := map[string]string{"HookDir": filepath.Dir(result.HooksPath), "HooksPath": result.HooksPath}
+	var errs []error
+	for _, argv := range cmds {
 		if _, err := lookPath(argv[0]); err != nil {
 			continue
 		}
@@ -202,6 +215,9 @@ func UninstallPlugin(name string, scope InstallScope, src PluginSource) InstallR
 		}
 		if h.PluginRegister != nil && h.PluginRegister.PackageJSON != "" {
 			removeOwnManifest(filepath.Join(filepath.Dir(files.HooksPath), "package.json"), h, src)
+		}
+		if h.PluginRegister != nil && scope == ScopeUser && files.HooksPath != "" {
+			errs = append(errs, runRegisterCmds(&result, h.PluginRegister.UninstallCmds, src)...)
 		}
 	}
 	if src.Skills != nil && h.SkillsDir != "" {
@@ -307,7 +323,7 @@ func marketplaceState(h Harness, src PluginSource) State {
 		if _, err := lookPath(pm.ListJSON[0]); err != nil {
 			return st
 		}
-		out, err := runCommand(src.expand(pm.ListJSON, nil))
+		out, _, err := runCommand(src.expand(pm.ListJSON, nil))
 		if err != nil {
 			return st
 		}

@@ -130,7 +130,7 @@ func (h acpHost) Approve(ctx context.Context, toolCallID, toolName string, args 
 		ToolName:         toolName,
 		Arguments:        args,
 		Reason:           ap.InterruptReasonToolApproval,
-	})
+	}, false)
 	return a.res, !a.cancelled
 }
 
@@ -160,6 +160,9 @@ func (h acpHost) EndAgentTurn(id string, stopReason string) {
 	}
 	s.agentTurn = ""
 	s.turns--
+	if s.turns == 0 {
+		s.cancelParkedLocked("turn ended")
+	}
 	s.mu.Unlock()
 	s.emit(ap.NewEvent(ap.AgentEventTurnCompleted, s.runID, s.chatID, ap.TurnCompletedPayload{StopReason: stopReason}))
 }

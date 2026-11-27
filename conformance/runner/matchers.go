@@ -3,6 +3,7 @@ package runner
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -51,6 +52,10 @@ func (r *TestRunner) probeMatchers() {
 		r.skip("matchers:no-shell-call", "matchers: the registry names no shell call for "+h.Name)
 		return
 	}
+	// A command whose output its own text does not contain, so a tool result
+	// holding the output proves the call ran: a call the agent refused or
+	// asked permission for has no post-tool event to fire.
+	shellArgs := strings.ReplaceAll(shell.Args, "rm -rf /tmp/gated-probe-does-not-exist", "echo matcher-probe-$((40+2))")
 	src := r.mockSource()
 	src.Hooks = beltHookChoices
 	_, notes, err := harness.RenderHooks(h.Name, src)
@@ -89,7 +94,7 @@ func (r *TestRunner) probeMatchers() {
 	}()
 	plan := fmt.Sprintf("pre-tool installed: %t, post-tool filtered: %t; notes: %s", preInstalled, postFiltered, strings.Join(noteText, "; "))
 
-	pre, post, served := r.matcherTurn("matchers.shell", func() bool { return r.armTool(shell.Name, shell.Args) })
+	pre, post, served := r.matcherTurn("matchers.shell", func() bool { return r.armTool(shell.Name, shellArgs) }, "matcher-probe-42")
 	if served {
 		if post {
 			r.pass("matchers.shell.post-tool", fmt.Sprintf("matchers: %s's %s call fired the post-tool hook (%s)", h.Name, shell.Name, plan))
@@ -115,7 +120,16 @@ func (r *TestRunner) probeMatchers() {
 	if other == shell.Name {
 		return
 	}
-	pre, post, served = r.matcherTurn("matchers.other", func() bool { return r.armToolCall(ModeACP) })
+	// The ordinary call reads README.md or writes test-output.txt; a token
+	// in README.md shows a read ran, the written file shows a write did.
+	token := "matcher-readme-" + randHex()
+	readme := filepath.Join(r.workDir(), "README.md")
+	if old, err := os.ReadFile(readme); err == nil {
+		defer os.WriteFile(readme, old, 0o644)
+	}
+	os.WriteFile(readme, []byte(token+"\n"), 0o644)
+	os.Remove(filepath.Join(r.workDir(), "test-output.txt"))
+	pre, post, served = r.matcherTurn("matchers.other", func() bool { return r.armToolCall(ModeACP) }, token)
 	if !served {
 		return
 	}
@@ -134,7 +148,7 @@ func (r *TestRunner) probeMatchers() {
 
 // matcherTurn runs one turn with a tool call armed and reports which tool
 // hooks fired, and whether the call was served at all.
-func (r *TestRunner) matcherTurn(label string, arm func() bool) (pre, post, served bool) {
+func (r *TestRunner) matcherTurn(label string, arm func() bool, ranMark string) (pre, post, served bool) {
 	r.resetPhase(ModeACP)
 	if !arm() {
 		r.skip(label+":no-tool", label+": nothing to arm")
@@ -158,6 +172,19 @@ func (r *TestRunner) matcherTurn(label string, arm func() bool) (pre, post, serv
 	d.Close()
 	if !r.server.ToolCallServed() {
 		r.skip(label+":not-served", label+": the agent was never offered the call")
+		return
+	}
+	ran := false
+	for _, e := range r.entries() {
+		for _, res := range toolResults(e.Body) {
+			ran = ran || strings.Contains(res.text, ranMark)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(r.workDir(), "test-output.txt")); err == nil {
+		ran = true
+	}
+	if !ran {
+		r.skip(label+":not-run", label+": the call was served and the agent did not run it (refused or held for permission), so no post-tool event is due")
 		return
 	}
 	data, _ := os.ReadFile(hookLogPath)

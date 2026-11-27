@@ -1,6 +1,7 @@
 package harness
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"os"
@@ -290,25 +291,52 @@ var npmListTimeout = 10 * time.Second
 func getVersion(binary string) string {
 	ctx, cancel := context.WithTimeout(context.Background(), VersionTimeout)
 	defer cancel()
-	out, err := boundedOutput(ctx, binary, "--version")
+	stdout, stderr, err := boundedOutput(ctx, binary, "--version")
 	if err != nil {
 		return ""
 	}
-	v := strings.TrimSpace(string(out))
-	if i := strings.IndexByte(v, '\n'); i > 0 {
-		v = v[:i]
-	}
-	return v
+	return versionLine(stdout, stderr)
 }
 
-// boundedOutput runs a command with no stdin and returns its combined output,
-// killing it when ctx ends. WaitDelay covers a child that exits but leaves a
-// grandchild holding the output pipe open, which would otherwise block the
-// read past the deadline.
-func boundedOutput(ctx context.Context, name string, args ...string) ([]byte, error) {
+// versionLine picks the version out of a --version run: the first line that
+// holds a version, stdout before stderr, else stdout's first line, else
+// stderr's. Taking the first line of the combined output reported a warning
+// as the version: codex prints one on stderr when its home is under /tmp.
+func versionLine(stdout, stderr []byte) string {
+	var first []string
+	for _, out := range [][]byte{stdout, stderr} {
+		var top string
+		for _, line := range strings.Split(string(out), "\n") {
+			line = strings.TrimSpace(line)
+			if line == "" {
+				continue
+			}
+			if top == "" {
+				top = line
+			}
+			if ParseVersion(line) != "" {
+				return line
+			}
+		}
+		first = append(first, top)
+	}
+	if first[0] != "" {
+		return first[0]
+	}
+	return first[1]
+}
+
+// boundedOutput runs a command with no stdin and returns its stdout and
+// stderr, killing it when ctx ends. WaitDelay covers a child that exits but
+// leaves a grandchild holding the output pipe open, which would otherwise
+// block the read past the deadline.
+func boundedOutput(ctx context.Context, name string, args ...string) (stdout, stderr []byte, err error) {
+	var o, e bytes.Buffer
 	cmd := exec.CommandContext(ctx, name, args...)
+	cmd.Stdout, cmd.Stderr = &o, &e
 	cmd.WaitDelay = 500 * time.Millisecond
-	return cmd.CombinedOutput()
+	err = cmd.Run()
+	return o.Bytes(), e.Bytes(), err
 }
 
 var (

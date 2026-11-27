@@ -40,6 +40,22 @@ func TestGetVersionIsBounded(t *testing.T) {
 	}
 }
 
+func TestVersionLine(t *testing.T) {
+	cases := []struct{ stdout, stderr, want string }{
+		{"codex-cli 0.130.0\n", "WARNING: proceeding, even though we could not update PATH\n", "codex-cli 0.130.0"},
+		{"", "WARNING: something\nclaude 2.1.0\n", "claude 2.1.0"},
+		{"Loading...\n1.4.2\n", "", "1.4.2"},
+		{"no version here\n", "", "no version here"},
+		{"", "only stderr\n", "only stderr"},
+		{"", "", ""},
+	}
+	for _, c := range cases {
+		if got := versionLine([]byte(c.stdout), []byte(c.stderr)); got != c.want {
+			t.Errorf("versionLine(%q, %q) = %q, want %q", c.stdout, c.stderr, got, c.want)
+		}
+	}
+}
+
 func TestDetectAllIsSortedAndComplete(t *testing.T) {
 	results := DetectAll()
 	if len(results) != len(All) {

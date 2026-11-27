@@ -40,13 +40,6 @@ var standardEvents = Events{
 	PreCompact:   "PreCompact",
 }
 
-// codexSkillsUnlisted, measured 2026-11-22 on 0.171.0 in every mode: the
-// skills section codex sends names ~/.agents/skills as root r0 and lists
-// none of its skills, while `codex debug prompt-input` with the same HOME,
-// CODEX_HOME and mock provider lists a skill written there by hand
-// (codex-rs/ext/skills host_roots.rs reads that dir). Cause not found.
-const codexSkillsUnlisted = "codex names ~/.agents/skills as a skill root but lists none of the suite's skills from it; `codex debug prompt-input` lists a skill there"
-
 // withSessionEnd is an event set plus the agent's session-end hook.
 func withSessionEnd(e Events, name string) Events {
 	e.SessionEnd = name
@@ -172,7 +165,11 @@ var codexProviderArgs = []string{
 	"-c", `model_providers.mock.base_url="{{.BaseURL}}"`,
 	"-c", `model_providers.mock.env_key="OPENAI_API_KEY"`,
 	"-c", `model_providers.mock.wire_api="responses"`,
-	"-c", `model_context_window=2048`,
+	// codex sizes the skills list it sends by the context window: at 2048,
+	// which this suite used from the start, it kept one of its own system
+	// skills and dropped every installed one, the suite's in ~/.agents/skills
+	// included (`codex debug prompt-input`, codex-cli 0.137, 2026-11-27).
+	"-c", `model_context_window=32000`,
 }
 
 var All = map[string]Harness{
@@ -312,10 +309,6 @@ var All = map[string]Harness{
 		// not fire here. A reason marked "observed only" states what happened and
 		// not why; the others cite an investigation.
 		KnownIssues: map[string]string{
-			"acp:skills-listed":          codexSkillsUnlisted,
-			"headless:skills-listed":     codexSkillsUnlisted,
-			"interactive:skills-listed":  codexSkillsUnlisted,
-			"sdk:skills-listed":          codexSkillsUnlisted,
 			"headless:event:PRE_COMPACT": "/compact is TUI-only (slash_dispatch.rs); codex exec never auto-compacts",
 			"sdk:event:PRE_COMPACT":      "SDK mode is codex exec, where /compact is only a user message and nothing auto-compacts (same investigation as headless)",
 			"acp:event:PRE_COMPACT":      "the session phase drives codex app-server through CodexBackend, which sends /compact to the model as a user message; nothing is compacted, so no PreCompact (measured, codex-cli 0.156.1). app-server compacts only on thread/compact/start, which the driver does not call",

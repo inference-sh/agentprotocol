@@ -114,12 +114,17 @@ type Probes struct {
 	// Plugin drives the released belt plugin install, status and uninstall
 	// against the agent in a home of its own (pluginlifecycle.go).
 	Plugin bool
+
+	// Matchers installs the suite's hooks with belt's tool filters and checks
+	// the agent honours them on a shell call and on another call
+	// (matchers.go).
+	Matchers bool
 }
 
 // ParseProbes reads a comma-separated probe list:
 //
 //	resume, resume=kill, resumeafter=65s, inflight, inflight=cancel, inflight=hold, compact,
-//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, questions, images, direct, parallel, plugin
+//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, questions, images, direct, parallel, plugin, matchers
 func ParseProbes(spec string) (Probes, error) {
 	var p Probes
 	for _, part := range strings.Split(spec, ",") {
@@ -195,6 +200,8 @@ func ParseProbes(spec string) (Probes, error) {
 			p.Parallel = true
 		case "plugin":
 			p.Plugin = true
+		case "matchers":
+			p.Matchers = true
 		default:
 			return p, fmt.Errorf("unknown probe %q (want resume, resumeafter, inflight, compact, tools, deferred, transcript, seed, seedkinds, env, detect or hidden)", name)
 		}

@@ -359,6 +359,9 @@ func (r *TestRunner) Run() Result {
 		if r.probes.Plugin {
 			r.probePluginLifecycle()
 		}
+		if r.probes.Matchers {
+			r.probeMatchers()
+		}
 		if r.probes.Seed {
 			r.resetPhase(ModeACP)
 			r.probeTranscriptSeed()

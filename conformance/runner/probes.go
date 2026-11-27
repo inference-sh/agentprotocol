@@ -110,12 +110,16 @@ type Probes struct {
 	// call ids, and checks each result goes back under its own call
 	// (parallel.go).
 	Parallel bool
+
+	// Plugin drives the released belt plugin install, status and uninstall
+	// against the agent in a home of its own (pluginlifecycle.go).
+	Plugin bool
 }
 
 // ParseProbes reads a comma-separated probe list:
 //
 //	resume, resume=kill, resumeafter=65s, inflight, inflight=cancel, inflight=hold, compact,
-//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, questions, images, direct, parallel
+//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, questions, images, direct, parallel, plugin
 func ParseProbes(spec string) (Probes, error) {
 	var p Probes
 	for _, part := range strings.Split(spec, ",") {
@@ -189,6 +193,8 @@ func ParseProbes(spec string) (Probes, error) {
 			p.Direct = true
 		case "parallel":
 			p.Parallel = true
+		case "plugin":
+			p.Plugin = true
 		default:
 			return p, fmt.Errorf("unknown probe %q (want resume, resumeafter, inflight, compact, tools, deferred, transcript, seed, seedkinds, env, detect or hidden)", name)
 		}

@@ -356,6 +356,9 @@ func (r *TestRunner) Run() Result {
 			r.resetPhase(ModeACP)
 			r.probeParallel()
 		}
+		if r.probes.Plugin {
+			r.probePluginLifecycle()
+		}
 		if r.probes.Seed {
 			r.resetPhase(ModeACP)
 			r.probeTranscriptSeed()

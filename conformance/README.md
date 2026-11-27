@@ -1262,6 +1262,26 @@ Three checks read every phase's requests with no probe:
   was started with. Each run has a home of its own, so such a path is context
   from outside the test (`finding:real-home`, with the text around it).
 
+### belt plugin lifecycle (`--probe plugin`)
+
+Drives the released `belt plugin install`, `status` and `uninstall` against
+the agent in a home of its own, with a hook from another tool installed
+first, and judges each step from the agent's state (`harness.PluginState`:
+its plugin manager's listing or its hook file), not from belt's output:
+
+- `plugin.install`: belt is installed, `:marketplace` through the agent's
+  plugin manager or `:files` in its hook file;
+- `plugin.install.foreign-kept`, `plugin.uninstall.foreign-kept`: the other
+  tool's hook survives both;
+- `plugin.reinstall`: a second install leaves one copy of belt's hooks;
+- `plugin.status.installed`, `plugin.status.removed`: `belt plugin status`
+  says what the agent's state says;
+- `plugin.uninstall`: belt is gone; `plugin.uninstall.leftovers`: no file
+  outside the plugin manager's caches and marketplace copies still runs
+  `belt plugin hook` (the marketplace registration stays by design).
+
+Whether the hooks fire is covered by the `--hooks belt` mode runs.
+
 ### Direct mode (`--probe direct`)
 
 Direct mode (package `llm`) runs the agent as a model: the probe's system

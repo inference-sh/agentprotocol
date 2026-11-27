@@ -1282,6 +1282,18 @@ its plugin manager's listing or its hook file), not from belt's output:
 
 Whether the hooks fire is covered by the `--hooks belt` mode runs.
 
+### belt's tool filters (`--probe matchers`)
+
+Installs this suite's hook scripts with belt's hook choices (a copy of the
+CLI's `internal/beltplugin/source.go`: PreToolUse on the skill tool only,
+dropped where it cannot be filtered; PostToolUse on the shell tool), so the
+hook file carries exactly the filters belt's does, then runs two turns:
+
+- `matchers.shell.post-tool`: the agent's shell call fires the post-tool
+  hook; `matchers.shell.pre-tool`: it does not fire the skill-only one;
+- `matchers.other.post-tool`: an ordinary call fires the post-tool hook only
+  where the library could not write the filter (its render notes say which).
+
 ### Direct mode (`--probe direct`)
 
 Direct mode (package `llm`) runs the agent as a model: the probe's system

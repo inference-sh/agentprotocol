@@ -4,7 +4,7 @@
     {
       "name": "probes",
       "mode": "acp",
-      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents,images,parallel,plugin",
+      "probes": "resume,inflight,compact,transcript,seed,seedkinds=shapes,tools,deferred,hidden,usage,subagents,images,parallel,plugin,matchers",
       "checks": {
         "acp/compact": "skip:no-command",
         "acp/deferred.armed": "pass:no-search-tool",

@@ -958,7 +958,10 @@ export const Direct = async () => ({
 			{Path: ".agents/plugins/belt-test/plugin.json", Content: `{"name":"belt-test","version":"1.0.0","description":"Belt harness test hooks"}`},
 			// goose >= 1.50 opens a provider wizard (OpenRouter OAuth) in the TUI
 			// unless the provider is set in config.yaml; env vars alone only cover `goose run`.
-			{Path: ".config/goose/config.yaml", Content: "GOOSE_PROVIDER: mock\nGOOSE_MODEL: {{.Model}}\nGOOSE_MODE: auto\n"},
+			// GOOSE_TELEMETRY_ENABLED: goose 1.61 asks about usage data before the
+			// session starts, and the question eats the first keys of the prompt typed
+			// into the TUI ("What is the project coden" lost, the rest sent).
+			{Path: ".config/goose/config.yaml", Content: "GOOSE_PROVIDER: mock\nGOOSE_MODEL: {{.Model}}\nGOOSE_MODE: auto\nGOOSE_TELEMETRY_ENABLED: false\n"},
 		},
 		HookFormat:    JSONNested,
 		HookConfigDir: ".agents/plugins/" + sourceName + "/hooks",

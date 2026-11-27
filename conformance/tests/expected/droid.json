@@ -26,6 +26,8 @@
         "acp/instructions../AGENTS.md": "pass",
         "acp/instructions.~/.factory/AGENTS.md": "pass",
         "acp/isolation": "pass",
+        "acp/matchers.other.post-tool": "pass",
+        "acp/matchers.shell": "skip:not-run",
         "acp/model": "pass",
         "acp/parallel.interleaved": "pass:renamed-ids",
         "acp/parallel.reused-ids": "pass:renamed-ids",

@@ -21,6 +21,8 @@
         "acp/instructions../.goosehints": "pass",
         "acp/instructions.~/.config/goose/.goosehints": "pass",
         "acp/isolation": "pass",
+        "acp/matchers.shell.post-tool": "pass",
+        "acp/matchers.shell.pre-tool": "pass",
         "acp/model": "pass",
         "acp/parallel.interleaved": "pass",
         "acp/parallel.reused-ids": "pass",

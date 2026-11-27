@@ -25,6 +25,7 @@
         "acp/instructions../GEMINI.md": "pass",
         "acp/instructions.~/.gemini/GEMINI.md": "pass",
         "acp/isolation": "pass",
+        "acp/matchers": "skip:known-missing",
         "acp/model": "pass",
         "acp/parallel": "skip:no-file-tool",
         "acp/plugin.install": "pass:files",

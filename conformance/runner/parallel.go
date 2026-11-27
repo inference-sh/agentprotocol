@@ -35,7 +35,11 @@ func (r *TestRunner) probeParallel() {
 		name, args = o.Name, o.Args
 	}
 	if name == "" {
-		name, args = server.DefaultToolName, server.DefaultToolArgs
+		// The default Read is a guess the agent may not declare (pi's is
+		// "read", copilot's "view"), and a call it does not declare is never
+		// served.
+		r.skip("parallel:no-tool-row", fmt.Sprintf("parallel: the registry names no tool call for %s", r.harness.Name))
+		return
 	}
 	args = r.expand(args)
 	if !strings.Contains(args, "README.md") {
@@ -127,7 +131,28 @@ func (r *TestRunner) reportParallelTurn(label string, entries []server.LogEntry,
 		r.finding(label+":no-result", fmt.Sprintf("parallel: %s sent no new tool results after the two calls, so it did not run them", name))
 		return
 	}
+	// A tool that failed for both calls says nothing about pairing: codex's
+	// sandbox cannot start in CI, and both results are the same bwrap error.
+	anyToken := false
+	for _, g := range got {
+		anyToken = anyToken || strings.Contains(g.text, tokA) || strings.Contains(g.text, tokB)
+	}
+	if !anyToken {
+		r.skip(label+":tool-failed", fmt.Sprintf("parallel: %s ran the calls and neither result holds a file's contents (%s)", name, truncate(strings.Join(strings.Fields(got[0].text), " "), 300)))
+		return
+	}
 	res := latestByID(got, calls)
+	// An agent may give the calls ids of its own: droid rewrites every id,
+	// kimi and qwen rename an id the conversation already used. The results
+	// are then paired with the calls by position, which is the order the
+	// agent received them in.
+	renamed := false
+	if _, ok := res[calls[0].ID]; !ok && len(got) == len(calls) {
+		renamed = true
+		for i, c := range calls {
+			res[c.ID] = got[i].text
+		}
+	}
 	var wrong []string
 	swapped := true
 	for i, c := range calls {
@@ -142,6 +167,8 @@ func (r *TestRunner) reportParallelTurn(label string, entries []server.LogEntry,
 		swapped = swapped && strings.Contains(text, other) && !strings.Contains(text, want[i])
 	}
 	switch {
+	case len(wrong) == 0 && renamed:
+		r.pass(label+":renamed-ids", fmt.Sprintf("parallel: %s gave the calls ids of its own (%q, %q) and returned each call's result in order", name, got[0].id, got[1].id))
 	case len(wrong) == 0:
 		r.pass(label, fmt.Sprintf("parallel: %s returned each call's result under its own id", name))
 	case swapped:

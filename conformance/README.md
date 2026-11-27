@@ -1248,7 +1248,7 @@ way OpenAI sends them; Anthropic's blocks come one after another, each split.
   the second turn's calls; `swapped` and `wrong` that it ran them and sent a
   result under the wrong id.
 
-Two checks read every phase's requests with no probe:
+Three checks read every phase's requests with no probe:
 
 - `cache-prefix`: the request that carries the tool's result starts with the
   request that asked for the tool, unchanged (tools, system prompt, and every
@@ -1258,6 +1258,9 @@ Two checks read every phase's requests with no probe:
   `previous_response_id`.
 - `tool-names`: every declared tool name is 1 to 64 of `[A-Za-z0-9_-]`, which
   OpenAI and Anthropic both require.
+- `isolation`: no request names a path under the home directory the suite
+  was started with. Each run has a home of its own, so such a path is context
+  from outside the test (`finding:real-home`, with the text around it).
 
 ### Direct mode (`--probe direct`)
 

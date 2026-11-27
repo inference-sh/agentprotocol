@@ -93,6 +93,7 @@ type TestRunner struct {
 	lastOutput       string
 	proxyURL         string            // HTTPS_PROXY value, set only during agent execution
 	testEntries      []server.LogEntry // checks read these when set (unit tests)
+	testRealHome     string            // realHome returns this when set (unit tests)
 	probes           Probes
 	section          string         // the phase checks are filed under in the report
 	seen             map[string]int // check ids recorded so far, for repeats

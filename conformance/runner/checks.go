@@ -19,6 +19,7 @@ func (r *TestRunner) runChecks(phase string) {
 	r.checkAPIRequests(phase, entries)
 	r.checkCachePrefix(phase, entries)
 	r.checkToolNames(phase, entries)
+	r.checkIsolation(phase, entries)
 	r.checkStreamingFormat(phase, entries)
 	r.checkModelSelection(phase, entries)
 	r.checkInstructions(phase, entries)

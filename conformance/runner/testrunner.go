@@ -118,6 +118,23 @@ func (r *TestRunner) promptSentSince(since int, prompt string) bool {
 	return entriesContain(entries[since:], prompt)
 }
 
+// userTextsSince is the last user message of each request recorded after the
+// first `since`, for a failure to show what was sent instead of the prompt.
+func (r *TestRunner) userTextsSince(since int) string {
+	entries := r.entries()
+	if since > len(entries) {
+		since = len(entries)
+	}
+	var out []string
+	for _, e := range entries[since:] {
+		out = append(out, fmt.Sprintf("%q", truncate(server.LastUserText(e.Body), 120)))
+	}
+	if len(out) == 0 {
+		return "no requests"
+	}
+	return strings.Join(out, ", ")
+}
+
 // entryCount is len(entries()) without copying every recorded request body,
 // which a poll loop would otherwise do on every tick.
 func (r *TestRunner) entryCount() int {
@@ -1220,7 +1237,7 @@ func (r *TestRunner) runInteractive() {
 	}
 
 	if !r.promptSentSince(launchEntries, promptText) {
-		r.fail("tui.completed:prompt-not-sent", "interactive session ended without the prompt reaching the model")
+		r.fail("tui.completed:prompt-not-sent", "interactive session ended without the prompt reaching the model (user text sent: "+r.userTextsSince(launchEntries)+")")
 		return
 	}
 	r.pass("tui.completed", "interactive session completed")
@@ -1309,7 +1326,7 @@ func (r *TestRunner) runACP() {
 	}
 
 	if !r.promptSentSince(sentFrom, prompt) {
-		r.fail("session.completed:prompt-not-sent", label+" session ended without the prompt reaching the model")
+		r.fail("session.completed:prompt-not-sent", label+" session ended without the prompt reaching the model (user text sent: "+r.userTextsSince(sentFrom)+")")
 		return
 	}
 	r.pass("session.completed", label+" session completed")

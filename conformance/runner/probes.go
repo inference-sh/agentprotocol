@@ -104,12 +104,18 @@ type Probes struct {
 	// system prompt and tools only, and checks what the model was sent
 	// (direct.go).
 	Direct bool
+
+	// Parallel answers one request with two calls of the agent's file tool,
+	// their streamed arguments interleaved, and a second turn with the same
+	// call ids, and checks each result goes back under its own call
+	// (parallel.go).
+	Parallel bool
 }
 
 // ParseProbes reads a comma-separated probe list:
 //
 //	resume, resume=kill, resumeafter=65s, inflight, inflight=cancel, inflight=hold, compact,
-//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, questions, images, direct
+//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, questions, images, direct, parallel
 func ParseProbes(spec string) (Probes, error) {
 	var p Probes
 	for _, part := range strings.Split(spec, ",") {
@@ -181,6 +187,8 @@ func ParseProbes(spec string) (Probes, error) {
 			p.Images = true
 		case "direct":
 			p.Direct = true
+		case "parallel":
+			p.Parallel = true
 		default:
 			return p, fmt.Errorf("unknown probe %q (want resume, resumeafter, inflight, compact, tools, deferred, transcript, seed, seedkinds, env, detect or hidden)", name)
 		}

@@ -18,6 +18,7 @@ func (r *TestRunner) runChecks(phase string) {
 	entries := r.server.Log()
 	r.checkAPIRequests(phase, entries)
 	r.checkCachePrefix(phase, entries)
+	r.checkToolNames(phase, entries)
 	r.checkStreamingFormat(phase, entries)
 	r.checkModelSelection(phase, entries)
 	r.checkInstructions(phase, entries)

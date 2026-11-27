@@ -97,6 +97,9 @@ type MockServer struct {
 	toolNamespace string
 	toolCallPath  string
 	cursor        map[string]*cursorSession // Cursor agent run streams by request id
+
+	parallel       []ParallelCall // armed parallel calls (PrepareParallelToolCalls)
+	parallelServed int
 }
 
 func New() *MockServer {
@@ -302,6 +305,7 @@ func (s *MockServer) PrepareToolCallIn(namespace, name, args, path string) {
 	s.toolCallPath = path
 	s.toolCallMode = true
 	s.toolCallServed = false
+	s.parallel = nil
 	s.holdAfterTool = nil
 	s.afterTool = nil
 }
@@ -343,6 +347,7 @@ func (s *MockServer) ClearLog() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.log = nil
+	s.parallelServed = 0
 }
 
 func (s *MockServer) Start() (string, error) {
@@ -898,3 +903,6 @@ func (s *MockServer) requestsHook(tag string) bool {
 	defer s.mu.Unlock()
 	return s.requestedHooks[tag]
 }
+
+// ToolNamesIn is the name of every tool a request body declares.
+func ToolNamesIn(body []byte) []string { return toolNamesIn(body) }

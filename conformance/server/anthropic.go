@@ -14,6 +14,11 @@ func (s *MockServer) handleMessages(w http.ResponseWriter, r *http.Request) {
 		if req.Stream {
 			s.markStreamed(idx)
 		}
+		if calls := s.takeParallel(); len(calls) > 0 {
+			name, _ := s.getToolCall()
+			s.anthropicParallel(w, model, name, calls, req.Stream)
+			return
+		}
 		s.anthropicToolCall(w, model, req.Stream)
 		return
 	}

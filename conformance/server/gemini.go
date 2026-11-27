@@ -67,6 +67,11 @@ func (s *MockServer) handleGemini(w http.ResponseWriter, r *http.Request) {
 	hasTools := len(req.Tools) > 0
 	if s.shouldToolCall(hasTools && s.bodyOffersTool(body), r.URL.Path) {
 		s.markToolCall(idx)
+		if calls := s.takeParallel(); len(calls) > 0 {
+			name, _ := s.getToolCall()
+			s.geminiParallel(w, model, name, calls)
+			return
+		}
 		s.geminiToolCall(w, model)
 		return
 	}

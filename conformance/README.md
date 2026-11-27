@@ -1234,6 +1234,31 @@ Measured 2026-10-11:
 |---|---|
 | claude, codex, pi; copilot, droid (re-encoded), gemini, goose, hermes, kimi, kiro, omp (scaled to 200x200), opencode, qwen | cursor, grok, kilo (each dropped an image block sent anyway) |
 
+### Parallel tool calls (`--probe parallel`)
+
+The mock answers one request with two calls of the agent's file tool, one for
+`README.md` and one for `NOTES.md`, each file holding a token of its own.
+Streamed, the calls open first and their argument deltas then interleave, the
+way OpenAI sends them; Anthropic's blocks come one after another, each split.
+
+- `parallel.interleaved`: each call's result goes back under its own id;
+- `parallel.reused-ids`: a second turn calls again with the same ids
+  (`call_0`, `call_1`) and the files swapped, the way providers that number
+  calls per turn reuse them. `finding:no-result` means the agent did not run
+  the second turn's calls; `swapped` and `wrong` that it ran them and sent a
+  result under the wrong id.
+
+Two checks read every phase's requests with no probe:
+
+- `cache-prefix`: the request that carries the tool's result starts with the
+  request that asked for the tool, unchanged (tools, system prompt, and every
+  earlier message, compared as parsed JSON; Anthropic `cache_control` markers
+  left out). A change there makes the provider's prompt cache miss on every
+  step. `pass:incremental` is a Responses request sent with
+  `previous_response_id`.
+- `tool-names`: every declared tool name is 1 to 64 of `[A-Za-z0-9_-]`, which
+  OpenAI and Anthropic both require.
+
 ### Direct mode (`--probe direct`)
 
 Direct mode (package `llm`) runs the agent as a model: the probe's system

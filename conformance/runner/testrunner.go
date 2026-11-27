@@ -351,6 +351,10 @@ func (r *TestRunner) Run() Result {
 			r.resetPhase(ModeACP)
 			r.probeDirect()
 		}
+		if r.probes.Parallel {
+			r.resetPhase(ModeACP)
+			r.probeParallel()
+		}
 		if r.probes.Seed {
 			r.resetPhase(ModeACP)
 			r.probeTranscriptSeed()

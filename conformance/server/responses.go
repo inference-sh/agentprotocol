@@ -41,6 +41,10 @@ func (s *MockServer) handleResponses(w http.ResponseWriter, r *http.Request) {
 		if ns == "" {
 			ns = responsesNamespaceOf(body, name)
 		}
+		if calls := s.takeParallel(); len(calls) > 0 {
+			s.responsesParallel(w, ns, name, calls)
+			return
+		}
 		s.responsesFunctionCallIn(w, ns, name, args)
 		return
 	}

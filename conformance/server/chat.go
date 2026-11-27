@@ -22,6 +22,11 @@ func (s *MockServer) handleChatCompletions(w http.ResponseWriter, r *http.Reques
 		if req.Stream {
 			s.markStreamed(idx)
 		}
+		if calls := s.takeParallel(); len(calls) > 0 {
+			name, _ := s.getToolCall()
+			s.chatParallel(w, model, name, calls, req.Stream, req.wantsStreamUsage())
+			return
+		}
 		s.chatToolCall(w, model, req.Stream, req.wantsStreamUsage())
 		return
 	}

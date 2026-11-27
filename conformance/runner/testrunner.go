@@ -106,6 +106,18 @@ func (r *TestRunner) entries() []server.LogEntry {
 	return r.server.Log()
 }
 
+// promptSentSince reports whether a request recorded after the first `since`
+// carried this prompt to the model: the evidence that a turn reached the
+// model, where exiting, printing something, or the runner finishing its own
+// steps is not.
+func (r *TestRunner) promptSentSince(since int, prompt string) bool {
+	entries := r.entries()
+	if since > len(entries) {
+		since = len(entries)
+	}
+	return entriesContain(entries[since:], prompt)
+}
+
 // entryCount is len(entries()) without copying every recorded request body,
 // which a poll loop would otherwise do on every tick.
 func (r *TestRunner) entryCount() int {
@@ -926,6 +938,7 @@ func (r *TestRunner) workDir() string {
 func (r *TestRunner) runOneShot(label string, cmdSlice, extraArgs []string) []byte {
 	dir := r.workDir()
 	prompt := promptText
+	before := r.entryCount()
 
 	var args []string
 	for _, a := range cmdSlice[1:] {
@@ -960,14 +973,20 @@ func (r *TestRunner) runOneShot(label string, cmdSlice, extraArgs []string) []by
 	if os.Getenv("HARNESS_DEBUG") != "" {
 		fmt.Printf("    [debug] %s output (%d bytes):\n%s\n", label, len(out), r.lastOutput)
 	}
-	if err != nil && len(out) > 0 {
-		r.pass("turn:nonzero-exit", fmt.Sprintf("%s produced output (%d bytes, exit: %v)", label, len(out), err))
-	} else if err != nil {
-		r.fail("turn", label+": "+err.Error())
-	} else if len(out) > 0 {
-		r.pass("turn", fmt.Sprintf("%s produced output (%d bytes)", label, len(out)))
-	} else {
-		r.fail("turn:no-output", label+" produced no output")
+	// Output alone is not a turn: a crash prints a stack trace. The turn
+	// happened when the prompt reached the model.
+	sent := r.promptSentSince(before, prompt)
+	switch {
+	case !sent && err != nil:
+		r.fail("turn", fmt.Sprintf("%s exited (%v) without sending the prompt to the model: %s", label, err, truncate(strings.TrimSpace(string(out)), 200)))
+	case !sent:
+		r.fail("turn:prompt-not-sent", fmt.Sprintf("%s exited cleanly (%d bytes of output) without sending the prompt to the model", label, len(out)))
+	case err != nil:
+		r.pass("turn:nonzero-exit", fmt.Sprintf("%s sent the prompt and exited non-zero (%v, %d bytes)", label, err, len(out)))
+	case len(out) > 0:
+		r.pass("turn", fmt.Sprintf("%s sent the prompt and produced output (%d bytes)", label, len(out)))
+	default:
+		r.fail("turn:no-output", label+" sent the prompt and produced no output")
 	}
 
 	if r.harness.Events.Stop != "" {
@@ -1063,6 +1082,7 @@ func (r *TestRunner) runInteractive() {
 	// before launch; otherwise the wait below looks for a second answer that
 	// never comes and sits out its whole timeout (kiro: 55s became 2m23s).
 	launchMark := r.markTurn(true)
+	launchEntries := r.entryCount()
 	session, err := StartPTY(r.harness.InteractiveCmd[0], iargs, dir, r.envIn(dir))
 	if err != nil {
 		r.fail("tui.start", "PTY start: "+err.Error())
@@ -1199,6 +1219,10 @@ func (r *TestRunner) runInteractive() {
 		fmt.Printf("    [debug] PTY output (%d bytes) head:\n%s\n    [debug] tail:\n%s\n", len(r.lastOutput), head, tail)
 	}
 
+	if !r.promptSentSince(launchEntries, promptText) {
+		r.fail("tui.completed:prompt-not-sent", "interactive session ended without the prompt reaching the model")
+		return
+	}
 	r.pass("tui.completed", "interactive session completed")
 }
 
@@ -1254,13 +1278,16 @@ func (r *TestRunner) runACP() {
 
 	answered := r.server.AnswersServed()
 	prompt := promptText
+	sentFrom := r.entryCount()
 	if err := sess.SendPrompt(prompt); err != nil {
 		r.fail("session.prompt", label+" prompt: "+err.Error())
 		return
 	}
 
 	err := sess.WaitAnswered(r.server.AnswersServed, answered, 60*time.Second)
-	if err != nil {
+	if errors.Is(err, errExitedUnanswered) {
+		r.fail("session.answer", label+" response: "+err.Error())
+	} else if err != nil {
 		r.skip("session.answer:no-answer", label+" response: "+err.Error())
 	} else {
 		r.pass("session.answer", label+" prompt answered")
@@ -1281,6 +1308,10 @@ func (r *TestRunner) runACP() {
 		fmt.Printf("    [debug] %s output (%d bytes):\n%s\n", label, len(r.lastOutput), r.lastOutput)
 	}
 
+	if !r.promptSentSince(sentFrom, prompt) {
+		r.fail("session.completed:prompt-not-sent", label+" session ended without the prompt reaching the model")
+		return
+	}
 	r.pass("session.completed", label+" session completed")
 
 }
@@ -1866,6 +1897,9 @@ var compactionSummary = "Summary of the conversation so far. The user opened a s
 	"instead of the full history. Nothing in the conversation depends on exact wording, and " +
 	"the next turn may ask about anything covered above."
 
+// compactionSummaryMark is a phrase only compactionSummary contains.
+const compactionSummaryMark = "compacted at the user's request"
+
 // compactionFillers give the session enough history to be worth compacting.
 // The content does not matter; the number of turns does.
 var compactionFillers = []string{
@@ -1922,15 +1956,20 @@ func (r *TestRunner) reportCompactedContext(resumed *SessionDriver) {
 	}
 
 	carried := entriesContain(sent, promptText)
+	summary := entriesContain(sent, compactionSummaryMark)
 	widest := widestRequest(sent)
 	switch {
 	case carried:
 		// Either the agent kept the original wording through compaction, or
 		// the compaction did not touch this turn.
 		r.pass("compact.context:original", fmt.Sprintf("compaction: %s still sent the original wording after compacting, so nothing was lost", name))
+	case summary:
+		// Lossy by design, which is what compaction is for. The summary is
+		// the mock's own text, so seeing it is the proof; a message count is
+		// not, since a system prompt and the new question are already two.
+		r.pass("compact.context:summary", fmt.Sprintf("compaction: %s sent the model the compaction's summary in place of the original wording", name))
 	case widest > 1:
-		// Lossy by design, which is what compaction is for.
-		r.pass("compact.context:summary", fmt.Sprintf("compaction: %s sent the model %d message(s) but not the original wording, so the resume carries a summary", name, widest))
+		r.finding("compact.context:unrecognised", fmt.Sprintf("compaction: %s sent the model %d message(s), with neither the original wording nor the compaction's summary", name, widest))
 	default:
 		// The dangerous one: the resume worked and the conversation is gone.
 		r.fail("compact.context:lost", fmt.Sprintf("compaction: %s sent the model only the new prompt, so resuming a compacted session loses the conversation", name))

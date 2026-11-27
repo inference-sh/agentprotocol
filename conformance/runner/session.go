@@ -495,6 +495,10 @@ func (d *SessionDriver) SendCommand(cmd string) error { return d.SendPrompt(cmd)
 // the prompt itself, so an agent that echoes the user's turn would satisfy a
 // text match before the model said anything. The mock knows how many answers
 // it has served.
+// errExitedUnanswered is WaitAnswered's error for an agent that exited before
+// the mock answered: a crash, which a timeout is not.
+var errExitedUnanswered = errors.New("the agent exited before the mock answered")
+
 func (d *SessionDriver) WaitAnswered(answers func() int, after int, timeout time.Duration) error {
 	deadline := time.After(timeout)
 	for {
@@ -514,7 +518,10 @@ func (d *SessionDriver) WaitAnswered(answers func() int, after int, timeout time
 			}
 			return fmt.Errorf("timeout waiting for the mock to answer")
 		case <-d.done:
-			return nil
+			if answers() > after {
+				return nil
+			}
+			return errExitedUnanswered
 		}
 	}
 }

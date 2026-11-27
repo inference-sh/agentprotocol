@@ -44,6 +44,10 @@ func (r *TestRunner) probeMatchers() {
 		return
 	}
 	fmt.Println("[probe] matchers (belt's tool filters on a shell call and on another call)")
+	if reason, missing := h.EventKnownMissing(string(ModeACP), TagPostTool, r.result.Version); missing {
+		r.skip("matchers:known-missing", "matchers: "+h.Name+"'s session mode runs no tool hooks: "+reason)
+		return
+	}
 	shell, ok := shellCalls[h.Name]
 	if !ok {
 		shell = h.ToolCallGated
@@ -174,12 +178,14 @@ func (r *TestRunner) matcherTurn(label string, arm func() bool, ranMark string) 
 		r.skip(label+":not-served", label+": the agent was never offered the call")
 		return
 	}
-	ran := false
-	for _, e := range r.entries() {
-		for _, res := range toolResults(e.Body) {
-			ran = ran || strings.Contains(res.text, ranMark)
-		}
-	}
+	data, _ := os.ReadFile(hookLogPath)
+	log := string(data)
+	pre, post = strings.Contains(log, TagPreTool), strings.Contains(log, TagPostTool)
+	// The call ran when its output reached the model (the mark is in the
+	// output and not in the call), when the file it writes exists, or when
+	// its post-tool hook fired. A run that failed counts: codex's sandbox
+	// cannot start in CI and its exec_command still fires PostToolUse.
+	ran := post || entriesContain(r.entries(), ranMark)
 	if _, err := os.Stat(filepath.Join(r.workDir(), "test-output.txt")); err == nil {
 		ran = true
 	}
@@ -187,7 +193,5 @@ func (r *TestRunner) matcherTurn(label string, arm func() bool, ranMark string) 
 		r.skip(label+":not-run", label+": the call was served and the agent did not run it (refused or held for permission), so no post-tool event is due")
 		return
 	}
-	data, _ := os.ReadFile(hookLogPath)
-	log := string(data)
-	return strings.Contains(log, TagPreTool), strings.Contains(log, TagPostTool), true
+	return pre, post, true
 }

@@ -35,6 +35,7 @@ func (s *MockServer) handleResponses(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if s.shouldToolCall(req.hasTools() && s.bodyOffersTool(body), r.URL.Path) {
+		s.markToolCall(idx)
 		name, args := s.getToolCall()
 		ns := s.toolCallNamespace()
 		if ns == "" {

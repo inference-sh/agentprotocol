@@ -38,6 +38,11 @@ type LogEntry struct {
 	// from five per-protocol path and header patterns, one of which could
 	// never match because Path carries no query string.
 	Streamed bool `json:"streamed,omitempty"`
+
+	// ToolCall records that the mock answered this request with the prepared
+	// tool call, so the request that carries its result can be paired with
+	// the one that asked for it (see the runner's cache-prefix check).
+	ToolCall bool `json:"tool_call,omitempty"`
 }
 
 // LLMHosts are API domains that agents call. Used by --intercept mode to
@@ -619,6 +624,16 @@ func (s *MockServer) markStreamed(i int) {
 	defer s.mu.Unlock()
 	if i >= 0 && i < len(s.log) {
 		s.log[i].Streamed = true
+	}
+}
+
+// markToolCall records that the mock answered request i with the prepared
+// tool call.
+func (s *MockServer) markToolCall(i int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if i >= 0 && i < len(s.log) {
+		s.log[i].ToolCall = true
 	}
 }
 

@@ -10,6 +10,7 @@ func (s *MockServer) handleMessages(w http.ResponseWriter, r *http.Request) {
 	model := req.modelOrDefault()
 
 	if s.shouldToolCall(req.hasTools() && s.bodyOffersTool(body), r.URL.Path) {
+		s.markToolCall(idx)
 		if req.Stream {
 			s.markStreamed(idx)
 		}

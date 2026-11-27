@@ -18,6 +18,7 @@ func (s *MockServer) handleChatCompletions(w http.ResponseWriter, r *http.Reques
 	model := req.modelOrDefault()
 
 	if s.shouldToolCall(req.hasTools() && s.bodyOffersTool(body), r.URL.Path) {
+		s.markToolCall(idx)
 		if req.Stream {
 			s.markStreamed(idx)
 		}

@@ -106,7 +106,8 @@ func (r *TestRunner) reportParallelTurn(label string, entries []server.LogEntry,
 		}
 	}
 	if asked < 0 {
-		r.skip(label+":not-served", fmt.Sprintf("parallel: %s was never offered the tool in this turn, so no calls were served", name))
+		r.skip(label+":not-served", fmt.Sprintf("parallel: no request in this turn was answered with the calls (%d request(s) to %s; tools declared: %s)",
+			len(entries), strings.Join(distinctPaths(entries), " "), strings.Join(declaredIn(entries), " ")))
 		return
 	}
 	// The history before the calls already holds results, the earlier turn's
@@ -136,7 +137,7 @@ func (r *TestRunner) reportParallelTurn(label string, entries []server.LogEntry,
 			other = tokA
 		}
 		if !strings.Contains(text, want[i]) {
-			wrong = append(wrong, fmt.Sprintf("%s: %s", c.ID, truncate(text, 80)))
+			wrong = append(wrong, fmt.Sprintf("%s: %s", c.ID, truncate(strings.Join(strings.Fields(text), " "), 300)))
 		}
 		swapped = swapped && strings.Contains(text, other) && !strings.Contains(text, want[i])
 	}
@@ -146,8 +147,39 @@ func (r *TestRunner) reportParallelTurn(label string, entries []server.LogEntry,
 	case swapped:
 		r.finding(label+":swapped", fmt.Sprintf("parallel: %s returned each call's result under the other's id (%s)", name, strings.Join(wrong, "; ")))
 	default:
-		r.finding(label+":wrong", fmt.Sprintf("parallel: %s did not return each call's own result (%s)", name, strings.Join(wrong, "; ")))
+		var ids []string
+		for _, g := range got {
+			ids = append(ids, fmt.Sprintf("%q", g.id))
+		}
+		r.finding(label+":wrong", fmt.Sprintf("parallel: %s did not return each call's own result (%s; result ids sent: %s)", name, strings.Join(wrong, "; "), strings.Join(ids, " ")))
 	}
+}
+
+func distinctPaths(entries []server.LogEntry) []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, e := range entries {
+		if !seen[e.Path] {
+			seen[e.Path] = true
+			out = append(out, e.Path)
+		}
+	}
+	return out
+}
+
+func declaredIn(entries []server.LogEntry) []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, e := range entries {
+		for _, n := range server.ToolNamesIn(e.Body) {
+			if !seen[n] {
+				seen[n] = true
+				out = append(out, n)
+			}
+		}
+	}
+	sort.Strings(out)
+	return out
 }
 
 // toolResult is one tool result found in a request, in request order.

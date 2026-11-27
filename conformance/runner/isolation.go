@@ -30,7 +30,7 @@ func (r *TestRunner) checkIsolation(phase string, entries []server.LogEntry) {
 	fmt.Printf("[check] isolation (%s)\n", phase)
 	needle := []byte(real + "/")
 	for _, e := range entries {
-		if i := bytes.Index(e.Body, needle); i >= 0 {
+		if i := homePathIndex(e.Body, needle); i >= 0 {
 			from, to := max(0, i-60), min(len(e.Body), i+len(needle)+80)
 			r.finding("isolation:real-home", fmt.Sprintf("%s: a request to %s named a path under the real home %s: …%s…",
 				phase, e.Path, real, strings.ReplaceAll(string(e.Body[from:to]), "\n", " ")))
@@ -38,6 +38,35 @@ func (r *TestRunner) checkIsolation(phase string, entries []server.LogEntry) {
 		}
 	}
 	r.pass("isolation", fmt.Sprintf("%s: no request named a path under the real home", phase))
+}
+
+// installDirs are where agents are installed under a home. A path there is
+// the agent's own bundle (gemini lists its builtin skills by path), not
+// context from the user's files.
+var installDirs = []string{".npm-global/", ".nvm/", ".local/share/", ".local/bin/", ".local/lib/", ".bun/", ".cargo/", ".deno/", ".volta/", "node_modules/"}
+
+// homePathIndex is where the first path under the real home that is not an
+// install location starts in body, or -1.
+func homePathIndex(body, needle []byte) int {
+	for off := 0; ; {
+		i := bytes.Index(body[off:], needle)
+		if i < 0 {
+			return -1
+		}
+		at := off + i
+		rest := body[at+len(needle):]
+		install := false
+		for _, d := range installDirs {
+			if bytes.HasPrefix(rest, []byte(d)) {
+				install = true
+				break
+			}
+		}
+		if !install {
+			return at
+		}
+		off = at + len(needle)
+	}
 }
 
 // realHome is the home directory the suite was started with; tests set

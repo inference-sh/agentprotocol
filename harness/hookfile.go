@@ -1,11 +1,14 @@
 package harness
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"go.yaml.in/yaml/v3"
 )
 
 // sourceName stands in registry paths for the name of the source whose hooks
@@ -120,7 +123,7 @@ func InstallSource(name string, scope InstallScope, src PluginSource) InstallRes
 		err = writeTOMLHooks(path, content, src.Name, owned)
 	case YAML:
 		result.Merged = true
-		err = writeYAMLHooks(path, content)
+		err = writeYAMLHooks(path, content, owned)
 	case TSExtension, TSPlugin:
 		err = writeFile(path, content)
 		result.Created = true
@@ -158,7 +161,7 @@ func UninstallSource(name string, scope InstallScope, src PluginSource) InstallR
 	case TOML:
 		result.Error = removeTOMLHooks(path, src.Name, owned)
 	case YAML:
-		result.Error = removeYAMLHooks(path, h, src)
+		result.Error = removeYAMLHooks(path, owned)
 	default:
 		result.Error = os.Remove(path)
 		if os.IsNotExist(result.Error) {
@@ -395,35 +398,149 @@ func removeTOMLHooks(path, source string, owned func(string) bool) error {
 // YAML hooks are matched as the block an install wrote, whole: hermes keeps
 // its whole config in this file and nothing here parses YAML, so a block that
 // was edited since is left for the user.
-func writeYAMLHooks(path, content string) error {
+// writeYAMLHooks merges a source's hooks into a YAML config (hermes keeps
+// them in its whole config.yaml). The source's entries are dropped from every
+// event first, then the new ones added: appending the generated text, as this
+// did, wrote a second top-level hooks key whenever the user's config had one
+// or the source's hooks had changed since the last install, and an event the
+// source no longer asks for kept its old entry.
+func writeYAMLHooks(path, content string, owned func(string) bool) error {
 	os.MkdirAll(filepath.Dir(path), 0755)
 	data, err := os.ReadFile(path)
-	if err != nil {
+	if err != nil || strings.TrimSpace(string(data)) == "" {
 		return writeFile(path, content)
 	}
-	existing := strings.Replace(string(data), content, "", 1)
-	existing = strings.Replace(existing, "hooks: {}", "", 1)
-	if strings.TrimSpace(existing) == "" {
-		return writeFile(path, content)
+	var doc yaml.Node
+	if err := yaml.Unmarshal(data, &doc); err != nil {
+		return fmt.Errorf("%s: %w", path, err)
 	}
-	return os.WriteFile(path, []byte(existing+"\n"+content), 0644)
+	var add yaml.Node
+	if err := yaml.Unmarshal([]byte(content), &add); err != nil {
+		return err
+	}
+	root := yamlRoot(&doc)
+	if root == nil {
+		return fmt.Errorf("%s: not a YAML mapping", path)
+	}
+	hooks := yamlKey(root, "hooks", true)
+	dropOwnedYAML(hooks, owned)
+	if addHooks := yamlKey(yamlRoot(&add), "hooks", false); addHooks != nil {
+		for i := 0; i+1 < len(addHooks.Content); i += 2 {
+			event, entries := addHooks.Content[i], addHooks.Content[i+1]
+			list := yamlKey(hooks, event.Value, false)
+			if list == nil || list.Kind != yaml.SequenceNode {
+				hooks.Content = append(hooks.Content, event, entries)
+				continue
+			}
+			list.Content = append(list.Content, entries.Content...)
+		}
+	}
+	return writeYAMLDoc(path, &doc)
 }
 
-func removeYAMLHooks(path string, h Harness, src PluginSource) error {
+// removeYAMLHooks drops a source's entries from every event of a YAML config,
+// and the file when nothing else is left in it.
+func removeYAMLHooks(path string, owned func(string) bool) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil
 	}
-	plan, _ := planHooks(h, src)
-	content, err := generateHookConfig(h.Name, h, plan, src)
-	if err != nil {
-		return err
+	var doc yaml.Node
+	if err := yaml.Unmarshal(data, &doc); err != nil {
+		return fmt.Errorf("%s: %w", path, err)
 	}
-	kept := strings.Replace(string(data), content, "", 1)
-	if strings.TrimSpace(kept) == "" {
+	root := yamlRoot(&doc)
+	if root == nil {
+		return nil
+	}
+	if hooks := yamlKey(root, "hooks", false); hooks != nil {
+		dropOwnedYAML(hooks, owned)
+		if len(hooks.Content) == 0 {
+			yamlDelete(root, "hooks")
+		}
+	}
+	if len(root.Content) == 0 {
 		return os.Remove(path)
 	}
-	return os.WriteFile(path, []byte(kept), 0644)
+	return writeYAMLDoc(path, &doc)
+}
+
+// yamlRoot is a document's top-level mapping, or nil.
+func yamlRoot(doc *yaml.Node) *yaml.Node {
+	if doc.Kind == yaml.DocumentNode && len(doc.Content) == 1 {
+		doc = doc.Content[0]
+	}
+	if doc.Kind != yaml.MappingNode {
+		return nil
+	}
+	return doc
+}
+
+// yamlKey is the value under key in a mapping; with create it adds an empty
+// mapping there when the key is missing or holds nothing (hooks: {} or ~).
+func yamlKey(m *yaml.Node, key string, create bool) *yaml.Node {
+	if m == nil {
+		return nil
+	}
+	for i := 0; i+1 < len(m.Content); i += 2 {
+		if m.Content[i].Value == key {
+			v := m.Content[i+1]
+			if create && v.Kind != yaml.MappingNode {
+				*v = yaml.Node{Kind: yaml.MappingNode, Tag: "!!map"}
+			}
+			return v
+		}
+	}
+	if !create {
+		return nil
+	}
+	v := &yaml.Node{Kind: yaml.MappingNode, Tag: "!!map"}
+	m.Content = append(m.Content, &yaml.Node{Kind: yaml.ScalarNode, Tag: "!!str", Value: key}, v)
+	return v
+}
+
+func yamlDelete(m *yaml.Node, key string) {
+	for i := 0; i+1 < len(m.Content); i += 2 {
+		if m.Content[i].Value == key {
+			m.Content = append(m.Content[:i], m.Content[i+2:]...)
+			return
+		}
+	}
+}
+
+// dropOwnedYAML removes the source's entries ({command: ...}) from every
+// event list under hooks, and the events left empty.
+func dropOwnedYAML(hooks *yaml.Node, owned func(string) bool) {
+	var kept []*yaml.Node
+	for i := 0; i+1 < len(hooks.Content); i += 2 {
+		event, list := hooks.Content[i], hooks.Content[i+1]
+		if list.Kind == yaml.SequenceNode {
+			var entries []*yaml.Node
+			for _, e := range list.Content {
+				if cmd := yamlKey(e, "command", false); e.Kind == yaml.MappingNode && cmd != nil && owned(cmd.Value) {
+					continue
+				}
+				entries = append(entries, e)
+			}
+			if len(entries) == 0 {
+				continue
+			}
+			list.Content = entries
+		}
+		kept = append(kept, event, list)
+	}
+	hooks.Content = kept
+}
+
+func writeYAMLDoc(path string, doc *yaml.Node) error {
+	var b bytes.Buffer
+	enc := yaml.NewEncoder(&b)
+	enc.SetIndent(2)
+	if err := enc.Encode(doc); err != nil {
+		return err
+	}
+	enc.Close()
+	return os.WriteFile(path, b.Bytes(), 0644)
 }
 
 // kiroAgentDescription marks a kiro agent file a source's install created.
@@ -471,6 +588,17 @@ func mergeKiroAgentHooks(path, newContent string, owned func(string) bool) error
 	hooks, _ := obj["hooks"].(map[string]any)
 	if hooks == nil {
 		hooks = map[string]any{}
+	}
+	// The source's entries go from every event, not only the ones it writes
+	// now: an event it no longer asks for (belt's PreToolUse, which kiro
+	// cannot filter to the skill tool) kept its old entry and ran on every
+	// tool.
+	for k, v := range hooks {
+		if kept := withoutOwned(v, owned); len(kept) == 0 {
+			delete(hooks, k)
+		} else {
+			hooks[k] = kept
+		}
 	}
 	for k, v := range newHooks {
 		hooks[k] = append(withoutOwned(hooks[k], owned), v.([]any)...)

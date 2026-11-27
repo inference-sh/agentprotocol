@@ -362,6 +362,9 @@ func (r *TestRunner) Run() Result {
 		if r.probes.Matchers {
 			r.probeMatchers()
 		}
+		if r.probes.Skills {
+			r.probeSkillsLifecycle()
+		}
 		if r.probes.Seed {
 			r.resetPhase(ModeACP)
 			r.probeTranscriptSeed()

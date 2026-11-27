@@ -119,12 +119,16 @@ type Probes struct {
 	// the agent honours them on a shell call and on another call
 	// (matchers.go).
 	Matchers bool
+
+	// Skills installs, replaces and removes skills through the library and
+	// checks the agent sees each change (skillslife.go).
+	Skills bool
 }
 
 // ParseProbes reads a comma-separated probe list:
 //
 //	resume, resume=kill, resumeafter=65s, inflight, inflight=cancel, inflight=hold, compact,
-//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, questions, images, direct, parallel, plugin, matchers
+//	tools, deferred, transcript, seed, seedkinds, seedkinds=shapes, env, detect, hidden, usage, subagents, questions, images, direct, parallel, plugin, matchers, skills
 func ParseProbes(spec string) (Probes, error) {
 	var p Probes
 	for _, part := range strings.Split(spec, ",") {
@@ -202,6 +206,8 @@ func ParseProbes(spec string) (Probes, error) {
 			p.Plugin = true
 		case "matchers":
 			p.Matchers = true
+		case "skills":
+			p.Skills = true
 		default:
 			return p, fmt.Errorf("unknown probe %q (want resume, resumeafter, inflight, compact, tools, deferred, transcript, seed, seedkinds, env, detect or hidden)", name)
 		}

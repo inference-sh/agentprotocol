@@ -1294,6 +1294,25 @@ hook file carries exactly the filters belt's does, then runs two turns:
 - `matchers.other.post-tool`: an ordinary call fires the post-tool hook only
   where the library could not write the filter (its render notes say which).
 
+### Skill lifecycle (`--probe skills`)
+
+Installs, replaces and removes skills through `harness.InstallSkill`,
+`ListSkills` and `RemoveSkill`, at user scope and at project scope where the
+agent has one, and asks the agent through what it sends the model (each
+skill's description carries a token of its own):
+
+- `skills.install.user` / `.project`: ListSkills returns the skill;
+  `skills.listed.user` / `.project`: the agent sends it to the model;
+- `skills.reinstall`: installing over an older copy leaves one copy, the new
+  one, with no file only the old version had;
+- `skills.remove`: ListSkills no longer returns it;
+  `skills.remove.neighbour-kept`: a skill beside it is untouched;
+  `skills.unlisted`: the agent stops sending it.
+
+An agent with no skills dir in the registry is `skip:no-skills-dir`. The
+released `belt skill install` keeps its own table of skill dirs (go/cli
+internal/knowledge/agents.go), so it is not this probe's subject.
+
 ### Direct mode (`--probe direct`)
 
 Direct mode (package `llm`) runs the agent as a model: the probe's system

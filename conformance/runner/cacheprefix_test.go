@@ -29,7 +29,7 @@ func TestCachePrefix(t *testing.T) {
 		{"chat prefix kept", []server.LogEntry{
 			asked(chat, `{"tools":[{"a":1}],"messages":[{"role":"system","content":"S"},{"role":"user","content":"Q"}]}`),
 			sent(chat, `{"title":"side call"}`),
-			sent(chat, `{"messages":[{"content":"S","role":"system"},{"role":"user","content":"Q"},{"role":"assistant","tool_calls":[{"id":"call_mock_1"}]}],  "tools":[{"a":1}]}`),
+			sent(chat, `{"messages":[{"content":"S","role":"system"},{"role":"user","content":"Q"},{"role":"assistant","tool_calls":[{"id":"call_mock_1"}]},{"role":"tool","tool_call_id":"call_mock_1","content":"x"}],  "tools":[{"a":1}]}`),
 		}, "pass", ""},
 		{"chat system prompt rewritten", []server.LogEntry{
 			asked(chat, `{"messages":[{"role":"system","content":"time 10:00"},{"role":"user","content":"Q"}]}`),
@@ -58,6 +58,10 @@ func TestCachePrefix(t *testing.T) {
 		{"gemini prefix kept", []server.LogEntry{
 			asked(gem, `{"systemInstruction":{"parts":[{"text":"S"}]},"contents":[{"role":"user","parts":[{"text":"Q"}]}]}`),
 			sent(gem, `{"systemInstruction":{"parts":[{"text":"S"}]},"contents":[{"role":"user","parts":[{"text":"Q"}]},{"role":"user","parts":[{"functionResponse":{}}]}]}`),
+		}, "pass", ""},
+		{"ids renamed by the agent", []server.LogEntry{
+			asked(chat, `{"messages":[{"role":"user","content":"Q"}]}`),
+			sent(chat, `{"messages":[{"role":"user","content":"Q"},{"role":"assistant","tool_calls":[{"id":"call_abc_0"}]},{"role":"tool","tool_call_id":"call_abc_0","content":"x"}]}`),
 		}, "pass", ""},
 		{"result never sent", []server.LogEntry{
 			asked(chat, `{"messages":[]}`),

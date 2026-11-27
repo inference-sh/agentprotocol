@@ -1,7 +1,6 @@
 package runner
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -40,9 +39,13 @@ func (r *TestRunner) checkCachePrefix(phase string, entries []server.LogEntry) {
 		r.skip("cache-prefix:unknown-api", fmt.Sprintf("%s: no prompt layout known for %s", phase, first.Path))
 		return
 	}
+	// The request that answers the call carries one more tool result than
+	// the one that asked. Matching the mock's call id instead missed agents
+	// that give calls ids of their own (droid).
+	prev := len(toolResults(first.Body))
 	answered := -1
 	for i := asked + 1; i < len(entries); i++ {
-		if entries[i].Path == first.Path && bytes.Contains(entries[i].Body, []byte(shape.resultMarker)) {
+		if entries[i].Path == first.Path && len(toolResults(entries[i].Body)) > prev {
 			answered = i
 			break
 		}
@@ -67,23 +70,22 @@ func (r *TestRunner) checkCachePrefix(phase string, entries []server.LogEntry) {
 // promptShape is where one API keeps the parts of a prompt a cache keys on,
 // in the order the provider renders them.
 type promptShape struct {
-	fixed        []string // parts sent whole each time: system prompt, tools
-	list         string   // the conversation, which may only grow at the end
-	resultMarker string   // text only the request carrying the mock's tool result contains
-	incremental  string   // a field that, when set, means only new items were sent
-	dropCache    bool     // leave out cache_control markers
+	fixed       []string // parts sent whole each time: system prompt, tools
+	list        string   // the conversation, which may only grow at the end
+	incremental string   // a field that, when set, means only new items were sent
+	dropCache   bool     // leave out cache_control markers
 }
 
 func promptShapeFor(path string) (promptShape, bool) {
 	switch {
 	case strings.HasSuffix(path, "/chat/completions"):
-		return promptShape{fixed: []string{"tools"}, list: "messages", resultMarker: "call_mock_1"}, true
+		return promptShape{fixed: []string{"tools"}, list: "messages"}, true
 	case strings.HasSuffix(path, "/messages"):
-		return promptShape{fixed: []string{"system", "tools"}, list: "messages", resultMarker: "toolu_mock_1", dropCache: true}, true
+		return promptShape{fixed: []string{"system", "tools"}, list: "messages", dropCache: true}, true
 	case strings.HasSuffix(path, "/responses"):
-		return promptShape{fixed: []string{"instructions", "tools"}, list: "input", resultMarker: "call_mock_1", incremental: "previous_response_id"}, true
+		return promptShape{fixed: []string{"instructions", "tools"}, list: "input", incremental: "previous_response_id"}, true
 	case strings.Contains(path, ":generateContent") || strings.Contains(path, ":streamGenerateContent"):
-		return promptShape{fixed: []string{"systemInstruction", "tools"}, list: "contents", resultMarker: `"functionResponse"`}, true
+		return promptShape{fixed: []string{"systemInstruction", "tools"}, list: "contents"}, true
 	}
 	return promptShape{}, false
 }

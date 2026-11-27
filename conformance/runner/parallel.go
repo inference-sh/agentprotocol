@@ -35,11 +35,10 @@ func (r *TestRunner) probeParallel() {
 		name, args = o.Name, o.Args
 	}
 	if name == "" {
-		// The default Read is a guess the agent may not declare (pi's is
-		// "read", copilot's "view"), and a call it does not declare is never
-		// served.
-		r.skip("parallel:no-tool-row", fmt.Sprintf("parallel: the registry names no tool call for %s", r.harness.Name))
-		return
+		// The same default armToolCall falls back to (claude relies on it).
+		// An agent that does not declare it is never served, and the skip
+		// says so with the tools it did declare.
+		name, args = server.DefaultToolName, server.DefaultToolArgs
 	}
 	args = r.expand(args)
 	if !strings.Contains(args, "README.md") {
@@ -57,45 +56,39 @@ func (r *TestRunner) probeParallel() {
 			os.WriteFile(readme, old, 0o644)
 		}
 	}()
-	tokA, tokB := "README-"+randHex(), "NOTES-"+randHex()
-	os.WriteFile(readme, []byte(tokA+"\n"), 0o644)
-	os.WriteFile(notes, []byte(tokB+"\n"), 0o644)
-
-	turns := []struct {
-		id    string
-		calls []server.ParallelCall
-		want  []string // token each call's result must hold, by call
-	}{
-		{"parallel.interleaved", []server.ParallelCall{{ID: "call_0", Args: args}, {ID: "call_1", Args: other}}, []string{tokA, tokB}},
-		{"parallel.reused-ids", []server.ParallelCall{{ID: "call_0", Args: other}, {ID: "call_1", Args: args}}, []string{tokB, tokA}},
+	// Each turn writes new tokens: an agent that remembers what it read
+	// answers a repeat read of an unchanged file from memory (qwen: "Wasted
+	// call — file NOTES.md unchanged"), which says nothing about the ids.
+	plant := func() (tokReadme, tokNotes string) {
+		tokReadme, tokNotes = "README-"+randHex(), "NOTES-"+randHex()
+		os.WriteFile(readme, []byte(tokReadme+"\n"), 0o644)
+		os.WriteFile(notes, []byte(tokNotes+"\n"), 0o644)
+		return
 	}
 
-	r.server.PrepareParallelToolCalls(name, turns[0].calls, r.harness.ToolCallPath)
+	ra, na := plant()
+	first := []server.ParallelCall{{ID: "call_0", Args: args}, {ID: "call_1", Args: other}}
+	r.server.PrepareParallelToolCalls(name, first, r.harness.ToolCallPath)
 	d, ok := r.startProbeTurn("parallel")
 	if !ok {
 		return
 	}
 	defer d.Close()
-	marks := []int{r.entryCount()}
+	mark := r.entryCount()
+	r.reportParallelTurn("parallel.interleaved", r.entries()[:mark], first, []string{ra, na}, ra, na)
 
-	r.server.PrepareParallelToolCalls(name, turns[1].calls, r.harness.ToolCallPath)
+	rb, nb := plant()
+	second := []server.ParallelCall{{ID: "call_0", Args: other}, {ID: "call_1", Args: args}}
+	r.server.PrepareParallelToolCalls(name, second, r.harness.ToolCallPath)
 	answered := r.server.AnswersServed()
 	if err := d.SendPrompt("Read both files again."); err != nil {
 		r.skip("parallel.reused-ids:prompt", "parallel: second prompt: "+err.Error())
-		turns = turns[:1]
-	} else {
-		d.WaitAnswered(r.server.AnswersServed, answered, 60*time.Second)
-		d.WaitIdle(2 * time.Second)
+		return
 	}
-	marks = append(marks, r.entryCount())
-
+	d.WaitAnswered(r.server.AnswersServed, answered, 60*time.Second)
+	d.WaitIdle(2 * time.Second)
 	entries := r.entries()
-	start := 0
-	for i, t := range turns {
-		end := min(marks[i], len(entries))
-		r.reportParallelTurn(t.id, entries[start:end], t.calls, t.want, tokA, tokB)
-		start = end
-	}
+	r.reportParallelTurn("parallel.reused-ids", entries[min(mark, len(entries)):], second, []string{nb, rb}, rb, nb)
 }
 
 // reportParallelTurn reads one turn's requests: the one answered with the

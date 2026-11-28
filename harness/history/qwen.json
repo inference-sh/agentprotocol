@@ -460,15 +460,30 @@
     {
       "version": "0.28.4",
       "first": "2026-11-23",
-      "last": "2026-11-25",
-      "runs": 3,
+      "last": "2026-11-26",
+      "runs": 4,
       "sources": [
         "agentprotocol Nightly 45109542501",
-        "agentprotocol Nightly 45544174960"
+        "agentprotocol Nightly 45752786005"
       ],
       "suites": [
         "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2",
-        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
+        "8e99a6120cc21b454ba92db3f001a12be86d8e7a"
+      ],
+      "green": true
+    },
+    {
+      "version": "0.28.7",
+      "first": "2026-11-27",
+      "last": "2026-11-28",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 45937686117",
+        "agentprotocol Nightly 46105733940"
+      ],
+      "suites": [
+        "c0096f4a84e65d5f9a7a1252410bb7619466f78a",
+        "f4af7ad063dc451fecf3d576c6e79e40737e55f0"
       ],
       "green": true
     }
@@ -477,343 +492,385 @@
     "[acp, belt hooks] acp/belt-hook.post-tool": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.pre-compact": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.pre-tool": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.prompt": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.session-start": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.stop": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions../QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/model": [
       {
         "from": "0.23.3",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/requests": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] belt-hook-shape": [
       {
         "from": "0.23.3",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] binary": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.OPENAI_BASE_URL": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.install": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.project-copy": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written../QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.answer": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.completed": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.start": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] skills": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/-hook.post-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/-hook.pre-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.post-tool": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.pre-compact": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.pre-tool": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.prompt": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.session-start": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.stop": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions../QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "0.23.3",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/requests": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] binary": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] hooks.install": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written../QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.answer": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.completed": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.start": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] skills": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
@@ -967,119 +1024,140 @@
     "[direct] acp/-hook.post-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/-hook.pre-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook-injection": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.post-tool": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.pre-compact": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.pre-tool": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.prompt": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.session-start": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.stop": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions../QWEN.md": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/model": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/requests": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] acp/streaming": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] binary": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] direct.call": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
@@ -1092,29 +1170,29 @@
       },
       {
         "from": "0.28.3",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "finding:added",
-        "message": "direct: qwen added 82 characters to the conversation: \"\u003csystem-reminder\u003e\\nToday's date is Wednesday, November 25, 2026.\\n\u003c/system-reminder\u003e\""
+        "message": "direct: qwen added 646 characters to the conversation: \"\u003csystem-reminder\u003e\\nToday's date is Saturday, November 28, 2026.\\n\u003c/system-reminder\u003e\\n\u003csystem-reminder\u003e\\nEffective permissions (runtime snapshot; supersedes earlier permission-mode context):\\nThe current runtime approval mode is `yolo`.\\nTool approvals are bypassed where permitted. Explicit deny rules and \""
       }
     ],
     "[direct] direct.restart": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] direct.result": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] direct.system": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:exact",
         "message": "direct: qwen sent the probe's system prompt and nothing else"
       }
@@ -1122,7 +1200,7 @@
     "[direct] direct.tools": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:only",
         "message": "direct: qwen offered the probe's tool alone, as mcp__tools__probe_echo"
       }
@@ -1130,378 +1208,420 @@
     "[direct] env.OPENAI_API_KEY": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] env.OPENAI_BASE_URL": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] hooks.install": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written../QWEN.md": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] session.answer": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] session.completed": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] session.start": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[direct] skills": [
       {
         "from": "0.26.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] belt-hook-shape": [
       {
         "from": "0.23.3",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] binary": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.OPENAI_BASE_URL": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.post-tool": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.pre-compact": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.pre-tool": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.prompt": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.session-start": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.stop": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions../QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/model": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/requests": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.install": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.project-copy": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written../QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] skills": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] turn": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] binary": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/-hook.post-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/-hook.pre-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.post-tool": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.pre-compact": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.pre-tool": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.prompt": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.session-start": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.stop": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions../QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/requests": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] hooks.install": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written../QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] skills": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] turn": [
       {
         "from": "0.23.2",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
@@ -1648,147 +1768,168 @@
     "[inflight-cancel] acp/-hook.post-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/-hook.pre-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.post-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.pre-compact": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.pre-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.prompt": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.session-start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.stop": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/model": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/requests": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/streaming": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] binary": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.OPENAI_API_KEY": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.OPENAI_BASE_URL": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] hooks.install": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.park": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.reraise": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "finding:none",
         "message": "in-flight: qwen does not re-raise the parked approval on resume"
       }
@@ -1796,203 +1937,224 @@
     "[inflight-cancel] inflight.resume": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.resume-twice": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.answer": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.completed": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] skills": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/-hook.post-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/-hook.pre-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.post-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.pre-compact": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.pre-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.prompt": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.session-start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.stop": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/model": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/requests": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/streaming": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] binary": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.OPENAI_API_KEY": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.OPENAI_BASE_URL": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] hooks.install": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.park": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.reraise": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "finding:none",
         "message": "in-flight: qwen does not re-raise the parked approval on resume"
       }
@@ -2000,497 +2162,567 @@
     "[inflight-hold] inflight.resume": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.resume-twice": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.answer": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.completed": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] skills": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] belt-hook-shape": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] binary": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.OPENAI_BASE_URL": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.install": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.project-copy": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.post-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-compact": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.pre-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.prompt": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.session-start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.stop": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/model": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/requests": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] skills": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.completed": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] binary": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.OPENAI_API_KEY": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.OPENAI_BASE_URL": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] hooks.install": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/-hook.post-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.post-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-compact": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.pre-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.prompt": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.session-start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.stop": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/requests": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] skills": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.completed": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] *": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/-hook.post-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/-hook.pre-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook-injection": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.post-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.pre-compact": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.pre-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.prompt": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.session-start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.stop": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/model": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/requests": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] acp/streaming": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] binary": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
@@ -2503,7 +2735,7 @@
       },
       {
         "from": "0.25.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:original",
         "message": "compaction: qwen still sent the original wording after compacting, so nothing was lost"
       }
@@ -2522,21 +2754,21 @@
       },
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] deferred.armed": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] deferred.expanded": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:nothing-new",
         "message": "deferred tools: qwen ran tool_search and declared nothing new — its search returns results to the model rather than expanding the tool list"
       }
@@ -2544,21 +2776,21 @@
     "[probes] env.OPENAI_API_KEY": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] env.OPENAI_BASE_URL": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] hidden.*": [
       {
         "from": "0.24.6",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:acp",
         "message": "hidden: qwen --experimental-acp works (acp: {\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"protocolVersion\":1,\"agentInfo\":{\"name\":\"qwen-code\",\"title\":\"Qwen Code\",\"version\":\"0.2) and --help does not list it (a fixed candidate)"
       }
@@ -2566,7 +2798,7 @@
     "[probes] hidden.*.registry": [
       {
         "from": "0.24.6",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "finding:unused",
         "message": "hidden: qwen --experimental-acp answers acp, and the registry's acp driver runs --acp instead"
       }
@@ -2574,28 +2806,28 @@
     "[probes] hooks.install": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] images.sent": [
       {
         "from": "0.25.1",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.park": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.reraise": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "finding:none",
         "message": "in-flight: qwen does not re-raise the parked approval on resume"
       }
@@ -2603,98 +2835,147 @@
     "[probes] inflight.resume": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.resume-twice": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.other.post-tool": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.post-tool": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.pre-tool": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.reinstall": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.setup": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall.leftovers": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] resume.context": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] resume.load": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] resume.replay": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seed.appended": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seed.hand-built": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.assistant text": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.context": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.history": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.request": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.file-uri": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:as-image",
         "message": "seed shapes (file-uri): qwen sent the image's bytes (codec kept them inline: true)"
       }
@@ -2702,14 +2983,14 @@
     "[probes] seedkinds.first user message": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.image-only-result": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:as-image",
         "message": "seed shapes (image-only-result): qwen sent the call and the image as image data"
       }
@@ -2717,7 +2998,7 @@
     "[probes] seedkinds.in-message-result": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:as-image",
         "message": "seed shapes (in-message-result): qwen sent the result and the image as image data"
       }
@@ -2725,98 +3006,98 @@
     "[probes] seedkinds.reasoning": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.context": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.history": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.request": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.context": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.history": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.request": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's answer": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's user message": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.shown-only": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool call arguments": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool result": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-after-text": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-image": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:as-image",
         "message": "seed kinds: qwen sent the tool's image as image data (result text sent: true)"
       }
@@ -2824,14 +3105,14 @@
     "[probes] seedkinds.trailing-prompt.history": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-prompt.request": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-prompt): qwen loaded the session and sent the last prompt"
       }
@@ -2839,14 +3120,14 @@
     "[probes] seedkinds.trailing-tool result.history": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-tool result.request": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-tool-result): qwen loaded the session and sent the last tool result"
       }
@@ -2854,7 +3135,7 @@
     "[probes] seedkinds.untyped-file-path": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:as-text",
         "message": "seed shapes (untyped-file-path): qwen sent the file's content"
       }
@@ -2862,7 +3143,7 @@
     "[probes] seedkinds.user-attachments.image": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:as-image",
         "message": "seed shapes (user-attachments): qwen sent the attached image as image data"
       }
@@ -2870,7 +3151,7 @@
     "[probes] seedkinds.user-attachments.pdf": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "finding:dropped",
         "message": "seed shapes (user-attachments): qwen did not send the PDF its codec kept (bytes kept: true)"
       }
@@ -2878,49 +3159,70 @@
     "[probes] session.answer": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] session.completed": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] session.start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] skills": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.reinstall": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.remove.neighbour-kept": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.unlisted": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] transcript": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] turn": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] usage.account": [
       {
         "from": "0.25.0",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "finding:not-reported",
         "message": "usage: qwen's driver reported no account"
       }
@@ -2928,7 +3230,7 @@
     "[probes] usage.context": [
       {
         "from": "0.25.0",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:with-window",
         "message": "usage: qwen reported 10 of 128000 tokens in context"
       }
@@ -2936,7 +3238,7 @@
     "[probes] usage.limits": [
       {
         "from": "0.25.0",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "finding:not-reported",
         "message": "usage: qwen pushed no rate limits"
       }
@@ -2944,7 +3246,7 @@
     "[probes] usage.probe.limits": [
       {
         "from": "0.26.0",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass:unsupported",
         "message": "usage: qwen's limits do not apply: qwen exposes no quota read"
       }
@@ -2952,218 +3254,296 @@
     "[probes] usage.probe.no-model-call": [
       {
         "from": "0.26.0",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[probes] usage.turn": [
       {
         "from": "0.25.0",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "finding:not-reported",
         "message": "usage: qwen's driver reported no usage for the turn"
+      }
+    ],
+    "[probes] ~seed kinds: qwen gave the model claude Edit (Edit) as a tool call; its result was sent": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: qwen gave the model claude Read (Read) as a tool call; its result was sent": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: qwen gave the model codex apply_patch (apply_patch) not at all; its result was sent": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "finding",
+        "message": "seed kinds: qwen gave the model codex apply_patch (apply_patch) not at all; its result was sent"
+      }
+    ],
+    "[probes] ~seed kinds: qwen gave the model codex exec_command (exec_command) as a tool call; its result was sent": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: qwen gave the model gemini write_file (write_file) as a tool call; its result was sent": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: qwen gave the model nested arguments (read) as a tool call; its result was sent": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed shapes (parallel-same-id): qwen sent N structured calls (N text mentions) and N of N results": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~usage: qwen outside a session reports authenticated, api_key": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
+        "outcome": "pass"
       }
     ],
     "[resume-kill] acp/-hook.post-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/-hook.pre-tool.stdin": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/cache-prefix": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook-injection": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.post-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.pre-compact": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.pre-tool": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.prompt": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.session-start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.stop": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/isolation": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/model": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/requests": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/skills.listed": [
       {
         "from": "0.28.4",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/streaming": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/tool-names": [
+      {
+        "from": "0.28.7",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] binary": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.OPENAI_API_KEY": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.OPENAI_BASE_URL": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] hooks.install": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written../QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written.~/.qwen/QWEN.md": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.context": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.load": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.replay": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.answer": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.completed": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.start": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[resume-kill] skills": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ],
     "[surface] binary": [
       {
         "from": "0.24.5",
-        "last": "0.28.4",
+        "last": "0.28.7",
         "outcome": "pass"
       }
     ]

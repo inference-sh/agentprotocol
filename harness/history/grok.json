@@ -266,15 +266,15 @@
     {
       "version": "1.0.92",
       "first": "2026-11-21",
-      "last": "2026-11-25",
-      "runs": 5,
+      "last": "2026-11-28",
+      "runs": 8,
       "sources": [
         "agentprotocol Nightly 44864182434",
-        "agentprotocol Nightly 45544174960"
+        "agentprotocol Nightly 46105733940"
       ],
       "suites": [
         "011272d86a30b6b9907932b972aa98810e36cd17",
-        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
+        "f4af7ad063dc451fecf3d576c6e79e40737e55f0"
       ],
       "green": true
     }
@@ -308,6 +308,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, belt hooks] acp/cache-prefix": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[acp, belt hooks] acp/instructions../AGENTS.md": [
       {
         "from": "1.0.24",
@@ -318,6 +325,13 @@
     "[acp, belt hooks] acp/instructions.~/.grok/AGENTS.md": [
       {
         "from": "1.0.24",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/isolation": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -346,6 +360,13 @@
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "1.0.24",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/tool-names": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -483,6 +504,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/cache-prefix": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "1.0.24",
@@ -532,6 +560,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/isolation": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "1.0.24",
@@ -556,6 +591,13 @@
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "1.0.24",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/tool-names": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -868,6 +910,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/cache-prefix": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/hook.post-tool": [
       {
         "from": "1.0.70",
@@ -910,6 +959,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/isolation": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/model": [
       {
         "from": "1.0.70",
@@ -934,6 +990,13 @@
     "[direct] acp/streaming": [
       {
         "from": "1.0.70",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/tool-names": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -1148,6 +1211,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, belt hooks] headless/cache-prefix": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[headless, belt hooks] headless/instructions../AGENTS.md": [
       {
         "from": "1.0.24",
@@ -1158,6 +1228,13 @@
     "[headless, belt hooks] headless/instructions.~/.grok/AGENTS.md": [
       {
         "from": "1.0.24",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/isolation": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -1186,6 +1263,13 @@
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "1.0.24",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/tool-names": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -1302,6 +1386,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/cache-prefix": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "1.0.24",
@@ -1351,6 +1442,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/isolation": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "1.0.24",
@@ -1375,6 +1473,13 @@
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "1.0.24",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/tool-names": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -1694,6 +1799,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, belt hooks] interactive/cache-prefix": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "1.0.41",
@@ -1704,6 +1816,13 @@
     "[interactive, belt hooks] interactive/instructions.~/.grok/AGENTS.md": [
       {
         "from": "1.0.41",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/isolation": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -1732,6 +1851,13 @@
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "1.0.41",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/tool-names": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -1855,6 +1981,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/cache-prefix": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/hook.post-tool": [
       {
         "from": "1.0.41",
@@ -1897,6 +2030,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/isolation": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "1.0.41",
@@ -1925,6 +2065,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/tool-names": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] skills": [
       {
         "from": "1.0.41",
@@ -1946,6 +2093,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] *": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[probes] acp/-hook.post-tool.stdin": [
       {
         "from": "1.0.92",
@@ -1954,6 +2108,13 @@
       }
     ],
     "[probes] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cache-prefix": [
       {
         "from": "1.0.92",
         "last": "1.0.92",
@@ -2002,6 +2163,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] acp/isolation": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[probes] acp/model": [
       {
         "from": "1.0.41",
@@ -2030,6 +2198,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] acp/tool-names": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[probes] binary": [
       {
         "from": "1.0.41",
@@ -2042,7 +2217,7 @@
         "from": "1.0.41",
         "last": "1.0.92",
         "outcome": "pass:summary",
-        "message": "compaction: grok sent the model 7 message(s) but not the original wording, so the resume carries a summary"
+        "message": "compaction: grok sent the model the compaction's summary in place of the original wording"
       }
     ],
     "[probes] compact.run": [
@@ -2154,6 +2329,41 @@
     "[probes] instructions.written.~/.grok/AGENTS.md": [
       {
         "from": "1.0.41",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.other.post-tool": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.reinstall": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.setup": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall.leftovers": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }
@@ -2433,6 +2643,27 @@
         "outcome": "pass"
       }
     ],
+    "[probes] skills.reinstall": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.remove.neighbour-kept": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.unlisted": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[probes] transcript": [
       {
         "from": "1.0.41",
@@ -2505,6 +2736,62 @@
         "message": "usage: grok's driver reported no usage for the turn"
       }
     ],
+    "[probes] ~seed kinds: grok gave the model claude Edit (Edit) as a tool call; its result was sent": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: grok gave the model claude Read (Read) as a tool call; its result was sent": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: grok gave the model codex apply_patch (apply_patch) as a tool call; its result was sent": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: grok gave the model codex exec_command (exec_command) as a tool call; its result was sent": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: grok gave the model gemini write_file (write_file) as a tool call; its result was sent": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: grok gave the model nested arguments (read) as a tool call; its result was sent": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed shapes (parallel-same-id): grok sent N structured calls (N text mentions) and N of N results": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~usage: grok outside a session reports authenticated, subscription": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/-hook.post-tool.stdin": [
       {
         "from": "1.0.92",
@@ -2513,6 +2800,13 @@
       }
     ],
     "[resume-kill] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/cache-prefix": [
       {
         "from": "1.0.92",
         "last": "1.0.92",
@@ -2561,6 +2855,13 @@
         "outcome": "pass"
       }
     ],
+    "[resume-kill] acp/isolation": [
+      {
+        "from": "1.0.92",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/model": [
       {
         "from": "1.0.41",
@@ -2585,6 +2886,13 @@
     "[resume-kill] acp/streaming": [
       {
         "from": "1.0.41",
+        "last": "1.0.92",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/tool-names": [
+      {
+        "from": "1.0.92",
         "last": "1.0.92",
         "outcome": "pass"
       }

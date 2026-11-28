@@ -282,15 +282,15 @@
     {
       "version": "2026.11.22",
       "first": "2026-11-22",
-      "last": "2026-11-25",
-      "runs": 4,
+      "last": "2026-11-28",
+      "runs": 7,
       "sources": [
         "agentprotocol Nightly 44983348684",
-        "agentprotocol Nightly 45544174960"
+        "agentprotocol Nightly 46105733940"
       ],
       "suites": [
         "011272d86a30b6b9907932b972aa98810e36cd17",
-        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
+        "f4af7ad063dc451fecf3d576c6e79e40737e55f0"
       ],
       "green": true
     }
@@ -342,6 +342,13 @@
     "[acp, belt hooks] acp/instructions../.cursor/rules/belt.mdc": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/isolation": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -522,6 +529,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/isolation": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "2026.09.23",
@@ -680,6 +694,13 @@
     "[direct] acp/instructions../.cursor/rules/belt.mdc": [
       {
         "from": "2026.10.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/isolation": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -870,6 +891,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, belt hooks] headless/isolation": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[headless, belt hooks] headless/model": [
       {
         "from": "2026.09.08",
@@ -1038,6 +1066,13 @@
     "[headless, mock hooks] headless/instructions../.cursor/rules/belt.mdc": [
       {
         "from": "2026.09.08",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/isolation": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -1267,6 +1302,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/isolation": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/model": [
       {
         "from": "2026.09.23",
@@ -1454,6 +1496,13 @@
     "[inflight-hold] acp/instructions../.cursor/rules/belt.mdc": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/isolation": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -1682,6 +1731,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, belt hooks] interactive/isolation": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, belt hooks] interactive/model": [
       {
         "from": "2026.09.08",
@@ -1838,6 +1894,13 @@
     "[interactive, mock hooks] interactive/instructions../.cursor/rules/belt.mdc": [
       {
         "from": "2026.09.08",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/isolation": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -2014,6 +2077,13 @@
       {
         "from": "2026.09.02",
         "last": "2026.09.02",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] *": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
         "outcome": "pass"
       }
     ],
@@ -2396,6 +2466,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] acp/isolation": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[probes] acp/model": [
       {
         "from": "2026.09.23",
@@ -2514,6 +2591,55 @@
     "[probes] instructions.written../.cursor/rules/belt.mdc": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.other.post-tool": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.post-tool": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.pre-tool": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.reinstall": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.setup": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall.leftovers": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -2796,6 +2922,27 @@
         "outcome": "pass"
       }
     ],
+    "[probes] skills.reinstall": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.remove.neighbour-kept": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.unlisted": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
     "[probes] transcript": [
       {
         "from": "2026.09.23",
@@ -2855,6 +3002,62 @@
         "last": "2026.11.22",
         "outcome": "finding:not-reported",
         "message": "usage: cursor's driver reported no usage for the turn"
+      }
+    ],
+    "[probes] ~seed kinds: cursor gave the model claude Edit (Edit) as a tool call; its result was sent": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: cursor gave the model claude Read (Read) as a tool call; its result was sent": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: cursor gave the model codex apply_patch (apply_patch) as a tool call; its result was sent": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: cursor gave the model codex exec_command (exec_command) as a tool call; its result was sent": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: cursor gave the model gemini write_file (write_file) as a tool call; its result was sent": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: cursor gave the model nested arguments (read) as a tool call; its result was sent": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed shapes (parallel-same-id): cursor sent N structured calls (N text mentions) and N of N results": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~usage: cursor outside a session reports authenticated, api_key": [
+      {
+        "from": "2026.11.22",
+        "last": "2026.11.22",
+        "outcome": "pass"
       }
     ],
     "[resume-kill] acp/-hook.post-tool.stdin": [
@@ -2924,6 +3127,13 @@
     "[resume-kill] acp/instructions../.cursor/rules/belt.mdc": [
       {
         "from": "2026.09.23",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/isolation": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }
@@ -3442,6 +3652,13 @@
     "[tools-headless] headless/instructions../.cursor/rules/belt.mdc": [
       {
         "from": "2026.09.26",
+        "last": "2026.11.22",
+        "outcome": "pass"
+      }
+    ],
+    "[tools-headless] headless/isolation": [
+      {
+        "from": "2026.11.22",
         "last": "2026.11.22",
         "outcome": "pass"
       }

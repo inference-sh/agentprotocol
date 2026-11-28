@@ -1,9 +1,5 @@
 {
   "ingested": {
-    "agentprotocol Nightly 42956725835": "2026-11-11",
-    "agentprotocol Nightly 43152242605": "2026-11-12",
-    "agentprotocol Nightly 43362989456": "2026-11-13",
-    "agentprotocol Nightly 43454788852": "2026-11-13",
     "agentprotocol Nightly 43554710043": "2026-11-14",
     "agentprotocol Nightly 43675080572": "2026-11-15",
     "agentprotocol Nightly 43801787154": "2026-11-16",
@@ -16,7 +12,10 @@
     "agentprotocol Nightly 44983348684": "2026-11-22",
     "agentprotocol Nightly 45109542501": "2026-11-23",
     "agentprotocol Nightly 45323736354": "2026-11-24",
-    "agentprotocol Nightly 45544174960": "2026-11-25"
+    "agentprotocol Nightly 45544174960": "2026-11-25",
+    "agentprotocol Nightly 45752786005": "2026-11-26",
+    "agentprotocol Nightly 45937686117": "2026-11-27",
+    "agentprotocol Nightly 46105733940": "2026-11-28"
   },
   "versions": {
     "7.8.27": {
@@ -866,297 +865,1262 @@
     },
     "7.8.32": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] acp/instructions../AGENTS.md": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] acp/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] acp/model": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] acp/requests": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] acp/skills.listed": {
-        "pass": 3
+        "pass": 5
       },
       "[acp, belt hooks] acp/streaming": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] belt-hook-shape": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] binary": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] hooks.install": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] hooks.project-copy": {
-        "pass": 3
+        "pass": 5
       },
       "[acp, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] session.answer": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] session.completed": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] session.start": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, belt hooks] skills": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 5
       },
       "[acp, mock hooks] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 5
       },
       "[acp, mock hooks] acp/hook-injection": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/hook.pre-tool": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/hook.stop": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/instructions../AGENTS.md": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/model": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/requests": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] acp/skills.listed": {
-        "pass": 3
+        "pass": 5
       },
       "[acp, mock hooks] acp/streaming": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] binary": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] hooks.install": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] session.answer": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] session.completed": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] session.start": {
-        "pass": 5
+        "pass": 7
       },
       "[acp, mock hooks] skills": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 5
       },
       "[direct] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 5
       },
       "[direct] acp/hook-injection": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/hook.pre-tool": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/hook.prompt": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/hook.stop": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/instructions../AGENTS.md": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/model": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/requests": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] acp/skills.listed": {
-        "pass": 3
+        "pass": 5
       },
       "[direct] acp/streaming": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] binary": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] direct.call": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] direct.messages": {
-        "pass:exact": 5
+        "pass:exact": 7
       },
       "[direct] direct.restart": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] direct.result": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] direct.system": {
-        "pass:exact": 5
+        "pass:exact": 7
       },
       "[direct] direct.tools": {
-        "pass:only": 5
+        "pass:only": 7
       },
       "[direct] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] hooks.install": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] session.answer": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] session.completed": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] session.start": {
-        "pass": 5
+        "pass": 7
       },
       "[direct] skills": {
-        "pass": 5
+        "pass": 7
       },
       "[headless, belt hooks] belt-hook-shape": {
-        "pass": 5
+        "pass": 7
       },
       "[headless, belt hooks] binary": {
-        "pass": 5
+        "pass": 7
       },
       "[headless, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 7
       },
       "[headless, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 7
       },
       "[headless, belt hooks] headless/belt-hook.post-tool": {
-        "pass": 3
+        "pass": 5
       },
       "[headless, belt hooks] headless/belt-hook.pre-tool": {
-        "pass": 3
+        "pass": 5
       },
       "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 5
+        "pass": 7
       },
       "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 5
+        "pass": 7
       },
       "[headless, belt hooks] headless/instructions../AGENTS.md": {
-        "pass": 3
+        "pass": 5
       },
       "[headless, belt hooks] headless/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 3
+        "pass": 5
       },
       "[headless, belt hooks] headless/model": {
-        "pass": 3
+        "pass": 5
       },
       "[headless, belt hooks] headless/requests": {
         "fail": 2,
+        "pass": 5
+      },
+      "[headless, belt hooks] headless/skills.listed": {
         "pass": 3
+      },
+      "[headless, belt hooks] headless/streaming": {
+        "pass": 5
+      },
+      "[headless, belt hooks] hooks.install": {
+        "pass": 7
+      },
+      "[headless, belt hooks] hooks.project-copy": {
+        "pass": 5
+      },
+      "[headless, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 7
+      },
+      "[headless, belt hooks] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[headless, belt hooks] skills": {
+        "pass": 7
+      },
+      "[headless, belt hooks] turn": {
+        "pass": 5,
+        "pass:nonzero-exit": 2
+      },
+      "[headless, mock hooks] binary": {
+        "pass": 7
+      },
+      "[headless, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 7
+      },
+      "[headless, mock hooks] env.OPENAI_BASE_URL": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/-hook.pre-tool.stdin": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/hook-injection": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook.post-tool": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook.pre-tool": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook.prompt": {
+        "fail": 2,
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/hook.stop": {
+        "pass": 7
+      },
+      "[headless, mock hooks] headless/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/model": {
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/requests": {
+        "fail": 2,
+        "pass": 5
+      },
+      "[headless, mock hooks] headless/skills.listed": {
+        "pass": 3
+      },
+      "[headless, mock hooks] headless/streaming": {
+        "pass": 5
+      },
+      "[headless, mock hooks] hooks.install": {
+        "pass": 7
+      },
+      "[headless, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 7
+      },
+      "[headless, mock hooks] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[headless, mock hooks] skills": {
+        "pass": 7
+      },
+      "[headless, mock hooks] turn": {
+        "pass": 5,
+        "pass:nonzero-exit": 2
+      },
+      "[inflight-cancel] acp/-hook.post-tool.stdin": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/-hook.pre-tool.stdin": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/hook-injection": {
+        "pass": 7
+      },
+      "[inflight-cancel] acp/hook.post-tool": {
+        "pass": 7
+      },
+      "[inflight-cancel] acp/hook.pre-tool": {
+        "pass": 7
+      },
+      "[inflight-cancel] acp/hook.prompt": {
+        "pass": 7
+      },
+      "[inflight-cancel] acp/hook.stop": {
+        "pass": 7
+      },
+      "[inflight-cancel] acp/instructions../AGENTS.md": {
+        "pass": 7
+      },
+      "[inflight-cancel] acp/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[inflight-cancel] acp/model": {
+        "pass": 7
+      },
+      "[inflight-cancel] acp/requests": {
+        "pass": 7
+      },
+      "[inflight-cancel] acp/skills.listed": {
+        "pass": 5
+      },
+      "[inflight-cancel] acp/streaming": {
+        "pass": 7
+      },
+      "[inflight-cancel] binary": {
+        "pass": 7
+      },
+      "[inflight-cancel] env.OPENAI_API_KEY": {
+        "pass": 7
+      },
+      "[inflight-cancel] env.OPENAI_BASE_URL": {
+        "pass": 7
+      },
+      "[inflight-cancel] hooks.install": {
+        "pass": 7
+      },
+      "[inflight-cancel] inflight.park": {
+        "pass": 7
+      },
+      "[inflight-cancel] inflight.reraise": {
+        "finding:none": 7
+      },
+      "[inflight-cancel] inflight.resume": {
+        "pass": 7
+      },
+      "[inflight-cancel] inflight.resume-twice": {
+        "pass": 7
+      },
+      "[inflight-cancel] instructions.written../AGENTS.md": {
+        "pass": 7
+      },
+      "[inflight-cancel] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[inflight-cancel] session.answer": {
+        "pass": 7
+      },
+      "[inflight-cancel] session.completed": {
+        "pass": 7
+      },
+      "[inflight-cancel] session.start": {
+        "pass": 7
+      },
+      "[inflight-cancel] skills": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/-hook.post-tool.stdin": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/-hook.pre-tool.stdin": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/hook-injection": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/hook.post-tool": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/hook.pre-tool": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/hook.prompt": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/hook.stop": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/instructions../AGENTS.md": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/model": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/requests": {
+        "pass": 7
+      },
+      "[inflight-hold] acp/skills.listed": {
+        "pass": 5
+      },
+      "[inflight-hold] acp/streaming": {
+        "pass": 7
+      },
+      "[inflight-hold] binary": {
+        "pass": 7
+      },
+      "[inflight-hold] env.OPENAI_API_KEY": {
+        "pass": 7
+      },
+      "[inflight-hold] env.OPENAI_BASE_URL": {
+        "pass": 7
+      },
+      "[inflight-hold] hooks.install": {
+        "pass": 7
+      },
+      "[inflight-hold] inflight.park": {
+        "pass": 7
+      },
+      "[inflight-hold] inflight.reraise": {
+        "finding:none": 7
+      },
+      "[inflight-hold] inflight.resume": {
+        "pass": 7
+      },
+      "[inflight-hold] inflight.resume-twice": {
+        "pass": 7
+      },
+      "[inflight-hold] instructions.written../AGENTS.md": {
+        "pass": 7
+      },
+      "[inflight-hold] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[inflight-hold] session.answer": {
+        "pass": 7
+      },
+      "[inflight-hold] session.completed": {
+        "pass": 7
+      },
+      "[inflight-hold] session.start": {
+        "pass": 7
+      },
+      "[inflight-hold] skills": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] belt-hook-shape": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] binary": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] env.OPENAI_BASE_URL": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] hooks.install": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] hooks.project-copy": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/belt-hook.post-tool": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/belt-hook.prompt": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/belt-hook.stop": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/model": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/requests": {
+        "fail": 2,
+        "pass": 5
+      },
+      "[interactive, belt hooks] interactive/skills.listed": {
+        "pass": 3
+      },
+      "[interactive, belt hooks] interactive/streaming": {
+        "pass": 5
+      },
+      "[interactive, belt hooks] skills": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 7
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] env.OPENAI_BASE_URL": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/-hook.post-tool.stdin": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/hook-injection": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.post-tool": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.pre-tool": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.prompt": {
+        "fail": 2,
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/hook.stop": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/model": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/requests": {
+        "fail": 2,
+        "pass": 5
+      },
+      "[interactive, mock hooks] interactive/skills.listed": {
+        "pass": 3
+      },
+      "[interactive, mock hooks] interactive/streaming": {
+        "pass": 5
+      },
+      "[interactive, mock hooks] skills": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] tui.completed": {
+        "pass": 7
+      },
+      "[interactive, mock hooks] tui.start": {
+        "pass": 7
+      },
+      "[probes] acp/-hook.post-tool.stdin": {
+        "pass": 5
+      },
+      "[probes] acp/-hook.pre-tool.stdin": {
+        "pass": 5
+      },
+      "[probes] acp/hook-injection": {
+        "pass": 7
+      },
+      "[probes] acp/hook.post-tool": {
+        "pass": 7
+      },
+      "[probes] acp/hook.pre-tool": {
+        "pass": 7
+      },
+      "[probes] acp/hook.prompt": {
+        "pass": 7
+      },
+      "[probes] acp/hook.stop": {
+        "pass": 7
+      },
+      "[probes] acp/instructions../AGENTS.md": {
+        "pass": 7
+      },
+      "[probes] acp/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[probes] acp/model": {
+        "pass": 7
+      },
+      "[probes] acp/requests": {
+        "pass": 7
+      },
+      "[probes] acp/skills.listed": {
+        "pass": 5
+      },
+      "[probes] acp/streaming": {
+        "pass": 7
+      },
+      "[probes] binary": {
+        "pass": 7
+      },
+      "[probes] deferred.armed": {
+        "pass:no-search-tool": 7
+      },
+      "[probes] env.OPENAI_API_KEY": {
+        "pass": 7
+      },
+      "[probes] env.OPENAI_BASE_URL": {
+        "pass": 7
+      },
+      "[probes] hooks.install": {
+        "pass": 7
+      },
+      "[probes] images.declined": {
+        "pass": 7
+      },
+      "[probes] images.named": {
+        "pass": 7
+      },
+      "[probes] inflight.park": {
+        "pass": 7
+      },
+      "[probes] inflight.reraise": {
+        "finding:none": 7
+      },
+      "[probes] inflight.resume": {
+        "pass": 7
+      },
+      "[probes] inflight.resume-twice": {
+        "pass": 7
+      },
+      "[probes] instructions.written../AGENTS.md": {
+        "pass": 7
+      },
+      "[probes] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[probes] resume.context": {
+        "pass": 7
+      },
+      "[probes] resume.load": {
+        "pass": 7
+      },
+      "[probes] resume.replay": {
+        "pass": 7
+      },
+      "[probes] seed.appended": {
+        "pass": 7
+      },
+      "[probes] seed.hand-built": {
+        "pass": 7
+      },
+      "[probes] seedkinds.assistant text": {
+        "pass": 7
+      },
+      "[probes] seedkinds.compaction.context": {
+        "pass": 7
+      },
+      "[probes] seedkinds.compaction.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.compaction.request": {
+        "pass": 7
+      },
+      "[probes] seedkinds.file-uri": {
+        "finding:dropped": 7
+      },
+      "[probes] seedkinds.first user message": {
+        "pass": 7
+      },
+      "[probes] seedkinds.image-only-result": {
+        "pass:as-image": 7
+      },
+      "[probes] seedkinds.in-message-result": {
+        "pass:as-image": 7
+      },
+      "[probes] seedkinds.reasoning": {
+        "finding:not-kept": 7
+      },
+      "[probes] seedkinds.retired-answer-as-summary.context": {
+        "pass": 7
+      },
+      "[probes] seedkinds.retired-answer-as-summary.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.retired-answer-as-summary.request": {
+        "pass": 7
+      },
+      "[probes] seedkinds.retired-tool.context": {
+        "pass": 7
+      },
+      "[probes] seedkinds.retired-tool.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.retired-tool.request": {
+        "pass": 7
+      },
+      "[probes] seedkinds.second turn's answer": {
+        "pass": 7
+      },
+      "[probes] seedkinds.second turn's user message": {
+        "pass": 7
+      },
+      "[probes] seedkinds.shown-only": {
+        "pass": 7
+      },
+      "[probes] seedkinds.tool call arguments": {
+        "pass": 7
+      },
+      "[probes] seedkinds.tool result": {
+        "pass": 7
+      },
+      "[probes] seedkinds.tool-after-text": {
+        "pass": 7
+      },
+      "[probes] seedkinds.tool-image": {
+        "finding:not-given": 7
+      },
+      "[probes] seedkinds.trailing-prompt.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.trailing-prompt.request": {
+        "pass:sent": 7
+      },
+      "[probes] seedkinds.trailing-tool result.history": {
+        "pass": 7
+      },
+      "[probes] seedkinds.trailing-tool result.request": {
+        "pass:sent": 7
+      },
+      "[probes] seedkinds.untyped-file-path": {
+        "pass:as-text": 7
+      },
+      "[probes] seedkinds.user-attachments.image": {
+        "finding:dropped": 7
+      },
+      "[probes] seedkinds.user-attachments.pdf": {
+        "pass:as-reference": 7
+      },
+      "[probes] session.answer": {
+        "pass": 7
+      },
+      "[probes] session.completed": {
+        "pass": 7
+      },
+      "[probes] session.start": {
+        "pass": 7
+      },
+      "[probes] skills": {
+        "pass": 7
+      },
+      "[probes] transcript": {
+        "pass": 7
+      },
+      "[probes] turn": {
+        "pass": 56
+      },
+      "[probes] usage.account": {
+        "finding:not-reported": 7
+      },
+      "[probes] usage.context": {
+        "finding:not-reported": 7
+      },
+      "[probes] usage.limits": {
+        "finding:not-reported": 7
+      },
+      "[probes] usage.probe.limits": {
+        "pass:unsupported": 7
+      },
+      "[probes] usage.probe.no-model-call": {
+        "pass": 7
+      },
+      "[probes] usage.turn": {
+        "finding:not-reported": 7
+      },
+      "[resume-kill] acp/-hook.post-tool.stdin": {
+        "pass": 5
+      },
+      "[resume-kill] acp/-hook.pre-tool.stdin": {
+        "pass": 5
+      },
+      "[resume-kill] acp/hook-injection": {
+        "pass": 7
+      },
+      "[resume-kill] acp/hook.post-tool": {
+        "pass": 7
+      },
+      "[resume-kill] acp/hook.pre-tool": {
+        "pass": 7
+      },
+      "[resume-kill] acp/hook.prompt": {
+        "pass": 7
+      },
+      "[resume-kill] acp/hook.stop": {
+        "pass": 7
+      },
+      "[resume-kill] acp/instructions../AGENTS.md": {
+        "pass": 7
+      },
+      "[resume-kill] acp/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[resume-kill] acp/model": {
+        "pass": 7
+      },
+      "[resume-kill] acp/requests": {
+        "pass": 7
+      },
+      "[resume-kill] acp/skills.listed": {
+        "pass": 5
+      },
+      "[resume-kill] acp/streaming": {
+        "pass": 7
+      },
+      "[resume-kill] binary": {
+        "pass": 7
+      },
+      "[resume-kill] env.OPENAI_API_KEY": {
+        "pass": 7
+      },
+      "[resume-kill] env.OPENAI_BASE_URL": {
+        "pass": 7
+      },
+      "[resume-kill] hooks.install": {
+        "pass": 7
+      },
+      "[resume-kill] instructions.written../AGENTS.md": {
+        "pass": 7
+      },
+      "[resume-kill] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 7
+      },
+      "[resume-kill] resume.context": {
+        "pass": 7
+      },
+      "[resume-kill] resume.load": {
+        "pass": 7
+      },
+      "[resume-kill] resume.replay": {
+        "pass": 7
+      },
+      "[resume-kill] session.answer": {
+        "pass": 7
+      },
+      "[resume-kill] session.completed": {
+        "pass": 7
+      },
+      "[resume-kill] session.start": {
+        "pass": 7
+      },
+      "[resume-kill] skills": {
+        "pass": 7
+      },
+      "[surface] binary": {
+        "pass": 7
+      }
+    },
+    "7.8.40": {
+      "[acp, belt hooks] acp/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/belt-hook.stop": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/cache-prefix": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/skills.listed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, belt hooks] acp/tool-names": {
+        "pass": 1
+      },
+      "[acp, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[acp, belt hooks] binary": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[acp, belt hooks] env.OPENAI_BASE_URL": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, belt hooks] hooks.project-copy": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, belt hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, belt hooks] skills": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/-hook.post-tool.stdin": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/-hook.pre-tool.stdin": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/cache-prefix": {
+        "finding": 1
+      },
+      "[acp, mock hooks] acp/hook-injection": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/hook.stop": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/model": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/requests": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/skills.listed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/streaming": {
+        "pass": 1
+      },
+      "[acp, mock hooks] acp/tool-names": {
+        "pass": 1
+      },
+      "[acp, mock hooks] binary": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[acp, mock hooks] env.OPENAI_BASE_URL": {
+        "pass": 1
+      },
+      "[acp, mock hooks] hooks.install": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.answer": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.completed": {
+        "pass": 1
+      },
+      "[acp, mock hooks] session.start": {
+        "pass": 1
+      },
+      "[acp, mock hooks] skills": {
+        "pass": 1
+      },
+      "[direct] acp/-hook.post-tool.stdin": {
+        "pass": 1
+      },
+      "[direct] acp/-hook.pre-tool.stdin": {
+        "pass": 1
+      },
+      "[direct] acp/cache-prefix": {
+        "finding": 1
+      },
+      "[direct] acp/hook-injection": {
+        "pass": 1
+      },
+      "[direct] acp/hook.post-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.pre-tool": {
+        "pass": 1
+      },
+      "[direct] acp/hook.prompt": {
+        "pass": 1
+      },
+      "[direct] acp/hook.stop": {
+        "pass": 1
+      },
+      "[direct] acp/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] acp/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 1
+      },
+      "[direct] acp/model": {
+        "pass": 1
+      },
+      "[direct] acp/requests": {
+        "pass": 1
+      },
+      "[direct] acp/skills.listed": {
+        "pass": 1
+      },
+      "[direct] acp/streaming": {
+        "pass": 1
+      },
+      "[direct] acp/tool-names": {
+        "pass": 1
+      },
+      "[direct] binary": {
+        "pass": 1
+      },
+      "[direct] direct.call": {
+        "pass": 1
+      },
+      "[direct] direct.messages": {
+        "pass:exact": 1
+      },
+      "[direct] direct.restart": {
+        "pass": 1
+      },
+      "[direct] direct.result": {
+        "pass": 1
+      },
+      "[direct] direct.system": {
+        "pass:exact": 1
+      },
+      "[direct] direct.tools": {
+        "pass:only": 1
+      },
+      "[direct] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[direct] env.OPENAI_BASE_URL": {
+        "pass": 1
+      },
+      "[direct] hooks.install": {
+        "pass": 1
+      },
+      "[direct] instructions.written../AGENTS.md": {
+        "pass": 1
+      },
+      "[direct] instructions.written.~/.kilocode/rules/belt.md": {
+        "pass": 1
+      },
+      "[direct] session.answer": {
+        "pass": 1
+      },
+      "[direct] session.completed": {
+        "pass": 1
+      },
+      "[direct] session.start": {
+        "pass": 1
+      },
+      "[direct] skills": {
+        "pass": 1
+      },
+      "[headless, belt hooks] belt-hook-shape": {
+        "pass": 1
+      },
+      "[headless, belt hooks] binary": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.OPENAI_API_KEY": {
+        "pass": 1
+      },
+      "[headless, belt hooks] env.OPENAI_BASE_URL": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.post-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.pre-tool": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.prompt": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/belt-hook.stop": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/cache-prefix": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions../AGENTS.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/instructions.~/.kilocode/rules/belt.md": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/model": {
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/requests": {
+        "pass": 1
       },
       "[headless, belt hooks] headless/skills.listed": {
         "pass": 1
       },
       "[headless, belt hooks] headless/streaming": {
-        "pass": 3
+        "pass": 1
+      },
+      "[headless, belt hooks] headless/tool-names": {
+        "pass": 1
       },
       "[headless, belt hooks] hooks.install": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, belt hooks] hooks.project-copy": {
-        "pass": 3
+        "pass": 1
       },
       "[headless, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, belt hooks] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, belt hooks] skills": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, belt hooks] turn": {
-        "pass": 3,
-        "pass:nonzero-exit": 2
+        "pass": 1
       },
       "[headless, mock hooks] binary": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, mock hooks] headless/-hook.post-tool.stdin": {
         "pass": 1
@@ -1164,300 +2128,320 @@
       "[headless, mock hooks] headless/-hook.pre-tool.stdin": {
         "pass": 1
       },
+      "[headless, mock hooks] headless/cache-prefix": {
+        "finding": 1
+      },
       "[headless, mock hooks] headless/hook-injection": {
-        "pass": 3
+        "pass": 1
       },
       "[headless, mock hooks] headless/hook.post-tool": {
-        "pass": 3
+        "pass": 1
       },
       "[headless, mock hooks] headless/hook.pre-tool": {
-        "pass": 3
+        "pass": 1
       },
       "[headless, mock hooks] headless/hook.prompt": {
-        "fail": 2,
-        "pass": 3
+        "pass": 1
       },
       "[headless, mock hooks] headless/hook.stop": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, mock hooks] headless/instructions../AGENTS.md": {
-        "pass": 3
+        "pass": 1
       },
       "[headless, mock hooks] headless/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 3
+        "pass": 1
       },
       "[headless, mock hooks] headless/model": {
-        "pass": 3
+        "pass": 1
       },
       "[headless, mock hooks] headless/requests": {
-        "fail": 2,
-        "pass": 3
+        "pass": 1
       },
       "[headless, mock hooks] headless/skills.listed": {
         "pass": 1
       },
       "[headless, mock hooks] headless/streaming": {
-        "pass": 3
+        "pass": 1
+      },
+      "[headless, mock hooks] headless/tool-names": {
+        "pass": 1
       },
       "[headless, mock hooks] hooks.install": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, mock hooks] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, mock hooks] skills": {
-        "pass": 5
+        "pass": 1
       },
       "[headless, mock hooks] turn": {
-        "pass": 3,
-        "pass:nonzero-exit": 2
+        "pass": 1
       },
       "[inflight-cancel] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 1
       },
       "[inflight-cancel] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 1
+      },
+      "[inflight-cancel] acp/cache-prefix": {
+        "finding": 1
       },
       "[inflight-cancel] acp/hook-injection": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] acp/hook.pre-tool": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] acp/hook.prompt": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] acp/hook.stop": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] acp/instructions../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] acp/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] acp/model": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] acp/requests": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] acp/skills.listed": {
-        "pass": 3
+        "pass": 1
       },
       "[inflight-cancel] acp/streaming": {
-        "pass": 5
+        "pass": 1
+      },
+      "[inflight-cancel] acp/tool-names": {
+        "pass": 1
       },
       "[inflight-cancel] binary": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] hooks.install": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] inflight.park": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] inflight.reraise": {
-        "finding:none": 5
+        "finding:none": 1
       },
       "[inflight-cancel] inflight.resume": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] inflight.resume-twice": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] session.answer": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] session.completed": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] session.start": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-cancel] skills": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 1
       },
       "[inflight-hold] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 1
+      },
+      "[inflight-hold] acp/cache-prefix": {
+        "finding": 1
       },
       "[inflight-hold] acp/hook-injection": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/hook.pre-tool": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/hook.prompt": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/hook.stop": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/instructions../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/model": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/requests": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] acp/skills.listed": {
-        "pass": 3
+        "pass": 1
       },
       "[inflight-hold] acp/streaming": {
-        "pass": 5
+        "pass": 1
+      },
+      "[inflight-hold] acp/tool-names": {
+        "pass": 1
       },
       "[inflight-hold] binary": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] hooks.install": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] inflight.park": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] inflight.reraise": {
-        "finding:none": 5
+        "finding:none": 1
       },
       "[inflight-hold] inflight.resume": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] inflight.resume-twice": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] session.answer": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] session.completed": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] session.start": {
-        "pass": 5
+        "pass": 1
       },
       "[inflight-hold] skills": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] belt-hook-shape": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] binary": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] hooks.install": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] hooks.project-copy": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/belt-hook.post-tool": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 5
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/cache-prefix": {
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/model": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/requests": {
-        "fail": 2,
-        "pass": 3
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/skills.listed": {
         "pass": 1
       },
       "[interactive, belt hooks] interactive/streaming": {
-        "pass": 3
+        "pass": 1
+      },
+      "[interactive, belt hooks] interactive/tool-names": {
+        "pass": 1
       },
       "[interactive, belt hooks] skills": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] tui.completed": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, belt hooks] tui.start": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] binary": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] hooks.install": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/-hook.post-tool.stdin": {
         "pass": 1
@@ -1465,346 +2449,416 @@
       "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": {
         "pass": 1
       },
+      "[interactive, mock hooks] interactive/cache-prefix": {
+        "finding": 1
+      },
       "[interactive, mock hooks] interactive/hook-injection": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/hook.post-tool": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/hook.pre-tool": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/hook.prompt": {
-        "fail": 2,
-        "pass": 3
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/model": {
-        "pass": 3
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/requests": {
-        "fail": 2,
-        "pass": 3
+        "pass": 1
       },
       "[interactive, mock hooks] interactive/skills.listed": {
         "pass": 1
       },
       "[interactive, mock hooks] interactive/streaming": {
-        "pass": 3
+        "pass": 1
+      },
+      "[interactive, mock hooks] interactive/tool-names": {
+        "pass": 1
       },
       "[interactive, mock hooks] skills": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] tui.completed": {
-        "pass": 5
+        "pass": 1
       },
       "[interactive, mock hooks] tui.start": {
-        "pass": 5
+        "pass": 1
+      },
+      "[probes] *": {
+        "pass": 9
       },
       "[probes] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 1
       },
       "[probes] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 1
+      },
+      "[probes] acp/cache-prefix": {
+        "finding": 1
       },
       "[probes] acp/hook-injection": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] acp/hook.pre-tool": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] acp/hook.prompt": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] acp/hook.stop": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] acp/instructions../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] acp/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] acp/model": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] acp/requests": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] acp/skills.listed": {
-        "pass": 3
+        "pass": 1
       },
       "[probes] acp/streaming": {
-        "pass": 5
+        "pass": 1
+      },
+      "[probes] acp/tool-names": {
+        "pass": 1
       },
       "[probes] binary": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] deferred.armed": {
-        "pass:no-search-tool": 5
+        "pass:no-search-tool": 1
       },
       "[probes] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] hooks.install": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] images.declined": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] images.named": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] inflight.park": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] inflight.reraise": {
-        "finding:none": 5
+        "finding:none": 1
       },
       "[probes] inflight.resume": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] inflight.resume-twice": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
+      },
+      "[probes] matchers.other.post-tool": {
+        "pass": 1
+      },
+      "[probes] matchers.shell.post-tool": {
+        "pass": 1
+      },
+      "[probes] matchers.shell.pre-tool": {
+        "pass": 1
+      },
+      "[probes] plugin.reinstall": {
+        "pass": 1
+      },
+      "[probes] plugin.setup": {
+        "pass": 1
+      },
+      "[probes] plugin.uninstall": {
+        "pass": 1
+      },
+      "[probes] plugin.uninstall.leftovers": {
+        "pass": 1
       },
       "[probes] resume.context": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] resume.load": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] resume.replay": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seed.appended": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seed.hand-built": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.assistant text": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.compaction.context": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.compaction.history": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.compaction.request": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.file-uri": {
-        "finding:dropped": 5
+        "finding:dropped": 1
       },
       "[probes] seedkinds.first user message": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 5
+        "pass:as-image": 1
       },
       "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 5
+        "pass:as-image": 1
       },
       "[probes] seedkinds.reasoning": {
-        "finding:not-kept": 5
+        "finding:not-kept": 1
       },
       "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.retired-tool.context": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.retired-tool.history": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.retired-tool.request": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.second turn's answer": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.second turn's user message": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.shown-only": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.tool call arguments": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.tool result": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.tool-after-text": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.tool-image": {
-        "finding:not-given": 5
+        "finding:not-given": 1
       },
       "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.trailing-prompt.request": {
-        "pass:sent": 5
+        "pass:sent": 1
       },
       "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] seedkinds.trailing-tool result.request": {
-        "pass:sent": 5
+        "pass:sent": 1
       },
       "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 5
+        "pass:as-text": 1
       },
       "[probes] seedkinds.user-attachments.image": {
-        "finding:dropped": 5
+        "finding:dropped": 1
       },
       "[probes] seedkinds.user-attachments.pdf": {
-        "pass:as-reference": 5
+        "pass:as-reference": 1
       },
       "[probes] session.answer": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] session.completed": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] session.start": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] skills": {
-        "pass": 5
+        "pass": 1
+      },
+      "[probes] skills.reinstall": {
+        "pass": 1
+      },
+      "[probes] skills.remove.neighbour-kept": {
+        "pass": 1
+      },
+      "[probes] skills.unlisted": {
+        "pass": 1
       },
       "[probes] transcript": {
-        "pass": 5
-      },
-      "[probes] turn": {
-        "pass": 40
+        "pass": 1
       },
       "[probes] usage.account": {
-        "finding:not-reported": 5
+        "finding:not-reported": 1
       },
       "[probes] usage.context": {
-        "finding:not-reported": 5
+        "finding:not-reported": 1
       },
       "[probes] usage.limits": {
-        "finding:not-reported": 5
+        "finding:not-reported": 1
       },
       "[probes] usage.probe.limits": {
-        "pass:unsupported": 5
+        "pass:unsupported": 1
       },
       "[probes] usage.probe.no-model-call": {
-        "pass": 5
+        "pass": 1
       },
       "[probes] usage.turn": {
-        "finding:not-reported": 5
+        "finding:not-reported": 1
+      },
+      "[probes] ~seed kinds: kilo gave the model claude Edit (Edit) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: kilo gave the model claude Read (Read) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: kilo gave the model codex apply_patch (apply_patch) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: kilo gave the model codex exec_command (exec_command) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: kilo gave the model gemini write_file (write_file) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: kilo gave the model nested arguments (read) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed shapes (parallel-same-id): kilo sent N structured calls (N text mentions) and N of N results": {
+        "pass": 1
+      },
+      "[probes] ~usage: kilo outside a session reports authenticated, api_key": {
+        "pass": 1
       },
       "[resume-kill] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 1
       },
       "[resume-kill] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 1
+      },
+      "[resume-kill] acp/cache-prefix": {
+        "finding": 1
       },
       "[resume-kill] acp/hook-injection": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] acp/hook.post-tool": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] acp/hook.pre-tool": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] acp/hook.prompt": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] acp/hook.stop": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] acp/instructions../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] acp/instructions.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] acp/model": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] acp/requests": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] acp/skills.listed": {
-        "pass": 3
+        "pass": 1
       },
       "[resume-kill] acp/streaming": {
-        "pass": 5
+        "pass": 1
+      },
+      "[resume-kill] acp/tool-names": {
+        "pass": 1
       },
       "[resume-kill] binary": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] env.OPENAI_API_KEY": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] env.OPENAI_BASE_URL": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] hooks.install": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] instructions.written../AGENTS.md": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] instructions.written.~/.kilocode/rules/belt.md": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] resume.context": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] resume.load": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] resume.replay": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] session.answer": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] session.completed": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] session.start": {
-        "pass": 5
+        "pass": 1
       },
       "[resume-kill] skills": {
-        "pass": 5
+        "pass": 1
       },
       "[surface] binary": {
-        "pass": 5
+        "pass": 1
       }
     }
   }

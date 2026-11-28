@@ -225,13 +225,15 @@
     {
       "version": "0.71.1",
       "first": "2026-11-25",
-      "last": "2026-11-25",
-      "runs": 1,
+      "last": "2026-11-28",
+      "runs": 4,
       "sources": [
-        "agentprotocol Nightly 45544174960"
+        "agentprotocol Nightly 45544174960",
+        "agentprotocol Nightly 46105733940"
       ],
       "suites": [
-        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
+        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2",
+        "f4af7ad063dc451fecf3d576c6e79e40737e55f0"
       ],
       "green": true
     }
@@ -282,6 +284,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, belt hooks] acp/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[acp, belt hooks] acp/instructions../GEMINI.md": [
       {
         "from": "0.59.0",
@@ -292,6 +301,13 @@
     "[acp, belt hooks] acp/instructions.~/.gemini/GEMINI.md": [
       {
         "from": "0.59.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/isolation": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -320,6 +336,13 @@
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "0.59.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/tool-names": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -415,6 +438,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "0.59.0",
@@ -481,6 +511,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/isolation": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "0.59.0",
@@ -505,6 +542,13 @@
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "0.59.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/tool-names": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -726,6 +770,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/hook-injection": [
       {
         "from": "0.65.0",
@@ -792,6 +843,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/isolation": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/model": [
       {
         "from": "0.65.0",
@@ -820,6 +878,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/tool-names": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[direct] binary": [
       {
         "from": "0.65.0",
@@ -839,7 +904,7 @@
         "from": "0.65.0",
         "last": "0.71.1",
         "outcome": "finding:added",
-        "message": "direct: gemini added 544 characters to the conversation: \"\u003csession_context\u003e\\nThis is the Gemini CLI. We are setting up the context for our chat.\\nToday's date is Wednesday, November 25, 2026 (formatted according to the user's locale).\\nMy operating system is: linux\\nThe project's temporary directory is: /tmp/harness-test-gemini-3808186563/.gemini/tmp/llm-gemin\""
+        "message": "direct: gemini added 543 characters to the conversation: \"\u003csession_context\u003e\\nThis is the Gemini CLI. We are setting up the context for our chat.\\nToday's date is Saturday, November 28, 2026 (formatted according to the user's locale).\\nMy operating system is: linux\\nThe project's temporary directory is: /tmp/harness-test-gemini-1452199025/.gemini/tmp/llm-gemini\""
       }
     ],
     "[direct] direct.restart": [
@@ -1019,6 +1084,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, belt hooks] headless/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[headless, belt hooks] headless/instructions../GEMINI.md": [
       {
         "from": "0.59.0",
@@ -1029,6 +1101,13 @@
     "[headless, belt hooks] headless/instructions.~/.gemini/GEMINI.md": [
       {
         "from": "0.59.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/isolation": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -1057,6 +1136,13 @@
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "0.59.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/tool-names": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -1145,6 +1231,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "0.59.0",
@@ -1208,6 +1301,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/isolation": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "0.59.0",
@@ -1232,6 +1332,13 @@
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "0.59.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/tool-names": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -1418,6 +1525,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "0.61.0",
@@ -1484,6 +1598,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/isolation": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/model": [
       {
         "from": "0.61.0",
@@ -1508,6 +1629,13 @@
     "[inflight-cancel] acp/streaming": [
       {
         "from": "0.61.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/tool-names": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -1618,6 +1746,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "0.61.0",
@@ -1684,6 +1819,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/isolation": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/model": [
       {
         "from": "0.61.0",
@@ -1708,6 +1850,13 @@
     "[inflight-hold] acp/streaming": [
       {
         "from": "0.61.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/tool-names": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -1923,6 +2072,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, belt hooks] interactive/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, belt hooks] interactive/instructions../GEMINI.md": [
       {
         "from": "0.61.0",
@@ -1933,6 +2089,13 @@
     "[interactive, belt hooks] interactive/instructions.~/.gemini/GEMINI.md": [
       {
         "from": "0.61.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/isolation": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -1961,6 +2124,13 @@
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "0.61.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/tool-names": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -2049,6 +2219,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "0.61.0",
@@ -2112,6 +2289,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/isolation": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "0.61.0",
@@ -2140,6 +2324,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/tool-names": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] skills": [
       {
         "from": "0.61.0",
@@ -2157,6 +2348,20 @@
     "[interactive, mock hooks] tui.start": [
       {
         "from": "0.61.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] *": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cache-prefix": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -2227,6 +2432,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] acp/isolation": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[probes] acp/model": [
       {
         "from": "0.61.0",
@@ -2251,6 +2463,13 @@
     "[probes] acp/streaming": [
       {
         "from": "0.61.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/tool-names": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -2352,6 +2571,42 @@
     "[probes] instructions.written.~/.gemini/GEMINI.md": [
       {
         "from": "0.61.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "skip:known-missing",
+        "message": "matchers: gemini's session mode runs no tool hooks: gemini ACP runs tools with invocation.execute() directly and never enters executeToolWithHooks (gemini-cli 0.59 source)"
+      }
+    ],
+    "[probes] plugin.reinstall": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.setup": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall.leftovers": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }
@@ -2635,6 +2890,27 @@
         "outcome": "pass"
       }
     ],
+    "[probes] skills.reinstall": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.remove.neighbour-kept": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.unlisted": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[probes] transcript": [
       {
         "from": "0.61.0",
@@ -2700,6 +2976,69 @@
         "last": "0.71.1",
         "outcome": "finding:not-reported",
         "message": "usage: gemini's driver reported no usage for the turn"
+      }
+    ],
+    "[probes] ~seed kinds: gemini gave the model claude Edit (Edit) as a tool call; its result was sent": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: gemini gave the model claude Read (Read) as a tool call; its result was sent": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: gemini gave the model codex apply_patch (apply_patch) as a tool call; its result was sent": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: gemini gave the model codex exec_command (exec_command) as a tool call; its result was sent": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: gemini gave the model gemini write_file (write_file) as a tool call; its result was sent": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: gemini gave the model nested arguments (read) as a tool call; its result was sent": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed shapes (parallel-same-id): gemini sent N structured calls (N text mentions) and N of N results": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~usage: gemini outside a session reports authenticated, api_key": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/cache-prefix": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook-injection": [
@@ -2768,6 +3107,13 @@
         "outcome": "pass"
       }
     ],
+    "[resume-kill] acp/isolation": [
+      {
+        "from": "0.71.1",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/model": [
       {
         "from": "0.61.0",
@@ -2792,6 +3138,13 @@
     "[resume-kill] acp/streaming": [
       {
         "from": "0.61.0",
+        "last": "0.71.1",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/tool-names": [
+      {
+        "from": "0.71.1",
         "last": "0.71.1",
         "outcome": "pass"
       }

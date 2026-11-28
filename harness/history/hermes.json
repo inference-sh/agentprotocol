@@ -4,15 +4,15 @@
     {
       "version": "0.19.0",
       "first": "2026-08-29",
-      "last": "2026-11-25",
-      "runs": 85,
+      "last": "2026-11-28",
+      "runs": 88,
       "sources": [
         "harness-test Nightly 33239663195",
-        "agentprotocol Nightly 45544174960"
+        "agentprotocol Nightly 46105733940"
       ],
       "suites": [
         "82a63934d6d4693b3dc4103acde3cf279bb99b6e",
-        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
+        "f4af7ad063dc451fecf3d576c6e79e40737e55f0"
       ],
       "green": true
     }
@@ -46,7 +46,21 @@
         "outcome": "pass"
       }
     ],
+    "[acp, belt hooks] acp/cache-prefix": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[acp, belt hooks] acp/instructions../AGENTS.md": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/isolation": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -75,6 +89,13 @@
       }
     ],
     "[acp, belt hooks] acp/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -165,6 +186,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/cache-prefix": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "0.19.0",
@@ -207,6 +235,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/isolation": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "0.19.0",
@@ -229,6 +264,13 @@
       }
     ],
     "[acp, mock hooks] acp/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -438,6 +480,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/cache-prefix": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/hook-injection": [
       {
         "from": "0.19.0",
@@ -480,6 +529,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/isolation": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/model": [
       {
         "from": "0.19.0",
@@ -502,6 +558,13 @@
       }
     ],
     "[direct] acp/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -672,7 +735,21 @@
         "outcome": "pass"
       }
     ],
+    "[headless, belt hooks] headless/cache-prefix": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[headless, belt hooks] headless/instructions../AGENTS.md": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/isolation": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -701,6 +778,13 @@
       }
     ],
     "[headless, belt hooks] headless/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -770,6 +854,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/cache-prefix": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "0.19.0",
@@ -812,6 +903,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/isolation": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "0.19.0",
@@ -834,6 +932,13 @@
       }
     ],
     "[headless, mock hooks] headless/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -994,6 +1099,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/cache-prefix": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "0.19.0",
@@ -1036,6 +1148,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/isolation": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/model": [
       {
         "from": "0.19.0",
@@ -1058,6 +1177,13 @@
       }
     ],
     "[inflight-cancel] acp/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1170,6 +1296,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/cache-prefix": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "0.19.0",
@@ -1212,6 +1345,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/isolation": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/model": [
       {
         "from": "0.19.0",
@@ -1234,6 +1374,13 @@
       }
     ],
     "[inflight-hold] acp/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1402,7 +1549,21 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, belt hooks] interactive/cache-prefix": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/isolation": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1431,6 +1592,13 @@
       }
     ],
     "[interactive, belt hooks] interactive/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1507,6 +1675,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/cache-prefix": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "0.19.0",
@@ -1549,6 +1724,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/isolation": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "0.19.0",
@@ -1577,6 +1759,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/tool-names": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] skills": [
       {
         "from": "0.19.0",
@@ -1598,6 +1787,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] *": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[probes] acp/-hook.post-tool.stdin": [
       {
         "from": "0.19.0",
@@ -1606,6 +1802,13 @@
       }
     ],
     "[probes] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cache-prefix": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1654,6 +1857,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] acp/isolation": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[probes] acp/model": [
       {
         "from": "0.19.0",
@@ -1676,6 +1886,13 @@
       }
     ],
     "[probes] acp/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -1755,6 +1972,55 @@
       }
     ],
     "[probes] instructions.written../AGENTS.md": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.other.post-tool": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.post-tool": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.pre-tool": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.reinstall": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.setup": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall.leftovers": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -2037,6 +2303,27 @@
         "outcome": "pass"
       }
     ],
+    "[probes] skills.reinstall": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.remove.neighbour-kept": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.unlisted": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[probes] transcript": [
       {
         "from": "0.19.0",
@@ -2064,7 +2351,7 @@
         "from": "0.19.0",
         "last": "0.19.0",
         "outcome": "pass:with-window",
-        "message": "usage: hermes reported 11904 of 128000 tokens in context"
+        "message": "usage: hermes reported 11903 of 128000 tokens in context"
       }
     ],
     "[probes] usage.limits": [
@@ -2098,6 +2385,62 @@
         "message": "usage: hermes's driver reported no usage for the turn"
       }
     ],
+    "[probes] ~seed kinds: hermes gave the model claude Edit (Edit) as a tool call; its result was sent": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: hermes gave the model claude Read (Read) as a tool call; its result was sent": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: hermes gave the model codex apply_patch (apply_patch) as a tool call; its result was sent": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: hermes gave the model codex exec_command (exec_command) as a tool call; its result was sent": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: hermes gave the model gemini write_file (write_file) as a tool call; its result was sent": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: hermes gave the model nested arguments (read) as a tool call; its result was sent": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed shapes (parallel-same-id): hermes sent N structured calls (N text mentions) and N of N results": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~usage: hermes outside a session reports authenticated, api_key": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/-hook.post-tool.stdin": [
       {
         "from": "0.19.0",
@@ -2106,6 +2449,13 @@
       }
     ],
     "[resume-kill] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/cache-prefix": [
       {
         "from": "0.19.0",
         "last": "0.19.0",
@@ -2154,6 +2504,13 @@
         "outcome": "pass"
       }
     ],
+    "[resume-kill] acp/isolation": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/model": [
       {
         "from": "0.19.0",
@@ -2176,6 +2533,13 @@
       }
     ],
     "[resume-kill] acp/streaming": [
+      {
+        "from": "0.19.0",
+        "last": "0.19.0",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/tool-names": [
       {
         "from": "0.19.0",
         "last": "0.19.0",

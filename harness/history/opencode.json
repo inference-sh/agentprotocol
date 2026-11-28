@@ -225,15 +225,15 @@
     {
       "version": "1.19.6",
       "first": "2026-11-17",
-      "last": "2026-11-25",
-      "runs": 9,
+      "last": "2026-11-28",
+      "runs": 12,
       "sources": [
         "agentprotocol Nightly 44079124745",
-        "agentprotocol Nightly 45544174960"
+        "agentprotocol Nightly 46105733940"
       ],
       "suites": [
         "011272d86a30b6b9907932b972aa98810e36cd17",
-        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
+        "f4af7ad063dc451fecf3d576c6e79e40737e55f0"
       ],
       "green": true
     }
@@ -263,6 +263,13 @@
     "[acp, belt hooks] acp/belt-hook.stop": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/cache-prefix": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -305,6 +312,13 @@
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -407,6 +421,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/cache-prefix": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "1.18.30",
@@ -480,6 +501,13 @@
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -695,6 +723,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/cache-prefix": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/hook-injection": [
       {
         "from": "1.19.4",
@@ -768,6 +803,13 @@
     "[direct] acp/streaming": [
       {
         "from": "1.19.4",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -943,6 +985,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, belt hooks] headless/cache-prefix": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[headless, belt hooks] headless/instructions../AGENTS.md": [
       {
         "from": "1.18.30",
@@ -981,6 +1030,13 @@
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1062,6 +1118,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/cache-prefix": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "1.18.30",
@@ -1135,6 +1198,13 @@
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "1.18.30",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1322,6 +1392,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/cache-prefix": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "1.18.32",
@@ -1395,6 +1472,13 @@
     "[inflight-cancel] acp/streaming": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1512,6 +1596,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/cache-prefix": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "1.18.32",
@@ -1585,6 +1676,13 @@
     "[inflight-hold] acp/streaming": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1772,6 +1870,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, belt hooks] interactive/cache-prefix": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "1.18.32",
@@ -1810,6 +1915,13 @@
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -1885,6 +1997,13 @@
       }
     ],
     "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/cache-prefix": [
       {
         "from": "1.19.6",
         "last": "1.19.6",
@@ -1968,6 +2087,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/tool-names": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] skills": [
       {
         "from": "1.18.32",
@@ -1989,6 +2115,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] *": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[probes] acp/-hook.post-tool.stdin": [
       {
         "from": "1.19.6",
@@ -1997,6 +2130,13 @@
       }
     ],
     "[probes] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cache-prefix": [
       {
         "from": "1.19.6",
         "last": "1.19.6",
@@ -2076,6 +2216,13 @@
     "[probes] acp/streaming": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -2170,6 +2317,55 @@
     "[probes] instructions.written.~/.config/opencode/AGENTS.md": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.other.post-tool": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.post-tool": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.pre-tool": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.reinstall": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.setup": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall.leftovers": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }
@@ -2450,6 +2646,27 @@
         "outcome": "pass"
       }
     ],
+    "[probes] skills.reinstall": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.remove.neighbour-kept": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.unlisted": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[probes] transcript": [
       {
         "from": "1.18.32",
@@ -2511,6 +2728,62 @@
         "message": "usage: opencode's driver reported no usage for the turn"
       }
     ],
+    "[probes] ~seed kinds: opencode gave the model claude Edit (Edit) as a tool call; its result was sent": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: opencode gave the model claude Read (Read) as a tool call; its result was sent": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: opencode gave the model codex apply_patch (apply_patch) as a tool call; its result was sent": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: opencode gave the model codex exec_command (exec_command) as a tool call; its result was sent": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: opencode gave the model gemini write_file (write_file) as a tool call; its result was sent": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: opencode gave the model nested arguments (read) as a tool call; its result was sent": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed shapes (parallel-same-id): opencode sent N structured calls (N text mentions) and N of N results": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~usage: opencode outside a session reports authenticated, api_key": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/-hook.post-tool.stdin": [
       {
         "from": "1.19.6",
@@ -2519,6 +2792,13 @@
       }
     ],
     "[resume-kill] acp/-hook.pre-tool.stdin": [
+      {
+        "from": "1.19.6",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/cache-prefix": [
       {
         "from": "1.19.6",
         "last": "1.19.6",
@@ -2598,6 +2878,13 @@
     "[resume-kill] acp/streaming": [
       {
         "from": "1.18.32",
+        "last": "1.19.6",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/tool-names": [
+      {
+        "from": "1.19.6",
         "last": "1.19.6",
         "outcome": "pass"
       }

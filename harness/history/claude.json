@@ -764,13 +764,15 @@
     {
       "version": "2.1.332",
       "first": "2026-11-25",
-      "last": "2026-11-25",
-      "runs": 1,
+      "last": "2026-11-28",
+      "runs": 4,
       "sources": [
-        "agentprotocol Nightly 45544174960"
+        "agentprotocol Nightly 45544174960",
+        "agentprotocol Nightly 46105733940"
       ],
       "suites": [
-        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
+        "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2",
+        "f4af7ad063dc451fecf3d576c6e79e40737e55f0"
       ],
       "green": true
     }
@@ -825,6 +827,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, belt hooks] acp/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[acp, belt hooks] acp/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
@@ -835,6 +844,13 @@
     "[acp, belt hooks] acp/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/isolation": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -863,6 +879,13 @@
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "2.1.282",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -979,6 +1002,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "2.1.282",
@@ -1049,6 +1079,13 @@
         "outcome": "pass"
       }
     ],
+    "[acp, mock hooks] acp/isolation": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "2.1.282",
@@ -1073,6 +1110,13 @@
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "2.1.282",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -1175,6 +1219,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/hook-injection": [
       {
         "from": "2.1.310",
@@ -1245,6 +1296,13 @@
         "outcome": "pass"
       }
     ],
+    "[direct] acp/isolation": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[direct] acp/model": [
       {
         "from": "2.1.310",
@@ -1269,6 +1327,13 @@
     "[direct] acp/streaming": [
       {
         "from": "2.1.310",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -1501,6 +1566,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, belt hooks] headless/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[headless, belt hooks] headless/instructions../CLAUDE.md": [
       {
         "from": "2.1.266",
@@ -1511,6 +1583,13 @@
     "[headless, belt hooks] headless/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/isolation": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -1539,6 +1618,13 @@
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "2.1.266",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -1634,6 +1720,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "2.1.266",
@@ -1704,6 +1797,13 @@
         "outcome": "pass"
       }
     ],
+    "[headless, mock hooks] headless/isolation": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "2.1.266",
@@ -1728,6 +1828,13 @@
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "2.1.266",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -1935,6 +2042,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "2.1.282",
@@ -2005,6 +2119,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-cancel] acp/isolation": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-cancel] acp/model": [
       {
         "from": "2.1.282",
@@ -2029,6 +2150,13 @@
     "[inflight-cancel] acp/streaming": [
       {
         "from": "2.1.282",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -2138,6 +2266,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "2.1.282",
@@ -2208,6 +2343,13 @@
         "outcome": "pass"
       }
     ],
+    "[inflight-hold] acp/isolation": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[inflight-hold] acp/model": [
       {
         "from": "2.1.282",
@@ -2232,6 +2374,13 @@
     "[inflight-hold] acp/streaming": [
       {
         "from": "2.1.282",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -2446,6 +2595,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, belt hooks] interactive/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, belt hooks] interactive/instructions../CLAUDE.md": [
       {
         "from": "2.1.282",
@@ -2456,6 +2612,13 @@
     "[interactive, belt hooks] interactive/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/isolation": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -2484,6 +2647,13 @@
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "2.1.282",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -2579,6 +2749,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "2.1.282",
@@ -2649,6 +2826,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/isolation": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "2.1.282",
@@ -2677,6 +2861,13 @@
         "outcome": "pass"
       }
     ],
+    "[interactive, mock hooks] interactive/tool-names": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[interactive, mock hooks] skills": [
       {
         "from": "2.1.282",
@@ -2698,6 +2889,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] *": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[probes] acp/-hook.post-tool.stdin": [
       {
         "from": "2.1.330",
@@ -2708,6 +2906,13 @@
     "[probes] acp/-hook.pre-tool.stdin": [
       {
         "from": "2.1.330",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cache-prefix": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -2782,6 +2987,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] acp/isolation": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[probes] acp/model": [
       {
         "from": "2.1.282",
@@ -2810,6 +3022,13 @@
         "outcome": "pass"
       }
     ],
+    "[probes] acp/tool-names": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[probes] binary": [
       {
         "from": "2.1.282",
@@ -2822,7 +3041,7 @@
         "from": "2.1.282",
         "last": "2.1.332",
         "outcome": "pass:summary",
-        "message": "compaction: claude sent the model 10 message(s) but not the original wording, so the resume carries a summary"
+        "message": "compaction: claude sent the model the compaction's summary in place of the original wording"
       }
     ],
     "[probes] compact.run": [
@@ -2921,6 +3140,55 @@
     "[probes] instructions.written.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.282",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.other.post-tool": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.post-tool": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.pre-tool": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.reinstall": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.setup": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall.leftovers": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -3195,6 +3463,27 @@
         "outcome": "pass"
       }
     ],
+    "[probes] skills.reinstall": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.remove.neighbour-kept": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.unlisted": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[probes] subagents.completed": [
       {
         "from": "2.1.296",
@@ -3214,7 +3503,7 @@
         "from": "2.1.296",
         "last": "2.1.332",
         "outcome": "pass:linked",
-        "message": "subagents: claude reported subagent a91cb713641ea0a31, started by tool call toolu_mock_1"
+        "message": "subagents: claude reported subagent a4341035c8278ce35, started by tool call toolu_mock_1"
       }
     ],
     "[probes] transcript": [
@@ -3269,6 +3558,69 @@
         "outcome": "pass"
       }
     ],
+    "[probes] ~seed kinds: claude gave the model claude Edit (Edit) as a tool call; its result was sent": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: claude gave the model claude Read (Read) as a tool call; its result was sent": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: claude gave the model codex apply_patch (apply_patch) as a tool call; its result was sent": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: claude gave the model codex exec_command (exec_command) as a tool call; its result was sent": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: claude gave the model gemini write_file (write_file) as a tool call; its result was sent": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: claude gave the model nested arguments (read) as a tool call; its result was sent": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed shapes (parallel-same-id): claude sent N structured calls (N text mentions) and N of N results": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~usage: claude in a session reports authenticated, api_key": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~usage: claude outside a session reports authenticated, api_key": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/-hook.post-tool.stdin": [
       {
         "from": "2.1.330",
@@ -3279,6 +3631,13 @@
     "[resume-kill] acp/-hook.pre-tool.stdin": [
       {
         "from": "2.1.330",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/cache-prefix": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -3353,6 +3712,13 @@
         "outcome": "pass"
       }
     ],
+    "[resume-kill] acp/isolation": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[resume-kill] acp/model": [
       {
         "from": "2.1.282",
@@ -3377,6 +3743,13 @@
     "[resume-kill] acp/streaming": [
       {
         "from": "2.1.282",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -3605,6 +3978,13 @@
         "outcome": "pass"
       }
     ],
+    "[sdk, belt hooks] sdk/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[sdk, belt hooks] sdk/instructions../CLAUDE.md": [
       {
         "from": "2.1.266",
@@ -3615,6 +3995,13 @@
     "[sdk, belt hooks] sdk/instructions.~/.claude/CLAUDE.md": [
       {
         "from": "2.1.266",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/isolation": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -3643,6 +4030,13 @@
     "[sdk, belt hooks] sdk/streaming": [
       {
         "from": "2.1.266",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, belt hooks] sdk/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }
@@ -3731,6 +4125,13 @@
         "outcome": "pass"
       }
     ],
+    "[sdk, mock hooks] sdk/cache-prefix": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[sdk, mock hooks] sdk/hook-injection": [
       {
         "from": "2.1.266",
@@ -3807,6 +4208,13 @@
         "outcome": "pass"
       }
     ],
+    "[sdk, mock hooks] sdk/isolation": [
+      {
+        "from": "2.1.332",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
     "[sdk, mock hooks] sdk/model": [
       {
         "from": "2.1.266",
@@ -3831,6 +4239,13 @@
     "[sdk, mock hooks] sdk/streaming": [
       {
         "from": "2.1.266",
+        "last": "2.1.332",
+        "outcome": "pass"
+      }
+    ],
+    "[sdk, mock hooks] sdk/tool-names": [
+      {
+        "from": "2.1.332",
         "last": "2.1.332",
         "outcome": "pass"
       }

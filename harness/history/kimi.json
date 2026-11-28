@@ -374,27 +374,55 @@
         "ffbc34eee6216ba1ed269fa938a20cd4074ab7c2"
       ],
       "green": true
+    },
+    {
+      "version": "2.8.0",
+      "first": "2026-11-26",
+      "last": "2026-11-26",
+      "runs": 1,
+      "sources": [
+        "agentprotocol Nightly 45752786005"
+      ],
+      "suites": [
+        "8e99a6120cc21b454ba92db3f001a12be86d8e7a"
+      ],
+      "green": true
+    },
+    {
+      "version": "2.8.1",
+      "first": "2026-11-27",
+      "last": "2026-11-28",
+      "runs": 2,
+      "sources": [
+        "agentprotocol Nightly 45937686117",
+        "agentprotocol Nightly 46105733940"
+      ],
+      "suites": [
+        "c0096f4a84e65d5f9a7a1252410bb7619466f78a",
+        "f4af7ad063dc451fecf3d576c6e79e40737e55f0"
+      ],
+      "green": true
     }
   ],
   "checks": {
     "[acp, belt hooks] acp/belt-hook.post-tool": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.prompt": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/belt-hook.session-start": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -418,161 +446,189 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions../AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/model": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/requests": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] acp/streaming": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, belt hooks] acp/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] belt-hook-shape": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] binary": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] env.KIMI_CODE_BASE_URL": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.install": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] hooks.project-copy": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.answer": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.completed": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] session.start": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, belt hooks] skills": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/-hook.post-tool.stdin": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook-injection": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.post-tool": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.prompt": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/hook.session-start": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -596,112 +652,126 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions../AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/model": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/requests": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] acp/streaming": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[acp, mock hooks] acp/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] binary": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] env.KIMI_CODE_BASE_URL": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] hooks.install": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.answer": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.completed": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] session.start": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[acp, mock hooks] skills": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -841,35 +911,42 @@
     "[direct] acp/-hook.post-tool.stdin": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook-injection": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.post-tool": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.prompt": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/hook.session-start": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -893,92 +970,106 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions../AGENTS.md": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/model": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/requests": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] acp/streaming": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[direct] acp/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] binary": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] direct.call": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] direct.messages": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "finding:added",
-        "message": "direct: kimi added 382 characters to the conversation: \"\u003chook_result hook_event=\\\"UserPromptSubmit\\\"\u003e\\nThe project codename is HOOK-KIMI-1795579847674.\\n\u003c/hook_result\u003e\\n\\n\u003csystem-reminder\u003e\\nToday's date is 2026-11-25, in the local client machine's timezone (UTC). The current date is restated in a reminder whenever it changes; rely on the latest such reminder fo\""
+        "message": "direct: kimi added 382 characters to the conversation: \"\u003chook_result hook_event=\\\"UserPromptSubmit\\\"\u003e\\nThe project codename is HOOK-KIMI-1795839025515.\\n\u003c/hook_result\u003e\\n\\n\u003csystem-reminder\u003e\\nToday's date is 2026-11-28, in the local client machine's timezone (UTC). The current date is restated in a reminder whenever it changes; rely on the latest such reminder fo\""
       }
     ],
     "[direct] direct.restart": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] direct.result": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] direct.system": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:exact",
         "message": "direct: kimi sent the probe's system prompt and nothing else"
       }
@@ -995,103 +1086,109 @@
         "last": "2.7.3",
         "outcome": "finding:more",
         "message": "direct: kimi offered 25 tools of its own with the probe's: [Agent AgentSwarm AskUserQuestion Bash CreateGoal CronCreate CronDelete CronList Edit ExitPlanMode FetchURL GetGoal Glob Grep Read ReadMediaFile SetGoalBudget Skill TaskList TaskOutput TaskStop TodoList UpdateGoal WaitFor Write]"
+      },
+      {
+        "from": "2.8.0",
+        "last": "2.8.1",
+        "outcome": "pass:only",
+        "message": "direct: kimi offered the probe's tool alone, as mcp__tools__probe_echo"
       }
     ],
     "[direct] env.KIMI_CODE_BASE_URL": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] hooks.install": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written../AGENTS.md": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] session.answer": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] session.completed": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] session.start": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[direct] skills": [
       {
         "from": "2.3.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] belt-hook-shape": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] binary": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] env.KIMI_CODE_BASE_URL": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.post-tool": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.prompt": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/belt-hook.session-start": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -1115,140 +1212,168 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions../AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/model": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/requests": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] headless/streaming": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, belt hooks] headless/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.install": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] hooks.project-copy": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] skills": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, belt hooks] turn": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] binary": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] env.KIMI_CODE_BASE_URL": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/-hook.post-tool.stdin": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook-injection": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.post-tool": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.prompt": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/hook.session-start": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -1272,84 +1397,98 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions../AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/model": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/requests": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] headless/streaming": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[headless, mock hooks] headless/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] hooks.install": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] skills": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[headless, mock hooks] turn": [
       {
         "from": "0.42.0",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -1475,35 +1614,42 @@
     "[inflight-cancel] acp/-hook.post-tool.stdin": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook-injection": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.post-tool": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.prompt": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/hook.session-start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -1527,84 +1673,98 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/model": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/requests": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] acp/streaming": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-cancel] acp/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] binary": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] env.KIMI_CODE_BASE_URL": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] hooks.install": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.park": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.reraise": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "finding:none",
         "message": "in-flight: kimi does not re-raise the parked approval on resume"
       }
@@ -1612,91 +1772,98 @@
     "[inflight-cancel] inflight.resume": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] inflight.resume-twice": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.answer": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.completed": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] session.start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-cancel] skills": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/-hook.post-tool.stdin": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook-injection": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.post-tool": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.prompt": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/hook.session-start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -1720,84 +1887,98 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/model": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/requests": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] acp/streaming": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[inflight-hold] acp/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] binary": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] env.KIMI_CODE_BASE_URL": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] hooks.install": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.park": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.reraise": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "finding:none",
         "message": "in-flight: kimi does not re-raise the parked approval on resume"
       }
@@ -1805,126 +1986,126 @@
     "[inflight-hold] inflight.resume": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] inflight.resume-twice": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.answer": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.completed": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] session.start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[inflight-hold] skills": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] belt-hook-shape": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] binary": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] env.KIMI_CODE_BASE_URL": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.install": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] hooks.project-copy": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.post-tool": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.prompt": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/belt-hook.session-start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -1948,140 +2129,168 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/model": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/requests": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] interactive/streaming": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, belt hooks] interactive/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] skills": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.completed": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, belt hooks] tui.start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] binary": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] env.KIMI_CODE_BASE_URL": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] hooks.install": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/-hook.post-tool.stdin": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook-injection": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.post-tool": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.prompt": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/hook.session-start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -2105,105 +2314,133 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/model": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/requests": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] interactive/streaming": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[interactive, mock hooks] interactive/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] skills": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.completed": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[interactive, mock hooks] tui.start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] *": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/-hook.post-tool.stdin": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook-injection": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.post-tool": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.prompt": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/hook.session-start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -2227,63 +2464,77 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/model": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/requests": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] acp/streaming": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] acp/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] binary": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] deferred.armed": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:no-search-tool",
         "message": "deferred tools: kimi declares no tool-search tool, so its 0 declared tools are the whole surface it offers on a turn"
       }
@@ -2291,14 +2542,14 @@
     "[probes] env.KIMI_CODE_BASE_URL": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] hidden.*": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:help",
         "message": "hidden: kimi install-app works (help: its own help, 3 lines: \"Usage: kimi install-app [options]\") and --help does not list it (registered in the package)"
       }
@@ -2306,28 +2557,28 @@
     "[probes] hooks.install": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] images.sent": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.park": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.reraise": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "finding:none",
         "message": "in-flight: kimi does not re-raise the parked approval on resume"
       }
@@ -2335,98 +2586,147 @@
     "[probes] inflight.resume": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] inflight.resume-twice": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.other.post-tool": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.post-tool": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] matchers.shell.pre-tool": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.reinstall": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.setup": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] plugin.uninstall.leftovers": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] resume.context": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] resume.load": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] resume.replay": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seed.appended": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seed.hand-built": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.assistant text": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.context": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.history": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.compaction.request": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.file-uri": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:as-image",
         "message": "seed shapes (file-uri): kimi sent the image's bytes (codec kept them inline: true)"
       }
@@ -2434,14 +2734,14 @@
     "[probes] seedkinds.first user message": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.image-only-result": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:as-image",
         "message": "seed shapes (image-only-result): kimi sent the call and the image as image data"
       }
@@ -2449,7 +2749,7 @@
     "[probes] seedkinds.in-message-result": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:as-image",
         "message": "seed shapes (in-message-result): kimi sent the result and the image as image data"
       }
@@ -2457,98 +2757,98 @@
     "[probes] seedkinds.reasoning": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.context": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.history": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-answer-as-summary.request": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.context": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.history": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.retired-tool.request": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's answer": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.second turn's user message": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.shown-only": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool call arguments": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool result": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-after-text": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.tool-image": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:as-image",
         "message": "seed kinds: kimi sent the tool's image as image data (result text sent: true)"
       }
@@ -2556,14 +2856,14 @@
     "[probes] seedkinds.trailing-prompt.history": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-prompt.request": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-prompt): kimi loaded the session and sent the last prompt"
       }
@@ -2571,14 +2871,14 @@
     "[probes] seedkinds.trailing-tool result.history": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] seedkinds.trailing-tool result.request": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:sent",
         "message": "seed shapes (trailing-tool-result): kimi loaded the session and sent the last tool result"
       }
@@ -2586,7 +2886,7 @@
     "[probes] seedkinds.untyped-file-path": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:as-text",
         "message": "seed shapes (untyped-file-path): kimi sent the file's content"
       }
@@ -2594,7 +2894,7 @@
     "[probes] seedkinds.user-attachments.image": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:as-image",
         "message": "seed shapes (user-attachments): kimi sent the attached image as image data"
       }
@@ -2602,7 +2902,7 @@
     "[probes] seedkinds.user-attachments.pdf": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "finding:not-kept",
         "message": "seed shapes (user-attachments): kimi's codec kept no attached PDF"
       }
@@ -2610,49 +2910,70 @@
     "[probes] session.answer": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] session.completed": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] session.start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] skills": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.reinstall": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.remove.neighbour-kept": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] skills.unlisted": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] transcript": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] turn": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] usage.account": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "finding:not-reported",
         "message": "usage: kimi's driver reported no account"
       }
@@ -2660,7 +2981,7 @@
     "[probes] usage.context": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:with-window",
         "message": "usage: kimi reported 146 of 128000 tokens in context"
       }
@@ -2668,7 +2989,7 @@
     "[probes] usage.limits": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "finding:not-reported",
         "message": "usage: kimi pushed no rate limits"
       }
@@ -2676,7 +2997,7 @@
     "[probes] usage.probe.limits": [
       {
         "from": "2.3.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass:unsupported",
         "message": "usage: kimi's limits do not apply: plan quota applies only to a Kimi Code login"
       }
@@ -2684,50 +3005,113 @@
     "[probes] usage.probe.no-model-call": [
       {
         "from": "2.3.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[probes] usage.turn": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "finding:not-reported",
         "message": "usage: kimi's driver reported no usage for the turn"
+      }
+    ],
+    "[probes] ~seed kinds: kimi gave the model claude Edit (Edit) as a tool call; its result was sent": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: kimi gave the model claude Read (Read) as a tool call; its result was sent": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: kimi gave the model codex apply_patch (apply_patch) as a tool call; its result was sent": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: kimi gave the model codex exec_command (exec_command) as a tool call; its result was sent": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: kimi gave the model gemini write_file (write_file) as a tool call; its result was sent": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed kinds: kimi gave the model nested arguments (read) as a tool call; its result was sent": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~seed shapes (parallel-same-id): kimi sent N structured calls (N text mentions) and N of N results": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[probes] ~usage: kimi outside a session reports authenticated, api_key": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
+        "outcome": "pass"
       }
     ],
     "[resume-kill] acp/-hook.post-tool.stdin": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/cache-prefix": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook-injection": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.post-tool": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.prompt": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/hook.session-start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
@@ -2751,140 +3135,154 @@
       },
       {
         "from": "2.6.3",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/instructions.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/isolation": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/model": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/requests": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/skills.listed": [
       {
         "from": "2.7.2",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] acp/streaming": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
+        "outcome": "pass"
+      }
+    ],
+    "[resume-kill] acp/tool-names": [
+      {
+        "from": "2.8.1",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] binary": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] env.KIMI_CODE_BASE_URL": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] hooks.install": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written../AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] instructions.written.~/.kimi-code/AGENTS.md": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.context": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.load": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] resume.replay": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.answer": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.completed": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] session.start": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[resume-kill] skills": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ],
     "[surface] binary": [
       {
         "from": "2.1.1",
-        "last": "2.7.3",
+        "last": "2.8.1",
         "outcome": "pass"
       }
     ]

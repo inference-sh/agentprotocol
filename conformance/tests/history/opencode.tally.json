@@ -1,9 +1,5 @@
 {
   "ingested": {
-    "agentprotocol Nightly 42956725835": "2026-11-11",
-    "agentprotocol Nightly 43152242605": "2026-11-12",
-    "agentprotocol Nightly 43362989456": "2026-11-13",
-    "agentprotocol Nightly 43454788852": "2026-11-13",
     "agentprotocol Nightly 43554710043": "2026-11-14",
     "agentprotocol Nightly 43675080572": "2026-11-15",
     "agentprotocol Nightly 43801787154": "2026-11-16",
@@ -16,7 +12,10 @@
     "agentprotocol Nightly 44983348684": "2026-11-22",
     "agentprotocol Nightly 45109542501": "2026-11-23",
     "agentprotocol Nightly 45323736354": "2026-11-24",
-    "agentprotocol Nightly 45544174960": "2026-11-25"
+    "agentprotocol Nightly 45544174960": "2026-11-25",
+    "agentprotocol Nightly 45752786005": "2026-11-26",
+    "agentprotocol Nightly 45937686117": "2026-11-27",
+    "agentprotocol Nightly 46105733940": "2026-11-28"
   },
   "versions": {
     "1.19.5": {
@@ -866,946 +865,1071 @@
     },
     "1.19.6": {
       "[acp, belt hooks] acp/belt-hook.post-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] acp/belt-hook.pre-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] acp/belt-hook.prompt": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] acp/belt-hook.stop": {
-        "pass": 9
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/cache-prefix": {
+        "pass": 1
       },
       "[acp, belt hooks] acp/instructions../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] acp/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] acp/model": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] acp/requests": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] acp/skills.listed": {
-        "pass": 3
+        "pass": 6
       },
       "[acp, belt hooks] acp/streaming": {
-        "pass": 9
+        "pass": 12
+      },
+      "[acp, belt hooks] acp/tool-names": {
+        "pass": 1
       },
       "[acp, belt hooks] belt-hook-shape": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] hooks.project-copy": {
-        "pass": 3
+        "pass": 6
       },
       "[acp, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] session.answer": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] session.completed": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] session.start": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, belt hooks] skills": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 6
       },
       "[acp, mock hooks] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 6
+      },
+      "[acp, mock hooks] acp/cache-prefix": {
+        "pass": 1
       },
       "[acp, mock hooks] acp/hook-injection": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/hook.post-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/hook.pre-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/hook.prompt": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/hook.stop": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/instructions../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/model": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/requests": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] acp/skills.listed": {
-        "pass": 3
+        "pass": 6
       },
       "[acp, mock hooks] acp/streaming": {
-        "pass": 9
+        "pass": 12
+      },
+      "[acp, mock hooks] acp/tool-names": {
+        "pass": 1
       },
       "[acp, mock hooks] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] session.answer": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] session.completed": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] session.start": {
-        "pass": 9
+        "pass": 12
       },
       "[acp, mock hooks] skills": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 6
       },
       "[direct] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 6
+      },
+      "[direct] acp/cache-prefix": {
+        "pass": 1
       },
       "[direct] acp/hook-injection": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/hook.post-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/hook.pre-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/hook.prompt": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/hook.stop": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/instructions../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/model": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/requests": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] acp/skills.listed": {
-        "pass": 3
+        "pass": 6
       },
       "[direct] acp/streaming": {
-        "pass": 9
+        "pass": 12
+      },
+      "[direct] acp/tool-names": {
+        "pass": 1
       },
       "[direct] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] direct.call": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] direct.messages": {
-        "pass:exact": 9
+        "pass:exact": 12
       },
       "[direct] direct.restart": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] direct.result": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] direct.system": {
-        "pass:exact": 9
+        "pass:exact": 12
       },
       "[direct] direct.tools": {
-        "pass:only": 9
+        "pass:only": 12
       },
       "[direct] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] session.answer": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] session.completed": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] session.start": {
-        "pass": 9
+        "pass": 12
       },
       "[direct] skills": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] belt-hook-shape": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] headless/belt-hook.post-tool": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, belt hooks] headless/belt-hook.pre-tool": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, belt hooks] headless/belt-hook.prompt": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] headless/belt-hook.stop": {
-        "pass": 9
+        "pass": 12
+      },
+      "[headless, belt hooks] headless/cache-prefix": {
+        "pass": 1
       },
       "[headless, belt hooks] headless/instructions../AGENTS.md": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, belt hooks] headless/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, belt hooks] headless/model": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, belt hooks] headless/requests": {
         "fail": 2,
-        "pass": 7
+        "pass": 10
       },
       "[headless, belt hooks] headless/skills.listed": {
-        "pass": 1
+        "pass": 4
       },
       "[headless, belt hooks] headless/streaming": {
-        "pass": 7
+        "pass": 10
+      },
+      "[headless, belt hooks] headless/tool-names": {
+        "pass": 1
       },
       "[headless, belt hooks] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] hooks.project-copy": {
-        "pass": 3
+        "pass": 6
       },
       "[headless, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] skills": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, belt hooks] turn": {
-        "pass": 7,
+        "pass": 10,
         "pass:nonzero-exit": 2
       },
       "[headless, mock hooks] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, mock hooks] headless/-hook.post-tool.stdin": {
-        "pass": 1
+        "pass": 4
       },
       "[headless, mock hooks] headless/-hook.pre-tool.stdin": {
+        "pass": 4
+      },
+      "[headless, mock hooks] headless/cache-prefix": {
         "pass": 1
       },
       "[headless, mock hooks] headless/hook-injection": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, mock hooks] headless/hook.post-tool": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, mock hooks] headless/hook.pre-tool": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, mock hooks] headless/hook.prompt": {
         "fail": 1,
-        "pass": 7
+        "pass": 10
       },
       "[headless, mock hooks] headless/hook.stop": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, mock hooks] headless/instructions../AGENTS.md": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, mock hooks] headless/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, mock hooks] headless/model": {
-        "pass": 7
+        "pass": 10
       },
       "[headless, mock hooks] headless/requests": {
         "fail": 1,
-        "pass": 7
+        "pass": 10
       },
       "[headless, mock hooks] headless/skills.listed": {
-        "pass": 1
+        "pass": 4
       },
       "[headless, mock hooks] headless/streaming": {
-        "pass": 7
+        "pass": 10
+      },
+      "[headless, mock hooks] headless/tool-names": {
+        "pass": 1
       },
       "[headless, mock hooks] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, mock hooks] skills": {
-        "pass": 9
+        "pass": 12
       },
       "[headless, mock hooks] turn": {
-        "pass": 7,
+        "pass": 10,
         "pass:nonzero-exit": 2
       },
       "[inflight-cancel] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 6
       },
       "[inflight-cancel] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 6
+      },
+      "[inflight-cancel] acp/cache-prefix": {
+        "pass": 1
       },
       "[inflight-cancel] acp/hook-injection": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] acp/hook.post-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] acp/hook.pre-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] acp/hook.prompt": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] acp/hook.stop": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] acp/instructions../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] acp/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] acp/model": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] acp/requests": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] acp/skills.listed": {
-        "pass": 3
+        "pass": 6
       },
       "[inflight-cancel] acp/streaming": {
-        "pass": 9
+        "pass": 12
+      },
+      "[inflight-cancel] acp/tool-names": {
+        "pass": 1
       },
       "[inflight-cancel] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] inflight.park": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] inflight.reraise": {
-        "finding:none": 9
+        "finding:none": 12
       },
       "[inflight-cancel] inflight.resume": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] inflight.resume-twice": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] session.answer": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] session.completed": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] session.start": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-cancel] skills": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 6
       },
       "[inflight-hold] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 6
+      },
+      "[inflight-hold] acp/cache-prefix": {
+        "pass": 1
       },
       "[inflight-hold] acp/hook-injection": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/hook.post-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/hook.pre-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/hook.prompt": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/hook.stop": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/instructions../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/model": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/requests": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] acp/skills.listed": {
-        "pass": 3
+        "pass": 6
       },
       "[inflight-hold] acp/streaming": {
-        "pass": 9
+        "pass": 12
+      },
+      "[inflight-hold] acp/tool-names": {
+        "pass": 1
       },
       "[inflight-hold] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] inflight.park": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] inflight.reraise": {
-        "finding:none": 9
+        "finding:none": 12
       },
       "[inflight-hold] inflight.resume": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] inflight.resume-twice": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] session.answer": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] session.completed": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] session.start": {
-        "pass": 9
+        "pass": 12
       },
       "[inflight-hold] skills": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, belt hooks] belt-hook-shape": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, belt hooks] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, belt hooks] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, belt hooks] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, belt hooks] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, belt hooks] hooks.project-copy": {
-        "pass": 3
+        "pass": 6
       },
       "[interactive, belt hooks] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, belt hooks] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, belt hooks] interactive/belt-hook.post-tool": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, belt hooks] interactive/belt-hook.pre-tool": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, belt hooks] interactive/belt-hook.prompt": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, belt hooks] interactive/belt-hook.stop": {
-        "pass": 9
+        "pass": 12
+      },
+      "[interactive, belt hooks] interactive/cache-prefix": {
+        "pass": 1
       },
       "[interactive, belt hooks] interactive/instructions../AGENTS.md": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, belt hooks] interactive/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, belt hooks] interactive/model": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, belt hooks] interactive/requests": {
         "fail": 2,
-        "pass": 7
+        "pass": 10
       },
       "[interactive, belt hooks] interactive/skills.listed": {
-        "pass": 1
+        "pass": 4
       },
       "[interactive, belt hooks] interactive/streaming": {
-        "pass": 7
+        "pass": 10
       },
-      "[interactive, belt hooks] skills": {
-        "pass": 9
-      },
-      "[interactive, belt hooks] tui.completed": {
-        "pass": 9
-      },
-      "[interactive, belt hooks] tui.start": {
-        "pass": 9
-      },
-      "[interactive, mock hooks] binary": {
-        "pass": 9
-      },
-      "[interactive, mock hooks] env.OPENAI_API_KEY": {
-        "pass": 9
-      },
-      "[interactive, mock hooks] env.OPENAI_BASE_URL": {
-        "pass": 9
-      },
-      "[interactive, mock hooks] hooks.install": {
-        "pass": 9
-      },
-      "[interactive, mock hooks] instructions.written../AGENTS.md": {
-        "pass": 9
-      },
-      "[interactive, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
-      },
-      "[interactive, mock hooks] interactive/-hook.post-tool.stdin": {
+      "[interactive, belt hooks] interactive/tool-names": {
         "pass": 1
       },
+      "[interactive, belt hooks] skills": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] tui.completed": {
+        "pass": 12
+      },
+      "[interactive, belt hooks] tui.start": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] binary": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] env.OPENAI_API_KEY": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] env.OPENAI_BASE_URL": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] hooks.install": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] instructions.written../AGENTS.md": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] instructions.written.~/.config/opencode/AGENTS.md": {
+        "pass": 12
+      },
+      "[interactive, mock hooks] interactive/-hook.post-tool.stdin": {
+        "pass": 4
+      },
       "[interactive, mock hooks] interactive/-hook.pre-tool.stdin": {
+        "pass": 4
+      },
+      "[interactive, mock hooks] interactive/cache-prefix": {
         "pass": 1
       },
       "[interactive, mock hooks] interactive/hook-injection": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, mock hooks] interactive/hook.post-tool": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, mock hooks] interactive/hook.pre-tool": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, mock hooks] interactive/hook.prompt": {
         "fail": 2,
-        "pass": 7
+        "pass": 10
       },
       "[interactive, mock hooks] interactive/hook.stop": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, mock hooks] interactive/instructions../AGENTS.md": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, mock hooks] interactive/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, mock hooks] interactive/model": {
-        "pass": 7
+        "pass": 10
       },
       "[interactive, mock hooks] interactive/requests": {
         "fail": 2,
-        "pass": 7
+        "pass": 10
       },
       "[interactive, mock hooks] interactive/skills.listed": {
-        "pass": 1
+        "pass": 4
       },
       "[interactive, mock hooks] interactive/streaming": {
-        "pass": 7
+        "pass": 10
+      },
+      "[interactive, mock hooks] interactive/tool-names": {
+        "pass": 1
       },
       "[interactive, mock hooks] skills": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, mock hooks] tui.completed": {
-        "pass": 9
+        "pass": 12
       },
       "[interactive, mock hooks] tui.start": {
+        "pass": 12
+      },
+      "[probes] *": {
         "pass": 9
       },
       "[probes] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 6
       },
       "[probes] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 6
+      },
+      "[probes] acp/cache-prefix": {
+        "pass": 1
       },
       "[probes] acp/hook-injection": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] acp/hook.post-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] acp/hook.pre-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] acp/hook.prompt": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] acp/hook.stop": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] acp/instructions../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] acp/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] acp/model": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] acp/requests": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] acp/skills.listed": {
-        "pass": 3
+        "pass": 6
       },
       "[probes] acp/streaming": {
-        "pass": 9
+        "pass": 12
+      },
+      "[probes] acp/tool-names": {
+        "pass": 1
       },
       "[probes] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] deferred.armed": {
-        "pass:no-search-tool": 9
+        "pass:no-search-tool": 12
       },
       "[probes] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] hidden.*": {
-        "pass:help": 18
+        "pass:help": 24
       },
       "[probes] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] images.sent": {
         "fail": 2,
-        "pass": 7
+        "pass": 10
       },
       "[probes] inflight.park": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] inflight.reraise": {
-        "finding:none": 9
+        "finding:none": 12
       },
       "[probes] inflight.resume": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] inflight.resume-twice": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
+      },
+      "[probes] matchers.other.post-tool": {
+        "pass": 1
+      },
+      "[probes] matchers.shell.post-tool": {
+        "pass": 1
+      },
+      "[probes] matchers.shell.pre-tool": {
+        "pass": 1
+      },
+      "[probes] plugin.reinstall": {
+        "pass": 1
+      },
+      "[probes] plugin.setup": {
+        "pass": 1
+      },
+      "[probes] plugin.uninstall": {
+        "pass": 1
+      },
+      "[probes] plugin.uninstall.leftovers": {
+        "pass": 1
       },
       "[probes] resume.context": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] resume.load": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] resume.replay": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seed.appended": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seed.hand-built": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.assistant text": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.compaction.context": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.compaction.history": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.compaction.request": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.file-uri": {
-        "finding:dropped": 9
+        "finding:dropped": 9,
+        "pass:as-image": 3
       },
       "[probes] seedkinds.first user message": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.image-only-result": {
-        "pass:as-image": 9
+        "pass:as-image": 12
       },
       "[probes] seedkinds.in-message-result": {
-        "pass:as-image": 9
+        "pass:as-image": 12
       },
       "[probes] seedkinds.reasoning": {
-        "finding:not-kept": 9
+        "finding:not-kept": 12
       },
       "[probes] seedkinds.retired-answer-as-summary.context": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.retired-answer-as-summary.history": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.retired-answer-as-summary.request": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.retired-tool.context": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.retired-tool.history": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.retired-tool.request": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.second turn's answer": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.second turn's user message": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.shown-only": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.tool call arguments": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.tool result": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.tool-after-text": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.tool-image": {
-        "pass:as-image": 9
+        "pass:as-image": 12
       },
       "[probes] seedkinds.trailing-prompt.history": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.trailing-prompt.request": {
-        "pass:sent": 9
+        "pass:sent": 12
       },
       "[probes] seedkinds.trailing-tool result.history": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] seedkinds.trailing-tool result.request": {
-        "pass:sent": 9
+        "pass:sent": 12
       },
       "[probes] seedkinds.untyped-file-path": {
-        "pass:as-text": 9
+        "pass:as-text": 12
       },
       "[probes] seedkinds.user-attachments.image": {
-        "finding:dropped": 9
+        "finding:dropped": 9,
+        "pass:as-image": 3
       },
       "[probes] seedkinds.user-attachments.pdf": {
-        "pass:as-reference": 9
+        "pass:as-reference": 12
       },
       "[probes] session.answer": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] session.completed": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] session.start": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] skills": {
-        "pass": 9
+        "pass": 12
+      },
+      "[probes] skills.reinstall": {
+        "pass": 1
+      },
+      "[probes] skills.remove.neighbour-kept": {
+        "pass": 1
+      },
+      "[probes] skills.unlisted": {
+        "pass": 1
       },
       "[probes] transcript": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] turn": {
-        "pass": 72
+        "pass": 88
       },
       "[probes] usage.account": {
-        "finding:not-reported": 9
+        "finding:not-reported": 12
       },
       "[probes] usage.context": {
-        "finding:not-reported": 9
+        "finding:not-reported": 12
       },
       "[probes] usage.limits": {
-        "finding:not-reported": 9
+        "finding:not-reported": 12
       },
       "[probes] usage.probe.limits": {
-        "pass:unsupported": 9
+        "pass:unsupported": 12
       },
       "[probes] usage.probe.no-model-call": {
-        "pass": 9
+        "pass": 12
       },
       "[probes] usage.turn": {
-        "finding:not-reported": 9
+        "finding:not-reported": 12
+      },
+      "[probes] ~seed kinds: opencode gave the model claude Edit (Edit) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: opencode gave the model claude Read (Read) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: opencode gave the model codex apply_patch (apply_patch) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: opencode gave the model codex exec_command (exec_command) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: opencode gave the model gemini write_file (write_file) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed kinds: opencode gave the model nested arguments (read) as a tool call; its result was sent": {
+        "pass": 1
+      },
+      "[probes] ~seed shapes (parallel-same-id): opencode sent N structured calls (N text mentions) and N of N results": {
+        "pass": 1
+      },
+      "[probes] ~usage: opencode outside a session reports authenticated, api_key": {
+        "pass": 1
       },
       "[resume-kill] acp/-hook.post-tool.stdin": {
-        "pass": 3
+        "pass": 6
       },
       "[resume-kill] acp/-hook.pre-tool.stdin": {
-        "pass": 3
+        "pass": 6
+      },
+      "[resume-kill] acp/cache-prefix": {
+        "pass": 1
       },
       "[resume-kill] acp/hook-injection": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] acp/hook.post-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] acp/hook.pre-tool": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] acp/hook.prompt": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] acp/hook.stop": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] acp/instructions../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] acp/instructions.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] acp/model": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] acp/requests": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] acp/skills.listed": {
-        "pass": 3
+        "pass": 6
       },
       "[resume-kill] acp/streaming": {
-        "pass": 9
+        "pass": 12
+      },
+      "[resume-kill] acp/tool-names": {
+        "pass": 1
       },
       "[resume-kill] binary": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] env.OPENAI_API_KEY": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] env.OPENAI_BASE_URL": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] hooks.install": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] instructions.written../AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] instructions.written.~/.config/opencode/AGENTS.md": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] resume.context": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] resume.load": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] resume.replay": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] session.answer": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] session.completed": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] session.start": {
-        "pass": 9
+        "pass": 12
       },
       "[resume-kill] skills": {
-        "pass": 9
+        "pass": 12
       },
       "[surface] binary": {
-        "pass": 9
+        "pass": 12
       }
     }
   }

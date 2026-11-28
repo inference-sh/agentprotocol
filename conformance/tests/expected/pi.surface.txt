@@ -9,6 +9,7 @@ remove
 uninstall
 update
 [flags]
+--agent-dir
 --api-key
 --append-system-prompt
 --approve
